@@ -1,41 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 @import "./theme.scss";
 
-$light-font: "Manrope", sans-serif;
-$bold-font: "Manrope", sans-serif;
-$extra-bold-font: "Manrope", sans-serif;
-$bold-font-size: 30px;
-$heading-font-size: 24px;
-$sub-heading-font-size: 18px;
-$body-font-size: 14px;
+$bold-font-size: 24px;
+$regular-font-size: 14px;
 $regular-font-weight: 400;
-$bold-font-weight: 600;
-$extra-bold-font-weight: 800;
+$bold-font-weight: 700;
 
 .heading {
-  font-family: $extra-bold-font;
-  font-size: $heading-font-size;
-  color: $navy-blue-color;
-  font-weight: $extra-bold-font-weight;
-}
-
-.sub-heading {
-  font-family: $bold-font;
-  font-size: $sub-heading-font-size;
-  color: $navy-blue-color;
-  font-weight: $extra-bold-font-weight;
-}
-
-.body-text-bold {
-  font-family: $bold-font;
-  font-size: $body-font-size;
-  color: $navy-blue-color;
+  font-family: "Poppins", sans-serif;
+  font-size: $bold-font-size;
   font-weight: $bold-font-weight;
 }
 
 .body-text-regular {
-  font-family: $light-font;
+  font-family: "Poppins", sans-serif;
   font-size: $body-font-size;
-  color: $dark-grey-color2;
   font-weight: $regular-font-weight;
 }
