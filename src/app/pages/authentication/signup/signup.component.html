@@ -1,1 +1,28 @@
-<p>signup works!</p>
+<div class="signup-container">
+  <div class="signup-top_elements">
+    <h1>
+      Create account
+    </h1>
+    <div class="signup-signin_route">
+      <p>
+        Already have an account?
+      </p>
+      <a routerLink="">Sign In</a>
+    </div>
+    <form [formGroup]="signupFormGroup">
+      <div class="signup-form_inputs">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="Enter your email" type="email" formControlName="email">
+          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput placeholder="Enter your password" type="text" formControlName="password">
+          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+</div>
