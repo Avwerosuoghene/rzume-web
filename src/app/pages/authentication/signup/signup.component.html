@@ -13,16 +13,20 @@
       <div class="signup-form_inputs">
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
-          <input matInput placeholder="Enter your email" type="email" formControlName="email">
-          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+          <input matInput placeholder="Enter your email" type="email" formControlName="email" name="email">
+          <mat-icon matSuffix>person</mat-icon>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Password</mat-label>
-          <input matInput placeholder="Enter your password" type="text" formControlName="password">
+          <input matInput placeholder="Enter your password" type="text" formControlName="password" name="password">
           <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
         </mat-form-field>
       </div>
     </form>
   </div>
 
+</div>
+
+<div>
+  checkRender: {{checkRenderTime()}}
 </div>

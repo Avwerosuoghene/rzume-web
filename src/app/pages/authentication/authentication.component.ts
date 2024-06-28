@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { SignupComponent } from './signup/signup.component';
-import {  routerModules } from '../../shared/shared-imports';
 import { LoginComponent } from './login/login.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { routerModules } from '../../core/modules/router-modules';
 
 
 @Component({

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthenticationComponent } from './pages/authentication/authentication.component';
-import { routerModules } from './shared/shared-imports';
+import { routerModules } from './core/modules/router-modules';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +11,6 @@ import { routerModules } from './shared/shared-imports';
 })
 export class AppComponent {
   title = 'rzume_web';
+
+
 }
