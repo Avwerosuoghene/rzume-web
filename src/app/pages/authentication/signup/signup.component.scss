@@ -1,14 +1,37 @@
+@import "../../../styles/theme.scss";
+
 .signup-container {
   padding: 32px 0;
+  height: 100%;
+  display: flex;
+  gap: 48px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-  .signup-top_elements {
+
+  .signup-form_inputs {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 10px;
+    flex-direction: column;
+    width: 100%;
+  }
 
-    .signup-signin_route {
-      display: flex;
-      gap: 8px;
+
+  .password-strength_indicator {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+
+    .password-stregth_bar {
+      height: 4px;
+      width: 100%;
+      background-color: $basic-green;
+      border-radius: 8px;
     }
   }
+
+
+
+
 }

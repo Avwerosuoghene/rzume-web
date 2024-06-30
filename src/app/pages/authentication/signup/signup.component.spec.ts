@@ -1,41 +1,54 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {MatDialog,MatDialogModule} from '@angular/material/dialog';
-
-
+import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { SignupComponent } from './signup.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonHarness } from '@angular/material/button/testing';
+import { MatDialogHarness } from '@angular/material/dialog/testing';
+
+
+
 
 describe('SignupComponent', () => {
   let component: SignupComponent;
   let fixture: ComponentFixture<SignupComponent>;
-  let dialog: MatDialog;
+  let loader: HarnessLoader;
 
 
-  beforeEach(async () => {
+
+  beforeEach(fakeAsync(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignupComponent, InfoDialogComponent,  ReactiveFormsModule, MatDialogModule ],
+      imports: [SignupComponent, ReactiveFormsModule, MatDialogModule, NoopAnimationsModule],
       providers: [
-        { provide: MatDialog, useClass: MockMatDialog }
+        { provide: MatDialog }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
-  });
+  }));
 
-  beforeEach(() => {
+  beforeEach(fakeAsync(async () => {
     fixture = TestBed.createComponent(SignupComponent);
     component = fixture.componentInstance;
-    dialog = TestBed.inject(MatDialog);
     fixture.detectChanges();
-  });
+    loader = TestbedHarnessEnvironment.loader(fixture);
+    flush();
+  }));
 
-  it('should create', () => {
+  function generateValidFormData() {
+    component.signupFormGroup.controls['email'].setValue('testuser@example.com');
+    component.signupFormGroup.controls['password'].setValue('Str0ngP@ssword!');
+  }
+
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have a valid form when inputs are valid', () => {
-    component.signupFormGroup.controls['email'].setValue('testuser@example.com');
-    component.signupFormGroup.controls['password'].setValue('Str0ngP@ssword!');
+
+    generateValidFormData();
     expect(component.signupFormGroup.valid).toBeTrue();
   });
 
@@ -45,30 +58,51 @@ describe('SignupComponent', () => {
     expect(component.signupFormGroup.invalid).toBeTrue();
   });
 
-  it('should display a message when signup is successful', () => {
-    // spyOn(signupService, 'signup').and.returnValue(of({}));
-    spyOn(dialog, 'open').and.callThrough();
-
-    component.signupFormGroup.controls['email'].setValue('testuser@example.com');
-    component.signupFormGroup.controls['password'].setValue('Str0ngP@ssword!');
-    component.onSubmit();
-
-    expect(dialog.open).toHaveBeenCalledWith(InfoDialogComponent, {
-      data: { message: 'Please check your email for a validation link' }
-    });
+  it('should display Signup text on the signup button', async () => {
+    const signupButton = await loader.getHarness(MatButtonHarness.with({ selector: '#signupBtn' }));
+    expect(signupButton.getText).toBe('Signup');
   });
 
-  it('should display an error message when signup fails', () => {
-    // spyOn(signupService, 'signup').and.returnValue(throwError('Signup failed'));
-    spyOn(dialog, 'open').and.callThrough();
+  it('should expect Signup text button to be disabled when form is invalid', async () => {
+    component.signupFormGroup.controls['email'].setValue('');
+    component.signupFormGroup.controls['password'].setValue('');
 
-    component.signupFormGroup.controls['email'].setValue('testuser@example.com');
-    component.signupFormGroup.controls['password'].setValue('Str0ngP@ssword!');
-    component.onSubmit();
-
-    expect(dialog.open).toHaveBeenCalledWith(InfoDialogComponent, {
-      data: { message: 'Signup failed. Please try again.' }
-    });
-
+    const signupButton = await loader.getHarness(MatButtonHarness.with({ selector: '#signupBtn' }));
+    expect(await signupButton.isDisabled()).toBe(true);
   });
+
+  it('should expect Signup text button to be enabled when form is valid', async () => {
+    generateValidFormData();
+
+    const signupButton = await loader.getHarness(MatButtonHarness.with({ selector: '#signupBtn' }));
+    expect(await signupButton.isDisabled()).toBe(false);
+  });
+
+  it('should expect dialog to be closed by default', async () => {
+    let dialogs = await TestbedHarnessEnvironment.documentRootLoader(fixture).getAllHarnesses(MatDialogHarness);
+    expect(dialogs.length).toBe(0);
+  });
+
+  it('should expect dialog to be opened when signup button is clicked and display a message', async () => {
+    const signupButton = await loader.getHarness(MatButtonHarness.with({ selector: '#signupBtn' }));
+    generateValidFormData();
+
+    await signupButton.click();
+    let dialogs = await TestbedHarnessEnvironment.documentRootLoader(fixture).getAllHarnesses(MatDialogHarness);
+    expect(dialogs.length).toBe(1);
+    const dialogInstance = await dialogs[0].host();
+    const dialogContent = await dialogInstance.getCssValue('.info-msg');
+    expect(dialogContent.trim()).not.toBe('');
+  });
+
+
+
+
+
+
+
+
+
+
+
 });

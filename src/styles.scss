@@ -1,33 +1,42 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 
-
 * {
   box-sizing: border-box;
   margin: 0;
 }
 
-$bold-font-size: 24px;
-$regular-font-size: 14px;
-$regular-font-weight: 400;
-$bold-font-weight: 700;
-
-h1 {
-  font-family: "Poppins", sans-serif;
-  font-size: $bold-font-size;
-  font-weight: $bold-font-weight;
+form {
+  width: 100%;
+  max-width: 500px;
 }
 
-p,a {
+.minor-element_flex {
+  display: flex;
+  gap: 8px;
+}
+
+h3 {
   font-family: "Poppins", sans-serif;
-  font-size: $regular-font-size;
-  font-weight: $regular-font-weight;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+p,
+a {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 a {
   color: rgba(62, 127, 255, 1);
 }
 
-
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

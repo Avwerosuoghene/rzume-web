@@ -1,32 +1,54 @@
 <div class="signup-container">
-  <div class="signup-top_elements">
-    <h1>
+
+
+    <h3>
       Create account
-    </h1>
-    <div class="signup-signin_route">
-      <p>
-        Already have an account?
-      </p>
-      <a routerLink="">Sign In</a>
-    </div>
-    <form [formGroup]="signupFormGroup">
+    </h3>
+
+    <form [formGroup]="signupFormGroup" >
+
       <div class="signup-form_inputs">
+
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput placeholder="Enter your email" type="email" formControlName="email" name="email">
           <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="signupFormGroup.controls['email'].hasError('required')">
+            Email required
+          </mat-error>
+          <mat-error *ngIf="signupFormGroup.controls['email'].hasError('email')">
+            Please enter a valid mail
+          </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Password</mat-label>
-          <input matInput placeholder="Enter your password" type="text" formControlName="password" name="password">
+          <input matInput placeholder="Enter your password" type="text" formControlName="password" name="password" (keyup)="checkPasswordStrength()">
           <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+          <mat-error *ngIf="signupFormGroup.controls['password'].hasError('required')">
+            Password required
+          </mat-error>
+
         </mat-form-field>
+        <div class="minor-element_flex">
+          <p>Password Strength:</p>
+          <p>Strong</p>
+        </div>
+        <div class="password-strength_indicator">
+          @for (strengthBar of passwordStrengthArray(); track $index) {
+            <div class="password-stregth_bar">
+
+            </div>
+          }
+
+        </div>
       </div>
     </form>
   </div>
 
-</div>
+   <!-- <div class="signup-signin_route">
+      <p>
+        Already have an account?
+      </p>
+      <a routerLink="">Sign In</a>
+    </div> -->
 
-<div>
-  checkRender: {{checkRenderTime()}}
-</div>
