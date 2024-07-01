@@ -18,20 +18,6 @@
   }
 
 
-  .password-strength_indicator {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-
-    .password-stregth_bar {
-      height: 4px;
-      width: 100%;
-      background-color: $basic-green;
-      border-radius: 8px;
-    }
-  }
-
-
 
 
 }

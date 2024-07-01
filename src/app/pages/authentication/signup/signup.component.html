@@ -22,25 +22,14 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Password</mat-label>
-          <input matInput placeholder="Enter your password" type="text" formControlName="password" name="password" (keyup)="checkPasswordStrength()">
+          <input matInput placeholder="Enter your password" type="text" formControlName="password" name="password" (keyup)="validatePassword()">
           <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
           <mat-error *ngIf="signupFormGroup.controls['password'].hasError('required')">
             Password required
           </mat-error>
 
         </mat-form-field>
-        <div class="minor-element_flex">
-          <p>Password Strength:</p>
-          <p>Strong</p>
-        </div>
-        <div class="password-strength_indicator">
-          @for (strengthBar of passwordStrengthArray(); track $index) {
-            <div class="password-stregth_bar">
-
-            </div>
-          }
-
-        </div>
+     <app-password-strength-checker ></app-password-strength-checker>
       </div>
     </form>
   </div>
