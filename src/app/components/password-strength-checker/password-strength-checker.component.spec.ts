@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PasswordStrengthCheckerComponent } from './password-strength-checker.component';
 import { PasswordCriteria } from '../../core/helpers/constants';
 
-fdescribe('PasswordStrengthCheckerComponent', () => {
+describe('PasswordStrengthCheckerComponent', () => {
   let component: PasswordStrengthCheckerComponent;
   let fixture: ComponentFixture<PasswordStrengthCheckerComponent>;
 
@@ -24,9 +24,9 @@ fdescribe('PasswordStrengthCheckerComponent', () => {
 
   it('should set password strength value and description correctly', () => {
     const testCases = [
-      { password: 'short', expectedStrength: 1, expectedDescription: 'Weak' }, 
-      { password: 'longenough', expectedStrength: 2, expectedDescription: 'Medium' }, 
-      { password: 'Med1umPass', expectedStrength: 2, expectedDescription: 'Strong' }, 
+      { password: 'short', expectedStrength: 1, expectedDescription: 'Weak' },
+      { password: 'longenough', expectedStrength: 2, expectedDescription: 'Medium' },
+      { password: 'Med1umPass', expectedStrength: 2, expectedDescription: 'Strong' },
       { password: 'Str0ngPass!', expectedStrength: 4, expectedDescription: 'Strong' },
     ];
 

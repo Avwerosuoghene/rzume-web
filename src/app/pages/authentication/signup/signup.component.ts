@@ -4,12 +4,13 @@ import { angularMaterialModules } from '../../../core/modules/material-modules';
 import { CommonModule } from '@angular/common';
 import { PasswordCriteria } from '../../../core/helpers/constants';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [angularMaterialModules, ReactiveFormsModule, FormsModule, CommonModule, PasswordStrengthCheckerComponent],
+  imports: [angularMaterialModules, ReactiveFormsModule, FormsModule, CommonModule, PasswordStrengthCheckerComponent, RouterModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,6 +18,7 @@ import { PasswordStrengthCheckerComponent } from '../../../components/password-s
 export class SignupComponent {
   signupFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
+  termsChecked: boolean = false
 
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
 
@@ -40,8 +42,21 @@ export class SignupComponent {
         validators: [
           Validators.required
         ]
-      })
+      }),
+      termsChecked: this.fb.control(false, {
+        validators: [
+          Validators.required
+        ]
+      }),
     })
+  }
+
+  openTermsAndConditionsDialog(): void{
+
+  }
+
+  openPrivacyDialog(): void{
+    console.log('yes')
   }
 
 

@@ -1,43 +1,77 @@
 <div class="signup-container">
+  <h3>Create account</h3>
 
+  <form [formGroup]="signupFormGroup">
+    <div class="signup-form_inputs">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          placeholder="Enter your email"
+          type="email"
+          formControlName="email"
+          name="email"
+        />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error
+          *ngIf="signupFormGroup.controls['email'].hasError('required')"
+        >
+          Email required
+        </mat-error>
+        <mat-error *ngIf="signupFormGroup.controls['email'].hasError('email')">
+          Please enter a valid mail
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          placeholder="Enter your password"
+          type="text"
+          formControlName="password"
+          name="password"
+          (keyup)="validatePassword()"
+        />
+        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+        <mat-error
+          *ngIf="signupFormGroup.controls['password'].hasError('required')"
+        >
+          Password required
+        </mat-error>
+      </mat-form-field>
+      <app-password-strength-checker></app-password-strength-checker>
+      <div class="minor-element_flex">
+        <mat-checkbox
+          class="example-margin"
+          formControlName="termsChecked"
+        ></mat-checkbox>
 
-    <h3>
-      Create account
-    </h3>
-
-    <form [formGroup]="signupFormGroup" >
-
-      <div class="signup-form_inputs">
-
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput placeholder="Enter your email" type="email" formControlName="email" name="email">
-          <mat-icon matSuffix>person</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls['email'].hasError('required')">
-            Email required
-          </mat-error>
-          <mat-error *ngIf="signupFormGroup.controls['email'].hasError('email')">
-            Please enter a valid mail
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Password</mat-label>
-          <input matInput placeholder="Enter your password" type="text" formControlName="password" name="password" (keyup)="validatePassword()">
-          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-          <mat-error *ngIf="signupFormGroup.controls['password'].hasError('required')">
-            Password required
-          </mat-error>
-
-        </mat-form-field>
-     <app-password-strength-checker ></app-password-strength-checker>
+        <p>
+          I’ve read and agree with
+          <span>
+            <a
+              id="terms-service-anchor"
+              (click)="openTermsAndConditionsDialog()"
+              >Terms of Service</a
+            >
+          </span>
+          and our
+          <span>
+            <a (click)="openPrivacyDialog()" id="terms-policy-anchor"
+              >Privacy Policy</a
+            ></span
+          >
+        </p>
       </div>
-    </form>
+      <button class="signup-confirm_button" mat-flat-button>
+        Create an Account
+      </button>
+    </div>
+  </form>
+
+  <div class="signup-signin_route">
+    <p>
+      Already have an account? <span> <a id="#sign_in_anchor" (click)="openPrivacyDialog()"  routerLink="/auth/login">Sign In</a></span>
+    </p>
   </div>
-
-   <!-- <div class="signup-signin_route">
-      <p>
-        Already have an account?
-      </p>
-      <a routerLink="">Sign In</a>
-    </div> -->
-
+</div>

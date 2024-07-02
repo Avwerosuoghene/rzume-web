@@ -10,6 +10,8 @@ describe('User Signup Process', () => {
     cy.get('input[name="email"]').type(email);
     cy.get('input[name="password"]').type(password);
 
+    cy.get('#signup-terms-check').check();
+
     cy.get('button[type="submit"]').click();
 
     cy.get('mat-dialog-container').should('be.visible');

@@ -10,9 +10,14 @@ form {
   max-width: 500px;
 }
 
+.mat-button, .mat-raised-button, .mat-icon-button, .mat-fab, .mat-mini-fab {
+  border-radius: 10px; /* Change this value to the desired border-radius */
+}
+
 .minor-element_flex {
   display: flex;
   gap: 8px;
+  align-items: center;
 }
 
 h3 {

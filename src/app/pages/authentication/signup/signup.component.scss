@@ -9,7 +9,6 @@
   align-items: center;
   justify-content: center;
 
-
   .signup-form_inputs {
     display: flex;
     gap: 10px;
@@ -17,7 +16,15 @@
     width: 100%;
   }
 
+  #terms-service-anchor,
+  #terms-policy-anchor, #sign_in_anchor {
+    cursor: pointer;
+  }
 
-
-
+  .signup-confirm_button {
+    border-radius: 8px;
+    height: 48px;
+    background-color: $rzume-blue;
+    margin-top: 48px;
+  }
 }
