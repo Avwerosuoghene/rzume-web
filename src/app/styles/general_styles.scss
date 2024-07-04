@@ -1,0 +1,36 @@
+.rzume-button {
+  border-radius: 8px;
+  height: 48px;
+}
+
+.auth-container {
+  padding: 32px 0;
+  height: 100%;
+  display: flex;
+  gap: 48px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .form-input-container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .form-input-confirm-button {
+    @extend .rzume-button;
+    background-color: $rzume-blue;
+    margin-top: 48px;
+
+    &:disabled {
+      background-color: $light-grey;
+
+    }
+  }
+}
+
+
+
+

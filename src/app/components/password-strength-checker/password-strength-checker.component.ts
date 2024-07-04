@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
-import { PasswordCriteria, PasswordStrengthLevels } from '../../core/helpers/constants';
+import {  PasswordStrengthLevels } from '../../core/helpers/constants';
 import { NgClass } from '@angular/common';
+import { PasswordUtility } from '../../core/helpers/password-utility';
 
 
 @Component({
@@ -20,9 +21,9 @@ export class PasswordStrengthCheckerComponent {
   setPasswordStrengthClass(): string {
 
     switch (true) {
-      case (this.passwordStrengthValue() == 1):
+      case (this.passwordStrengthValue() >= 1 &&  this.passwordStrengthValue() <=2 ):
         return 'weak';
-      case (this.passwordStrengthValue() > 1 && this.passwordStrengthValue() < 4):
+      case (this.passwordStrengthValue() > 2 && this.passwordStrengthValue() < 4):
         return 'medium';
       default:
         return 'strong'
@@ -30,18 +31,18 @@ export class PasswordStrengthCheckerComponent {
   }
 
 
-  checkPasswordStrength(enteredPassword: string): void {
+  checkPasswordStrength(enteredPassword: string): string {
     let criteriaCount: number = 0;
     let isMinimumLengthMet: boolean = false;
     this.passwordStrengthValue.set(0);
 
 
     if (enteredPassword === '') {
-      this.passwordStengthDescription == 'nan'
-      return;
+      this.passwordStengthDescription = 'nan'
+      return  this.passwordStengthDescription ;
     };
 
-    PasswordCriteria.forEach(criteria => {
+    PasswordUtility.passwordCriteria.forEach(criteria => {
       if (criteria.validator(enteredPassword)) {
         if (criteria.name.toLowerCase() === 'length') isMinimumLengthMet = true
         criteriaCount++
@@ -53,5 +54,6 @@ export class PasswordStrengthCheckerComponent {
     }
     this.passwordStrengthValue.set(criteriaCount);
     this.passwordStengthDescription = PasswordStrengthLevels[this.passwordStrengthValue() - 1];
+    return this.passwordStengthDescription;
   }
 }

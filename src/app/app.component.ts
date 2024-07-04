@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { AuthenticationComponent } from './pages/authentication/authentication.component';
-import { routerModules } from './core/modules/router-modules';
+import { RouterModules } from './core/modules/router-modules';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [routerModules, AuthenticationComponent],
+  imports: [RouterModules, AuthenticationComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

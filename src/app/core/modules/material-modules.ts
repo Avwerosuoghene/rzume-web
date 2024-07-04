@@ -8,6 +8,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 
-export const angularMaterialModules: Array<any> = [
-  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule,MatCheckboxModule
+
+export const AngularMaterialModules: readonly any[]  = [
+  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule,MatCheckboxModule,
 ];

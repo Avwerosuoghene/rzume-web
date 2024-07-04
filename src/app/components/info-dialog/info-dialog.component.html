@@ -1,0 +1,10 @@
+<div class="info-dialog-container">
+  <div class="info-dialog-icon">
+    <mat-icon [id]="infoIcon">{{infoIcon}}</mat-icon>
+  </div>
+  <h3>{{infoIcon === 'done'? 'Success': 'Fail'}}</h3>
+  <p>{{infoMessage}}</p>
+  <button class="close-info-dialog" mat-stroked-button mat-dialog-close type="button">
+   Done
+  </button>
+</div>
