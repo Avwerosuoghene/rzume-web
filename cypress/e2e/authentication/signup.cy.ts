@@ -10,11 +10,15 @@ describe('User Signup Process', () => {
     cy.get('input[name="email"]').type(email);
     cy.get('input[name="password"]').type(password);
 
-    cy.get('#signup-terms-check').check();
+
+    cy.get('[data-cy="signup-terms-check"] input').click();
+    cy.get('[data-cy="signup-terms-check"] input').should('be.checked');
 
     cy.get('button[type="submit"]').click();
 
-    cy.get('mat-dialog-container').should('be.visible');
-    cy.get('mat-dialog-container p').should('contain.text', 'Please check your email for a validation link');
+    cy.url().should('include', '/auth/email-confirmation');
+
+    cy.get('h1').should('contain.text', 'Email Confirmation');
+    cy.get('p').should('contain.text', 'Please verify your email address to complete signup');
   })
 })

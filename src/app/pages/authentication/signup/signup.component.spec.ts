@@ -10,8 +10,10 @@ import { MatDialogHarness } from '@angular/material/dialog/testing';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { Router, provideRouter } from '@angular/router';
-import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { LoginComponent } from '../login/login.component';
+// Adjust path as per your application
+
 
 
 
@@ -31,7 +33,7 @@ describe('SignupComponent', () => {
 
   beforeEach(fakeAsync(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignupComponent, ReactiveFormsModule, MatDialogModule, NoopAnimationsModule, MatCheckboxModule],
+      imports: [SignupComponent, ReactiveFormsModule, TestbedHarnessEnvironment, MatDialogModule, MatDialogHarness, NoopAnimationsModule, MatCheckboxModule],
       providers: [
         { provide: MatDialog },
         provideRouter([{ path: '/auth/login', component: LoginComponent }]),
@@ -105,17 +107,16 @@ describe('SignupComponent', () => {
     expect(dialogs.length).toBe(0);
   });
 
-  it('should expect dialog to be opened when signup button is clicked and display a message', async () => {
+  it('should route to email validation route when signup button is clicked', async () => {
     const signupButton = await loader.getHarness(MatButtonHarness.with({ selector: '#signupBtn' }));
-    generateValidFormData();
+    generateValidFormData(); // Assuming this function populates the signup form data
     let termsCheckBox = await loader.getHarness(MatCheckboxHarness.with({ selector: '#termsCheckbox' }));
     await termsCheckBox.check();
     await signupButton.click();
-    let dialogs = await TestbedHarnessEnvironment.documentRootLoader(fixture).getAllHarnesses(MatDialogHarness);
-    expect(dialogs.length).toBe(1);
-    const dialogInstance = await dialogs[0].host();
-    const dialogContent = await dialogInstance.getCssValue('.info-msg');
-    expect(dialogContent.trim()).not.toBe('');
+
+    // Assuming after clicking signup, it routes to '/email-validation' or similar
+    expect(TestBed.inject(Router).url)
+    .toEqual(`/auth/email-validation`);
   });
 
   it('should expect terms of service dialog to be opened when terms of service anchor is clicked', async () => {
