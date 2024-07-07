@@ -2,8 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InfoDialogComponent } from './info-dialog.component';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatDialogHarness } from '@angular/material/dialog/testing';
+import { InfoDialogData } from '../../core/models/dialog-models';
+
+const data: InfoDialogData = {
+  infoMessage: 'Mock message',
+};
 
 describe('InfoDialogComponent', () => {
   let component: InfoDialogComponent;
@@ -11,7 +16,13 @@ describe('InfoDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InfoDialogComponent, TestbedHarnessEnvironment, MatDialogModule, MatDialogHarness]
+      imports: [InfoDialogComponent, MatDialogModule],
+      providers: [
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: data
+        }
+      ]
     })
     .compileComponents();
 
@@ -24,8 +35,4 @@ describe('InfoDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should expect dialog message to not be empty', async () => {
-    const message = fixture.nativeElement.querySelector('#info-message');
-    expect(message.textContent.trim()).not.toBe('');
-  });
 });

@@ -1,7 +1,7 @@
 import { Component, Inject, InjectionToken, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { InfoDialogData } from '../../core/models/dialog-data-types';
+import { InfoDialogData } from '../../core/models/dialog-models';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
