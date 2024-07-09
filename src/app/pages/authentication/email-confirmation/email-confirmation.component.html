@@ -1,7 +1,7 @@
 <div class="email-comfirm-container">
   <h3>{{emailValidationHeader}}</h3>
   <p>{{emailValidMsg}}</p>
-  <button  mat-flat-button class="email-validation-btn">
+  <button [disabled]="loaderActive"  mat-flat-button class="email-validation-btn" (click)="performValidationBtnAction()">
     {{emailValidationBtnTxt}}
   </button>
 </div>

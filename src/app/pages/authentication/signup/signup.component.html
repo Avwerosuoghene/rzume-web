@@ -32,7 +32,9 @@
           name="password"
           (keyup)="validatePassword()"
         />
-        <mat-icon matSuffix (click)="togglePasswordVisibility()">{{passwordVisibility === 'password'? 'visibility_off': 'visibility'}}</mat-icon>
+        <mat-icon matSuffix (click)="togglePasswordVisibility()">{{
+          passwordVisibility === "password" ? "visibility_off" : "visibility"
+        }}</mat-icon>
         <mat-error
           *ngIf="signupFormGroup.controls['password'].hasError('required')"
         >
@@ -42,7 +44,7 @@
       <app-password-strength-checker></app-password-strength-checker>
       <div class="minor-element_flex">
         <mat-checkbox
-        id="termsCheckbox"
+          id="termsCheckbox"
           class="example-margin"
           formControlName="termsChecked"
           data-cy="signup-terms-check"
@@ -65,13 +67,31 @@
           >
         </p>
       </div>
-      <button class="form-input-confirm-button" mat-flat-button [disabled]="(signupFormGroup.invalid) || passwordStrength === 'Weak' || passwordStrength === 'nan'" type="submit" id="signupBtn">Create an Account</button>
+      <button
+        class="form-input-confirm-button"
+        mat-flat-button
+        [disabled]="
+         isDisabled()
+        "
+        type="submit"
+        id="signupBtn"
+      >
+        <div class="button-elements">
+          @if (loaderIsActive) {
+            <app-circular-loader></app-circular-loader>
+          }
+
+          <p>Create an Account</p>
+
+        </div>
+      </button>
     </div>
   </form>
 
   <div class="signup-signin_route">
     <p>
-      Already have an account? <span> <a id="sign-in_anch" routerLink="/auth/login">Sign In</a></span>
+      Already have an account?
+      <span> <a id="sign-in_anch" routerLink="/auth/login">Sign In</a></span>
     </p>
   </div>
 </div>

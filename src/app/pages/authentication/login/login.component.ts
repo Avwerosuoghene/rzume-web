@@ -6,11 +6,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { PasswordUtility } from '../../../core/helpers/password-utility';
 import { PasswordVisibility } from '../../../core/models/ui-types';
 import { RouterModules } from '../../../core/modules/router-modules';
+import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, RouterModules],
+  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -19,6 +20,8 @@ export class LoginComponent {
   fb = inject(NonNullableFormBuilder);
   readonly dialog: MatDialog = inject(MatDialog);
   passwordVisibility: PasswordVisibility = 'password';
+  loaderIsActive: boolean = false;
+
 
 
 

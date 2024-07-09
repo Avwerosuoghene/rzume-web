@@ -39,8 +39,12 @@
         </mat-error>
       </mat-form-field>
 
-      <button class="form-input-confirm-button" mat-flat-button [disabled]="loginFormGroup.invalid" type="submit">
-        Continue
+      <button class="form-input-confirm-button" mat-flat-button [disabled]="loginFormGroup.invalid || loaderIsActive" type="submit">
+        @if (loaderIsActive) {
+          <app-circular-loader></app-circular-loader>
+        }
+
+        <p>Continue</p>
       </button>
     </div>
   </form>

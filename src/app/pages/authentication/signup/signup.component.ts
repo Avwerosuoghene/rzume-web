@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild,inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
@@ -8,13 +8,15 @@ import { PasswordVisibility } from '../../../core/models/ui-types';
 import { PasswordUtility } from '../../../core/helpers/password-utility';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CoreModules } from '../../../core/modules/core-modules';
+import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
+import { Router } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules],
+  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,8 +27,11 @@ export class SignupComponent {
   readonly dialog: MatDialog = inject(MatDialog);
   passwordStrength!: string;
   passwordVisibility: PasswordVisibility = 'password';
+  loaderIsActive: boolean = false;
 
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
+
+  router = inject(Router);
 
   ngOnInit(): void {
     this.initializeSignupForm();
@@ -40,7 +45,12 @@ export class SignupComponent {
   togglePasswordVisibility(): void {
     this.passwordVisibility = PasswordUtility.toggleVisibility(this.passwordVisibility);
 
+  }
 
+  isDisabled(): boolean {
+    return (this.signupFormGroup.invalid ||
+      this.passwordStrength === 'Weak' ||
+      this.passwordStrength === 'nan' || this.loaderIsActive);
   }
 
   initializeSignupForm(): void {
@@ -73,12 +83,7 @@ export class SignupComponent {
 
   submitSignupForm() {
 
-    this.dialog.open(InfoDialogComponent, {
-      data: {
-        infoMessage: ' Kindly click on the link shared with you to validate your email'
-      },
-      backdropClass: "blurred"
-    });
+    this.router.navigate(['/auth/email-confirmation']);
   }
 
 
