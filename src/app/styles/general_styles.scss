@@ -1,6 +1,9 @@
+@import "./theme.scss";
+
 .rzume-button {
   border-radius: 8px;
   height: 48px;
+  background-color: $rzume-blue;
 }
 
 .auth-container {
@@ -21,7 +24,7 @@
 
   .form-input-confirm-button {
     @extend .rzume-button;
-    background-color: $rzume-blue;
+
     margin-top: 48px;
 
     &:disabled {

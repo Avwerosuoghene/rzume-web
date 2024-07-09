@@ -31,5 +31,18 @@
       border-radius: 30px;
     }
 
+    .auth-right_element {
+      display: flex;
+      flex-direction: column;
+
+      img {
+        width: 144px;
+      }
+
+      .auth-route-elements {
+        flex-grow: 1;
+      }
+    }
+
   }
 }

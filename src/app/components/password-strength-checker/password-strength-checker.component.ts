@@ -54,6 +54,8 @@ export class PasswordStrengthCheckerComponent {
     }
     this.passwordStrengthValue.set(criteriaCount);
     this.passwordStengthDescription = PasswordStrengthLevels[this.passwordStrengthValue() - 1];
+    console.log(this.passwordStrengthValue())
+
     return this.passwordStengthDescription;
   }
 }

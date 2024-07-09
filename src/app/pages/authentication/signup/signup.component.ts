@@ -34,10 +34,12 @@ export class SignupComponent {
 
   validatePassword(): void {
     this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.signupFormGroup.get('password')?.value);
+
   }
 
   togglePasswordVisibility(): void {
     this.passwordVisibility = PasswordUtility.toggleVisibility(this.passwordVisibility);
+
 
   }
 

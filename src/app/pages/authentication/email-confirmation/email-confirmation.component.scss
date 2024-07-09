@@ -1,0 +1,16 @@
+@import "../../../styles/general_styles.scss";
+
+
+.email-comfirm-container {
+  @extend .auth-container;
+
+
+  gap: 20px;
+
+  .email-validation-btn {
+    @extend .rzume-button;
+    margin-bottom: 80px;
+
+  }
+}
+
