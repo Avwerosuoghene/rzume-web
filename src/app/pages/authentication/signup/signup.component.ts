@@ -4,7 +4,7 @@ import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 import { MatDialog } from '@angular/material/dialog';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { PasswordVisibility } from '../../../core/models/ui-types';
+import { PasswordVisibility } from '../../../core/models/types/ui-types';
 import { PasswordUtility } from '../../../core/helpers/password-utility';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CoreModules } from '../../../core/modules/core-modules';
@@ -82,8 +82,14 @@ export class SignupComponent {
   }
 
   submitSignupForm() {
+    this.loaderIsActive = true;
+    setTimeout(() => {
+      this.loaderIsActive = false;
+      this.router.navigate(['/auth/email-confirmation']);
 
-    this.router.navigate(['/auth/email-confirmation']);
+    }, 2000
+  )
+
   }
 
 

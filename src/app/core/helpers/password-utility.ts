@@ -1,4 +1,4 @@
-import { PasswordVisibility } from "../models/ui-types";
+import { PasswordVisibility } from "../models/types/ui-types";
 
 export class PasswordUtility
 {

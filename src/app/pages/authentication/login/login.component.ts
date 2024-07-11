@@ -4,7 +4,7 @@ import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordUtility } from '../../../core/helpers/password-utility';
-import { PasswordVisibility } from '../../../core/models/ui-types';
+import { PasswordVisibility } from '../../../core/models/types/ui-types';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 
