@@ -1,7 +1,17 @@
 <div class="email-comfirm-container">
-  <h3>{{emailValidationHeader}}</h3>
-  <p>{{emailValidMsg}}</p>
-  <button [disabled]="loaderActive"  mat-flat-button class="email-validation-btn" (click)="performValidationBtnAction()">
-    {{emailValidationBtnTxt}}
+  <h3>{{ emailValidationHeader }}</h3>
+  <p>{{ emailValidMsg }}</p>
+  <button
+    [disabled]="loaderIsActive"
+    mat-flat-button
+    class="email-validation-btn"
+    (click)="performValidationBtnAction()"
+  >
+    <div class="button-elements">
+      @if (loaderIsActive) {
+      <app-circular-loader></app-circular-loader>
+      }
+      <p>{{ emailValidationBtnTxt }}</p>
+    </div>
   </button>
 </div>

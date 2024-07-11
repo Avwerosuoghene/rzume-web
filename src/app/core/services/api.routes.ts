@@ -4,7 +4,7 @@ export class ApiRoutes
   private static profileManagementRoute = 'api/v1/profilemanagement/';
   private static utilityRoute = 'api/v1/profilemanagement/';
 
-  public static readonly user = {
+   static  user = {
     register: `${this.userRoute}register`,
     login: `${this.userRoute}login`,
   }

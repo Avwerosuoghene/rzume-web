@@ -1,7 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from 'express';
 import { IApiUrlParam } from '../models/interface/utilities-interface';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
@@ -11,7 +10,7 @@ import { environment } from '../../../environments/environment.development';
 })
 export class ApiService {
 
-  constructor(private router: Router, private httpClient: HttpClient, private dialog: MatDialog) { }
+  constructor(private httpClient: HttpClient) { }
 
   public get<T>(apiRoute: string, id?: number, _params?: IApiUrlParam[]): Observable<T> {
     let route: string = `${environment.apiBaseUrl}/${apiRoute}/${id}`;
@@ -31,8 +30,8 @@ export class ApiService {
     return this.httpClient.get<T>(route, {
       headers, params
     }).pipe(catchError((error) => {
-      this.handleErrorWithObservable(error)
-      return throwError(() => error);
+      return this.handleErrorWithObservable(error)
+
     }))
 
   }
@@ -45,7 +44,7 @@ export class ApiService {
     return this.httpClient.put<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      this.handleErrorWithObservable(error)
+
       return throwError(() => error);
     }))
   }
@@ -58,13 +57,15 @@ export class ApiService {
     return this.httpClient.post<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      this.handleErrorWithObservable(error)
-      return throwError(() => error);
+      console.log(error);
+      return this.handleErrorWithObservable(error);
+
     }))
   }
 
 
-  private handleErrorWithObservable(error: HttpErrorResponse): void {
+  private handleErrorWithObservable(error: HttpErrorResponse): Observable<any> {
     console.log(error);
+    return throwError(() => error);
   }
 }

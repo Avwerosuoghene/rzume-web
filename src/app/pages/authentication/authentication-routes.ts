@@ -10,5 +10,4 @@ export const authenticationRoutes: Array<Route> = [
   {path: 'login', component: LoginComponent},
   {path: 'password-reset', component: PasswordResetComponent},
   {path: 'email-confirmation', component: EmailConfirmationComponent},
-  {path: 'email-confirmation/:token', component: EmailConfirmationComponent},
 ]

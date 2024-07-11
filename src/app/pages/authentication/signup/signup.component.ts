@@ -10,6 +10,8 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { Router } from '@angular/router';
+import { ISignupPayload } from '../../../core/models/interface/authentication-interface';
+import { AuthenticationService } from '../../../core/services/authentication.service';
 
 
 
@@ -19,7 +21,6 @@ import { Router } from '@angular/router';
   imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignupComponent {
   signupFormGroup!: FormGroup;
@@ -31,7 +32,13 @@ export class SignupComponent {
 
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
 
+
   router = inject(Router);
+
+  constructor(private authService: AuthenticationService){
+
+  }
+
 
   ngOnInit(): void {
     this.initializeSignupForm();
@@ -82,16 +89,27 @@ export class SignupComponent {
   }
 
   submitSignupForm() {
-    this.loaderIsActive = true;
-    setTimeout(() => {
-      this.loaderIsActive = false;
-      this.router.navigate(['/auth/email-confirmation']);
 
-    }, 2000
-  )
+      if (this.signupFormGroup.invalid) {
+        return
+      }
+      this.loaderIsActive = true;
+      const signupPayload : ISignupPayload = {
+        email: this.signupFormGroup.get('email')!.value,
+        password: this.signupFormGroup.get('email')!.value
+      }
+      this.authService.signup(signupPayload).subscribe({
+        next: (response) => {
+          this.loaderIsActive = false;
+          console.log(response)
+        },
+        error: (error) => {
+          this.loaderIsActive = false;
+          console.log(error);
+        }
+      })
 
   }
-
 
 
 }
