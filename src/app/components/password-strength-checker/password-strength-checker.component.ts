@@ -23,7 +23,7 @@ export class PasswordStrengthCheckerComponent {
     switch (true) {
       case (this.passwordStrengthValue() >= 1 &&  this.passwordStrengthValue() <=2 ):
         return 'weak';
-      case (this.passwordStrengthValue() > 2 && this.passwordStrengthValue() < 4):
+      case (this.passwordStrengthValue() > 2 && this.passwordStrengthValue() < 5):
         return 'medium';
       default:
         return 'strong'
@@ -44,14 +44,13 @@ export class PasswordStrengthCheckerComponent {
 
     PasswordUtility.passwordCriteria.forEach(criteria => {
       if (criteria.validator(enteredPassword)) {
-        if (criteria.name.toLowerCase() === 'length') isMinimumLengthMet = true
+        if (criteria.name.toLowerCase() === 'length') isMinimumLengthMet = true;
+
         criteriaCount++
       }
     });
 
-    if (!isMinimumLengthMet) {
-      criteriaCount = Math.ceil((criteriaCount / 5) * 3);
-    }
+
     this.passwordStrengthValue.set(criteriaCount);
     this.passwordStengthDescription = PasswordStrengthLevels[this.passwordStrengthValue() - 1];
 

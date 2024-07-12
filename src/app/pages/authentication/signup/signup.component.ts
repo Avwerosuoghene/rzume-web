@@ -56,8 +56,8 @@ export class SignupComponent {
 
   isDisabled(): boolean {
     return (this.signupFormGroup.invalid ||
-      this.passwordStrength === 'Weak' ||
-      this.passwordStrength === 'nan' || this.loaderIsActive);
+      this.passwordStrength != 'Strong' ||
+   this.loaderIsActive);
   }
 
   initializeSignupForm(): void {
@@ -96,7 +96,7 @@ export class SignupComponent {
       this.loaderIsActive = true;
       const signupPayload : ISignupPayload = {
         email: this.signupFormGroup.get('email')!.value,
-        password: this.signupFormGroup.get('email')!.value
+        password: this.signupFormGroup.get('password')!.value
       }
       this.authService.signup(signupPayload).subscribe({
         next: (response) => {

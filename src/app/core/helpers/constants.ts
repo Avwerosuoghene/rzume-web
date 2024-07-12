@@ -1,4 +1,4 @@
 
 
-export const PasswordStrengthLevels = [ 'Weak', 'Weak', 'Medium', 'Strong', 'Strong'];
+export const PasswordStrengthLevels = [ 'Weak', 'Weak', 'Medium', 'Medium', 'Strong'];
 
