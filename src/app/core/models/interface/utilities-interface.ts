@@ -12,3 +12,5 @@ export interface IAPIResponse<T> {
     content: T
   }
 }
+
+
