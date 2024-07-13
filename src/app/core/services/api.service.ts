@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IApiUrlParam } from '../models/interface/utilities-interface';
+import { IApiUrlParam, IErrorResponse } from '../models/interface/utilities-interface';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
@@ -52,7 +52,7 @@ export class ApiService {
     }))
   }
 
-  public post<T>(apiRoute: string, body: any): Observable<T> {
+  public post<T>(apiRoute: string, body: any, handleResponse: boolean): Observable<T> {
     let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
     const headers = new HttpHeaders({
       'Content-type': 'application/json'
@@ -60,24 +60,35 @@ export class ApiService {
     return this.httpClient.post<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      console.log(error);
-      return this.handleErrorWithObservable(error);
+
+      const responsError: IErrorResponse = {
+        statusCode : error.error.statusCode,
+        errorMessages: error.error.errorMessages
+      }
+      if (handleResponse)
+      return this.handleErrorWithObservable(responsError);
+
+      return throwError(() => responsError);
 
     }))
   }
 
 
-  private handleErrorWithObservable(error: HttpErrorResponse): Observable<any> {
+  private handleErrorWithObservable(errorResponse: IErrorResponse): Observable<any> {
 
-    const errorMessages = error.error.errorMessages;
+
+
     const dialogData : InfoDialogData = {
-      infoMessage: errorMessages[0],
+      infoMessage: errorResponse.errorMessages[0]!,
       statusIcon: IconStat.failed
     }
+
     this.dialog.open(InfoDialogComponent, {
       data:dialogData,
       backdropClass: "blurred"
     });
-    return throwError(() => error);
+
+
+    return throwError(() => errorResponse);
   }
 }

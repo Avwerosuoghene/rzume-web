@@ -4,7 +4,7 @@ export interface IApiUrlParam {
 }
 
 export interface IAPIResponse<T> {
-  "statusCode": 200,
+  "statusCode": number,
   "isSuccess": true,
   "errorMessages": [],
   result: {
@@ -14,3 +14,8 @@ export interface IAPIResponse<T> {
 }
 
 
+export interface IErrorResponse
+{
+  "statusCode": number,
+  "errorMessages": Array<any>,
+}

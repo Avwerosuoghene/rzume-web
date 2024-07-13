@@ -13,7 +13,7 @@ export class AuthenticationService {
 
   signup(payload: ISignupPayload) {
     return this.apiService.post<IAPIResponse<ISignupResponse>>(
-      ApiRoutes.user.register, payload
+      ApiRoutes.user.register, payload, false
     )
   }
 }

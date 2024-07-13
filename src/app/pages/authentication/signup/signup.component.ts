@@ -10,8 +10,12 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { Router } from '@angular/router';
-import { ISignupPayload } from '../../../core/models/interface/authentication-interface';
+import { ISignupPayload, ISignupResponse } from '../../../core/models/interface/authentication-interface';
 import { AuthenticationService } from '../../../core/services/authentication.service';
+import { IAPIResponse, IErrorResponse } from '../../../core/models/interface/utilities-interface';
+import { IconStat } from '../../../core/models/enums/ui-enums';
+import { UserExistingStatMsg } from '../../../core/models/enums/api-response-enums';
+import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 
 
 
@@ -25,7 +29,6 @@ import { AuthenticationService } from '../../../core/services/authentication.ser
 export class SignupComponent {
   signupFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
-  readonly dialog: MatDialog = inject(MatDialog);
   passwordStrength!: string;
   passwordVisibility: PasswordVisibility = 'password';
   loaderIsActive: boolean = false;
@@ -35,7 +38,7 @@ export class SignupComponent {
 
   router = inject(Router);
 
-  constructor(private authService: AuthenticationService){
+  constructor(private authService: AuthenticationService, private dialog: MatDialog) {
 
   }
 
@@ -57,7 +60,7 @@ export class SignupComponent {
   isDisabled(): boolean {
     return (this.signupFormGroup.invalid ||
       this.passwordStrength != 'Strong' ||
-   this.loaderIsActive);
+      this.loaderIsActive);
   }
 
   initializeSignupForm(): void {
@@ -90,25 +93,53 @@ export class SignupComponent {
 
   submitSignupForm() {
 
-      if (this.signupFormGroup.invalid) {
-        return
-      }
-      this.loaderIsActive = true;
-      const signupPayload : ISignupPayload = {
-        email: this.signupFormGroup.get('email')!.value,
-        password: this.signupFormGroup.get('password')!.value
-      }
-      this.authService.signup(signupPayload).subscribe({
-        next: (response) => {
-          this.loaderIsActive = false;
-          console.log(response)
-        },
-        error: (error) => {
-          this.loaderIsActive = false;
-          console.log(error);
-        }
-      })
+    if (this.signupFormGroup.invalid) {
+      return
+    }
+    const userMail: string = this.signupFormGroup.get('email')!.value;
+    this.loaderIsActive = true;
+    const signupPayload: ISignupPayload = {
+      email: userMail,
+      password: this.signupFormGroup.get('password')!.value
+    }
+    this.authService.signup(signupPayload).subscribe({
+      next: (response: IAPIResponse<ISignupResponse>) => {
+        this.loaderIsActive = false;
+        this.resetSignupForm();
+        if (response.statusCode === 200) {
 
+          this.navigateToEmailValidationScreen(userMail);
+        }
+      },
+      error: (error: IErrorResponse) => {
+        const errorMsg = error.errorMessages[0];
+        this.loaderIsActive = false;
+        if (errorMsg === UserExistingStatMsg.EmailConfirmedMsg) {
+          const dialogData : InfoDialogData = {
+            infoMessage: error.errorMessages[0]!,
+            statusIcon: IconStat.failed
+          }
+          this.dialog.open(InfoDialogComponent, {
+            data:dialogData,
+            backdropClass: "blurred"
+          });
+          return
+        }
+
+        sessionStorage.setItem('userMail', userMail);
+        this.navigateToEmailValidationScreen(userMail);
+      }
+    })
+
+  }
+
+  navigateToEmailValidationScreen(userMail: string) {
+    sessionStorage.setItem('userMail', userMail);
+    this.router.navigate(['/auth/email-confirmation']);
+  }
+
+  resetSignupForm() {
+    this.signupFormGroup.reset();
   }
 
 
