@@ -16,7 +16,7 @@ export class ApiService {
   constructor(private httpClient: HttpClient, private dialog: MatDialog) { }
 
   public get<T>(apiRoute: string, id?: number, _params?: IApiUrlParam[]): Observable<T> {
-    let route: string = `${environment.apiBaseUrl}/${apiRoute}/${id}`;
+    let route: string = `${environment.apiBaseUrl}/${apiRoute}${id? '/'+id: ''}`;
     let params = new HttpParams();
     if (_params) {
       _params.forEach(paramter => {

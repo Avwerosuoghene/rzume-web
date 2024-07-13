@@ -7,6 +7,7 @@ export class ApiRoutes
    static  user = {
     register: `${this.userRoute}register`,
     login: `${this.userRoute}login`,
+    emailToken: `${this.userRoute}generate-email-token`
   }
 
 
