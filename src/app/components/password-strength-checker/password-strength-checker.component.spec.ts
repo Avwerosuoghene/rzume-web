@@ -36,7 +36,6 @@ describe('PasswordStrengthCheckerComponent', () => {
 
     testCases.forEach(testCase => {
       component.checkPasswordStrength(testCase.password);
-      console.log(testCase.expectedStrength)
 
       expect(component.passwordStrengthValue.set).toHaveBeenCalledWith(testCase.expectedStrength);
       expect(component.passwordStengthDescription).toEqual(testCase.expectedDescription);

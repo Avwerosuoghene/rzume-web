@@ -6,3 +6,7 @@ export interface ISignupPayload {
 export interface ISignupResponse {
   isCreated: boolean
 }
+
+export interface IAccountValidationResponse {
+  accountActivated: boolean
+}

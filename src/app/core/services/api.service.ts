@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IApiUrlParam, IErrorResponse } from '../models/interface/utilities-interface';
+import { IApiUrlParam, IErrorResponse, IGetRequestParams } from '../models/interface/utilities-interface';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
@@ -14,8 +14,9 @@ import { IconStat } from '../models/enums/ui-enums';
 export class ApiService {
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog) { }
+  public get<T>(requestParams: IGetRequestParams): Observable<T> {
+    const {apiRoute, id, _params, handleResponse} =requestParams;
 
-  public get<T>(apiRoute: string, id?: number, _params?: IApiUrlParam[]): Observable<T> {
     let route: string = `${environment.apiBaseUrl}/${apiRoute}${id? '/'+id: ''}`;
     let params = new HttpParams();
     if (_params) {
@@ -33,7 +34,15 @@ export class ApiService {
     return this.httpClient.get<T>(route, {
       headers, params
     }).pipe(catchError((error) => {
-      return this.handleErrorWithObservable(error)
+      const responsError: IErrorResponse = {
+        statusCode : error.error.statusCode,
+        errorMessages: error.error.errorMessages
+      }
+      if (handleResponse)
+
+      this.handleErrorWithObservable(responsError);
+
+      return throwError(() => responsError);
 
     }))
 
@@ -75,7 +84,6 @@ export class ApiService {
 
 
   private handleErrorWithObservable(errorResponse: IErrorResponse): Observable<any> {
-
 
 
     const dialogData : InfoDialogData = {

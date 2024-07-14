@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat } from '../../../core/models/enums/ui-enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
+import { IAccountValidationResponse } from '../../../core/models/interface/authentication-interface';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -30,7 +31,8 @@ export class EmailConfirmationComponent {
   ngOnInit() {
 
     this.route.queryParamMap.subscribe((params) => {
-      const tokenValue: string | null = params.get('token')
+      const tokenValue: string | null = params.get('token');
+
       if (tokenValue) this.validateUser(tokenValue);
     });
   }
@@ -39,13 +41,30 @@ export class EmailConfirmationComponent {
     this.loaderIsActive = true;
     this.emailValidationHeader = 'Validating';
     this.emailValidMsg = 'Please wait while your email is being validated';
-    setTimeout(() => {
-      this.loaderIsActive = false;
-      this.emailValidationHeader = 'Email Confirmed';
-      this.emailValidationBtnTxt = 'Continue';
-      this.emailValidMsg = 'Your email has been validated. Kindly click continue to proceed to dashboard';
 
-    }, 2000)
+
+
+    this.authService.validateToken(tokenValue).subscribe({
+      next: (response: IAPIResponse<boolean>) => {
+        const responseContent = response.result;
+        this.loaderIsActive = false;
+        if (responseContent.content) {
+          this.emailValidationHeader = 'Email Confirmed';
+          this.emailValidMsg = responseContent.message;
+          this.emailValidationBtnTxt = 'Continue';
+          return
+        }
+
+        this.emailValidMsg = responseContent.message;
+        this.emailValidationHeader = "Error";
+      },
+      error: (error: any) => {
+        const errorMsg = error.errorMessages[0];
+        this.loaderIsActive = false;
+        this.emailValidationHeader = 'Error';
+        this.emailValidMsg = errorMsg;
+      }
+    })
 
   }
 
@@ -61,20 +80,25 @@ export class EmailConfirmationComponent {
       next: (response: IAPIResponse<string>) => {
         this.loaderIsActive = false;
         if (response.isSuccess) {
-          const dialogData: InfoDialogData = {
-            infoMessage: response.result.message,
-            statusIcon: IconStat.success
-          }
-          this.dialog.open(InfoDialogComponent, {
-            data: dialogData,
-            backdropClass: "blurred"
-          });
+          this.emailValidMsg =  response.result.message;
+
+          // const dialogData: InfoDialogData = {
+          //   infoMessage: response.result.message,
+          //   statusIcon: IconStat.success
+          // }
+          // this.dialog.open(InfoDialogComponent, {
+          //   data: dialogData,
+          //   backdropClass: "blurred"
+          // });
         }
 
       },
       error: (error: IErrorResponse) => {
-        const errorMsg = error.errorMessages[0];
         this.loaderIsActive = false;
+        this.emailValidMsg =  error.errorMessages[0];
+
+        // const errorMsg = error.errorMessages[0];
+
       }
     })
   }
