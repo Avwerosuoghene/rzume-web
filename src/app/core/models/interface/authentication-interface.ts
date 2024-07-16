@@ -34,3 +34,12 @@ export interface ISigninResponse {
   message: string,
   emailConfirmed: boolean
 }
+
+export interface IValidateUser {
+
+  message: string,
+
+  user?: string,
+
+  token?: string
+}
