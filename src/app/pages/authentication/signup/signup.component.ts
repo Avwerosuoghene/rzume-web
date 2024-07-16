@@ -10,7 +10,7 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { Router } from '@angular/router';
-import { ISignupPayload, ISignupResponse } from '../../../core/models/interface/authentication-interface';
+import { ISignupSiginPayload, ISignupResponse } from '../../../core/models/interface/authentication-interface';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { IAPIResponse, IErrorResponse } from '../../../core/models/interface/utilities-interface';
 import { IconStat } from '../../../core/models/enums/ui-enums';
@@ -98,7 +98,7 @@ export class SignupComponent {
     }
     const userMail: string = this.signupFormGroup.get('email')!.value;
     this.loaderIsActive = true;
-    const signupPayload: ISignupPayload = {
+    const signupPayload: ISignupSiginPayload = {
       email: userMail,
       password: this.signupFormGroup.get('password')!.value
     }

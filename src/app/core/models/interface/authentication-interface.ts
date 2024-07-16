@@ -1,4 +1,4 @@
-export interface ISignupPayload {
+export interface ISignupSiginPayload {
     email: string,
     password: string
 }
@@ -9,4 +9,28 @@ export interface ISignupResponse {
 
 export interface IAccountValidationResponse {
   accountActivated: boolean
+}
+
+export interface IUser {
+  firstName? : string,
+
+  lastName?: string ,
+
+  userName?: string,
+
+  email: string,
+
+  onboarded?: boolean,
+
+
+  onboardingStage: number,
+
+  emailConfirmed: boolean
+}
+
+export interface ISigninResponse {
+  user?: IUser,
+  token?: string,
+  message: string,
+  emailConfirmed: boolean
 }

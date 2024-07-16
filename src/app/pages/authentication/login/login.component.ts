@@ -7,6 +7,9 @@ import { PasswordUtility } from '../../../core/helpers/password-utility';
 import { PasswordVisibility } from '../../../core/models/types/ui-types';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
+import { ISigninResponse, ISignupSiginPayload } from '../../../core/models/interface/authentication-interface';
+import { AuthenticationService } from '../../../core/services/authentication.service';
+import { IAPIResponse, IErrorResponse } from '../../../core/models/interface/utilities-interface';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +26,9 @@ export class LoginComponent {
   loaderIsActive: boolean = false;
 
 
+  constructor(private authService: AuthenticationService,) {
 
+  }
 
 
   ngOnInit(): void {
@@ -54,8 +59,38 @@ export class LoginComponent {
   }
 
   submitLoginForm() {
+    if (this.loginFormGroup.invalid) {
+      return
+    }
+    const userMail: string = this.loginFormGroup.get('email')!.value;
+    const password: string = this.loginFormGroup.get('password')!.value;
+    this.loaderIsActive = true;
+    const loginPayload: ISignupSiginPayload = {
+      email: userMail,
+      password: password
+    };
+    this.authService.login(loginPayload).subscribe({
+      next: (response: IAPIResponse<ISigninResponse>) => {
+        this.loaderIsActive = false;
+        this.loginFormGroup.reset();
+        console.log(response)
+        // if (response.statusCode === 200) {
 
+        //   this.navigateToDashboard();
+        // }
+      },
+      error: (error: IErrorResponse) => {
+        const errorMsg = error.errorMessages[0];
+        this.loaderIsActive = false;
+        console.log(errorMsg)
 
+      }
+    })
+
+  }
+
+  navigateToDashboard() {
+    console.log('dasboard')
   }
 
 }
