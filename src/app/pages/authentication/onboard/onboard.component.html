@@ -1,0 +1,49 @@
+<div class="onboard-user-container">
+  <h3>What would you like us to call you</h3>
+
+  <form [formGroup]="onboardFormGroup" (ngSubmit)="submitOnboardForm()">
+    <div class="form-input-container">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          placeholder="Enter your Username"
+          type="text"
+          formControlName="username"
+          name="username"
+          minlength="3"
+        />
+
+        <mat-error
+          *ngIf="onboardFormGroup.controls['username'].hasError('required')"
+        >
+          Please enter a username
+        </mat-error>
+        <mat-error
+        *ngIf="onboardFormGroup.controls['username'].hasError('minlength')"
+      >
+        Username must be atleast 3 characters long
+      </mat-error>
+      </mat-form-field>
+      <button
+        class="form-input-confirm-button"
+        mat-flat-button
+        [disabled]="
+        isBtnDisabled()
+        "
+        type="submit"
+        id="regUserNameBtn"
+      >
+        <div class="button-elements">
+          @if (loaderIsActive) {
+            <app-circular-loader></app-circular-loader>
+          }
+
+          <p>Continue</p>
+
+        </div>
+      </button>
+    </div>
+  </form>
+</div>

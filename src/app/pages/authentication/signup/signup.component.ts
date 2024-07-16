@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
+import {  Component, ViewChild, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
@@ -57,7 +57,7 @@ export class SignupComponent {
 
   }
 
-  isDisabled(): boolean {
+  isBtnDisabled(): boolean {
     return (this.signupFormGroup.invalid ||
       this.passwordStrength != 'Strong' ||
       this.loaderIsActive);
