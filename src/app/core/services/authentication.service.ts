@@ -19,7 +19,7 @@ export class AuthenticationService {
 
   login(payload: ISignupSiginPayload) {
     return this.apiService.post<IAPIResponse<ISigninResponse>>(
-      ApiRoutes.user.login, payload, false
+      ApiRoutes.user.login, payload, true
     )
   }
 
@@ -45,7 +45,7 @@ export class AuthenticationService {
       _params: params,
       handleResponse: false
     }
-    return this.apiService.get<IAPIResponse<IValidateUser>>(
+    return this.apiService.get<IAPIResponse<boolean>>(
       getRequestParams
     );
 

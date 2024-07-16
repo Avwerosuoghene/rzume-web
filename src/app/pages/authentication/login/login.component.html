@@ -2,7 +2,7 @@
   <h3>Log In</h3>
 
   <form [formGroup]="loginFormGroup" (ngSubmit)="submitLoginForm()">
-    <div class="form-input-container ">
+    <div class="form-input-container">
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input
@@ -31,7 +31,9 @@
           formControlName="password"
           name="password"
         />
-        <mat-icon matSuffix (click)="togglePasswordVisibility()">{{passwordVisibility === 'password'? 'visibility_off': 'visibility'}}</mat-icon>
+        <mat-icon matSuffix (click)="togglePasswordVisibility()">{{
+          passwordVisibility === "password" ? "visibility_off" : "visibility"
+        }}</mat-icon>
         <mat-error
           *ngIf="loginFormGroup.controls['password'].hasError('required')"
         >
@@ -39,19 +41,31 @@
         </mat-error>
       </mat-form-field>
 
-      <button class="form-input-confirm-button" mat-flat-button [disabled]="loginFormGroup.invalid || loaderIsActive" type="submit">
-        @if (loaderIsActive) {
+      <button
+        class="form-input-confirm-button"
+        mat-flat-button
+        [disabled]="loginFormGroup.invalid || loaderIsActive"
+        type="submit"
+      >
+        <div class="button-elements">
+          @if (loaderIsActive) {
           <app-circular-loader></app-circular-loader>
-        }
+          }
 
-        <p>Continue</p>
+          <p>Continue</p>
+        </div>
       </button>
     </div>
   </form>
 
   <div class="login-signin_route">
     <p>
-      Don't have an account? <span> <a id="#sign_in_anchor"   routerLink="/auth/signup">Create Account</a></span>
+      Don't have an account?
+      <span>
+        <a id="#sign_in_anchor" routerLink="/auth/signup"
+          >Create Account</a
+        ></span
+      >
     </p>
   </div>
 </div>

@@ -10,6 +10,7 @@ import { CircularLoaderComponent } from '../../../components/circular-loader/cir
 import { ISigninResponse, ISignupSiginPayload } from '../../../core/models/interface/authentication-interface';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { IAPIResponse, IErrorResponse } from '../../../core/models/interface/utilities-interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +25,8 @@ export class LoginComponent {
   readonly dialog: MatDialog = inject(MatDialog);
   passwordVisibility: PasswordVisibility = 'password';
   loaderIsActive: boolean = false;
+  router = inject(Router);
+
 
 
   constructor(private authService: AuthenticationService,) {
@@ -73,11 +76,9 @@ export class LoginComponent {
       next: (response: IAPIResponse<ISigninResponse>) => {
         this.loaderIsActive = false;
         this.loginFormGroup.reset();
-        console.log(response)
-        // if (response.statusCode === 200) {
+        if (response.result.content.user == null) this.navigateToEmailValidationScreen(userMail);
 
-        //   this.navigateToDashboard();
-        // }
+        this.navigateToDashboard();
       },
       error: (error: IErrorResponse) => {
         const errorMsg = error.errorMessages[0];
@@ -87,6 +88,11 @@ export class LoginComponent {
       }
     })
 
+  }
+
+  navigateToEmailValidationScreen(userMail: string) {
+    sessionStorage.setItem('userMail', userMail);
+    this.router.navigate(['/auth/email-confirmation']);
   }
 
   navigateToDashboard() {
