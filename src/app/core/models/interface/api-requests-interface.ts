@@ -6,3 +6,26 @@ export interface IGetRequestParams{
   _params: IApiUrlParam[],
   handleResponse: boolean
 }
+
+
+export interface ISignupSiginPayload {
+  email: string,
+  password: string
+}
+
+export  interface IOnboardUserPayload<T>
+{
+    onBoardingStage: number,
+
+    onboardUserPayload: T,
+
+    userMail: string
+
+}
+
+
+export interface IOnboardUserFirstStagePayload {
+  userName: string
+}
+
+

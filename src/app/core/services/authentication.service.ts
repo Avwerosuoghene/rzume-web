@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from './api.routes';
-import {  ISignupSiginPayload, ISignupResponse, ISigninResponse, IValidateUser } from '../models/interface/authentication-interface';
 import {  IApiUrlParam } from '../models/interface/utilities-interface';
-import { IAPIResponse } from '../models/interface/api-response-interface';
-import { IGetRequestParams } from '../models/interface/api-requests-interface';
+import { IAPIResponse, ISigninResponse, ISignupResponse, IValidateUserResponse } from '../models/interface/api-response-interface';
+import { IGetRequestParams, ISignupSiginPayload } from '../models/interface/api-requests-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +19,12 @@ export class AuthenticationService {
   }
 
   login(payload: ISignupSiginPayload) {
+    return this.apiService.post<IAPIResponse<ISigninResponse>>(
+      ApiRoutes.user.login, payload, true
+    )
+  }
+
+  onboard(payload: ISignupSiginPayload) {
     return this.apiService.post<IAPIResponse<ISigninResponse>>(
       ApiRoutes.user.login, payload, true
     )
@@ -47,7 +52,7 @@ export class AuthenticationService {
       _params: params,
       handleResponse: false
     }
-    return this.apiService.get<IAPIResponse<IValidateUser>>(
+    return this.apiService.get<IAPIResponse<IValidateUserResponse>>(
       getRequestParams
     );
 

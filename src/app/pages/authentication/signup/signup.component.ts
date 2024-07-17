@@ -1,4 +1,4 @@
-import {  Component, ViewChild, inject } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
@@ -10,7 +10,6 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { Router } from '@angular/router';
-import { ISignupSiginPayload, ISignupResponse } from '../../../core/models/interface/authentication-interface';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { IconStat } from '../../../core/models/enums/ui-enums';
 import { UserExistingStatMsg } from '../../../core/models/enums/api-response-enums';
@@ -18,8 +17,9 @@ import { InfoDialogData } from '../../../core/models/interface/dialog-models-int
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
+import { IAPIResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
+import { ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
 
 
 
@@ -103,10 +103,7 @@ export class SignupComponent {
     }
     const userMail: string = this.signupFormGroup.get('email')!.value;
     this.loaderIsActive = true;
-    const signupPayload: ISignupSiginPayload = {
-      email: userMail,
-      password: this.signupFormGroup.get('password')!.value
-    }
+    const signupPayload: ISignupSiginPayload = this.generateSignUpPayload(userMail, this.signupFormGroup.get('password')!.value)
     this.authService.signup(signupPayload).subscribe({
       next: (response: IAPIResponse<ISignupResponse>) => {
         this.loaderIsActive = false;
@@ -120,12 +117,12 @@ export class SignupComponent {
         const errorMsg = error.errorMessages[0];
         this.loaderIsActive = false;
         if (errorMsg === UserExistingStatMsg.EmailConfirmedMsg) {
-          const dialogData : InfoDialogData = {
+          const dialogData: InfoDialogData = {
             infoMessage: error.errorMessages[0]!,
             statusIcon: IconStat.failed
           }
           this.dialog.open(InfoDialogComponent, {
-            data:dialogData,
+            data: dialogData,
             backdropClass: "blurred"
           });
           return
@@ -137,8 +134,15 @@ export class SignupComponent {
 
   }
 
+  generateSignUpPayload(userMail: string, password: string): ISignupSiginPayload {
+    return {
+      email: userMail,
+      password: password
+    }
+  }
+
   navigateToEmailValidationScreen(userMail: string) {
-    SessionStorageUtil.setItem(SessionStorageData.userMail,userMail);
+    SessionStorageUtil.setItem(SessionStorageData.userMail, userMail);
     this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`]);
   }
 

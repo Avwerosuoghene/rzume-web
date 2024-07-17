@@ -4,13 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
-import {  IValidateUser } from '../../../core/models/interface/authentication-interface';
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
-import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
+import { IAPIResponse, IValidateUserResponse } from '../../../core/models/interface/api-response-interface';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { ButtonTxt, EmailValMsg, EmailValidHeaderMsg, Generic, QueryParams } from '../../../core/models/enums/ui-enums';
+import { ButtonTxt, EmailValMsg, EmailValidHeaderMsg, GenericMsg, IconStat, QueryParams } from '../../../core/models/enums/ui-enums';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
+import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
+import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -49,7 +50,7 @@ export class EmailConfirmationComponent {
 
 
     this.authService.validateToken(tokenValue).subscribe({
-      next: (response: IAPIResponse<IValidateUser>) => {
+      next: (response: IAPIResponse<IValidateUserResponse>) => {
         const responseContent = response.result;
         this.loaderIsActive = false;
         if (responseContent.content.user) {
@@ -75,14 +76,14 @@ export class EmailConfirmationComponent {
   }
 
   performValidationBtnAction(): void {
-    this.emailValidationBtnTxt === ButtonTxt.resendValidation ? this.sendAccountValidationMail() : this.continueToOnboard();
+    this.emailValidationBtnTxt === ButtonTxt.resendValidation ? this.sendAccountValidationMail() : this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`);
   }
 
   sendAccountValidationMail(): void {
 
     this.loaderIsActive = true;
     const email =  SessionStorageUtil.getItem(SessionStorageData.userMail);
-
+    if (!email) this.openErrorDialog();
     this.authService.generateToken(email!).subscribe({
       next: (response: IAPIResponse<string>) => {
         this.loaderIsActive = false;
@@ -100,8 +101,30 @@ export class EmailConfirmationComponent {
     })
   }
 
-  continueToOnboard(): void {
-    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.onboard}`]);
+
+
+  openErrorDialog() {
+    const dialogData: InfoDialogData = {
+      infoMessage: GenericMsg.expiredSession,
+      statusIcon: IconStat.failed
+    }
+    const errorDialogRef = this.dialog.open(InfoDialogComponent, {
+      data: dialogData,
+      backdropClass: "blurred"
+    });
+
+    errorDialogRef.afterClosed().subscribe(result => {
+      this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.signup}`);
+    });
+    return
+  }
+
+
+
+
+
+  navigateOut(navigationRoute: string) {
+    this.router.navigate([navigationRoute]);
 
   }
 }

@@ -20,8 +20,9 @@ export enum ButtonTxt {
   resendValidation = 'Resend Validation'
 }
 
-export enum Generic {
-  validating = 'Validating'
+export enum GenericMsg {
+  validating = 'Validating',
+  expiredSession = 'User Session Expired'
 }
 
 export enum QueryParams {

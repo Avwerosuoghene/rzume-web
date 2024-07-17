@@ -7,16 +7,16 @@ import { PasswordUtility } from '../../../core/helpers/password-utility';
 import { PasswordVisibility } from '../../../core/models/types/ui-types';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
-import { ISigninResponse, ISignupSiginPayload } from '../../../core/models/interface/authentication-interface';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { Router } from '@angular/router';
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
-import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
+import { IAPIResponse, ISigninResponse } from '../../../core/models/interface/api-response-interface';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
 import { IUser } from '../../../core/models/interface/user-model-interface';
 import { onBoardStages } from '../../../core/models/enums/utility-enums';
+import { ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
 
 @Component({
   selector: 'app-login',
@@ -71,15 +71,12 @@ export class LoginComponent {
 
   submitLoginForm() {
     if (this.loginFormGroup.invalid) {
-      return
+      return;
     }
     const userMail: string = this.loginFormGroup.get('email')!.value;
     const password: string = this.loginFormGroup.get('password')!.value;
     this.loaderIsActive = true;
-    const loginPayload: ISignupSiginPayload = {
-      email: userMail,
-      password: password
-    };
+    const loginPayload: ISignupSiginPayload = this.generateLoginPayload(userMail, password)
     this.authService.login(loginPayload).subscribe({
       next: (response: IAPIResponse<ISigninResponse>) => {
         this.loaderIsActive = false;
@@ -104,8 +101,15 @@ export class LoginComponent {
         console.log(errorMsg)
 
       }
-    })
+    });
 
+  }
+
+  generateLoginPayload(userMail: string, password: string): ISignupSiginPayload {
+    return {
+      email: userMail,
+      password: password
+    };
   }
 
   navigateOut(navigationRoute: string) {
