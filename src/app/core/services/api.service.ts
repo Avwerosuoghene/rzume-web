@@ -5,7 +5,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
 import { InfoDialogData } from '../models/interface/dialog-models-interface';
-import { IconStat } from '../models/enums/ui-enums';
+import { ErrorMsges, IconStat } from '../models/enums/ui-enums';
 import { IErrorResponse } from '../models/interface/errors-interface';
 import { IGetRequestParams } from '../models/interface/api-requests-interface';
 
@@ -15,7 +15,7 @@ import { IGetRequestParams } from '../models/interface/api-requests-interface';
 export class ApiService {
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog) { }
-  public get<T>(requestParams: IGetRequestParams): Observable<T> {
+  public get<T>(requestParams: IGetRequestParams, ): Observable<T> {
     const {apiRoute, id, _params, handleResponse} =requestParams;
 
     let route: string = `${environment.apiBaseUrl}/${apiRoute}${id? '/'+id: ''}`;
@@ -35,9 +35,11 @@ export class ApiService {
     return this.httpClient.get<T>(route, {
       headers, params
     }).pipe(catchError((error) => {
+      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ErrorMsges.unknown ;
+
       const responsError: IErrorResponse = {
         statusCode : error.error.statusCode,
-        errorMessages: error.error.errorMessages
+        errorMessage: errorMsg
       }
       if (handleResponse)
 
@@ -49,7 +51,7 @@ export class ApiService {
 
   }
 
-  public put<T>(apiRoute: string, body: any, id?: number): Observable<T> {
+  public put<T>(handleResponse: boolean, apiRoute: string, body: any, id?: number): Observable<T> {
     let route: string = `${environment.apiBaseUrl}/${apiRoute}/${id}`;
     const headers = new HttpHeaders({
       'Content-type': 'application/json'
@@ -57,8 +59,15 @@ export class ApiService {
     return this.httpClient.put<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
+      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ErrorMsges.unknown ;
 
-      return throwError(() => error);
+      const responsError: IErrorResponse = {
+        statusCode : error.error.statusCode,
+        errorMessage: errorMsg
+      }
+      if (handleResponse)
+        return this.handleErrorWithObservable(responsError);
+      return throwError(() => responsError);
     }))
   }
 
@@ -70,10 +79,11 @@ export class ApiService {
     return this.httpClient.post<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
+      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ErrorMsges.unknown ;
 
       const responsError: IErrorResponse = {
         statusCode : error.error.statusCode,
-        errorMessages: error.error.errorMessages
+        errorMessage: errorMsg
       }
       if (handleResponse)
       return this.handleErrorWithObservable(responsError);
@@ -88,7 +98,7 @@ export class ApiService {
 
 
     const dialogData : InfoDialogData = {
-      infoMessage: errorResponse.errorMessages[0]!,
+      infoMessage: errorResponse.errorMessage,
       statusIcon: IconStat.failed
     }
 

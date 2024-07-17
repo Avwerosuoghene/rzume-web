@@ -96,7 +96,7 @@ export class EmailConfirmationComponent {
       },
       error: (error: IErrorResponse) => {
         this.loaderIsActive = false;
-        this.emailValidMsg =  error.errorMessages[0];
+        this.emailValidMsg =  error.errorMessage;
       }
     })
   }

@@ -28,3 +28,7 @@ export enum GenericMsg {
 export enum QueryParams {
   token = 'token'
 }
+
+export enum ErrorMsges {
+  unknown = 'An Unknown Error Occured'
+}

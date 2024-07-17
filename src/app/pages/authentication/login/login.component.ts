@@ -96,9 +96,8 @@ export class LoginComponent {
         this.navigateOut(`/${RootRoutes.main}`);
       },
       error: (error: IErrorResponse) => {
-        const errorMsg = error.errorMessages[0];
+
         this.loaderIsActive = false;
-        console.log(errorMsg)
 
       }
     });

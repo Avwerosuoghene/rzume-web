@@ -11,7 +11,7 @@ import { CoreModules } from '../../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/services/authentication.service';
-import { IconStat } from '../../../core/models/enums/ui-enums';
+import { ErrorMsges, IconStat } from '../../../core/models/enums/ui-enums';
 import { UserExistingStatMsg } from '../../../core/models/enums/api-response-enums';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
@@ -114,21 +114,22 @@ export class SignupComponent {
         }
       },
       error: (error: IErrorResponse) => {
-        const errorMsg = error.errorMessages[0];
+        let errorMsg = error.errorMessage;
+
         this.loaderIsActive = false;
-        if (errorMsg === UserExistingStatMsg.EmailConfirmedMsg) {
+        if (errorMsg === UserExistingStatMsg.EmailNotConfirmedMsg) return this.navigateToEmailValidationScreen(userMail);
+
           const dialogData: InfoDialogData = {
-            infoMessage: error.errorMessages[0]!,
+            infoMessage: errorMsg,
             statusIcon: IconStat.failed
           }
           this.dialog.open(InfoDialogComponent, {
             data: dialogData,
             backdropClass: "blurred"
           });
-          return
-        }
 
-        this.navigateToEmailValidationScreen(userMail);
+
+
       }
     })
 
