@@ -11,7 +11,7 @@ export interface IUser {
   onboarded?: boolean,
 
 
-  onboardingStage: number,
+  onBoardingStage: number,
 
   emailConfirmed: boolean
 }

@@ -81,15 +81,15 @@ export class LoginComponent {
       next: (response: IAPIResponse<ISigninResponse>) => {
         this.loaderIsActive = false;
         this.loginFormGroup.reset();
-        const signinResponsoContent: ISigninResponse | undefined = response.result.content;
-        if (signinResponsoContent.user == null) {
+        const signinResponseContent: ISigninResponse | undefined = response.result.content;
+        if (signinResponseContent.user == null) {
           SessionStorageUtil.setItem(SessionStorageData.userMail, userMail);
           this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
           return
         }
-        SessionStorageUtil.setItem(SessionStorageData.userData, signinResponsoContent.user);
-        SessionStorageUtil.setItem(SessionStorageData.authToken, signinResponsoContent.token!);
-        if (signinResponsoContent.user.onboardingStage === onBoardStages.first) return this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`);
+        SessionStorageUtil.setItem(SessionStorageData.userData, signinResponseContent.user);
+        SessionStorageUtil.setItem(SessionStorageData.authToken, signinResponseContent.token!);
+        if (signinResponseContent.user.onBoardingStage === onBoardStages.first) return this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`);
 
 
 
