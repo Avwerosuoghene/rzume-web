@@ -15,6 +15,8 @@ import { IAPIResponse } from '../../../core/models/interface/api-response-interf
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
+import { IUser } from '../../../core/models/interface/user-model-interface';
+import { onBoardStages } from '../../../core/models/enums/utility-enums';
 
 @Component({
   selector: 'app-login',
@@ -82,9 +84,19 @@ export class LoginComponent {
       next: (response: IAPIResponse<ISigninResponse>) => {
         this.loaderIsActive = false;
         this.loginFormGroup.reset();
-        if (response.result.content.user == null) this.navigateToEmailValidationScreen(userMail);
+        const signinResponsoContent: ISigninResponse | undefined = response.result.content;
+        if (signinResponsoContent.user == null) {
+          SessionStorageUtil.setItem(SessionStorageData.userMail, userMail);
+          this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
+          return
+        }
+        SessionStorageUtil.setItem(SessionStorageData.userData, signinResponsoContent.user);
+        SessionStorageUtil.setItem(SessionStorageData.authToken, signinResponsoContent.token!);
+        if (signinResponsoContent.user.onboardingStage === onBoardStages.first) return this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`);
 
-        this.navigateToDashboard();
+
+
+        this.navigateOut(`/${RootRoutes.main}`);
       },
       error: (error: IErrorResponse) => {
         const errorMsg = error.errorMessages[0];
@@ -96,12 +108,12 @@ export class LoginComponent {
 
   }
 
+  navigateOut(navigationRoute: string) {
+    this.router.navigate([navigationRoute]);
 
-
-  navigateToEmailValidationScreen(userMail: string) {
-    SessionStorageUtil.setItem(SessionStorageData.userMail,userMail);
-    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`]);
   }
+
+
 
 
 

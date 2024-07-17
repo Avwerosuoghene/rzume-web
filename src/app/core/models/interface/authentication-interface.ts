@@ -25,7 +25,7 @@ export interface IValidateUser {
 
   message: string,
 
-  user?: string,
+  user?: IUser,
 
   token?: string
 }

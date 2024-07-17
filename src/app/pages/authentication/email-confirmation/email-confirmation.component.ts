@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { IAPIResponse } from '../../../core/models/interface/api-response-interf
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
 import { ButtonTxt, EmailValMsg, EmailValidHeaderMsg, Generic, QueryParams } from '../../../core/models/enums/ui-enums';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -24,6 +25,8 @@ export class EmailConfirmationComponent {
   emailValidMsg: string = EmailValMsg.confirm;
   emailValidationBtnTxt: ButtonTxt = ButtonTxt.resendValidation;
   loaderIsActive: boolean = false;
+  router = inject(Router);
+
 
   constructor(private authService: AuthenticationService, private dialog: MatDialog) {
 
@@ -53,6 +56,8 @@ export class EmailConfirmationComponent {
           this.emailValidationHeader = EmailValidHeaderMsg.validated;
           this.emailValidMsg = responseContent.message;
           this.emailValidationBtnTxt = ButtonTxt.continue;
+          SessionStorageUtil.setItem(SessionStorageData.authToken,response.result.content.token!);
+          SessionStorageUtil.setItem(SessionStorageData.userData,response.result.content.user!);
           return
         }
 
@@ -70,7 +75,7 @@ export class EmailConfirmationComponent {
   }
 
   performValidationBtnAction(): void {
-    this.emailValidationBtnTxt === ButtonTxt.resendValidation ? this.sendAccountValidationMail() : this.continueToDashBoard();
+    this.emailValidationBtnTxt === ButtonTxt.resendValidation ? this.sendAccountValidationMail() : this.continueToOnboard();
   }
 
   sendAccountValidationMail(): void {
@@ -95,7 +100,8 @@ export class EmailConfirmationComponent {
     })
   }
 
-  continueToDashBoard(): void {
+  continueToOnboard(): void {
+    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.onboard}`]);
 
   }
 }
