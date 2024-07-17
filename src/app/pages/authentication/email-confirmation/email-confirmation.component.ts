@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
-import { IAPIResponse, IErrorResponse } from '../../../core/models/interface/utilities-interface';
 import { MatDialog } from '@angular/material/dialog';
-import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
-import { IconStat } from '../../../core/models/enums/ui-enums';
-import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { IAccountValidationResponse, IValidateUser } from '../../../core/models/interface/authentication-interface';
+import {  IValidateUser } from '../../../core/models/interface/authentication-interface';
+import { IErrorResponse } from '../../../core/models/interface/errors-interface';
+import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
+import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
+import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
+import { ButtonTxt, EmailValMsg, EmailValidHeaderMsg, Generic, QueryParams } from '../../../core/models/enums/ui-enums';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -19,9 +20,9 @@ import { IAccountValidationResponse, IValidateUser } from '../../../core/models/
 })
 export class EmailConfirmationComponent {
   private route = inject(ActivatedRoute);
-  emailValidationHeader: string = "Confirm Mail";
-  emailValidMsg: string = "Kindly check your email for the validation link";
-  emailValidationBtnTxt: "Resend Validation" | "Continue" = "Resend Validation";
+  emailValidationHeader: EmailValidHeaderMsg = EmailValidHeaderMsg.confirm;
+  emailValidMsg: string = EmailValMsg.confirm;
+  emailValidationBtnTxt: ButtonTxt = ButtonTxt.resendValidation;
   loaderIsActive: boolean = false;
 
   constructor(private authService: AuthenticationService, private dialog: MatDialog) {
@@ -31,7 +32,7 @@ export class EmailConfirmationComponent {
   ngOnInit() {
 
     this.route.queryParamMap.subscribe((params) => {
-      const tokenValue: string | null = params.get('token');
+      const tokenValue: string | null = params.get(QueryParams.token);
 
       if (tokenValue) this.validateUser(tokenValue);
     });
@@ -39,8 +40,8 @@ export class EmailConfirmationComponent {
 
   validateUser(tokenValue: string): void {
     this.loaderIsActive = true;
-    this.emailValidationHeader = 'Validating';
-    this.emailValidMsg = 'Please wait while your email is being validated';
+    this.emailValidationHeader = EmailValidHeaderMsg.validating;
+    this.emailValidMsg = EmailValMsg.validating;
 
 
 
@@ -49,19 +50,19 @@ export class EmailConfirmationComponent {
         const responseContent = response.result;
         this.loaderIsActive = false;
         if (responseContent.content.user) {
-          this.emailValidationHeader = 'Email Confirmed';
+          this.emailValidationHeader = EmailValidHeaderMsg.validated;
           this.emailValidMsg = responseContent.message;
-          this.emailValidationBtnTxt = 'Continue';
+          this.emailValidationBtnTxt = ButtonTxt.continue;
           return
         }
 
         this.emailValidMsg = responseContent.message;
-        this.emailValidationHeader = "Error";
+        this.emailValidationHeader = EmailValidHeaderMsg.error;
       },
       error: (error: any) => {
         const errorMsg = error.errorMessages[0];
         this.loaderIsActive = false;
-        this.emailValidationHeader = 'Error';
+        this.emailValidationHeader = EmailValidHeaderMsg.error;
         this.emailValidMsg = errorMsg;
       }
     })
@@ -69,36 +70,27 @@ export class EmailConfirmationComponent {
   }
 
   performValidationBtnAction(): void {
-    this.emailValidationBtnTxt === "Resend Validation" ? this.sendAccountValidationMail() : this.continueToDashBoard();
+    this.emailValidationBtnTxt === ButtonTxt.resendValidation ? this.sendAccountValidationMail() : this.continueToDashBoard();
   }
 
   sendAccountValidationMail(): void {
 
     this.loaderIsActive = true;
-    const email = sessionStorage.getItem('userMail');
+    const email =  SessionStorageUtil.getItem(SessionStorageData.userMail);
+
     this.authService.generateToken(email!).subscribe({
       next: (response: IAPIResponse<string>) => {
         this.loaderIsActive = false;
         if (response.isSuccess) {
           this.emailValidMsg =  response.result.message;
 
-          // const dialogData: InfoDialogData = {
-          //   infoMessage: response.result.message,
-          //   statusIcon: IconStat.success
-          // }
-          // this.dialog.open(InfoDialogComponent, {
-          //   data: dialogData,
-          //   backdropClass: "blurred"
-          // });
+
         }
 
       },
       error: (error: IErrorResponse) => {
         this.loaderIsActive = false;
         this.emailValidMsg =  error.errorMessages[0];
-
-        // const errorMsg = error.errorMessages[0];
-
       }
     })
   }

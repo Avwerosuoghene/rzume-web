@@ -9,8 +9,12 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { ISigninResponse, ISignupSiginPayload } from '../../../core/models/interface/authentication-interface';
 import { AuthenticationService } from '../../../core/services/authentication.service';
-import { IAPIResponse, IErrorResponse } from '../../../core/models/interface/utilities-interface';
 import { Router } from '@angular/router';
+import { IErrorResponse } from '../../../core/models/interface/errors-interface';
+import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
+import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
+import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +30,8 @@ export class LoginComponent {
   passwordVisibility: PasswordVisibility = 'password';
   loaderIsActive: boolean = false;
   router = inject(Router);
+  signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
+
 
 
 
@@ -90,10 +96,14 @@ export class LoginComponent {
 
   }
 
+
+
   navigateToEmailValidationScreen(userMail: string) {
-    sessionStorage.setItem('userMail', userMail);
-    this.router.navigate(['/auth/email-confirmation']);
+    SessionStorageUtil.setItem(SessionStorageData.userMail,userMail);
+    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`]);
   }
+
+
 
   navigateToDashboard() {
     console.log('dasboard')

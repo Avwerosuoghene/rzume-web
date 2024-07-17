@@ -12,10 +12,14 @@ import { CircularLoaderComponent } from '../../../components/circular-loader/cir
 import { Router } from '@angular/router';
 import { ISignupSiginPayload, ISignupResponse } from '../../../core/models/interface/authentication-interface';
 import { AuthenticationService } from '../../../core/services/authentication.service';
-import { IAPIResponse, IErrorResponse } from '../../../core/models/interface/utilities-interface';
 import { IconStat } from '../../../core/models/enums/ui-enums';
 import { UserExistingStatMsg } from '../../../core/models/enums/api-response-enums';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
+import { IErrorResponse } from '../../../core/models/interface/errors-interface';
+import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
+import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
+import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 
 
 
@@ -32,6 +36,7 @@ export class SignupComponent {
   passwordStrength!: string;
   passwordVisibility: PasswordVisibility = 'password';
   loaderIsActive: boolean = false;
+  signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`
 
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
 
@@ -126,7 +131,6 @@ export class SignupComponent {
           return
         }
 
-        sessionStorage.setItem('userMail', userMail);
         this.navigateToEmailValidationScreen(userMail);
       }
     })
@@ -134,8 +138,8 @@ export class SignupComponent {
   }
 
   navigateToEmailValidationScreen(userMail: string) {
-    sessionStorage.setItem('userMail', userMail);
-    this.router.navigate(['/auth/email-confirmation']);
+    SessionStorageUtil.setItem(SessionStorageData.userMail,userMail);
+    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`]);
   }
 
   resetSignupForm() {

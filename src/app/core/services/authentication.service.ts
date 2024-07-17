@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from './api.routes';
 import {  ISignupSiginPayload, ISignupResponse, ISigninResponse, IValidateUser } from '../models/interface/authentication-interface';
-import { IAPIResponse, IApiUrlParam, IGetRequestParams } from '../models/interface/utilities-interface';
+import {  IApiUrlParam } from '../models/interface/utilities-interface';
+import { IAPIResponse } from '../models/interface/api-response-interface';
+import { IGetRequestParams } from '../models/interface/api-requests-interface';
 
 @Injectable({
   providedIn: 'root'

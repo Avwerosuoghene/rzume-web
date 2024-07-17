@@ -1,12 +1,13 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IApiUrlParam, IErrorResponse, IGetRequestParams } from '../models/interface/utilities-interface';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
 import { InfoDialogData } from '../models/interface/dialog-models-interface';
 import { IconStat } from '../models/enums/ui-enums';
+import { IErrorResponse } from '../models/interface/errors-interface';
+import { IGetRequestParams } from '../models/interface/api-requests-interface';
 
 @Injectable({
   providedIn: 'root'

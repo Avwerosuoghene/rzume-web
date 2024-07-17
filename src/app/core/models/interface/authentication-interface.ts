@@ -1,3 +1,5 @@
+import { IUser } from "./user-model-interface"
+
 export interface ISignupSiginPayload {
     email: string,
     password: string
@@ -11,22 +13,6 @@ export interface IAccountValidationResponse {
   accountActivated: boolean
 }
 
-export interface IUser {
-  firstName? : string,
-
-  lastName?: string ,
-
-  userName?: string,
-
-  email: string,
-
-  onboarded?: boolean,
-
-
-  onboardingStage: number,
-
-  emailConfirmed: boolean
-}
 
 export interface ISigninResponse {
   user?: IUser,
