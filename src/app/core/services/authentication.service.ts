@@ -45,7 +45,7 @@ export class AuthenticationService {
       _params: params,
       handleResponse: false
     }
-    return this.apiService.get<IAPIResponse<boolean>>(
+    return this.apiService.get<IAPIResponse<IValidateUser>>(
       getRequestParams
     );
 

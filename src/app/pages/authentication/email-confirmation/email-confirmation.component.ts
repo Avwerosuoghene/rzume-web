@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat } from '../../../core/models/enums/ui-enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { IAccountValidationResponse } from '../../../core/models/interface/authentication-interface';
+import { IAccountValidationResponse, IValidateUser } from '../../../core/models/interface/authentication-interface';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -45,10 +45,10 @@ export class EmailConfirmationComponent {
 
 
     this.authService.validateToken(tokenValue).subscribe({
-      next: (response: IAPIResponse<boolean>) => {
+      next: (response: IAPIResponse<IValidateUser>) => {
         const responseContent = response.result;
         this.loaderIsActive = false;
-        if (responseContent.content) {
+        if (responseContent.content.user) {
           this.emailValidationHeader = 'Email Confirmed';
           this.emailValidMsg = responseContent.message;
           this.emailValidationBtnTxt = 'Continue';

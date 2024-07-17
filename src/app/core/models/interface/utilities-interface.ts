@@ -26,3 +26,4 @@ export interface IGetRequestParams{
   _params: IApiUrlParam[],
   handleResponse: boolean
 }
+
