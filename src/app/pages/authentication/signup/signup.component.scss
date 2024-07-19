@@ -2,10 +2,14 @@
 @import "../../../styles/general_styles.scss";
 
 .signup-container {
-@extend .auth-container;
+  @extend .auth-container;
 
+  .form-input-container {
+
+
+    .test-div {
+      opacity: 0;
+    }
+  }
 
 }
-
-
-

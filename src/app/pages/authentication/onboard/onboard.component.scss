@@ -3,4 +3,8 @@
 
 .onboard-user-container {
   @extend .auth-container;
+
+  .onboard-user-form_grou {
+    opacity: 0;
+  }
 }

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { ProfileManagementService } from '../../../core/services/profile-management.service';
-import {  IOnboardUserPayload } from '../../../core/models/interface/profile-management-interface';
+import { IOnboardUserPayload } from '../../../core/models/interface/profile-management-interface';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,19 +16,23 @@ import { RootRoutes, AuthRoutes } from '../../../core/models/enums/application-r
 import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
 import { IOnboardUserFirstStagePayload } from '../../../core/models/interface/api-requests-interface';
+import { slideOutAnimation } from '../../../core/animations/slide-in-out-animations';
 
 @Component({
   selector: 'app-onboard',
   standalone: true,
   imports: [AngularMaterialModules, CoreModules, CircularLoaderComponent],
   templateUrl: './onboard.component.html',
-  styleUrl: './onboard.component.scss'
+  styleUrl: './onboard.component.scss',
+  animations: [slideOutAnimation]
+
 })
 export class OnboardComponent {
   onboardFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
   loaderIsActive: boolean = false;
   router = inject(Router);
+  slideInAnimationState = 'slide-out'
 
 
   constructor(private profileMgmtService: ProfileManagementService, private dialog: MatDialog) {
@@ -37,6 +41,16 @@ export class OnboardComponent {
 
   ngOnInit(): void {
     this.initializeOnBoardForm();
+    this.runOnInitAnimations();
+
+  }
+
+
+  runOnInitAnimations() {
+    setTimeout(() => {
+      this.slideInAnimationState = 'slide-in';
+    }, 0);
+
   }
 
   initializeOnBoardForm(): void {
@@ -59,11 +73,11 @@ export class OnboardComponent {
     const email = SessionStorageUtil.getItem(SessionStorageData.userMail);
     const userName: string = this.onboardFormGroup.get('username')!.value;
     if (!email) return this.openErrorDialog();
-    const onBoardUserPayload : IOnboardUserPayload<IOnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, email!);
+    const onBoardUserPayload: IOnboardUserPayload<IOnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, email!);
     this.loaderIsActive = true;
 
     this.profileMgmtService.onboard(onBoardUserPayload).subscribe({
-      next: (onboardResponse:  IAPIResponse<boolean>) => {
+      next: (onboardResponse: IAPIResponse<boolean>) => {
         this.loaderIsActive = false;
         this.onboardFormGroup.reset();
         if (onboardResponse.isSuccess) {

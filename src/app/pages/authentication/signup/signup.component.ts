@@ -20,6 +20,8 @@ import { SessionStorageData } from '../../../core/models/enums/sessionStorage-en
 import { IAPIResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 import { ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
+import { slideOutAnimation } from '../../../core/animations/slide-in-out-animations';
+import { fadeInOutAnimation } from '../../../core/animations/fade-in-out-animation';
 
 
 
@@ -36,7 +38,8 @@ export class SignupComponent {
   passwordStrength!: string;
   passwordVisibility: PasswordVisibility = 'password';
   loaderIsActive: boolean = false;
-  signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`
+  signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`;
+
 
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
 
@@ -51,6 +54,10 @@ export class SignupComponent {
   ngOnInit(): void {
     this.initializeSignupForm();
   }
+
+
+
+
 
   validatePassword(): void {
     this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.signupFormGroup.get('password')?.value);

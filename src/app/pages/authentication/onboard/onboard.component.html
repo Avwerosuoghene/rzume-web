@@ -1,7 +1,7 @@
 <div class="onboard-user-container">
   <h3>What would you like us to call you</h3>
 
-  <form [formGroup]="onboardFormGroup" (ngSubmit)="submitOnboardForm()">
+  <form [formGroup]="onboardFormGroup" (ngSubmit)="submitOnboardForm()"  [@slideInOut]="slideInAnimationState" class="onboard-user-form_group">
     <div class="form-input-container">
 
       <mat-form-field appearance="outline">
