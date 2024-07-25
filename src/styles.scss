@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+@import "./app/styles/theme.scss";
 
 * {
   box-sizing: border-box;
@@ -41,11 +42,21 @@ h3 {
   font-weight: 700;
 }
 
+h4 {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
 p,
 a {
   font-family: "Poppins", sans-serif;
   font-size: 14px;
   font-weight: 400;
+}
+
+p.light_text {
+  color: $grey;
 }
 
 a {

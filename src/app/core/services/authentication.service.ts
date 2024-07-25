@@ -13,12 +13,14 @@ export class AuthenticationService {
   constructor(private apiService: ApiService) { }
 
   signup(payload: ISignupSiginPayload) {
+    payload.password = window.btoa(payload.password.toString())
     return this.apiService.post<IAPIResponse<ISignupResponse>>(
       ApiRoutes.user.register, payload, false
     )
   }
 
   login(payload: ISignupSiginPayload) {
+    payload.password = window.btoa(payload.password.toString())
     return this.apiService.post<IAPIResponse<ISigninResponse>>(
       ApiRoutes.user.login, payload, true
     )

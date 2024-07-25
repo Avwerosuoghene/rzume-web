@@ -1,0 +1,29 @@
+@import "../../../styles/theme.scss";
+
+
+.sidebar_container {
+  padding: 16px;
+
+  #rzume_logo {
+    width: 144px;
+    margin-bottom: 42px;
+  }
+
+  .side_menu_items {
+    display: flex;
+    flex-direction: column;
+
+    .side_menu_item {
+      width: 100%;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+
+      &.active {
+        background-color: $light-blue;
+      }
+    }
+  }
+}

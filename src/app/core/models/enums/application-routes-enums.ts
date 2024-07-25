@@ -10,3 +10,8 @@ export enum AuthRoutes {
   passwordReset = 'password-reset',
   emailConfirmation = 'email-confirmation'
 }
+
+export enum MainRoutes {
+  dashboard = 'dasboard',
+  profileManagement = 'profile-management'
+}

@@ -1,0 +1,51 @@
+@import "../../../styles/theme.scss";
+
+hr.header {
+  border: 0;
+  height: 1px;
+  background-color: $light-grey;
+  width: 100%;
+  margin-top: 10px;
+
+}
+
+.section_upper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+
+  .profile_img_section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    #alert_icon {
+      width: 24px;
+    }
+    .profile_pic {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: $rzume-blue;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+
+    mat-icon#expand_icon {
+
+      transform: rotate(90deg);
+    }
+  }
+
+}
+
+.section_lower {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 48px;
+}

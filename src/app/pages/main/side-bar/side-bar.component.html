@@ -1,0 +1,22 @@
+<div class="sidebar_container">
+  <img
+    id="rzume_logo"
+    src="assets/icons/rzume_logo_text.png"
+    alt="rzume logo"
+  />
+  <div class="sidebar_menu">
+    <p class="light_text">Menu</p>
+    <div class="side_menu_items">
+      @for (sideBarElement of sideBarElements; track $index) {
+      <div
+        class="side_menu_item"
+        [routerLink]="sideBarElement.route"
+        routerLinkActive="active"
+      >
+        <img class="side_menu_itm_icon" [src]="sideBarElement.icon" alt="" />
+        <p>{{ sideBarElement.name }}</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>
