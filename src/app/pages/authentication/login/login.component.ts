@@ -47,6 +47,14 @@ export class LoginComponent {
     this.initializeForm();
   }
 
+  get email() {
+    return this.loginFormGroup.get('email');
+  }
+
+  get password() {
+    return this.loginFormGroup.get('password');
+  }
+
 
   initializeForm(): void {
     this.loginFormGroup = this.fb.group({

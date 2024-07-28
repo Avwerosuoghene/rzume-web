@@ -17,25 +17,9 @@
   }
 
   .info-dialog-icon {
-    position: relative;
     width: 4rem;
     height: 4rem;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: $light-grey;
-    mat-icon {
-      &#done {
-        color: $basic-green;
-      }
-
-      &#close {
-        color: $warning
-      }
-    }
-
-
+    @extend .success_fail_icon;
   }
 
   .close-info-dialog {

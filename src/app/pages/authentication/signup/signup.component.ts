@@ -75,6 +75,14 @@ export class SignupComponent {
       this.loaderIsActive);
   }
 
+  get email() {
+    return this.signupFormGroup.get('email');
+  }
+
+  get password() {
+    return this.signupFormGroup.get('password');
+  }
+
   initializeSignupForm(): void {
     this.signupFormGroup = this.fb.group({
       email: this.fb.control('', {

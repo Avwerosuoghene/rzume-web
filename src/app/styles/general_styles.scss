@@ -55,6 +55,24 @@
   }
 }
 
+.success_fail_icon {
+  position: relative;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $light-grey;
+  mat-icon {
+    &#done {
+      color: $basic-green;
+    }
+
+    &#close {
+      color: $warning
+    }
+  }
+}
+
 
 
 

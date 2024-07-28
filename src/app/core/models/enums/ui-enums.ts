@@ -32,3 +32,10 @@ export enum QueryParams {
 export enum ErrorMsges {
   unknown = 'An Unknown Error Occured'
 }
+
+export enum PassWordResetScreens {
+  formScreen =  'form',
+  successScreen = 'success'
+}
+
+

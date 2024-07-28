@@ -1,16 +1,15 @@
 <div class="signup-container">
   <div class="auth-top_view_elements">
     <h3>Create account</h3>
-    <div class="signup-signin_route mobile_only" >
+    <div class="signup-signin_route mobile_only">
       <p>
         Already have an account?
-        <span> <a id="sign-in_anch" [routerLink]="signInRoute">Sign In</a></span>
+        <span>
+          <a id="sign-in_anch" [routerLink]="signInRoute">Sign In</a></span
+        >
       </p>
     </div>
   </div>
-
-
-
 
   <form [formGroup]="signupFormGroup" (ngSubmit)="submitSignupForm()">
     <div class="form-input-container">
@@ -24,14 +23,11 @@
           name="email"
         />
         <mat-icon matSuffix>person</mat-icon>
-        <mat-error
-          *ngIf="signupFormGroup.controls['email'].hasError('required')"
-        >
-          Email required
-        </mat-error>
-        <mat-error *ngIf="signupFormGroup.controls['email'].hasError('email')">
-          Please enter a valid mail
-        </mat-error>
+        @if (email?.hasError('required')) {
+        <mat-error> Email required </mat-error>
+        } @if ( email?.hasError('email') ) {
+        <mat-error> Please enter a valid mail </mat-error>
+        }
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
@@ -46,11 +42,10 @@
         <mat-icon matSuffix (click)="togglePasswordVisibility()">{{
           passwordVisibility === "password" ? "visibility_off" : "visibility"
         }}</mat-icon>
-        <mat-error
-          *ngIf="signupFormGroup.controls['password'].hasError('required')"
-        >
-          Password required
-        </mat-error>
+
+        @if (password?.hasError('required')) {
+        <mat-error> Password required </mat-error>
+        }
       </mat-form-field>
       <app-password-strength-checker></app-password-strength-checker>
       <div class="minor-element_flex">
@@ -80,26 +75,22 @@
       <button
         class="form-input-confirm-button"
         mat-flat-button
-        [disabled]="
-        isBtnDisabled()
-        "
-
+        [disabled]="isBtnDisabled()"
         type="submit"
         id="signupBtn"
       >
         <div class="button-elements">
           @if (loaderIsActive) {
-            <app-circular-loader></app-circular-loader>
+          <app-circular-loader></app-circular-loader>
           }
 
           <p>Create an Account</p>
-
         </div>
       </button>
     </div>
   </form>
 
-  <div class="signup-signin_route desktop_only" >
+  <div class="signup-signin_route desktop_only">
     <p>
       Already have an account?
       <span> <a id="sign-in_anch" [routerLink]="signInRoute">Sign In</a></span>

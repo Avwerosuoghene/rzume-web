@@ -25,14 +25,15 @@
           name="email"
         />
         <mat-icon matSuffix>person</mat-icon>
-        <mat-error
-          *ngIf="loginFormGroup.controls['email'].hasError('required')"
-        >
-          Email required
+
+        @if (email?.hasError('required')) {
+        <mat-error>
+          <mat-error> Email required </mat-error>
         </mat-error>
-        <mat-error *ngIf="loginFormGroup.controls['email'].hasError('email')">
-          Please enter a valid mail
-        </mat-error>
+        } @else if (email?.hasError('email')) {
+
+        <mat-error> Please enter a valid mail </mat-error>
+        }
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
@@ -46,11 +47,10 @@
         <mat-icon matSuffix (click)="togglePasswordVisibility()">{{
           passwordVisibility === "password" ? "visibility_off" : "visibility"
         }}</mat-icon>
-        <mat-error
-          *ngIf="loginFormGroup.controls['password'].hasError('required')"
-        >
-          Password required
-        </mat-error>
+
+        @if (password?.hasError('required')) {
+        <mat-error> Password required </mat-error>
+        }
       </mat-form-field>
 
       <div class="rememberCheck-forgotPass">
@@ -64,7 +64,8 @@
           <p>Remember me</p>
         </div>
         <a id="#forgotPass_anchor" [routerLink]="forgotPassRoute"
-        >Forgot Password?</a>
+          >Forgot Password?</a
+        >
       </div>
 
       <button
