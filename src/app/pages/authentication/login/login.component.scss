@@ -4,4 +4,12 @@
 .login-container {
   @extend .auth-container;
 
+
+
+.rememberCheck-forgotPass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 }

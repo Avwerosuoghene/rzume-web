@@ -1,5 +1,16 @@
 <div class="signup-container">
-  <h3>Create account</h3>
+  <div class="auth-top_view_elements">
+    <h3>Create account</h3>
+    <div class="signup-signin_route mobile_only" >
+      <p>
+        Already have an account?
+        <span> <a id="sign-in_anch" [routerLink]="signInRoute">Sign In</a></span>
+      </p>
+    </div>
+  </div>
+
+
+
 
   <form [formGroup]="signupFormGroup" (ngSubmit)="submitSignupForm()">
     <div class="form-input-container">
@@ -45,7 +56,6 @@
       <div class="minor-element_flex">
         <mat-checkbox
           id="termsCheckbox"
-          class="example-margin"
           formControlName="termsChecked"
           data-cy="signup-terms-check"
         ></mat-checkbox>
@@ -89,7 +99,7 @@
     </div>
   </form>
 
-  <div class="signup-signin_route">
+  <div class="signup-signin_route desktop_only" >
     <p>
       Already have an account?
       <span> <a id="sign-in_anch" [routerLink]="signInRoute">Sign In</a></span>

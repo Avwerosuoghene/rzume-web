@@ -19,13 +19,27 @@
 }
 
 .auth-container {
-  padding: 32px 0;
+
   height: 100%;
   display: flex;
-  gap: 48px;
+  gap: 32px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  .auth-top_view_elements {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  @media (min-width: 700px) {
+    gap: 48px;
+  }
+
 
   .form-input-container {
     display: flex;
@@ -40,3 +54,7 @@
     margin-top: 48px;
   }
 }
+
+
+
+

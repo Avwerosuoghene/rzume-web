@@ -1,5 +1,17 @@
 <div class="login-container">
-  <h3>Log In</h3>
+  <div class="auth-top_view_elements">
+    <h3>Log In</h3>
+    <div class="login-signin_route mobile_only">
+      <p>
+        Don't have an account?
+        <span>
+          <a id="#sign_in_anchor" [routerLink]="signUpRoute"
+            >Create Account</a
+          ></span
+        >
+      </p>
+    </div>
+  </div>
 
   <form [formGroup]="loginFormGroup" (ngSubmit)="submitLoginForm()">
     <div class="form-input-container">
@@ -41,6 +53,20 @@
         </mat-error>
       </mat-form-field>
 
+      <div class="rememberCheck-forgotPass">
+        <div class="minor-element_flex">
+          <mat-checkbox
+            id="remberMeCheck"
+            formControlName="rememberMe"
+            data-cy="rememberMe-terms-check"
+          ></mat-checkbox>
+
+          <p>Remember me</p>
+        </div>
+        <a id="#forgotPass_anchor" [routerLink]="forgotPassRoute"
+        >Forgot Password?</a>
+      </div>
+
       <button
         class="form-input-confirm-button"
         mat-flat-button
@@ -58,7 +84,7 @@
     </div>
   </form>
 
-  <div class="login-signin_route">
+  <div class="login-signin_route desktop_only">
     <p>
       Don't have an account?
       <span>

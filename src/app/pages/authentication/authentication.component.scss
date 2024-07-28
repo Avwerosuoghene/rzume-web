@@ -10,7 +10,7 @@
   align-items: center;
   background: #fff;
   position: relative;
-  padding: 0 24px;
+  padding: 20px;
 
   @media (min-width: 700px) {
     padding: 55px 52px;
@@ -55,23 +55,23 @@
 
 
 
+
       img {
         opacity: 0;
-        width: 172px;
-        margin-bottom: 60px;
+        width: 80px;
+
 
         @media (min-width: 700px) {
-          width: 250px;
-          margin-bottom: unset;
+          width: 144px;
         }
       }
 
       .auth-route-elements {
 
         width: 100%;
-        @media (min-width: 700px) {
+
           flex-grow: 1;
-        }
+
       }
     }
 

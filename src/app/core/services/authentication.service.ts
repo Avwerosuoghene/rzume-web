@@ -3,7 +3,7 @@ import { ApiService } from './api.service';
 import { ApiRoutes } from './api.routes';
 import {  IApiUrlParam } from '../models/interface/utilities-interface';
 import { IAPIResponse, ISigninResponse, ISignupResponse, IValidateUserResponse } from '../models/interface/api-response-interface';
-import { IGetRequestParams, ISignupSiginPayload } from '../models/interface/api-requests-interface';
+import { IGetRequestParams, IRequestPassResetPayload, ISignupSiginPayload } from '../models/interface/api-requests-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +25,8 @@ export class AuthenticationService {
       ApiRoutes.user.login, payload, true
     )
   }
+
+
 
   onboard(payload: ISignupSiginPayload) {
     return this.apiService.post<IAPIResponse<ISigninResponse>>(

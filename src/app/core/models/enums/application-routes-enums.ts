@@ -1,6 +1,6 @@
 export enum RootRoutes {
   auth = 'auth',
-  main = 'main'
+  main = 'main',
 }
 
 export enum AuthRoutes {
@@ -8,7 +8,9 @@ export enum AuthRoutes {
   signin = 'login',
   onboard = 'onboard',
   passwordReset = 'password-reset',
-  emailConfirmation = 'email-confirmation'
+  emailConfirmation = 'email-confirmation',
+  forgotPass= 'request-pass-reset'
+
 }
 
 export enum MainRoutes {

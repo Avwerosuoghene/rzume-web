@@ -15,6 +15,7 @@ export class ApiRoutes
   static profileManagement = {
     uploads: `${this.profileManagementRoute}upload`,
     onboarding: `${this.profileManagementRoute}user-onboarding`,
+    requestPassReset: `${this.profileManagementRoute}request-password-reset`,
   }
 
   static utility = {

@@ -28,4 +28,8 @@ export interface IOnboardUserFirstStagePayload {
   userName: string
 }
 
+export interface IRequestPassResetPayload {
+  email: string
+}
+
 

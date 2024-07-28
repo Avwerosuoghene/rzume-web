@@ -33,6 +33,7 @@ export class LoginComponent {
   loaderIsActive: boolean = false;
   router = inject(Router);
   signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
+  forgotPassRoute = `/${RootRoutes.auth}/${AuthRoutes.forgotPass}`
 
 
 
@@ -43,11 +44,11 @@ export class LoginComponent {
 
 
   ngOnInit(): void {
-    this.initializeLoginForm();
+    this.initializeForm();
   }
 
 
-  initializeLoginForm(): void {
+  initializeForm(): void {
     this.loginFormGroup = this.fb.group({
       email: this.fb.control('', {
         validators: [
@@ -59,7 +60,8 @@ export class LoginComponent {
         validators: [
           Validators.required
         ]
-      })
+      }),
+      rememberMe: this.fb.control(false),
     })
   }
 
