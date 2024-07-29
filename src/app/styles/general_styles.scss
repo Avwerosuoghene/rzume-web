@@ -18,6 +18,21 @@
   }
 }
 
+.rzume-button-outline {
+  border-radius: 8px;
+  height: 48px;
+
+  .button-elements {
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+  }
+
+
+}
+
 .auth-container {
 
   height: 100%;

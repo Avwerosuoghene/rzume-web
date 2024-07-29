@@ -23,6 +23,10 @@ export class InfoDialogComponent {
   ) {
     this.infoIcon = this.infoDialogData.statusIcon;
     this.infoMessage = this.infoDialogData.infoMessage;
+    console.log(this.infoMessage);
+
+    if (this.infoIcon === 'close' && (this.infoMessage === undefined || this.infoMessage === '')) this.infoMessage = 'Something went wrong';
+
   }
 
 

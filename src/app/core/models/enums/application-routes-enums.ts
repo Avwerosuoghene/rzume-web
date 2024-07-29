@@ -7,7 +7,7 @@ export enum AuthRoutes {
   signup = 'register',
   signin = 'login',
   onboard = 'onboard',
-  passwordReset = 'password-reset/:token',
+  passwordReset = 'reset-password/:token/:email',
   emailConfirmation = 'email-confirmation',
   forgotPass= 'request-pass-reset'
 

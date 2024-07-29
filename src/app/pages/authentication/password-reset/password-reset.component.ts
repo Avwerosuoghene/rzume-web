@@ -10,6 +10,10 @@ import { ProfileManagementService } from '../../../core/services/profile-managem
 import { PasswordVisibility, StatusIcon, ToggledPassword } from '../../../core/models/types/ui-types';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 import { PasswordUtility } from '../../../core/helpers/password-utility';
+import { IResetPassword } from '../../../core/models/interface/api-requests-interface';
+import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
+import { IErrorResponse } from '../../../core/models/interface/errors-interface';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 
 @Component({
   selector: 'app-password-reset',
@@ -19,7 +23,7 @@ import { PasswordUtility } from '../../../core/helpers/password-utility';
   styleUrl: './password-reset.component.scss'
 })
 export class PasswordResetComponent {
-  activePasswordResetScreen: PassWordResetScreens = PassWordResetScreens.successScreen;
+  activePasswordResetScreen: PassWordResetScreens = PassWordResetScreens.formScreen;
   resetPassFormGroup!: FormGroup;
   loaderIsActive: boolean = false;
   router = inject(Router);
@@ -29,9 +33,10 @@ export class PasswordResetComponent {
   passwordVisibility: PasswordVisibility = 'password';
   confirmPasswordVisibility: PasswordVisibility = 'password';
   tokenValue: string | null = null;
+  userMail: string | null = null;
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
   passwordResetCompleteicon: StatusIcon = 'done';
-  resetCompleteMessage: string = 'Request Completed'
+  resetCompleteMessage: string = '';
 
 
 
@@ -41,9 +46,17 @@ export class PasswordResetComponent {
 
 
   ngOnInit(): void {
-    this.tokenValue = this.route.snapshot.paramMap.get('token');
+
+    this.getTokenAndEmail()
     this.initializeForm();
 
+  }
+
+  getTokenAndEmail(): void {
+    this.route.params.subscribe(params => {
+      this.tokenValue = decodeURIComponent(params['token']);
+      this.userMail = decodeURIComponent(params['email']);
+    });
   }
 
   initializeForm(): void {
@@ -75,21 +88,66 @@ export class PasswordResetComponent {
 
   validatePassword(): void {
     this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.resetPassFormGroup.get('password')?.value);
-
   }
 
   togglePasswordVisibility(toggledPass: ToggledPassword): void {
     this[toggledPass] = PasswordUtility.toggleVisibility(this[toggledPass]);
   }
 
-  submitSignupForm() {
+  submitPasswordResetForm() {
 
     if (this.resetPassFormGroup.invalid) {
       return
     }
 
+    this.loaderIsActive = true;
+    const passwordResetPayload: IResetPassword = {
+      email: this.userMail!,
+      password: this.password!.value,
+      resetToken: this.tokenValue!
+    }
+    this.profileMgmtService.resetPassword(passwordResetPayload).subscribe({
+      next: (passwordResetResponse: IAPIResponse<boolean>) => {
+        this.loaderIsActive = false;
+        this.resetPassFormGroup.reset();
+        this.activePasswordResetScreen = PassWordResetScreens.successScreen;
+        console.log(passwordResetResponse);
+        if (passwordResetResponse.isSuccess == true) {
+          this.passwordResetCompleteicon = 'done';
+          this.resetCompleteMessage = 'Password reset succesfully';
+          return;
+
+        }
+
+        this.passwordResetCompleteicon = 'close';
+        this.resetCompleteMessage = 'Password reset failed';
+
+
+
+      },
+      error: (error: IErrorResponse) => {
+        this.loaderIsActive = false;
+        console.log(error.errorMessage);
+        this.activePasswordResetScreen = PassWordResetScreens.successScreen;
+        this.passwordResetCompleteicon = 'close';
+        this.resetCompleteMessage = error.errorMessage;
+
+      }
+    });
+
 
   }
+
+  goBackToForm() {
+    this.activePasswordResetScreen = PassWordResetScreens.formScreen;
+    console.log(this.activePasswordResetScreen);
+  }
+
+  goToLogin() {
+    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.signin}`]);
+
+  }
+
 
 
   isBtnDisabled(): boolean {

@@ -32,4 +32,10 @@ export interface IRequestPassResetPayload {
   email: string
 }
 
+export interface IResetPassword {
+  email: string,
+  password : string,
+  resetToken: string
+}
+
 
