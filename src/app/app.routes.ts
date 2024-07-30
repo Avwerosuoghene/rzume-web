@@ -4,12 +4,12 @@ import { authenticationRoutes } from './pages/authentication/authentication-rout
 import { MainComponent } from './pages/main/main.component';
 import { RootRoutes } from './core/models/enums/application-routes-enums';
 import { mainSectionRoutes } from './pages/main/main-routes';
+import { AuthGuardService } from './core/guards/auth-guard.service';
 
 export const routes: Routes = [
   { path: '', redirectTo: `${RootRoutes.auth}`, pathMatch: "full" },
   {
     path: `${RootRoutes.auth}`, component: AuthenticationComponent, children: authenticationRoutes,
   },
-  { path: `${RootRoutes.main}`, component: MainComponent, children: mainSectionRoutes, },
-  { path: `${RootRoutes.main}`, component: MainComponent }
+  { path: `${RootRoutes.main}`, component: MainComponent, children: mainSectionRoutes,  canActivate: [AuthGuardService]},
 ];
