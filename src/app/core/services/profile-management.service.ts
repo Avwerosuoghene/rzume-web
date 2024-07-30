@@ -27,6 +27,8 @@ export class ProfileManagementService {
   }
 
   resetPassword(payload: IResetPassword) {
+    payload.password = window.btoa(payload.password.toString())
+
     return this.apiService.post<IAPIResponse<boolean>>(
       ApiRoutes.profileManagement.resetPassword, payload, false
     )
