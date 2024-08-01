@@ -20,7 +20,7 @@ export class AuthenticationService {
   }
 
   login(payload: ISignupSiginPayload) {
-    payload.password = window.btoa(payload.password.toString())
+    payload.password = window.btoa(payload.password.toString());
     return this.apiService.post<IAPIResponse<ISigninResponse>>(
       ApiRoutes.user.login, payload, true
     )

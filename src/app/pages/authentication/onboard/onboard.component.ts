@@ -70,7 +70,8 @@ export class OnboardComponent {
     if (this.onboardFormGroup.invalid) {
       return;
     }
-    const email = SessionStorageUtil.getItem(SessionStorageData.userMail);
+    const userData = SessionStorageUtil.getItem(SessionStorageData.userData);
+    const email = userData? userData.email: undefined;
     const userName: string = this.onboardFormGroup.get('username')!.value;
     if (!email) return this.openErrorDialog();
     const onBoardUserPayload: IOnboardUserPayload<IOnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, email!);
