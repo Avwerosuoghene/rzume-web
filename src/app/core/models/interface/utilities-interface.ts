@@ -11,3 +11,8 @@ export interface SessionStorageData {
   authToken: string;
 }
 
+export interface FilterOption{
+  value: string,
+  label: string
+}
+

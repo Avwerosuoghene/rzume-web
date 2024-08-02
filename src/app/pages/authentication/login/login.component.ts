@@ -14,7 +14,6 @@ import { IAPIResponse, ISigninResponse } from '../../../core/models/interface/ap
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { IUser } from '../../../core/models/interface/user-model-interface';
 import { onBoardStages } from '../../../core/models/enums/utility-enums';
 import { ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
 

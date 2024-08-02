@@ -1,0 +1,13 @@
+<div class="filter-container">
+  <img src="assets/icons/filter-icon.png" alt="filter icon" />
+  <span><p class="light_text">Filter</p></span>
+  <select
+    class="filter-dropdown"
+    [(ngModel)]="selectedFilter"
+    (change)="onFilterChange($event)"
+  >
+    @for (filter of filters; track $index) {
+    <option>{{ filter.label }}</option>
+    }
+  </select>
+</div>

@@ -1,0 +1,62 @@
+<div class="table_outer_container">
+  <div class="table_container">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>
+            <input
+              type="checkbox"
+              (change)="toggleAllSelections($event)"
+              [checked]="isAllSelected()"
+            />
+          </th>
+
+          <th *ngFor="let col of columns">{{ col.header }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data">
+          <td>
+            <input
+              type="checkbox"
+              (change)="onCheckboxChange(item, $event)"
+              [(ngModel)]="item.selected"
+            />
+          </td>
+          <td *ngFor="let col of columns.slice(1)"><p>{{ item[col.field] }}</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+  </div>
+  <div class="pagination">
+    <div class="item_per_page_container">
+      <p>{{ itemsPerPage }}</p>
+      <mat-icon id="expand_icon">arrow_forward_ios</mat-icon>
+
+      <select (change)="onItemsPerPageChange($event)">
+        <option *ngFor="let option of [5, 10, 20, 50]" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+
+    <button *ngIf="currentPage > 1" (click)="onPageChange(currentPage - 1)">
+      Previous
+    </button>
+    <button
+      *ngFor="let page of getPageNumbers()"
+      [class.active]="page === currentPage"
+      (click)="onPageChange(page)"
+    >
+      {{ page }}
+    </button>
+    <button
+      *ngIf="currentPage < totalPages"
+      (click)="onPageChange(currentPage + 1)"
+    >
+      Next
+    </button>
+  </div>
+</div>

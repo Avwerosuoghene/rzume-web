@@ -1,0 +1,27 @@
+@import "../../styles/theme.scss";
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid $light-grey;
+  border-radius: 8px;
+  padding: 10px 16px;
+  max-width: 400px;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 16px;
+  padding: 5px;
+
+  &::placeholder {
+    color: $light-grey;
+  }
+}

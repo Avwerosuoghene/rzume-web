@@ -1,1 +1,28 @@
-<p>dashboard works!</p>
+<section class="dashboard_container">
+  <div class="stat_highlight_container">
+    @for (statItem of statHighLights; track $index) {
+    <div class="stat_highlight_element">
+      <p class="light_text">{{ statItem.description }}</p>
+      <h3>{{ statItem.value }}</h3>
+    </div>
+    }
+  </div>
+
+  <div class="utility_els_container">
+    <button class="add_job_btn" mat-flat-button type="button">
+      <mat-icon>add</mat-icon>
+      <p>Add Job</p>
+    </button>
+    <div class="search_n_filter">
+      <app-custom-search-input
+        (searchChange)="onSearch($event)"
+      ></app-custom-search-input>
+      <app-filter-dropdown
+        [filters]="filterOptions"
+        (filterChange)="handleFilterChange($event)"
+      ></app-filter-dropdown>
+    </div>
+  </div>
+
+ <app-custom-table  (onSelectionChanged)=" handleSelectionChanged($event)" (pageChanged)="handlePageChanged($event)"  (itemPerPageChanged)="handleChangeInItemPerPage($event)" [columns]="columns" [totalPages]="totalPages" [data]="data"></app-custom-table>
+</section>
