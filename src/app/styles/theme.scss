@@ -3,10 +3,13 @@ $rzume-blue: rgba(62, 127, 255, 1);
 $light-blue: rgba(235, 244, 255, 1);
 $grey: rgba(139, 139, 139, 1);
 $light-grey: rgb(227,227,228);
-$extra-light-grey: rgb(236, 236, 236);
+$extra-light-grey: rgb(247 247 247);
 $basic-green: var(--Success-Color, rgba(93, 210, 122, 1));
+$basic-green-light: rgba(93, 210, 122, 0.15);
 $amber: rgb(255, 191, 0);
+$amber-light: rgba(250, 191, 1, 0.1);
 $warning: 	rgb(240,44,44);
+$warning-light: 	rgba(240,44,44, 0.15);
 $white: rgba(255, 255, 255, 1);
 $lowsaturation-blue: rgb(102, 115, 144);
 

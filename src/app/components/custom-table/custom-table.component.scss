@@ -1,3 +1,6 @@
+@import "../../styles/theme.scss";
+@import "../../styles/general_styles.scss";
+
 .table_outer_container {
   .table_container {
     overflow: auto;
@@ -6,16 +9,84 @@
   .custom-table {
     width: 100%;
     border-collapse: collapse;
-  }
+    overflow: auto;
 
-  .custom-table th,
-  .custom-table td {
-    border-bottom: 1px solid #ddd;
-    padding: 8px;
-  }
+    th {
+      background-color: $white;
+      p {
+        text-align: start;
+      }
 
-  .custom-table th {
-    background-color: #fff;
+      &:first-child {
+        border-radius: 6px 0 0 6px;
+      }
+
+      &:last-child {
+        border-radius: 0 6px 6px 0;
+      }
+    }
+
+    th,
+    td {
+      padding: 8px;
+
+      &.set_width_long {
+        min-width: 160px;
+      }
+
+      &.set_width_short {
+        min-width: 100px;
+      }
+    }
+
+    .row_element {
+      &.applied {
+        @extend .status_container;
+        background-color: $light-grey;
+      }
+      &.interview {
+        @extend .status_container;
+        background-color: $amber-light;
+
+        p {
+          color: $amber;
+        }
+      }
+      &.rejected {
+        @extend .status_container;
+        background-color: $warning-light;
+
+        p {
+          color: $warning;
+        }
+      }
+      &.offer {
+        @extend .status_container;
+        background-color: $basic-green-light;
+
+        p {
+          color: $basic-green;
+        }
+      }
+      &.wishlist {
+        @extend .status_container;
+        background-color: $light-grey;
+
+        p {
+          color: $grey;
+        }
+      }
+    }
+
+    td {
+      border-bottom: 1px solid $light-grey;
+
+      padding: 20px 8px;
+
+      &.centered {
+        text-align: center;
+      }
+    }
   }
 
   .pagination {
@@ -28,8 +99,8 @@
       position: relative;
       padding: 10px 20px;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      background-color: white;
+      border: 1px solid $light-grey;
+      background-color: $white;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -49,46 +120,34 @@
       height: 100%;
       top: 0px;
       left: 0px;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #fff;
-      font-size: 14px;
-      color: #333;
       cursor: pointer;
-      outline: none;
-      transition: border-color 0.3s ease;
-      margin-right: 20px;
       opacity: 0;
-
-      &:hover {
-        border-color: #888;
-      }
-
-      &:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-      }
     }
 
-    option {
-      padding: 8px 12px;
-      background-color: #fff;
-      color: #333;
+    .navigation_buttons {
+      display: flex;
+      gap: 2px;
     }
-  }
 
-  .pagination button {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px 10px;
-    background: #f9f9f9;
-    cursor: pointer;
-  }
+    button {
+      padding: 5px 20px;
+      background: $white;
+      cursor: pointer;
+      border: none;
+      height: 100%;
 
-  .pagination button.active {
-    background: #007bff;
-    color: #fff;
+      &.active {
+        background: $rzume-blue;
+        color: $white;
+      }
+
+      &.first_btn {
+        border-radius: 4px 0 0 4px;
+      }
+
+      &.last_btn {
+        border-radius: 0 4px 4px 0;
+      }
+    }
   }
 }
-

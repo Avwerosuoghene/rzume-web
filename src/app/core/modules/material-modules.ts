@@ -4,11 +4,13 @@ import { MatInputModule } from "@angular/material/input";
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatMenuModule} from '@angular/material/menu';
+
 
 
 
 
 
 export const AngularMaterialModules: readonly any[]  = [
-  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule,MatCheckboxModule,
+  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule,MatCheckboxModule,MatMenuModule
 ];

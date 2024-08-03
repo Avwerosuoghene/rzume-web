@@ -8,27 +8,79 @@
               type="checkbox"
               (change)="toggleAllSelections($event)"
               [checked]="isAllSelected()"
+              class="custom-checkbox"
             />
           </th>
 
-          <th *ngFor="let col of columns">{{ col.header }}</th>
+          @for (col of columns; track $index) {
+          <th
+            [ngClass]="
+              getLongWidthItems(col.field)
+                ? 'set_width_long'
+                : getShortWidthItems(col.field)
+                ? 'set_width_short'
+                : ''
+            "
+          >
+            <p>{{ col.header }}</p>
+          </th>
+
+          }
+          <th>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of data">
-          <td>
+        @for (item of data; track $index) {
+        <tr>
+          <td class="centered">
             <input
               type="checkbox"
               (change)="onCheckboxChange(item, $event)"
               [(ngModel)]="item.selected"
+              class="custom-checkbox"
             />
           </td>
-          <td *ngFor="let col of columns.slice(1)"><p>{{ item[col.field] }}</p></td>
+          @for (col of columns; track $index) {
+          <td
+            [ngClass]="
+              getLongWidthItems(col.field)
+                ? 'set_width_long'
+                : getShortWidthItems(col.field)
+                ? 'set_width_short'
+                : ''
+            "
+          >
+            <div class="row_element" [ngClass]="col.field === 'status' ? item[col.field].toLowerCase(): ''">
+              <p>{{ item[col.field] }}</p>
+            </div>
+          </td>
+          }
+
+          <td class="centered">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>swap_horiz</mat-icon>
+                <span> Change Status</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>delete</mat-icon>
+                <span> Remove</span>
+              </button>
+            </mat-menu>
+
+          </td>
         </tr>
+        }
       </tbody>
     </table>
-
-    <!-- Pagination -->
   </div>
   <div class="pagination">
     <div class="item_per_page_container">
@@ -36,27 +88,32 @@
       <mat-icon id="expand_icon">arrow_forward_ios</mat-icon>
 
       <select (change)="onItemsPerPageChange($event)">
-        <option *ngFor="let option of [5, 10, 20, 50]" [value]="option">
+        @for (option of [5, 10, 20, 50]; track $index) {
+        <option [value]="option">
           {{ option }}
         </option>
+        }
       </select>
     </div>
-
-    <button *ngIf="currentPage > 1" (click)="onPageChange(currentPage - 1)">
-      Previous
-    </button>
-    <button
-      *ngFor="let page of getPageNumbers()"
-      [class.active]="page === currentPage"
-      (click)="onPageChange(page)"
-    >
-      {{ page }}
-    </button>
-    <button
-      *ngIf="currentPage < totalPages"
-      (click)="onPageChange(currentPage + 1)"
-    >
-      Next
-    </button>
+    <div class="navigation_buttons">
+      @if (currentPage > 1) {
+      <button (click)="onPageChange(currentPage - 1)" class="first_btn">
+        Previous
+      </button>
+      } @for (page of getPageNumbers(); track $index) {
+      <button
+        [class.active]="page === currentPage"
+        [class.first_btn]="page === 1 && currentPage === 1"
+        [class.last_btn]="page === totalPages && currentPage === totalPages"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+      } @if (currentPage < totalPages) {
+      <button (click)="onPageChange(currentPage + 1)" class="last_btn">
+        Next
+      </button>
+      }
+    </div>
   </div>
 </div>

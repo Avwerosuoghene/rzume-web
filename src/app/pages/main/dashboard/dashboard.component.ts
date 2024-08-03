@@ -41,8 +41,8 @@ export class DashboardComponent implements OnInit {
   }
 
   handleChangeInItemPerPage(event: any): void {
-  console.log(event);
-  this.itemsPerPage = event;
+    console.log(event);
+    this.itemsPerPage = event;
 
   }
 
@@ -93,14 +93,11 @@ export class DashboardComponent implements OnInit {
 
   setupColumns(): void {
     this.columns = [
-      { header: 'Select', field: 'select' },
-      { header: 'Order ID', field: 'order_id' },
-      { header: 'Order Item ID', field: 'order_item_id' },
-      { header: 'Product ID', field: 'product_id' },
-      { header: 'Shipping Limit Date', field: 'shipping_limit_date' },
-      { header: 'Seller ID', field: 'seller_id' },
-      { header: 'Price', field: 'price' },
-      { header: 'Freight Value', field: 'freight_value' }
+      { header: 'Company', field: 'company' },
+      { header: 'Job Role', field: 'job_role' },
+      { header: 'Cv Used', field: 'cv' },
+      { header: 'Status', field: 'status' },
+      { header: 'Date', field: 'date' },
     ];
   }
 

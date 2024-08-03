@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
-import { MockDataService } from '../../core/services/mock-data.service';
+import { ViewUtilities } from '../../core/helpers/view-utlities';
 
 @Component({
   selector: 'app-custom-table',
@@ -99,12 +99,27 @@ export class CustomTableComponent {
     return [...new Set(pages)].sort((a, b) => a - b);
   }
 
+  getStatusStyle(statusValue: string): string{
+
+    return ''
+  }
+
+  getLongWidthItems(item: string) {
+    return ViewUtilities.checkItemForLongElegibility(item);
+  }
+
+  getShortWidthItems(item: string) {
+    return ViewUtilities.checkItemForShortElegibility(item);
+
+  }
+
   toggleAllSelections(event: any) {
+    const checked = event.target.checked;
     this.selectedItems = [];
 
     this.data.forEach(item => {
       this.selectedItems.push(item);
-      item.selected = !item.selected
+      item.selected = checked;
     });
     this.onSelectionChanged.emit(this.selectedItems);
 

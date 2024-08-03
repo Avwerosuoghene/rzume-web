@@ -70,6 +70,13 @@
   }
 }
 
+.status_container {
+  border-radius: 24px;
+  padding: 6px 10px;
+  display: inline-flex;
+
+}
+
 .success_fail_icon {
   position: relative;
   border-radius: 50%;
@@ -86,6 +93,8 @@
       color: $warning
     }
   }
+
+
 }
 
 
