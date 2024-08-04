@@ -75,6 +75,10 @@ export class SignupComponent {
       this.loaderIsActive);
   }
 
+  isGoogleBtnDisabled (): boolean {
+    return this.loaderIsActive;
+  }
+
   get email() {
     return this.signupFormGroup.get('email');
   }

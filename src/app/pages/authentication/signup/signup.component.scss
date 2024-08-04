@@ -4,6 +4,28 @@
 .signup-container {
   @extend .auth-container;
 
+  .google_signup {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
+    .google_btn {
+      @extend .rzume-button;
+      width: 100%;
+      margin-top: 10px;
 
+      &:disabled {
+        #google_icon {
+          filter: grayscale(100%);
+        }
+      }
+
+      #google_icon {
+        height: 42px;
+        margin-left: -42px;
+        margin-right: 10px;
+      }
+    }
+  }
 }

@@ -82,6 +82,26 @@
           <p>Continue</p>
         </div>
       </button>
+      <div class="google_signin">
+        <p>Or</p>
+        <button
+        class="google_btn"
+        mat-flat-button
+        [disabled]="isGoogleBtnDisabled()"
+        type="submit"
+        id="signupBtn"
+      >
+        <div class="button-elements">
+          @if (loaderIsActive) {
+          <app-circular-loader></app-circular-loader>
+          }
+          @if(!loaderIsActive) {
+            <img id="google_icon" src="assets/icons/google.png" alt="">
+          }
+          <p>Signin with Google</p>
+        </div>
+      </button>
+      </div>
     </div>
   </form>
 

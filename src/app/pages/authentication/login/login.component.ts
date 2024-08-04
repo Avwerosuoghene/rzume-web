@@ -78,6 +78,10 @@ export class LoginComponent {
 
   }
 
+  isGoogleBtnDisabled (): boolean {
+    return this.loaderIsActive;
+  }
+
   submitLoginForm() {
     if (this.loginFormGroup.invalid) {
       return;
