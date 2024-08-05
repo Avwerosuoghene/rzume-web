@@ -17,7 +17,7 @@ import { InfoDialogData } from '../../../core/models/interface/dialog-models-int
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { IAPIResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
+import { IAPIResponse, ISigninResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 import { ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
 import { slideOutAnimation } from '../../../core/animations/slide-in-out-animations';
@@ -152,6 +152,20 @@ export class SignupComponent {
       }
     })
 
+  }
+
+  googleSignup(){
+    this.authService.googleLogin().subscribe({
+      next: (response: IAPIResponse<ISigninResponse>) => {
+        this.loaderIsActive = false;
+        console.log(response);
+
+      },
+      error: (error: IErrorResponse) => {
+        this.loaderIsActive = false;
+        console.log(error);
+      }
+    })
   }
 
   generateSignUpPayload(userMail: string, password: string): ISignupSiginPayload {

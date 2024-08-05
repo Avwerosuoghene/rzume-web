@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from './api.routes';
-import {  IApiUrlParam } from '../models/interface/utilities-interface';
+import { IApiUrlParam } from '../models/interface/utilities-interface';
 import { IAPIResponse, ISigninResponse, ISignupResponse, IValidateUserResponse } from '../models/interface/api-response-interface';
 import { IGetRequestParams, IRequestPassResetPayload, ISignupSiginPayload } from '../models/interface/api-requests-interface';
 
@@ -16,6 +16,18 @@ export class AuthenticationService {
     payload.password = window.btoa(payload.password.toString())
     return this.apiService.post<IAPIResponse<ISignupResponse>>(
       ApiRoutes.user.register, payload, false
+    )
+  }
+
+  googleLogin() {
+    const apiRoute = ApiRoutes.user.googleSigin;
+
+    const getRequestParams: IGetRequestParams = {
+      apiRoute: apiRoute,
+      handleResponse: false
+    }
+    return this.apiService.get<IAPIResponse<ISigninResponse>>(
+      getRequestParams
     )
   }
 

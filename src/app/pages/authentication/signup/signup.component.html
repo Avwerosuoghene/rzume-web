@@ -98,6 +98,7 @@
         [disabled]="isGoogleBtnDisabled()"
         type="submit"
         id="signupBtn"
+        (click)="googleSignup()"
       >
         <div class="button-elements">
           @if (loaderIsActive) {
