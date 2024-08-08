@@ -68,8 +68,9 @@
         >
       </div>
 
-      <button
-        class="form-input-confirm-button"
+      <div class="action_btns">
+        <button
+        class="form-input-confirm-button login_btn"
         mat-flat-button
         [disabled]="loginFormGroup.invalid || loaderIsActive"
         type="submit"
@@ -82,26 +83,16 @@
           <p>Continue</p>
         </div>
       </button>
-      <div class="google_signin">
-        <p>Or</p>
-        <button
-        class="google_btn"
-        mat-flat-button
-        [disabled]="isGoogleBtnDisabled()"
-        type="submit"
-        id="signupBtn"
-      >
-        <div class="button-elements">
-          @if (loaderIsActive) {
-          <app-circular-loader></app-circular-loader>
-          }
-          @if(!loaderIsActive) {
-            <img id="google_icon" src="assets/icons/google.png" alt="">
-          }
-          <p>Signin with Google</p>
-        </div>
-      </button>
+
+
+      <p>Or</p>
+      <div id="google_btn_container">
+        <div id="google-btn"></div>
+
       </div>
+      </div>
+
+
     </div>
   </form>
 

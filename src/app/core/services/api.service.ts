@@ -15,7 +15,7 @@ import { IGetRequestParams } from '../models/interface/api-requests-interface';
 export class ApiService {
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog) { }
-  public get<T>(requestParams: IGetRequestParams, ): Observable<T> {
+  public get<T>(requestParams: IGetRequestParams, reqHeaders: HttpHeaders ): Observable<T> {
     const {apiRoute, id, _params, handleResponse} =requestParams;
 
     let route: string = `${environment.apiBaseUrl}/${apiRoute}${id? '/'+id: ''}`;
@@ -26,10 +26,7 @@ export class ApiService {
       })
     }
 
-    const headers = new HttpHeaders({
-      'Content-type': 'application/json'
-    });
-
+    const headers = reqHeaders
 
 
     return this.httpClient.get<T>(route, {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthenticationComponent } from './pages/authentication/authentication.component';
 import { RouterModules } from './core/modules/router-modules';
 
@@ -9,8 +9,16 @@ import { RouterModules } from './core/modules/router-modules';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'rzume_web';
+
+  ngOnInit(): void {
+
+  }
+
+  checkUserSession() {
+    
+  }
 
 
 }

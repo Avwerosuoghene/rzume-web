@@ -13,6 +13,10 @@ export interface ISignupSiginPayload {
   password: string
 }
 
+export interface IGoogleSignInPayload {
+  userToken: string,
+}
+
 export  interface IOnboardUserPayload<T>
 {
     onBoardingStage: number,

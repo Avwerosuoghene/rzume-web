@@ -155,17 +155,7 @@ export class SignupComponent {
   }
 
   googleSignup(){
-    this.authService.googleLogin().subscribe({
-      next: (response: IAPIResponse<ISigninResponse>) => {
-        this.loaderIsActive = false;
-        console.log(response);
 
-      },
-      error: (error: IErrorResponse) => {
-        this.loaderIsActive = false;
-        console.log(error);
-      }
-    })
   }
 
   generateSignUpPayload(userMail: string, password: string): ISignupSiginPayload {

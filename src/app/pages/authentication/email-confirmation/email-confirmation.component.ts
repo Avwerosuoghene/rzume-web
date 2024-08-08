@@ -58,7 +58,6 @@ export class EmailConfirmationComponent {
           this.emailValidMsg = responseContent.message;
           this.emailValidationBtnTxt = ButtonTxt.continue;
           SessionStorageUtil.setItem(SessionStorageData.authToken,response.result.content.token!);
-          SessionStorageUtil.setItem(SessionStorageData.userData,response.result.content.user!);
           return
         }
 

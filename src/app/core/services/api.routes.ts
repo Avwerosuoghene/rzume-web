@@ -9,7 +9,8 @@ export class ApiRoutes
     login: `${this.userRoute}login`,
     emailToken: `${this.userRoute}generate-email-token`,
     validateToken: `${this.userRoute}validate-user-account`,
-    googleSigin:  `${this.userRoute}google-signin`
+    googleSigin:  `${this.userRoute}google-signin`,
+    getActiveUser:  `${this.userRoute}active-user`
   }
 
 
