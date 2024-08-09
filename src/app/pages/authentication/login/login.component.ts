@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CoreModules } from '../../../core/modules/core-modules';
@@ -18,6 +18,7 @@ import { onBoardStages } from '../../../core/models/enums/utility-enums';
 import { IGoogleSignInPayload, ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
 import { environment } from '../../../../environments/environment.development';
 import { GoogleAuthService } from '../../../core/helpers/google-auth.service';
+import { GoogleSiginComponent } from '../../../components/google-sigin/google-sigin.component';
 
 
 
@@ -26,11 +27,14 @@ declare let google: any;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent],
+  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSiginComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  @ViewChild('googleBtn', { static: false }) googleBtn!: ElementRef;
+  @ViewChild(GoogleSiginComponent) googleButtonComponent!: GoogleSiginComponent;
+
   loginFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
   readonly dialog: MatDialog = inject(MatDialog);
@@ -38,9 +42,11 @@ export class LoginComponent {
   loaderIsActive: boolean = false;
   router = inject(Router);
   signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
-  forgotPassRoute = `/${RootRoutes.auth}/${AuthRoutes.forgotPass}`
+  forgotPassRoute = `/${RootRoutes.auth}/${AuthRoutes.forgotPass}`;
+  googleSigninText: string = "Sign in with Google";
 
-  constructor(private authService: AuthenticationService) {}
+
+  constructor(private authService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -54,6 +60,11 @@ export class LoginComponent {
 
   get email() {
     return this.loginFormGroup.get('email');
+  }
+
+
+  triggerGoogleSignin() {
+    this.googleButtonComponent.initiateGoogleSignup();
   }
 
 
@@ -74,16 +85,26 @@ export class LoginComponent {
   setGoogleButtonDisplay() {
     google.accounts.id.renderButton(
       document.getElementById('google-btn'),
-      { theme: 'filled_blue', size: 'large', shape: 'rectangle',  height: '100%',  width: document.getElementById("google_btn_container")?.offsetWidth, }
+      { theme: 'filled_blue', size: 'large', shape: 'rectangle', height: '100%', width: document.getElementById("google_btn_container")?.offsetWidth, }
     );
+  }
+
+  testGoogleBtnClick() {
+    if (this.googleBtn) {
+      this.googleBtn.nativeElement.click();
+    }
   }
 
   handleCredentialResponse(response: any) {
     const googleSigninPayload: IGoogleSignInPayload = { userToken: response.credential };
     this.authService.googleLogin(googleSigninPayload).subscribe({
       next: (response: IAPIResponse<ISigninResponse>) => {
+        console.log(response)
+
         this.loaderIsActive = false;
-        if (response.isSuccess === true)  this.navigateOut(`/${RootRoutes.main}`);
+        this.googleButtonComponent.turnOffLoader();
+        SessionStorageUtil.setItem(SessionStorageData.authToken, response.result.content.token!);
+        if (response.isSuccess === true) this.navigateOut(`/${RootRoutes.main}`);
 
       },
       error: (error: IErrorResponse) => {

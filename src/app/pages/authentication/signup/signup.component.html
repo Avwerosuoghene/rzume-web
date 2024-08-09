@@ -75,7 +75,8 @@
       <div class="action_buttons">
 
       </div>
-      <button
+      <div class="action_btns">
+        <button
         class="form-input-confirm-button"
         mat-flat-button
         [disabled]="isBtnDisabled()"
@@ -90,28 +91,9 @@
           <p>Create an Account</p>
         </div>
       </button>
-      <div class="google_signup">
-        <p>Or</p>
-        <!-- <button
-        class="google_btn"
-        mat-flat-button
-        [disabled]="isGoogleBtnDisabled()"
-        type="submit"
-        id="signupBtn"
-        (click)="googleSignup()"
-      >
-        <div class="button-elements">
-          @if (loaderIsActive) {
-          <app-circular-loader></app-circular-loader>
-          }
-          @if(!loaderIsActive) {
-            <img id="google_icon" src="assets/icons/google.png" alt="">
-          }
-          <p>Signup with Google</p>
-        </div>
-      </button> -->
+      <p>Or</p>
+      <app-google-sigin (tokenEmitter)="googleSignup($event)" (click)="triggerGoogleSignup()" [googleBtnText] ="googleSignupText" ></app-google-sigin>
 
-      <div class="g-signin2" data-onsuccess="onSignIn"></div>
       </div>
     </div>
   </form>

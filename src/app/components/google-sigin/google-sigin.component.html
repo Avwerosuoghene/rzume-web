@@ -1,0 +1,22 @@
+<div class="google_signup">
+  @if(!loaderIsActive) {
+    <img id="google_icon" src="assets/icons/google.png" alt="">
+  }
+  <button
+  class="google_btn"
+  mat-flat-button
+  [disabled]="isGoogleBtnDisabled()"
+  type="button"
+  id="signupBtn"
+  (click)="initiateGoogleSignup()"
+>
+  <div class="button-elements">
+    @if (loaderIsActive) {
+    <app-circular-loader></app-circular-loader>
+    }
+
+    <p>{{googleBtnText}}</p>
+  </div>
+</button>
+
+</div>

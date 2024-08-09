@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
@@ -11,28 +11,32 @@ import { CoreModules } from '../../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/services/authentication.service';
-import { ErrorMsges, IconStat } from '../../../core/models/enums/ui-enums';
+import {  IconStat } from '../../../core/models/enums/ui-enums';
 import { UserExistingStatMsg } from '../../../core/models/enums/api-response-enums';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { IAPIResponse, ISigninResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
+import { IAPIResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
-import { ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
-import { slideOutAnimation } from '../../../core/animations/slide-in-out-animations';
-import { fadeInOutAnimation } from '../../../core/animations/fade-in-out-animation';
-
+import {  ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
+import { GoogleSiginComponent } from '../../../components/google-sigin/google-sigin.component';
 
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent],
+  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSiginComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit {
+  @ViewChild(GoogleSiginComponent) googleButtonComponent!: GoogleSiginComponent;
+  @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
+  googleSignupText: string = "Sign in with Google";
+
+
+
   signupFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
   passwordStrength!: string;
@@ -40,8 +44,6 @@ export class SignupComponent {
   loaderIsActive: boolean = false;
   signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`;
 
-
-  @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
 
 
   router = inject(Router);
@@ -53,11 +55,14 @@ export class SignupComponent {
 
   ngOnInit(): void {
     this.initializeSignupForm();
+
   }
 
 
 
-
+  triggerGoogleSignup() {
+    this.googleButtonComponent.initiateGoogleSignup();
+  }
 
   validatePassword(): void {
     this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.signupFormGroup.get('password')?.value);
@@ -75,9 +80,6 @@ export class SignupComponent {
       this.loaderIsActive);
   }
 
-  isGoogleBtnDisabled (): boolean {
-    return this.loaderIsActive;
-  }
 
   get email() {
     return this.signupFormGroup.get('email');
@@ -154,9 +156,11 @@ export class SignupComponent {
 
   }
 
-  googleSignup(){
-
+  googleSignup(token: any) {
+    this.googleButtonComponent.turnOffLoader();
+    console.log(token);
   }
+
 
   generateSignUpPayload(userMail: string, password: string): ISignupSiginPayload {
     return {

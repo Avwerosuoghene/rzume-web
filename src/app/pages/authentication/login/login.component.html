@@ -86,10 +86,7 @@
 
 
       <p>Or</p>
-      <div id="google_btn_container">
-        <div id="google-btn"></div>
-
-      </div>
+      <app-google-sigin (tokenEmitter)="handleCredentialResponse($event)" (click)="triggerGoogleSignin()" [googleBtnText] ="googleSigninText"  ></app-google-sigin>
       </div>
 
 
