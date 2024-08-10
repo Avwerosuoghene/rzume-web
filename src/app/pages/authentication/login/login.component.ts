@@ -43,7 +43,7 @@ export class LoginComponent {
   router = inject(Router);
   signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
   forgotPassRoute = `/${RootRoutes.auth}/${AuthRoutes.forgotPass}`;
-  googleSigninText: string = "Sign in with Google";
+  googleSigninText: string = "Signin with Google";
 
 
   constructor(private authService: AuthenticationService) { }
@@ -93,6 +93,11 @@ export class LoginComponent {
     if (this.googleBtn) {
       this.googleBtn.nativeElement.click();
     }
+  }
+
+  isBtnDisabled(): boolean {
+    return (this.loginFormGroup.invalid ||
+      this.loaderIsActive);
   }
 
   handleCredentialResponse(response: any) {

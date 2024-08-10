@@ -17,9 +17,9 @@ import { InfoDialogData } from '../../../core/models/interface/dialog-models-int
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { IAPIResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
+import { IAPIResponse, ISigninResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
-import {  ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
+import {  IGoogleSignInPayload, ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
 import { GoogleSiginComponent } from '../../../components/google-sigin/google-sigin.component';
 
 
@@ -33,7 +33,7 @@ import { GoogleSiginComponent } from '../../../components/google-sigin/google-si
 export class SignupComponent implements OnInit {
   @ViewChild(GoogleSiginComponent) googleButtonComponent!: GoogleSiginComponent;
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
-  googleSignupText: string = "Sign in with Google";
+  googleSignupText: string = "Signup with Google";
 
 
 
@@ -161,6 +161,28 @@ export class SignupComponent implements OnInit {
     console.log(token);
   }
 
+  handleCredentialResponse(response: any) {
+    const googleSigninPayload: IGoogleSignInPayload = { userToken: response.credential };
+    this.authService.googleLogin(googleSigninPayload).subscribe({
+      next: (response: IAPIResponse<ISigninResponse>) => {
+        console.log(response)
+
+        this.loaderIsActive = false;
+        this.googleButtonComponent.turnOffLoader();
+        SessionStorageUtil.setItem(SessionStorageData.authToken, response.result.content.token!);
+        if (response.isSuccess === true) this.navigateOut(`/${RootRoutes.main}`);
+
+      },
+      error: (error: IErrorResponse) => {
+        this.loaderIsActive = false;
+        console.log(error);
+      }
+    })
+  }
+
+  navigateOut(navigationRoute: string) {
+    this.router.navigate([navigationRoute]);
+  }
 
   generateSignUpPayload(userMail: string, password: string): ISignupSiginPayload {
     return {
@@ -171,7 +193,7 @@ export class SignupComponent implements OnInit {
 
   navigateToEmailValidationScreen(userMail: string) {
     SessionStorageUtil.setItem(SessionStorageData.userMail, userMail);
-    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`]);
+    this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
   }
 
   resetSignupForm() {

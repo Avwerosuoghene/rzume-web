@@ -1,20 +1,39 @@
-<div class="section_upper">
-  <div class="welcome_section">
-    <p class="light_text">Welcome</p>
-    <h4>{{userInfo?.userName}}</h4>
-  </div>
-  <div class="profile_img_section">
-    <img id="alert_icon" src="assets/icons/bell-icon.png" alt="alert-icon">
-    <div class="profile_pic">
-      <img src="assets/images/default_pic.png" alt="">
+<div class="header_container">
+
+  <div class="section_upper">
+
+    <div class="welcome_section">
+      <p class="light_text">Welcome</p>
+      <h4>{{userInfo?.userName}}</h4>
     </div>
-    <button id="expand_icon_btn" mat-icon-button aria-label="expand-button">
-      <mat-icon id="expand_icon">arrow_forward_ios</mat-icon>
-    </button>
+    <div class="profile_img_section">
+      <img id="alert_icon" src="assets/icons/bell-icon.png" alt="alert-icon">
+      <div class="profile_pic">
+        <img src="assets/images/default_pic.png" alt="">
+      </div>
+      <button [matMenuTriggerFor]="menu"  id="expand_icon_btn" mat-icon-button aria-label="expand-button">
+        <mat-icon id="expand_icon">arrow_forward_ios</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="logout()" >
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+
+      </mat-menu>
+
+    </div>
   </div>
+  <hr class="header" />
+  <div class="section_lower">
+    <p>{{activeComponent | titlecase}}</p>
+    <p class="light_text">28 October 2022</p>
+
+  </div>
+  @if (loaderIsActive) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+
+  }
+
 </div>
-<hr class="header" />
-<div class="section_lower">
-  <p>{{activeComponent | titlecase}}</p>
-  <p class="light_text">28 October 2022</p>
-</div>
+

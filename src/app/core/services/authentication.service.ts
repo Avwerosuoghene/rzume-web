@@ -3,7 +3,7 @@ import { ApiService } from './api.service';
 import { ApiRoutes } from './api.routes';
 import { IApiUrlParam } from '../models/interface/utilities-interface';
 import { IAPIResponse, ISigninResponse, ISignupResponse, IValidateUserResponse } from '../models/interface/api-response-interface';
-import { IGetRequestParams, IGoogleSignInPayload, IRequestPassResetPayload, ISignupSiginPayload } from '../models/interface/api-requests-interface';
+import { IGetRequestParams, IGoogleSignInPayload, IRequestPassResetPayload, ISignOutPayload, ISignupSiginPayload } from '../models/interface/api-requests-interface';
 import { HttpHeaders } from '@angular/common/http';
 import { IUser } from '../models/interface/user-model-interface';
 
@@ -37,6 +37,12 @@ export class AuthenticationService {
     payload.password = window.btoa(payload.password.toString());
     return this.apiService.post<IAPIResponse<ISigninResponse>>(
       ApiRoutes.user.login, payload, true
+    )
+  }
+
+  logout(payload: ISignOutPayload) {
+    return this.apiService.post<IAPIResponse<null>>(
+      ApiRoutes.user.logout, payload, true
     )
   }
 
@@ -83,7 +89,7 @@ export class AuthenticationService {
     const getRequestParams: IGetRequestParams = {
       apiRoute: apiRoute,
       _params: params,
-      handleResponse: false
+      handleResponse: true
     }
     return this.apiService.get<IAPIResponse<IValidateUserResponse>>(
       getRequestParams, this.defaultHeaders

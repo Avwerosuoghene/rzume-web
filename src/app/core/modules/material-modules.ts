@@ -5,6 +5,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+
 
 
 
@@ -12,5 +14,5 @@ import {MatMenuModule} from '@angular/material/menu';
 
 
 export const AngularMaterialModules: readonly any[]  = [
-  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule,MatCheckboxModule,MatMenuModule
+  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule,MatCheckboxModule,MatMenuModule, MatProgressBarModule
 ];

@@ -13,6 +13,10 @@ export interface ISignupSiginPayload {
   password: string
 }
 
+export interface ISignOutPayload {
+  email: string,
+}
+
 export interface IGoogleSignInPayload {
   userToken: string,
 }

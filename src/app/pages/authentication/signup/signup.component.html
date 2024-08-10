@@ -92,7 +92,7 @@
         </div>
       </button>
       <p>Or</p>
-      <app-google-sigin (tokenEmitter)="googleSignup($event)" (click)="triggerGoogleSignup()" [googleBtnText] ="googleSignupText" ></app-google-sigin>
+      <app-google-sigin (tokenEmitter)="handleCredentialResponse($event)" (click)="triggerGoogleSignup()" [googleBtnText] ="googleSignupText" ></app-google-sigin>
 
       </div>
     </div>

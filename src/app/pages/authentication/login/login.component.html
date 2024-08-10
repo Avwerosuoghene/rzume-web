@@ -72,7 +72,7 @@
         <button
         class="form-input-confirm-button login_btn"
         mat-flat-button
-        [disabled]="loginFormGroup.invalid || loaderIsActive"
+        [disabled]="isBtnDisabled()"
         type="submit"
       >
         <div class="button-elements">

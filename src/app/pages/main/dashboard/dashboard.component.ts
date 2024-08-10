@@ -6,6 +6,7 @@ import { FilterDropdownComponent } from '../../../components/filter-dropdown/fil
 import { FilterOption } from '../../../core/models/interface/utilities-interface';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { MockDataService } from '../../../core/services/mock-data.service';
+import { UtilsService } from '../../../core/services/utils.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,9 +27,12 @@ export class DashboardComponent implements OnInit {
   itemsPerPage: number = 5;
   totalItems: number = 0;
   selectedItems: Array<any> = [];
+  loaderIsActive: boolean = false;
 
 
-  constructor(private mockDataService: MockDataService) {
+
+
+  constructor(private mockDataService: MockDataService, private utilityService: UtilsService) {
 
   }
 
@@ -38,8 +42,19 @@ export class DashboardComponent implements OnInit {
     this.setFilterOptions();
     this.fetchData(1);
     this.setupColumns();
+    this.initiateLoader();
   }
 
+  isBtnDisabled() {
+    return (
+      this.loaderIsActive);
+  }
+
+  initiateLoader() {
+    this.utilityService.headerLoader.subscribe(loaderStatus => {
+      this.loaderIsActive = loaderStatus;
+    })
+  }
   handleChangeInItemPerPage(event: any): void {
     console.log(event);
     this.itemsPerPage = event;
@@ -99,6 +114,10 @@ export class DashboardComponent implements OnInit {
       { header: 'Status', field: 'status' },
       { header: 'Date', field: 'date' },
     ];
+  }
+
+  addNewApplicationEtry() {
+    this.utilityService.headerLoader.next(true);
   }
 
 
