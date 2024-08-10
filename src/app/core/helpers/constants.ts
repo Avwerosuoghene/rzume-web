@@ -6,3 +6,5 @@ export const JobApplicationStatus: Array<string> = [
   'applied', 'interview', 'offer', 'rejected', 'wishlist'
 ]
 
+
+

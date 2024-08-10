@@ -19,6 +19,9 @@ import { IGoogleSignInPayload, ISignupSiginPayload } from '../../../core/models/
 import { environment } from '../../../../environments/environment.development';
 import { GoogleAuthService } from '../../../core/helpers/google-auth.service';
 import { GoogleSiginComponent } from '../../../components/google-sigin/google-sigin.component';
+import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
+import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
+import { IconStat } from '../../../core/models/enums/ui-enums';
 
 
 
@@ -161,6 +164,17 @@ export class LoginComponent {
       next: (response: IAPIResponse<ISigninResponse>) => {
         this.loaderIsActive = false;
         this.loginFormGroup.reset();
+        if(response.isSuccess != true) {
+          const dialogData : InfoDialogData = {
+            infoMessage: response.errorMessages[0]?response.errorMessages[0]: 'An error occured',
+            statusIcon: IconStat.failed
+          }
+          this.dialog.open(InfoDialogComponent, {
+            data:dialogData,
+            backdropClass: "blurred"
+          });
+          return;
+        }
         const signinResponseContent: ISigninResponse | undefined = response.result.content;
         if (signinResponseContent.user == null) {
           SessionStorageUtil.setItem(SessionStorageData.userMail, userMail);
@@ -168,12 +182,13 @@ export class LoginComponent {
           return;
         }
         SessionStorageUtil.setItem(SessionStorageData.authToken, signinResponseContent.token!);
-        if (signinResponseContent.user.onBoardingStage === onBoardStages.first) return this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`);
+        if (signinResponseContent.user.onBoardingStage === onBoardStages.first) {
+          return this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`
+          )};
         this.navigateOut(`/${RootRoutes.main}`);
       },
       error: (error: IErrorResponse) => {
         this.loaderIsActive = false;
-        console.error('Login error:', error);
       }
     });
   }

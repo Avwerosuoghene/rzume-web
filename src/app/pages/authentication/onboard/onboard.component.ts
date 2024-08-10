@@ -70,11 +70,10 @@ export class OnboardComponent {
     if (this.onboardFormGroup.invalid) {
       return;
     }
-    const userData = SessionStorageUtil.getItem(SessionStorageData.userData);
-    const email = userData? userData.email: undefined;
+    const userToken = SessionStorageUtil.getItem(SessionStorageData.authToken);
     const userName: string = this.onboardFormGroup.get('username')!.value;
-    if (!email) return this.openErrorDialog();
-    const onBoardUserPayload: IOnboardUserPayload<IOnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, email!);
+    if (!userToken) return this.openErrorDialog();
+    const onBoardUserPayload: IOnboardUserPayload<IOnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, userToken!);
     this.loaderIsActive = true;
 
     this.profileMgmtService.onboard(onBoardUserPayload).subscribe({
@@ -82,6 +81,7 @@ export class OnboardComponent {
         this.loaderIsActive = false;
         this.onboardFormGroup.reset();
         if (onboardResponse.isSuccess) {
+
           this.navigateOut(`/${RootRoutes.main}`);
           return
         }
@@ -118,13 +118,13 @@ export class OnboardComponent {
 
   }
 
-  generateOnBoardPayload(userName: string, userMail: string): IOnboardUserPayload<IOnboardUserFirstStagePayload> {
+  generateOnBoardPayload(userName: string, token: string): IOnboardUserPayload<IOnboardUserFirstStagePayload> {
     return {
       onBoardingStage: 0,
       onboardUserPayload: {
         userName
       },
-      userMail
+      token
     }
   }
 

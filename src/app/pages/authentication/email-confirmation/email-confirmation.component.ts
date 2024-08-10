@@ -65,7 +65,8 @@ export class EmailConfirmationComponent {
         this.emailValidationHeader = EmailValidHeaderMsg.error;
       },
       error: (error: any) => {
-        const errorMsg = error.errorMessages[0];
+
+        const errorMsg = error.errorMessage? error.errorMessage: error.errorMessages[0]?error.errorMessages[0]: 'Something went wrong';
         this.loaderIsActive = false;
         this.emailValidationHeader = EmailValidHeaderMsg.error;
         this.emailValidMsg = errorMsg;

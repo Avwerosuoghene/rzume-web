@@ -4,7 +4,7 @@ export  interface IOnboardUserPayload<T>
 
     onboardUserPayload: T,
 
-    userMail: string
+    token: string
 
 }
 

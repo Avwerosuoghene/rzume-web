@@ -1,9 +1,9 @@
 import { IUser } from "./user-model-interface"
 
 export interface IAPIResponse<T> {
-  "statusCode": number,
-  "isSuccess": true,
-  "errorMessages": [],
+  statusCode: number,
+  isSuccess: boolean,
+  errorMessages: Array<string>,
   result: {
     message: string,
     content: T
@@ -38,5 +38,5 @@ export interface IAccountValidationResponse {
 }
 
 export interface IOnboardUserResponse {
-  
+
 }

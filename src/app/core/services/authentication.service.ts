@@ -89,7 +89,7 @@ export class AuthenticationService {
     const getRequestParams: IGetRequestParams = {
       apiRoute: apiRoute,
       _params: params,
-      handleResponse: true
+      handleResponse: false
     }
     return this.apiService.get<IAPIResponse<IValidateUserResponse>>(
       getRequestParams, this.defaultHeaders
