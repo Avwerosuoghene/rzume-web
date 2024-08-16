@@ -175,6 +175,7 @@ export class SignupComponent implements OnInit {
       },
       error: (error: IErrorResponse) => {
         this.loaderIsActive = false;
+        this.googleButtonComponent.turnOffLoader();
         console.log(error);
       }
     })

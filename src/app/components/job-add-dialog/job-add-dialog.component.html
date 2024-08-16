@@ -1,0 +1,97 @@
+<div class="add_job_container">
+  <h3 class="light_text">Add Job Application</h3>
+
+  <form [formGroup]="applicationFormGroup" (ngSubmit)="appNewApplication()" id="add_job_form">
+    <div class="form-input-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Company</mat-label>
+        <input
+          matInput
+          placeholder="Enter company name"
+          type="text"
+          formControlName="company"
+          name="company"
+        />
+
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Role</mat-label>
+        <input
+          matInput
+          placeholder="Enter job role"
+          formControlName="role"
+          name="role"
+        />
+
+
+        @if (jobRole?.hasError('required')) {
+        <mat-error> Job role required </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>CV Link</mat-label>
+        <input
+          matInput
+          placeholder="Enter link to cv"
+          formControlName="cv_link"
+          name="cv_link"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Job Link</mat-label>
+        <input
+          matInput
+          placeholder="Enter link to job"
+          formControlName="job_link"
+          name="job_link"
+        />
+      </mat-form-field>
+
+      <div class="application-status_date-container">
+        <mat-form-field appearance="outline" >
+          <mat-label>Date Applied</mat-label>
+          <input matInput [matDatepicker]="picker"  formControlName="application_date" [max]="maxDate">
+
+          <mat-datepicker-toggle matIconSuffix [for]="picker">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" >
+          <mat-label>Choose an option</mat-label>
+          <mat-select  formControlName="status">
+            @for (status of applicationStatusList; track $index) {
+              <mat-option [value]="status">{{status}}</mat-option>
+              }
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+
+
+
+
+        <button
+          id="add_job_btn"
+          mat-flat-button
+          [disabled]="isBtnDisabled()"
+          type="submit"
+        >
+          <div class="button-elements">
+            @if (loaderIsActive) {
+            <app-circular-loader></app-circular-loader>
+            }
+
+            <p>Add Job Application</p>
+          </div>
+        </button>
+
+    </div>
+  </form>
+</div>
+
+

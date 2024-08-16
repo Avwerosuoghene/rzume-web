@@ -1,0 +1,28 @@
+@import "../../styles/general_styles.scss";
+
+.add_job_container {
+  padding: 50px 60px;
+  max-width: 555px;
+  width: 80vw;
+
+  #add_job_form {
+    margin-block: 24px;
+  }
+
+  .form-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .application-status_date-container {
+      width: 100%;
+      display: flex;
+      gap: 14px;
+    }
+  }
+  #add_job_btn {
+    @extend .rzume-button;
+  }
+
+
+}

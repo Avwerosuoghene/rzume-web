@@ -7,7 +7,7 @@ import { StorageService } from '../../../core/services/storage.service';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { ISignOutPayload } from '../../../core/models/interface/api-requests-interface';
 import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
-import { RootRoutes } from '../../../core/models/enums/application-routes-enums';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
 import { IErrorResponse } from '../../../core/models/interface/errors-interface';
 import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
 import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
@@ -69,7 +69,7 @@ export class HeaderComponent implements OnInit {
         if (response.isSuccess === true)  {
           this.clearBrowserStorage();
 
-          this.router.navigate([`/${RootRoutes.auth}`])
+          this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.signin}`])
         };
 
       },

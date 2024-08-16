@@ -117,6 +117,7 @@ export class LoginComponent {
       },
       error: (error: IErrorResponse) => {
         this.loaderIsActive = false;
+        this.googleButtonComponent.turnOffLoader();
         console.log(error);
       }
     })

@@ -7,6 +7,11 @@ import { FilterOption } from '../../../core/models/interface/utilities-interface
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { MockDataService } from '../../../core/services/mock-data.service';
 import { UtilsService } from '../../../core/services/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { JobAddDialogComponent } from '../../../components/job-add-dialog/job-add-dialog.component';
+import { IconStat } from '../../../core/models/enums/ui-enums';
+import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
+import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +37,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-  constructor(private mockDataService: MockDataService, private utilityService: UtilsService) {
+  constructor(private mockDataService: MockDataService, private utilityService: UtilsService, private dialog: MatDialog) {
 
   }
 
@@ -117,7 +122,23 @@ export class DashboardComponent implements OnInit {
   }
 
   addNewApplicationEtry() {
-    this.utilityService.headerLoader.next(true);
+    const jobAdditionDialog = this.dialog.open(JobAddDialogComponent, {
+
+      backdropClass: "blurred"
+    });
+    jobAdditionDialog.afterClosed().subscribe((res) => {
+
+    const dialogData : InfoDialogData = {
+      infoMessage: 'Success',
+      statusIcon: IconStat.success
+    }
+
+    this.dialog.open(InfoDialogComponent, {
+      data:dialogData,
+      backdropClass: "blurred"
+    });
+
+    })
   }
 
 
