@@ -1,5 +1,11 @@
 <div class="add_job_container">
-  <h3 class="light_text">Add Job Application</h3>
+  <div class="title_elements">
+    <h3 class="light_text">Add Job Application</h3>
+
+    <button mat-icon-button  (click)="cancelApplication()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
   <form [formGroup]="applicationFormGroup" (ngSubmit)="appNewApplication()" id="add_job_form">
     <div class="form-input-container">
@@ -86,7 +92,7 @@
             <app-circular-loader></app-circular-loader>
             }
 
-            <p>Add Job Application</p>
+            <p>{{editMode? 'Update': 'Add' + ' Job Application'}}</p>
           </div>
         </button>
 

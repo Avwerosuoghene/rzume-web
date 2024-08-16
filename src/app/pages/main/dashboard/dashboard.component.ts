@@ -3,14 +3,14 @@ import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { CustomSearchInputComponent } from '../../../components/custom-search-input/custom-search-input.component';
 import { FilterDropdownComponent } from '../../../components/filter-dropdown/filter-dropdown.component';
-import { FilterOption } from '../../../core/models/interface/utilities-interface';
+import { DialogCloseResp, FilterOption } from '../../../core/models/interface/utilities-interface';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { MockDataService } from '../../../core/services/mock-data.service';
 import { UtilsService } from '../../../core/services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { JobAddDialogComponent } from '../../../components/job-add-dialog/job-add-dialog.component';
-import { IconStat } from '../../../core/models/enums/ui-enums';
-import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
+import {  IconStat } from '../../../core/models/enums/ui-enums';
+import { AddJobDialogData, InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 
 @Component({
@@ -122,15 +122,20 @@ export class DashboardComponent implements OnInit {
   }
 
   addNewApplicationEtry() {
+    const dialogData: AddJobDialogData = {
+      isEditing: false
+    }
     const jobAdditionDialog = this.dialog.open(JobAddDialogComponent, {
-
-      backdropClass: "blurred"
+      data: dialogData,
+      backdropClass: "blurred",
+      disableClose: true
     });
-    jobAdditionDialog.afterClosed().subscribe((res) => {
+    jobAdditionDialog.afterClosed().subscribe((res?:DialogCloseResp ) => {
+      if (!res) return
 
     const dialogData : InfoDialogData = {
-      infoMessage: 'Success',
-      statusIcon: IconStat.success
+      infoMessage: res.message,
+      statusIcon: res.applicationStat
     }
 
     this.dialog.open(InfoDialogComponent, {

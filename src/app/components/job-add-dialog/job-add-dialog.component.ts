@@ -1,10 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ApplicationStatus, DialogCloseStat } from '../../core/models/enums/ui-enums';
+import { ApplicationStatus,  IconStat } from '../../core/models/enums/ui-enums';
 import { CoreModules } from '../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AddJobDialogData } from '../../core/models/interface/dialog-models-interface';
+import { DialogCloseResp } from '../../core/models/interface/utilities-interface';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -19,16 +21,21 @@ export class JobAddDialogComponent implements OnInit {
   maxDate: Date = new Date();
   applicationStatusList : Array<string> = Object.values(ApplicationStatus);
   loaderIsActive: boolean = false;
+  editMode: boolean = false;
 
 
 
-  constructor(private dialogRef:  MatDialogRef<JobAddDialogComponent>){
+  constructor(private dialogRef:  MatDialogRef<JobAddDialogComponent>,  @Inject(MAT_DIALOG_DATA) public addJobDialogData: AddJobDialogData){
 
   }
 
   ngOnInit(): void {
     this.initializeForm();
+    this.editMode = this.addJobDialogData.isEditing;
+    if (this.editMode) this.prepopulateFormFields();
   }
+
+
 
   isBtnDisabled(): boolean {
     return (this.applicationFormGroup.invalid ||
@@ -54,9 +61,28 @@ export class JobAddDialogComponent implements OnInit {
     });
   }
 
+  cancelApplication(){
+    this.dialogRef.close();
+  }
+
+  prepopulateFormFields() {
+    this.applicationFormGroup.setValue({
+      company: 'Example Company',
+      role: 'Frontend Developer',
+      cv_link: 'http://example.com/cv.pdf',
+      job_link: 'http://example.com/job',
+      application_date: '2024-08-16',
+      status: ApplicationStatus.inProgress
+    });
+  }
+
   appNewApplication() {
-    console.log(this.applicationFormGroup);
-    this.dialogRef.close(DialogCloseStat.success);
+    const dialogCloseResp: DialogCloseResp = {
+      applicationStat : IconStat.success,
+      message : 'Application succesfully added'
+
+    }
+    this.dialogRef.close(dialogCloseResp);
   }
 
   get companyName() {

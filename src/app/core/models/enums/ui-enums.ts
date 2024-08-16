@@ -15,15 +15,14 @@ export enum EmailValidHeaderMsg {
     confirm = 'Confirm Mail'
 }
 
-export enum DialogCloseStat {
-  success = 'Success'
-}
+
 
 export enum ApplicationStatus {
     wishList = 'Wishlist',
     submitted = 'Submitted',
     inProgress = 'InProgress',
-    offerReceived = 'OfferReceived'
+    offerReceived = 'OfferReceived',
+    applied = 'Applied',
 }
 
 export enum ButtonTxt {

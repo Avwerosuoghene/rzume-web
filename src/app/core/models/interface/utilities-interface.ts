@@ -1,3 +1,4 @@
+import { IconStat } from "../enums/ui-enums";
 import { IUser } from "./user-model-interface";
 
 export interface IApiUrlParam {
@@ -14,5 +15,11 @@ export interface SessionStorageData {
 export interface FilterOption{
   value: string,
   label: string
+}
+
+export interface DialogCloseResp {
+
+  applicationStat : IconStat,
+  message: string
 }
 

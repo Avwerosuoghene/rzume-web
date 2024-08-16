@@ -3,6 +3,12 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { FormsModule } from '@angular/forms';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { ViewUtilities } from '../../core/helpers/view-utlities';
+import { IconStat } from '../../core/models/enums/ui-enums';
+import { AddJobDialogData, InfoDialogData } from '../../core/models/interface/dialog-models-interface';
+import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
+import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogCloseResp } from '../../core/models/interface/utilities-interface';
 
 @Component({
   selector: 'app-custom-table',
@@ -29,7 +35,7 @@ export class CustomTableComponent {
 
 
 
-  constructor() {
+  constructor(private dialog: MatDialog) {
 
   }
 
@@ -55,6 +61,33 @@ export class CustomTableComponent {
     }
     this.onSelectionChanged.emit(this.selectedItems);
 
+  }
+
+  editJobApplication() {
+    const dialogData: AddJobDialogData = {
+      isEditing: true
+    }
+    const jobAdditionDialog = this.dialog.open(JobAddDialogComponent, {
+      data: dialogData,
+      backdropClass: "blurred",
+      disableClose: true
+    });
+    jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResp) => {
+
+      if (!res) return
+
+      const dialogData : InfoDialogData = {
+        infoMessage: res.message,
+        statusIcon: res.applicationStat
+      }
+
+      this.dialog.open(InfoDialogComponent, {
+        data:dialogData,
+        backdropClass: "blurred"
+      });
+
+
+    })
   }
 
 

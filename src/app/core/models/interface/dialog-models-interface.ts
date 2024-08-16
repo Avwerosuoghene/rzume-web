@@ -5,3 +5,8 @@ export interface InfoDialogData {
   statusIcon: StatusIcon;
 }
 
+export interface AddJobDialogData {
+  isEditing: boolean;
+}
+
+

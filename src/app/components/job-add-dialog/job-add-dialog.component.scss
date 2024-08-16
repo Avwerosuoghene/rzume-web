@@ -5,6 +5,11 @@
   max-width: 555px;
   width: 80vw;
 
+  .title_elements {
+    display: flex;
+    justify-content: space-between;
+  }
+
   #add_job_form {
     margin-block: 24px;
   }
