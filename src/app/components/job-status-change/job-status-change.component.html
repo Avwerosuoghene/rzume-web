@@ -1,0 +1,41 @@
+<div class="change_job_status">
+  <div class="title_elements">
+    <h3 class="light_text">Change Job Status</h3>
+
+    <button mat-icon-button (click)="cancelAction()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form
+    #jobStatusForm="ngForm"
+    (ngSubmit)="changeJobStatus()"
+    id="job_status_form"
+  >
+    <div class="form-input-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Choose an option</mat-label>
+        <mat-select formControlName="status">
+          @for (status of applicationStatusList; track $index) {
+          <mat-option [value]="status">{{ status }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        id="update_status_btn"
+        mat-flat-button
+        [disabled]="loaderIsActive"
+        type="submit"
+      >
+        <div class="button-elements">
+          @if (loaderIsActive) {
+          <app-circular-loader></app-circular-loader>
+          }
+
+          <p>Update Status</p>
+        </div>
+      </button>
+    </div>
+  </form>
+</div>

@@ -4,7 +4,7 @@ import { ApplicationStatus,  IconStat } from '../../core/models/enums/ui-enums';
 import { CoreModules } from '../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AddJobDialogData } from '../../core/models/interface/dialog-models-interface';
 import { DialogCloseResp } from '../../core/models/interface/utilities-interface';
 
@@ -25,7 +25,7 @@ export class JobAddDialogComponent implements OnInit {
 
 
 
-  constructor(private dialogRef:  MatDialogRef<JobAddDialogComponent>,  @Inject(MAT_DIALOG_DATA) public addJobDialogData: AddJobDialogData){
+  constructor(private dialogRef:  MatDialogRef<JobAddDialogComponent>,  @Inject(MAT_DIALOG_DATA) private addJobDialogData: AddJobDialogData){
 
   }
 

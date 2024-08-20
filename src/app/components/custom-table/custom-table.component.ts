@@ -3,12 +3,14 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { FormsModule } from '@angular/forms';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { ViewUtilities } from '../../core/helpers/view-utlities';
-import { IconStat } from '../../core/models/enums/ui-enums';
-import { AddJobDialogData, InfoDialogData } from '../../core/models/interface/dialog-models-interface';
+import { ApplicationStatus, IconStat } from '../../core/models/enums/ui-enums';
+import { AddJobDialogData, InfoDialogData, JobStatChangeDialogData } from '../../core/models/interface/dialog-models-interface';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResp } from '../../core/models/interface/utilities-interface';
+import { JobApplicationStatus } from '../../core/helpers/constants';
+import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
 
 @Component({
   selector: 'app-custom-table',
@@ -48,6 +50,17 @@ export class CustomTableComponent {
     this.currentPage = 1;
     this.itemPerPageChanged.emit(this.itemsPerPage);
 
+  }
+
+  changeJobStatus() {
+    const dialogData: JobStatChangeDialogData = {
+      status: ApplicationStatus.inProgress
+    }
+    this.dialog.open(JobStatusChangeComponent, {
+      data: dialogData,
+      backdropClass: "blurred",
+      disableClose: true
+    })
   }
 
 

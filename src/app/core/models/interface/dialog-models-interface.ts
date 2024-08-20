@@ -9,4 +9,8 @@ export interface AddJobDialogData {
   isEditing: boolean;
 }
 
+export interface JobStatChangeDialogData {
+  status: string
+}
+
 
