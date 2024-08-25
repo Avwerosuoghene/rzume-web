@@ -1,6 +1,7 @@
 export enum IconStat {
   success =  'done',
-  failed = 'close'
+  failed = 'close',
+  warn = 'warning'
 }
 
 export enum EmailValMsg {
@@ -46,6 +47,10 @@ export enum ErrorMsges {
 export enum PassWordResetScreens {
   formScreen =  'form',
   successScreen = 'success'
+}
+
+export enum ActionConfirmation {
+  delete = 'Kindly confirm you want to delete this item'
 }
 
 

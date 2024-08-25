@@ -4,6 +4,6 @@
   </div>
   <p id="info-dialog-msg">{{infoMessage}}</p>
   <button class="close-info-dialog" mat-stroked-button mat-dialog-close type="button">
-   Done
+   {{infoIcon === 'warning'? 'Proceed': 'Done'}}
   </button>
 </div>

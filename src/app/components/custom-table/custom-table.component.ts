@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { FormsModule } from '@angular/forms';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { ViewUtilities } from '../../core/helpers/view-utlities';
-import { ApplicationStatus, IconStat } from '../../core/models/enums/ui-enums';
+import { ActionConfirmation, ApplicationStatus, IconStat } from '../../core/models/enums/ui-enums';
 import { AddJobDialogData, InfoDialogData, JobStatChangeDialogData } from '../../core/models/interface/dialog-models-interface';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.component';
@@ -61,6 +61,18 @@ export class CustomTableComponent {
       backdropClass: "blurred",
       disableClose: true
     })
+  }
+
+  deleteJob() {
+    const dialogData : InfoDialogData = {
+      infoMessage: ActionConfirmation.delete,
+      statusIcon: IconStat.warn
+    }
+
+    const deleteConfirmDialog = this.dialog.open(InfoDialogComponent, {
+      data:dialogData,
+      backdropClass: "blurred"
+    });
   }
 
 
