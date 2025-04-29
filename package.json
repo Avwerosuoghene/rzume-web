@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks"
   },
   "private": true,
   "dependencies": {
@@ -34,7 +35,9 @@
     "@angular-devkit/build-angular": "^18.2.0",
     "@angular/cli": "^18.2.0",
     "@angular/compiler-cli": "^18.2.0",
+    "@playwright/test": "^1.49.0",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^22.9.3",
     "cypress": "^13.13.3",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.4",
@@ -42,6 +45,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "source-map-explorer": "^2.5.3",
     "typescript": "~5.5.4"
   }
 }

@@ -74,7 +74,7 @@ export class GoogleSiginComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  isGoogleBtnDisabled(): boolean {
+  get isGoogleBtnDisabled(): boolean {
     return this.loaderIsActive;
   }
 }

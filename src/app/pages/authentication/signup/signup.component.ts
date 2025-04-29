@@ -55,7 +55,6 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeSignupForm();
-
   }
 
 
@@ -148,9 +147,6 @@ export class SignupComponent implements OnInit {
             data: dialogData,
             backdropClass: "blurred"
           });
-
-
-
       }
     })
 
@@ -165,7 +161,6 @@ export class SignupComponent implements OnInit {
     const googleSigninPayload: IGoogleSignInPayload = { userToken: response.credential };
     this.authService.googleLogin(googleSigninPayload).subscribe({
       next: (response: IAPIResponse<ISigninResponse>) => {
-        console.log(response)
 
         this.loaderIsActive = false;
         this.googleButtonComponent.turnOffLoader();
