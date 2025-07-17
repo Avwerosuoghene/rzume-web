@@ -1,12 +1,12 @@
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ApplicationStatus,  IconStat } from '../../core/models/enums/ui-enums';
+import { ApplicationStatus, IconStat} from '../../core/models/enums/shared.enums';
 import { CoreModules } from '../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AddJobDialogData } from '../../core/models/interface/dialog-models-interface';
-import { DialogCloseResp } from '../../core/models/interface/utilities-interface';
+import { DialogCloseResp } from '../../core/models/interface/shared.interface';
 
 @Component({
   selector: 'app-job-add-dialog',

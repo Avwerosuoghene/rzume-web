@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
-import {  PasswordStrengthLevels } from '../../core/helpers/constants';
+import { Component, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { PasswordUtility } from '../../core/helpers/password-utility';
+import { PasswordUtility } from '../../core/helpers/password.util';
+import { PasswordStrengthLevels } from '../../core/models';
 
 
 @Component({

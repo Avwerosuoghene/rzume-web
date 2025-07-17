@@ -4,7 +4,7 @@ import { PasswordResetComponent } from "./password-reset/password-reset.componen
 import { SignupComponent } from "./signup/signup.component";
 import { EmailConfirmationComponent } from "./email-confirmation/email-confirmation.component";
 import { OnboardComponent } from "./onboard/onboard.component";
-import { AuthRoutes } from "../../core/models/enums/application-routes-enums";
+import { AuthRoutes } from "../../core/models/enums/application.routes.enums";
 import { RequestPasswordResetComponent } from "./request-password-reset/request-password-reset.component";
 
 export const authenticationRoutes: Array<Route> = [

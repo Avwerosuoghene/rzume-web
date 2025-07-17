@@ -3,25 +3,20 @@ import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { MatDialog } from '@angular/material/dialog';
-import { PasswordUtility } from '../../../core/helpers/password-utility';
-import { PasswordVisibility } from '../../../core/models/types/ui-types';
+import { PasswordUtility } from '../../../core/helpers/password.util';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { Router } from '@angular/router';
-import { IErrorResponse } from '../../../core/models/interface/errors-interface';
-import { IAPIResponse, ISigninResponse } from '../../../core/models/interface/api-response-interface';
-import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
-import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
-import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { onBoardStages } from '../../../core/models/enums/utility-enums';
-import { IGoogleSignInPayload, ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
+import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
 import { environment } from '../../../../environments/environment.development';
-import { GoogleAuthService } from '../../../core/helpers/google-auth.service';
-import { GoogleSiginComponent } from '../../../components/google-sigin/google-sigin.component';
+import { GoogleAuthService } from '../../../core/services/google-auth.service';
+import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
-import { IconStat } from '../../../core/models/enums/ui-enums';
+import { IconStat, onBoardStages, SessionStorageKeys } from '../../../core/models/enums/shared.enums';
+import { APIResponse, ErrorResponse, GoogleSignInPayload, PasswordVisibility, SigninResponse, SignupSignInPayload } from '../../../core/models';
 
 
 
@@ -30,13 +25,13 @@ declare let google: any;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSiginComponent],
+  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSignInComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   @ViewChild('googleBtn', { static: false }) googleBtn!: ElementRef;
-  @ViewChild(GoogleSiginComponent) googleButtonComponent!: GoogleSiginComponent;
+  @ViewChild(GoogleSignInComponent) googleButtonComponent!: GoogleSignInComponent;
 
   loginFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
@@ -104,18 +99,18 @@ export class LoginComponent {
   }
 
   handleCredentialResponse(response: any) {
-    const googleSigninPayload: IGoogleSignInPayload = { userToken: response.credential };
+    const googleSigninPayload: GoogleSignInPayload = { userToken: response.credential };
     this.authService.googleLogin(googleSigninPayload).subscribe({
-      next: (response: IAPIResponse<ISigninResponse>) => {
+      next: (response: APIResponse<SigninResponse>) => {
         console.log(response)
 
         this.loaderIsActive = false;
         this.googleButtonComponent.turnOffLoader();
-        SessionStorageUtil.setItem(SessionStorageData.authToken, response.result.content.token!);
+        SessionStorageUtil.setItem(SessionStorageKeys.authToken, response.result.content.token!);
         if (response.isSuccess === true) this.navigateOut(`/${RootRoutes.main}`);
 
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
         this.googleButtonComponent.turnOffLoader();
         console.log(error);
@@ -160,9 +155,9 @@ export class LoginComponent {
     const userMail: string = this.loginFormGroup.get('email')!.value;
     const password: string = this.loginFormGroup.get('password')!.value;
     this.loaderIsActive = true;
-    const loginPayload: ISignupSiginPayload = this.generateLoginPayload(userMail, password);
+    const loginPayload: SignupSignInPayload = this.generateLoginPayload(userMail, password);
     this.authService.login(loginPayload).subscribe({
-      next: (response: IAPIResponse<ISigninResponse>) => {
+      next: (response: APIResponse<SigninResponse>) => {
         this.loaderIsActive = false;
         this.loginFormGroup.reset();
         if(response.isSuccess != true) {
@@ -176,25 +171,25 @@ export class LoginComponent {
           });
           return;
         }
-        const signinResponseContent: ISigninResponse | undefined = response.result.content;
+        const signinResponseContent: SigninResponse | undefined = response.result.content;
         if (signinResponseContent.user == null) {
-          SessionStorageUtil.setItem(SessionStorageData.userMail, userMail);
+          SessionStorageUtil.setItem(SessionStorageKeys.userMail, userMail);
           this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
           return;
         }
-        SessionStorageUtil.setItem(SessionStorageData.authToken, signinResponseContent.token!);
+        SessionStorageUtil.setItem(SessionStorageKeys.authToken, signinResponseContent.token!);
         if (signinResponseContent.user.onBoardingStage === onBoardStages.first) {
           return this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`
           )};
         this.navigateOut(`/${RootRoutes.main}`);
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
       }
     });
   }
 
-  generateLoginPayload(userMail: string, password: string): ISignupSiginPayload {
+  generateLoginPayload(userMail: string, password: string): SignupSignInPayload {
     return { email: userMail, password: password };
   }
 

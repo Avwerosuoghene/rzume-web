@@ -1,4 +1,4 @@
-import { StatusIcon } from "../types/ui-types";
+import { StatusIcon } from "../types/shared.types";
 
 export interface InfoDialogData {
   infoMessage: string;

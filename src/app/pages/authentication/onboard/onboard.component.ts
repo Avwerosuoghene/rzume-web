@@ -1,22 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { AngularMaterialModules } from '../../../core/modules/material-modules';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
-import { CoreModules } from '../../../core/modules/core-modules';
-import { ProfileManagementService } from '../../../core/services/profile-management.service';
-import { IOnboardUserPayload } from '../../../core/models/interface/profile-management-interface';
-import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
-import { MatDialog } from '@angular/material/dialog';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { GenericMsg, IconStat } from '../../../core/models/enums/ui-enums';
-import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
-import { RootRoutes, AuthRoutes } from '../../../core/models/enums/application-routes-enums';
-import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
-import { IErrorResponse } from '../../../core/models/interface/errors-interface';
-import { IOnboardUserFirstStagePayload } from '../../../core/models/interface/api-requests-interface';
-import { slideOutAnimation } from '../../../core/animations/slide-in-out-animations';
+import { AngularMaterialModules, CoreModules } from '../../../core/modules';
+import { SessionStorageKeys, OnboardUserPayload, OnboardUserFirstStagePayload, APIResponse, RootRoutes, ErrorResponse, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes } from '../../../core/models';
+import { ProfileManagementService } from '../../../core/services';
+import { slideOutAnimation } from '../../../core/animations';
+import { SessionStorageUtil } from '../../../core/helpers';
 
 @Component({
   selector: 'app-onboard',
@@ -70,14 +62,14 @@ export class OnboardComponent {
     if (this.onboardFormGroup.invalid) {
       return;
     }
-    const userToken = SessionStorageUtil.getItem(SessionStorageData.authToken);
+    const userToken = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
     const userName: string = this.onboardFormGroup.get('username')!.value;
     if (!userToken) return this.openErrorDialog();
-    const onBoardUserPayload: IOnboardUserPayload<IOnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, userToken!);
+    const onBoardUserPayload: OnboardUserPayload<OnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, userToken!);
     this.loaderIsActive = true;
 
     this.profileMgmtService.onboard(onBoardUserPayload).subscribe({
-      next: (onboardResponse: IAPIResponse<boolean>) => {
+      next: (onboardResponse: APIResponse<boolean>) => {
         this.loaderIsActive = false;
         this.onboardFormGroup.reset();
         if (onboardResponse.isSuccess) {
@@ -87,7 +79,7 @@ export class OnboardComponent {
         }
 
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
 
 
@@ -98,7 +90,7 @@ export class OnboardComponent {
 
   openErrorDialog() {
     const dialogData: InfoDialogData = {
-      infoMessage: GenericMsg.expiredSession,
+      infoMessage: MSG_EXPIRED_SESSION,
       statusIcon: IconStat.failed
     }
     const errorDialogRef = this.dialog.open(InfoDialogComponent, {
@@ -118,12 +110,13 @@ export class OnboardComponent {
 
   }
 
-  generateOnBoardPayload(userName: string, token: string): IOnboardUserPayload<IOnboardUserFirstStagePayload> {
+  generateOnBoardPayload(userName: string, token: string): OnboardUserPayload<OnboardUserFirstStagePayload> {
     return {
       onBoardingStage: 0,
       onboardUserPayload: {
         userName
       },
+      userMail: '',
       token
     }
   }

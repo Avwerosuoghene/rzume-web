@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { IOnboardUserPayload } from '../models/interface/profile-management-interface';
-import { ApiRoutes } from './api.routes';
-import { IOnboardUserFirstStagePayload, IRequestPassResetPayload, IResetPassword } from '../models/interface/api-requests-interface';
-import { IAPIResponse } from '../models/interface/api-response-interface';
+import { APIResponse, ApiRoutes, OnboardUserFirstStagePayload, OnboardUserPayload, RequestPassResetPayload, ResetPassword } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,22 +11,22 @@ export class ProfileManagementService {
 
 
 
-  onboard(payload: IOnboardUserPayload<IOnboardUserFirstStagePayload>) {
-    return this.apiService.post<IAPIResponse<boolean>>(
+  onboard(payload: OnboardUserPayload<OnboardUserFirstStagePayload>) {
+    return this.apiService.post<APIResponse<boolean>>(
       ApiRoutes.profileManagement.onboarding, payload, true
-    )
+    );
   }
 
-  requestPassReset(payload: IRequestPassResetPayload) {
-    return this.apiService.post<IAPIResponse<boolean>>(
+  requestPassReset(payload: RequestPassResetPayload) {
+    return this.apiService.post<APIResponse<boolean>>(
       ApiRoutes.profileManagement.requestPassReset, payload, true
     )
   }
 
-  resetPassword(payload: IResetPassword) {
+  resetPassword(payload: ResetPassword) {
     payload.password = window.btoa(payload.password.toString())
 
-    return this.apiService.post<IAPIResponse<boolean>>(
+    return this.apiService.post<APIResponse<boolean>>(
       ApiRoutes.profileManagement.resetPassword, payload, false
     )
   }

@@ -1,17 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { NavigationEnd, Router } from '@angular/router';
-import { CoreModules } from '../../../core/modules/core-modules';
-import { IUser } from '../../../core/models/interface/user-model-interface';
-import { StorageService } from '../../../core/services/storage.service';
-import { AuthenticationService } from '../../../core/services/authentication.service';
-import { ISignOutPayload } from '../../../core/models/interface/api-requests-interface';
-import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
-import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
-import { IErrorResponse } from '../../../core/models/interface/errors-interface';
-import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
-import { UtilsService } from '../../../core/services/utils.service';
+import { APIResponse, AuthRoutes, ErrorResponse, RootRoutes, SignOutPayload, User } from '../../../core/models';
+import { CoreModules } from '../../../core/modules';
+import { AuthenticationService, StorageService } from '../../../core/services';
+import { LayoutStateService } from '../../../core/services/layout.service';
 
 @Component({
   selector: 'app-header',
@@ -23,19 +16,19 @@ import { UtilsService } from '../../../core/services/utils.service';
 export class HeaderComponent implements OnInit {
   router = inject(Router);
   activeComponent: string = '';
-  userInfo: IUser | null = null;
+  userInfo: User | null = null;
   userToken: string | null = null;
   loaderIsActive: boolean = false;
 
 
-  constructor(private storageService: StorageService, private authService: AuthenticationService, private utilityService: UtilsService) {
+  constructor(private storageService: StorageService, private authService: AuthenticationService, private utilityService: LayoutStateService) {
 
   }
 
 
   ngOnInit(): void {
     this.getCurrentRoute();
-    this.subsrcibeToRoute();
+    this.subscribeToRoute();
     this.getUserInfo();
     this.initiateLoader();
   }
@@ -55,14 +48,14 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(){
-    const logoutPayload: ISignOutPayload = {
+    const logoutPayload: SignOutPayload = {
       email: this.userInfo!.email
     }
     this.utilityService.headerLoader.next(true);
 
 
     this.authService.logout(logoutPayload).subscribe({
-      next: (response: IAPIResponse<null>) => {
+      next: (response: APIResponse<null>) => {
 
         this.utilityService.headerLoader.next(false);
 
@@ -73,7 +66,7 @@ export class HeaderComponent implements OnInit {
         };
 
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         this.utilityService.headerLoader.next(false);
 
         console.log(error);
@@ -97,7 +90,7 @@ export class HeaderComponent implements OnInit {
     this.activeComponent = activeElement.join(' ');
   }
 
-  subsrcibeToRoute(): void {
+  subscribeToRoute(): void {
 
 
     this.router.events

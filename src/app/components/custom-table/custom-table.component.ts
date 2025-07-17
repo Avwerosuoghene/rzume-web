@@ -1,16 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-import { AngularMaterialModules } from '../../core/modules/material-modules';
-import { ViewUtilities } from '../../core/helpers/view-utlities';
-import { ActionConfirmation, ApplicationStatus, IconStat } from '../../core/models/enums/ui-enums';
-import { AddJobDialogData, InfoDialogData, JobStatChangeDialogData } from '../../core/models/interface/dialog-models-interface';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogCloseResp } from '../../core/models/interface/utilities-interface';
-import { JobApplicationStatus } from '../../core/helpers/constants';
 import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
+import { AngularMaterialModules } from '../../core/modules';
+import { AddJobDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResp, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
+import { ViewUtilities } from '../../core/helpers';
 
 @Component({
   selector: 'app-custom-table',
@@ -65,8 +62,8 @@ export class CustomTableComponent {
 
   deleteJob() {
     const dialogData : InfoDialogData = {
-      infoMessage: ActionConfirmation.delete,
-      statusIcon: IconStat.warn
+      infoMessage: CONFIRM_DELETE_MSG,
+      statusIcon: IconStat.success
     }
 
     const deleteConfirmDialog = this.dialog.open(InfoDialogComponent, {

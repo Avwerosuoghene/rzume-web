@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy } from '@angular/core';
-import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
@@ -7,15 +7,13 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { IRequestPassResetPayload } from '../../../core/models/interface/api-requests-interface';
 import { ProfileManagementService } from '../../../core/services/profile-management.service';
-import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
-import { IErrorResponse } from '../../../core/models/interface/errors-interface';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
-import { IconStat } from '../../../core/models/enums/ui-enums';
+import { IconStat } from '../../../core/models/enums/shared.enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { Subscription } from 'rxjs';
-import { TimerUtilityService } from '../../../core/helpers/timer-utility.service';
+import { TimerService } from '../../../core/services';
+import { RequestPassResetPayload, APIResponse, ErrorResponse } from '../../../core/models';
 
 @Component({
   selector: 'app-request-password-reset',
@@ -37,7 +35,7 @@ export class RequestPasswordResetComponent implements OnDestroy {
   }
 
 
-  constructor(private profileMgmtService: ProfileManagementService) {
+  constructor(private profileManagementService: ProfileManagementService, private timerService: TimerService) {
 
   }
 
@@ -60,9 +58,8 @@ export class RequestPasswordResetComponent implements OnDestroy {
   }
 
   setTimer() {
-    TimerUtilityService.clearTimer();
-    TimerUtilityService.setTimer();
-    this.timerSubscription = TimerUtilityService.timeValues.subscribe(
+    this.timerService.setTimer();
+    this.timerService.timeValues$.subscribe(
       timeData => {
         this.timerValues.minutes = timeData.minutes;
         this.timerValues.seconds = timeData.seconds;
@@ -84,11 +81,11 @@ export class RequestPasswordResetComponent implements OnDestroy {
 
     const email: string = this.passResetReqFormGroup.get('email')!.value;
     this.loaderIsActive = true;
-    const requestPassResetPayload: IRequestPassResetPayload = {
+    const requestPassResetPayload: RequestPassResetPayload = {
       email
     }
-    this.profileMgmtService.requestPassReset(requestPassResetPayload).subscribe({
-      next: (requestPassResetResponse: IAPIResponse<boolean>) => {
+    this.profileManagementService.requestPassReset(requestPassResetPayload).subscribe({
+      next: (requestPassResetResponse: APIResponse<boolean>) => {
         this.loaderIsActive = false;
         this.passResetReqFormGroup.reset();
         this.setTimer();
@@ -103,20 +100,16 @@ export class RequestPasswordResetComponent implements OnDestroy {
             backdropClass: "blurred"
           });
         }
-
-
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
-
-
       }
     });
 
   }
 
   ngOnDestroy(): void {
-    if (this.timerSubscription) this.timerSubscription.unsubscribe();
+    this.timerService.clearTimer();
   }
 
 

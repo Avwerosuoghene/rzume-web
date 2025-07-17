@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModules } from '../../../core/modules/router-modules';
-import { MainRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
+import { MainRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { MainComponent } from '../main.component';
 
 @Component({

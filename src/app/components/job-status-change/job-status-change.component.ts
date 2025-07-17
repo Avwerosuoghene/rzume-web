@@ -4,7 +4,7 @@ import { JobStatChangeDialogData } from '../../core/models/interface/dialog-mode
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CoreModules } from '../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
-import { ApplicationStatus } from '../../core/models/enums/ui-enums';
+import { ApplicationStatus } from '../../core/models/enums/shared.enums';
 import { FormGroup } from '@angular/forms';
 
 @Component({

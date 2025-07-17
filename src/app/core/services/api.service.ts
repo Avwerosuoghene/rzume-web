@@ -1,13 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
-import { InfoDialogData } from '../models/interface/dialog-models-interface';
-import { ErrorMsges, IconStat } from '../models/enums/ui-enums';
-import { IErrorResponse } from '../models/interface/errors-interface';
-import { IGetRequestParams } from '../models/interface/api-requests-interface';
+import { ERROR_UNKNOWN, ErrorResponse, GetRequestParams, IconStat, InfoDialogData } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +12,14 @@ import { IGetRequestParams } from '../models/interface/api-requests-interface';
 export class ApiService {
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog) { }
-  public get<T>(requestParams: IGetRequestParams, reqHeaders: HttpHeaders ): Observable<T> {
+  public get<T>(requestParams: GetRequestParams, reqHeaders: HttpHeaders ): Observable<T> {
     const {apiRoute, id, _params, handleResponse} =requestParams;
 
     let route: string = `${environment.apiBaseUrl}/${apiRoute}${id? '/'+id: ''}`;
     let params = new HttpParams();
     if (_params) {
-      _params.forEach(paramter => {
-        params = params.set(paramter.name, paramter.value);
+      _params.forEach(param => {
+        params = params.set(param.name, param.value);
       })
     }
 
@@ -32,17 +29,17 @@ export class ApiService {
     return this.httpClient.get<T>(route, {
       headers, params
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ErrorMsges.unknown ;
+      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ERROR_UNKNOWN ;
 
-      const responsError: IErrorResponse = {
+      const responseError: ErrorResponse = {
         statusCode : error.error.statusCode,
         errorMessage: errorMsg
       }
       if (handleResponse)
 
-      this.handleErrorWithObservable(responsError);
+      this.handleErrorWithObservable(responseError);
 
-      return throwError(() => responsError);
+      return throwError(() => responseError);
 
     }))
 
@@ -56,15 +53,15 @@ export class ApiService {
     return this.httpClient.put<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ErrorMsges.unknown ;
+      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ERROR_UNKNOWN ;
 
-      const responsError: IErrorResponse = {
+      const responseError: ErrorResponse = {
         statusCode : error.error.statusCode,
         errorMessage: errorMsg
       }
       if (handleResponse)
-        return this.handleErrorWithObservable(responsError);
-      return throwError(() => responsError);
+        return this.handleErrorWithObservable(responseError);
+      return throwError(() => responseError);
     }))
   }
 
@@ -76,22 +73,22 @@ export class ApiService {
     return this.httpClient.post<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ErrorMsges.unknown ;
+      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ERROR_UNKNOWN ;
 
-      const responsError: IErrorResponse = {
+      const responseError: ErrorResponse = {
         statusCode : error.error.statusCode,
         errorMessage: errorMsg
       }
       if (handleResponse)
-      return this.handleErrorWithObservable(responsError);
+      return this.handleErrorWithObservable(responseError);
 
-      return throwError(() => responsError);
+      return throwError(() => responseError);
 
     }))
   }
 
 
-  private handleErrorWithObservable(errorResponse: IErrorResponse): Observable<any> {
+  private handleErrorWithObservable(errorResponse: ErrorResponse): Observable<any> {
 
 
     const dialogData : InfoDialogData = {

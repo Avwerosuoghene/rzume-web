@@ -1,19 +1,12 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
-import { CoreModules } from '../../../core/modules/core-modules';
-import { AngularMaterialModules } from '../../../core/modules/material-modules';
-import { RouterModules } from '../../../core/modules/router-modules';
-import { PassWordResetScreens } from '../../../core/models/enums/ui-enums';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProfileManagementService } from '../../../core/services/profile-management.service';
-import { PasswordVisibility, StatusIcon, ToggledPassword } from '../../../core/models/types/ui-types';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
-import { PasswordUtility } from '../../../core/helpers/password-utility';
-import { IResetPassword } from '../../../core/models/interface/api-requests-interface';
-import { IAPIResponse } from '../../../core/models/interface/api-response-interface';
-import { IErrorResponse } from '../../../core/models/interface/errors-interface';
-import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
+import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
+import { APIResponse, AuthRoutes, ErrorResponse, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, StatusIcon, ToggledPassword } from '../../../core/models';
+import { PasswordUtility } from '../../../core/helpers';
+import { ProfileManagementService } from '../../../core/services';
 
 @Component({
   selector: 'app-password-reset',
@@ -35,12 +28,12 @@ export class PasswordResetComponent {
   tokenValue: string | null = null;
   userMail: string | null = null;
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
-  passwordResetCompleteicon: StatusIcon = 'done';
+  passwordResetCompleteIcon: StatusIcon = 'done';
   resetCompleteMessage: string = '';
 
 
 
-  constructor(private profileMgmtService: ProfileManagementService) {
+  constructor(private profileManagementService: ProfileManagementService) {
 
   }
 
@@ -101,35 +94,35 @@ export class PasswordResetComponent {
     }
 
     this.loaderIsActive = true;
-    const passwordResetPayload: IResetPassword = {
+    const passwordResetPayload: ResetPassword = {
       email: this.userMail!,
       password: this.password!.value,
       resetToken: this.tokenValue!
     }
-    this.profileMgmtService.resetPassword(passwordResetPayload).subscribe({
-      next: (passwordResetResponse: IAPIResponse<boolean>) => {
+    this.profileManagementService.resetPassword(passwordResetPayload).subscribe({
+      next: (passwordResetResponse: APIResponse<boolean>) => {
         this.loaderIsActive = false;
         this.resetPassFormGroup.reset();
         this.activePasswordResetScreen = PassWordResetScreens.successScreen;
         console.log(passwordResetResponse);
         if (passwordResetResponse.isSuccess == true) {
-          this.passwordResetCompleteicon = 'done';
+          this.passwordResetCompleteIcon = 'done';
           this.resetCompleteMessage = 'Password reset succesfully';
           return;
 
         }
 
-        this.passwordResetCompleteicon = 'close';
+        this.passwordResetCompleteIcon = 'close';
         this.resetCompleteMessage = 'Password reset failed';
 
 
 
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
         console.log(error.errorMessage);
         this.activePasswordResetScreen = PassWordResetScreens.successScreen;
-        this.passwordResetCompleteicon = 'close';
+        this.passwordResetCompleteIcon = 'close';
         this.resetCompleteMessage = error.errorMessage;
 
       }

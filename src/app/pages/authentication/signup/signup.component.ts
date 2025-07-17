@@ -1,41 +1,28 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { AngularMaterialModules } from '../../../core/modules/material-modules';
-import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
+import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { PasswordVisibility } from '../../../core/models/types/ui-types';
-import { PasswordUtility } from '../../../core/helpers/password-utility';
-import { RouterModules } from '../../../core/modules/router-modules';
-import { CoreModules } from '../../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
-import { Router } from '@angular/router';
-import { AuthenticationService } from '../../../core/services/authentication.service';
-import {  IconStat } from '../../../core/models/enums/ui-enums';
-import { UserExistingStatMsg } from '../../../core/models/enums/api-response-enums';
-import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
-import { IErrorResponse } from '../../../core/models/interface/errors-interface';
-import { SessionStorageUtil } from '../../../core/services/session-storage-util.service';
-import { SessionStorageData } from '../../../core/models/enums/sessionStorage-enums';
-import { IAPIResponse, ISigninResponse, ISignupResponse } from '../../../core/models/interface/api-response-interface';
-import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application-routes-enums';
-import {  IGoogleSignInPayload, ISignupSiginPayload } from '../../../core/models/interface/api-requests-interface';
-import { GoogleSiginComponent } from '../../../components/google-sigin/google-sigin.component';
+import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
+import { PasswordStrengthCheckerComponent } from '../../../components';
+import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
+import { PasswordUtility, SessionStorageUtil } from '../../../core/helpers';
+import { PasswordVisibility, RootRoutes, AuthRoutes, SignupSignInPayload, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys } from '../../../core/models';
+import { AuthenticationService } from '../../../core/services';
 
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSiginComponent],
+  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSignInComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
 export class SignupComponent implements OnInit {
-  @ViewChild(GoogleSiginComponent) googleButtonComponent!: GoogleSiginComponent;
+  @ViewChild(GoogleSignInComponent) googleButtonComponent!: GoogleSignInComponent;
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
   googleSignupText: string = "Signup with Google";
-
-
 
   signupFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
@@ -44,14 +31,11 @@ export class SignupComponent implements OnInit {
   loaderIsActive: boolean = false;
   signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`;
 
-
-
   router = inject(Router);
 
   constructor(private authService: AuthenticationService, private dialog: MatDialog) {
 
   }
-
 
   ngOnInit(): void {
     this.initializeSignupForm();
@@ -117,15 +101,14 @@ export class SignupComponent implements OnInit {
   }
 
   submitSignupForm() {
-
     if (this.signupFormGroup.invalid) {
       return
     }
-    const userMail: string = this.signupFormGroup.get('email')!.value;
     this.loaderIsActive = true;
-    const signupPayload: ISignupSiginPayload = this.generateSignUpPayload(userMail, this.signupFormGroup.get('password')!.value)
+    const userMail: string = this.signupFormGroup.get('email')!.value;
+    const signupPayload: SignupSignInPayload = this.generateSignUpPayload(userMail, this.signupFormGroup.get('password')!.value)
     this.authService.signup(signupPayload).subscribe({
-      next: (response: IAPIResponse<ISignupResponse>) => {
+      next: (response: APIResponse<SignupResponse>) => {
         this.loaderIsActive = false;
         this.resetSignupForm();
         if (response.statusCode === 200) {
@@ -133,20 +116,20 @@ export class SignupComponent implements OnInit {
           this.navigateToEmailValidationScreen(userMail);
         }
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         let errorMsg = error.errorMessage;
 
         this.loaderIsActive = false;
-        if (errorMsg === UserExistingStatMsg.EmailNotConfirmedMsg) return this.navigateToEmailValidationScreen(userMail);
+        if (errorMsg === USER_EMAIL_NOT_CONFIRMED_MSG) return this.navigateToEmailValidationScreen(userMail);
 
-          const dialogData: InfoDialogData = {
-            infoMessage: errorMsg,
-            statusIcon: IconStat.failed
-          }
-          this.dialog.open(InfoDialogComponent, {
-            data: dialogData,
-            backdropClass: "blurred"
-          });
+        const dialogData: InfoDialogData = {
+          infoMessage: errorMsg,
+          statusIcon: IconStat.failed
+        }
+        this.dialog.open(InfoDialogComponent, {
+          data: dialogData,
+          backdropClass: "blurred"
+        });
       }
     })
 
@@ -158,17 +141,17 @@ export class SignupComponent implements OnInit {
   }
 
   handleCredentialResponse(response: any) {
-    const googleSigninPayload: IGoogleSignInPayload = { userToken: response.credential };
+    const googleSigninPayload: GoogleSignInPayload = { userToken: response.credential };
     this.authService.googleLogin(googleSigninPayload).subscribe({
-      next: (response: IAPIResponse<ISigninResponse>) => {
+      next: (response: APIResponse<SigninResponse>) => {
 
         this.loaderIsActive = false;
         this.googleButtonComponent.turnOffLoader();
-        SessionStorageUtil.setItem(SessionStorageData.authToken, response.result.content.token!);
+        SessionStorageUtil.setItem(SessionStorageKeys.authToken, response.result.content.token!);
         if (response.isSuccess === true) this.navigateOut(`/${RootRoutes.main}`);
 
       },
-      error: (error: IErrorResponse) => {
+      error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
         this.googleButtonComponent.turnOffLoader();
         console.log(error);
@@ -180,7 +163,7 @@ export class SignupComponent implements OnInit {
     this.router.navigate([navigationRoute]);
   }
 
-  generateSignUpPayload(userMail: string, password: string): ISignupSiginPayload {
+  generateSignUpPayload(userMail: string, password: string): SignupSignInPayload {
     return {
       email: userMail,
       password: password
@@ -188,7 +171,7 @@ export class SignupComponent implements OnInit {
   }
 
   navigateToEmailValidationScreen(userMail: string) {
-    SessionStorageUtil.setItem(SessionStorageData.userMail, userMail);
+    SessionStorageUtil.setItem(SessionStorageKeys.userMail, userMail);
     this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
   }
 

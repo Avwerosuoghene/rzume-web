@@ -1,9 +1,8 @@
 import { Component, Inject, InjectionToken, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { InfoDialogData } from '../../core/models/interface/dialog-models-interface';
 import { MatButtonModule } from '@angular/material/button';
-import { StatusIcon } from '../../core/models/types/ui-types';
+import { StatusIcon, InfoDialogData } from '../../core/models';
 
 @Component({
   selector: 'app-info-dialog',
