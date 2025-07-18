@@ -69,10 +69,10 @@ export class OnboardComponent {
     this.loaderIsActive = true;
 
     this.profileMgmtService.onboard(onBoardUserPayload).subscribe({
-      next: (onboardResponse: APIResponse<boolean>) => {
+      next: ({success}: APIResponse<boolean>) => {
         this.loaderIsActive = false;
         this.onboardFormGroup.reset();
-        if (onboardResponse.isSuccess) {
+        if (success) {
 
           this.navigateOut(`/${RootRoutes.main}`);
           return

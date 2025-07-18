@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, O
 import { environment } from '../../../environments/environment.development';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../core/services/authentication.service';
+import { GOOGLE_SCRIPT_ERROR } from '../../core/models';
 
 declare let google: any;
 
@@ -26,15 +27,15 @@ export class GoogleSignInComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.authService.loadGoogleScript().then(() => {
-    }).catch(err => {
-      console.error('Google API script loading error:', err);
-    });
-
+    this.authService.loadGoogleScript().catch(this.handleScriptError);
   }
 
+  handleScriptError = (err: any): void => {
+    console.error(GOOGLE_SCRIPT_ERROR, err);
+  };
+
   initiateGoogleSignup() {
-    this.loaderIsActive = true;
+    this.toggleLoader(true);
     this.createGoogleWrapper().click();
   }
 
@@ -50,7 +51,6 @@ export class GoogleSignInComponent implements OnInit {
       ux_mode: 'popup',
       callback: (token: string) => {
         this.tokenEmitter.emit(token);
-
       },
     });
     google.accounts.id.renderButton(googleLoginWrapper, {
@@ -69,8 +69,8 @@ export class GoogleSignInComponent implements OnInit {
     };
   };
 
-  turnOffLoader() {
-    this.loaderIsActive = false;
+  toggleLoader(loaderIsActive:boolean) {
+    this.loaderIsActive = loaderIsActive;
     this.cdr.detectChanges();
   }
 

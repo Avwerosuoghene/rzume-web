@@ -20,7 +20,6 @@ export class JobStatusChangeComponent implements OnInit {
   applicationStatusList : Array<string> = Object.values(ApplicationStatus);
 
 
-
   constructor (private dialogRef:  MatDialogRef<JobStatusChangeComponent>, @Inject(MAT_DIALOG_DATA) private jobStatusData: JobStatChangeDialogData ) {
 
   }

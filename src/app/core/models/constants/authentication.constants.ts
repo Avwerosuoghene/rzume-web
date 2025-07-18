@@ -26,4 +26,6 @@ export const GOOGLE_SCRIPT_ID = 'google-js';
 
 export const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
+export const GOOGLE_SCRIPT_ERROR = 'Google API script loading error:';
 
+export const GOOGLE_SIGNUP_BUTTON_TEXT = 'Sign up with Google';

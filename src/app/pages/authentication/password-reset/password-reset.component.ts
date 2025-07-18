@@ -23,8 +23,8 @@ export class PasswordResetComponent {
   route = inject(ActivatedRoute);
   fb = inject(NonNullableFormBuilder);
   passwordStrength!: string;
-  passwordVisibility: PasswordVisibility = 'password';
-  confirmPasswordVisibility: PasswordVisibility = 'password';
+  passwordVisibility: PasswordVisibility = PasswordVisibility.password;
+  confirmPasswordVisibility: PasswordVisibility = PasswordVisibility.password;
   tokenValue: string | null = null;
   userMail: string | null = null;
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
@@ -100,12 +100,11 @@ export class PasswordResetComponent {
       resetToken: this.tokenValue!
     }
     this.profileManagementService.resetPassword(passwordResetPayload).subscribe({
-      next: (passwordResetResponse: APIResponse<boolean>) => {
+      next: ({success}: APIResponse<boolean>) => {
         this.loaderIsActive = false;
         this.resetPassFormGroup.reset();
         this.activePasswordResetScreen = PassWordResetScreens.successScreen;
-        console.log(passwordResetResponse);
-        if (passwordResetResponse.isSuccess == true) {
+        if (success) {
           this.passwordResetCompleteIcon = 'done';
           this.resetCompleteMessage = 'Password reset succesfully';
           return;

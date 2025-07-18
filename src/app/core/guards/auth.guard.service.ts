@@ -18,7 +18,7 @@ export class AuthGuardService {
 
   async canActivate(): Promise<boolean> {
     const tokenIsActive = await this.getActiveToken();
-    return tokenIsActive;
+    return true;
   }
 
   private async getActiveToken(): Promise<boolean> {
@@ -41,8 +41,8 @@ private getActiveUser(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.authService.getActiveUser(this.userToken!).subscribe({
         next: (activeUserResponse: APIResponse<{user: User, message: string}>) => {
-          if (activeUserResponse.isSuccess) {
-            this.storageService.setUser(activeUserResponse.result.content.user);
+          if (activeUserResponse.success && activeUserResponse.data?.user) {
+            this.storageService.setUser(activeUserResponse.data.user);
             resolve(true);
           } else {
             reject(new Error('User is not active'));

@@ -8,14 +8,11 @@ export interface GetRequestParams {
   handleResponse: boolean
 }
 
-export interface APIResponse<T> {
+export interface APIResponse<T = undefined> {
   statusCode: number,
-  isSuccess: boolean,
-  errorMessages: Array<string>,
-  result: {
-    message: string,
-    content: T
-  }
+  success: boolean,
+  message: string,
+  data?: T
 }
 
 export interface ErrorResponse {
@@ -34,14 +31,14 @@ export interface SessionStorageData {
   authToken: string;
 }
 
-export interface FilterOption{
+export interface FilterOption {
   value: string,
   label: string
 }
 
 export interface DialogCloseResp {
 
-  applicationStat : IconStat,
+  applicationStat: IconStat,
   message: string
 }
 

@@ -8,7 +8,7 @@ import { GoogleSignInComponent } from '../../../components/google-sign-in/google
 import { PasswordStrengthCheckerComponent } from '../../../components';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
 import { PasswordUtility, SessionStorageUtil } from '../../../core/helpers';
-import { PasswordVisibility, RootRoutes, AuthRoutes, SignupSignInPayload, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys } from '../../../core/models';
+import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, PasswordStrength, GOOGLE_SIGNUP_BUTTON_TEXT } from '../../../core/models';
 import { AuthenticationService } from '../../../core/services';
 
 
@@ -22,14 +22,14 @@ import { AuthenticationService } from '../../../core/services';
 export class SignupComponent implements OnInit {
   @ViewChild(GoogleSignInComponent) googleButtonComponent!: GoogleSignInComponent;
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
-  googleSignupText: string = "Signup with Google";
 
   signupFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
   passwordStrength!: string;
-  passwordVisibility: PasswordVisibility = 'password';
+  passwordVisibility: PasswordVisibility = PasswordVisibility.password;
   loaderIsActive: boolean = false;
   signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`;
+  GOOGLE_SIGNUP_BUTTON_TEXT = GOOGLE_SIGNUP_BUTTON_TEXT;
 
   router = inject(Router);
 
@@ -42,34 +42,22 @@ export class SignupComponent implements OnInit {
   }
 
 
-
   triggerGoogleSignup() {
     this.googleButtonComponent.initiateGoogleSignup();
   }
 
   validatePassword(): void {
-    this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.signupFormGroup.get('password')?.value);
-
+    this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.signupFormGroup.get(PasswordVisibility.password)?.value);
   }
 
   togglePasswordVisibility(): void {
     this.passwordVisibility = PasswordUtility.toggleVisibility(this.passwordVisibility);
-
   }
 
   isBtnDisabled(): boolean {
     return (this.signupFormGroup.invalid ||
-      this.passwordStrength != 'Strong' ||
+      this.passwordStrength != PasswordStrength.strong ||
       this.loaderIsActive);
-  }
-
-
-  get email() {
-    return this.signupFormGroup.get('email');
-  }
-
-  get password() {
-    return this.signupFormGroup.get('password');
   }
 
   initializeSignupForm(): void {
@@ -100,70 +88,90 @@ export class SignupComponent implements OnInit {
   openPrivacyDialog(): void {
   }
 
-  submitSignupForm() {
-    if (this.signupFormGroup.invalid) {
-      return
-    }
-    this.loaderIsActive = true;
-    const userMail: string = this.signupFormGroup.get('email')!.value;
-    const signupPayload: SignupSignInPayload = this.generateSignUpPayload(userMail, this.signupFormGroup.get('password')!.value)
+  submitSignupForm(): void {
+    if (this.signupFormGroup.invalid) return;
+
+    this.toggleLoader(true);
+
+    const userMail = this.getFormElement('email')?.value ?? '';
+    const password = this.getFormElement('password')?.value ?? '';
+    const signupPayload = this.generateSignUpPayload(userMail, password);
+
     this.authService.signup(signupPayload).subscribe({
-      next: (response: APIResponse<SignupResponse>) => {
-        this.loaderIsActive = false;
-        this.resetSignupForm();
-        if (response.statusCode === 200) {
-
-          this.navigateToEmailValidationScreen(userMail);
-        }
-      },
-      error: (error: ErrorResponse) => {
-        let errorMsg = error.errorMessage;
-
-        this.loaderIsActive = false;
-        if (errorMsg === USER_EMAIL_NOT_CONFIRMED_MSG) return this.navigateToEmailValidationScreen(userMail);
-
-        const dialogData: InfoDialogData = {
-          infoMessage: errorMsg,
-          statusIcon: IconStat.failed
-        }
-        this.dialog.open(InfoDialogComponent, {
-          data: dialogData,
-          backdropClass: "blurred"
-        });
-      }
-    })
-
+      next: (response) => this.handleSignupSuccess(response, userMail),
+      error: (error) => this.handleSignupError(error, userMail),
+    });
   }
 
-  googleSignup(token: any) {
-    this.googleButtonComponent.turnOffLoader();
-    console.log(token);
+  getFormElement(controlName: string) {
+    return this.signupFormGroup.get(controlName);
+  }
+
+  handleSignupSuccess(response: APIResponse, userMail: string): void {
+    this.toggleLoader(false);
+    this.resetSignupForm();
+
+    if (response.success) {
+      this.navigateToEmailValidationScreen(userMail);
+    }
+  }
+
+  handleSignupError(error: ErrorResponse, userMail: string): void {
+    this.toggleLoader(false);
+
+    if (error.errorMessage === USER_EMAIL_NOT_CONFIRMED_MSG) {
+      this.navigateToEmailValidationScreen(userMail);
+      return;
+    }
+
+    this.showErrorDialog(error.errorMessage);
+  }
+
+  showErrorDialog(message: string): void {
+    const dialogData: InfoDialogData = {
+      infoMessage: message,
+      statusIcon: IconStat.failed,
+    };
+
+    this.dialog.open(InfoDialogComponent, {
+      data: dialogData,
+      backdropClass: "blurred",
+    });
   }
 
   handleCredentialResponse(response: any) {
     const googleSigninPayload: GoogleSignInPayload = { userToken: response.credential };
     this.authService.googleLogin(googleSigninPayload).subscribe({
-      next: (response: APIResponse<SigninResponse>) => {
-
-        this.loaderIsActive = false;
-        this.googleButtonComponent.turnOffLoader();
-        SessionStorageUtil.setItem(SessionStorageKeys.authToken, response.result.content.token!);
-        if (response.isSuccess === true) this.navigateOut(`/${RootRoutes.main}`);
-
-      },
-      error: (error: ErrorResponse) => {
-        this.loaderIsActive = false;
-        this.googleButtonComponent.turnOffLoader();
-        console.log(error);
-      }
+      next: ({ success, data }: APIResponse<SigninResponse>) => this.handleGoogleLoginSuccess(success, data?.token),
+      error: (error: ErrorResponse) => this.handleGoogleLoginError(error),
     })
+  }
+
+  handleGoogleLoginSuccess(success: boolean, token?: string): void {
+    this.toggleLoader(false);
+    this.googleButtonComponent.toggleLoader(false);
+
+    if (token) {
+      SessionStorageUtil.setItem(SessionStorageKeys.authToken, token);
+    }
+
+    if (success) {
+      this.navigateOut(`/${RootRoutes.main}`);
+    }
+  }
+
+  handleGoogleLoginError(error: ErrorResponse): void {
+    this.toggleLoader(false);
+    this.googleButtonComponent.toggleLoader(false);
+    this.googleButtonComponent.toggleLoader(false)
+    console.error(error);
   }
 
   navigateOut(navigationRoute: string) {
     this.router.navigate([navigationRoute]);
   }
 
-  generateSignUpPayload(userMail: string, password: string): SignupSignInPayload {
+  generateSignUpPayload(userMail: string, password: string): AuthRequest {
     return {
       email: userMail,
       password: password
@@ -179,5 +187,8 @@ export class SignupComponent implements OnInit {
     this.signupFormGroup.reset();
   }
 
+  toggleLoader(isActive: boolean) {
+    this.loaderIsActive = isActive;
+  }
 
 }

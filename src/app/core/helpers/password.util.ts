@@ -14,14 +14,11 @@ export class PasswordUtility {
 
 
   static toggleVisibility(passwordVisibility: PasswordVisibility): PasswordVisibility {
-    if (passwordVisibility === 'password') {
+    if (passwordVisibility === PasswordVisibility.password) {
       clearTimeout(this.passwordVisibilityTimer);
-
-
-      return 'text';
+      return PasswordVisibility.text;
     } else {
-
-      return 'password';
+      return PasswordVisibility.password;
     }
   }
 

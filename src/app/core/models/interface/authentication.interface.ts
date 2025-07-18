@@ -1,5 +1,5 @@
 
-export interface SignupSignInPayload {
+export interface AuthRequest {
   email: string,
   password: string
 }

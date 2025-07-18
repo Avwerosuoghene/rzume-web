@@ -47,18 +47,17 @@ export class EmailConfirmationComponent {
 
 
     this.authService.validateToken(tokenValue).subscribe({
-      next: (response: APIResponse<ValidateUserResponse>) => {
-        const responseContent = response.result;
+      next: ({success, message,data}: APIResponse<ValidateUserResponse>) => {
         this.loaderIsActive = false;
-        if (responseContent.content.user) {
+        if (success) {
           this.emailValidationHeader = EMAIL_VALIDATED_HEADER;
-          this.emailValidMsg = responseContent.message;
+          this.emailValidMsg = message;
           this.emailValidationBtnTxt = BTN_CONTINUE;
-          SessionStorageUtil.setItem(SessionStorageKeys.authToken,response.result.content.token!);
-          return
+          SessionStorageUtil.setItem(SessionStorageKeys.authToken,data?.token!);
+          return;
         }
 
-        this.emailValidMsg = responseContent.message;
+        this.emailValidMsg = message;
         this.emailValidationHeader = EMAIL_VALIDATION_ERROR_HEADER;
       },
       error: (error: any) => {
@@ -82,10 +81,10 @@ export class EmailConfirmationComponent {
     const email =  SessionStorageUtil.getItem(SessionStorageKeys.userMail);
     if (!email) this.openErrorDialog();
     this.authService.generateToken(email!).subscribe({
-      next: (response: APIResponse<string>) => {
+      next: ({success, message }: APIResponse<string>) => {
         this.loaderIsActive = false;
-        if (response.isSuccess) {
-          this.emailValidMsg =  response.result.message;
+        if (success) {
+          this.emailValidMsg =  message;
 
 
         }

@@ -85,13 +85,13 @@ export class RequestPasswordResetComponent implements OnDestroy {
       email
     }
     this.profileManagementService.requestPassReset(requestPassResetPayload).subscribe({
-      next: (requestPassResetResponse: APIResponse<boolean>) => {
+      next: ({success, message}: APIResponse<boolean>) => {
         this.loaderIsActive = false;
         this.passResetReqFormGroup.reset();
         this.setTimer();
-        if (requestPassResetResponse.isSuccess) {
+        if (success) {
           const dialogData: InfoDialogData = {
-            infoMessage: requestPassResetResponse.result.message,
+            infoMessage: message,
             statusIcon: IconStat.success
           }
 

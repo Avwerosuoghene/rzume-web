@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit {
 
         this.utilityService.headerLoader.next(false);
 
-        if (response.isSuccess === true)  {
+        if (response.success )  {
           this.clearBrowserStorage();
 
           this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.signin}`])

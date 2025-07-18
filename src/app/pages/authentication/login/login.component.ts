@@ -16,7 +16,7 @@ import { GoogleSignInComponent } from '../../../components/google-sign-in/google
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat, onBoardStages, SessionStorageKeys } from '../../../core/models/enums/shared.enums';
-import { APIResponse, ErrorResponse, GoogleSignInPayload, PasswordVisibility, SigninResponse, SignupSignInPayload } from '../../../core/models';
+import { APIResponse, ErrorResponse, GoogleSignInPayload, PasswordVisibility, SigninResponse, AuthRequest } from '../../../core/models';
 
 
 
@@ -36,7 +36,7 @@ export class LoginComponent {
   loginFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
   readonly dialog: MatDialog = inject(MatDialog);
-  passwordVisibility: PasswordVisibility = 'password';
+  passwordVisibility: PasswordVisibility = PasswordVisibility.password;
   loaderIsActive: boolean = false;
   router = inject(Router);
   signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
@@ -101,18 +101,18 @@ export class LoginComponent {
   handleCredentialResponse(response: any) {
     const googleSigninPayload: GoogleSignInPayload = { userToken: response.credential };
     this.authService.googleLogin(googleSigninPayload).subscribe({
-      next: (response: APIResponse<SigninResponse>) => {
+      next: ({success, message}: APIResponse<SigninResponse>) => {
         console.log(response)
 
         this.loaderIsActive = false;
-        this.googleButtonComponent.turnOffLoader();
+        this.googleButtonComponent.toggleLoader(false);
         SessionStorageUtil.setItem(SessionStorageKeys.authToken, response.result.content.token!);
-        if (response.isSuccess === true) this.navigateOut(`/${RootRoutes.main}`);
+        if (success) this.navigateOut(`/${RootRoutes.main}`);
 
       },
       error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
-        this.googleButtonComponent.turnOffLoader();
+        this.googleButtonComponent.toggleLoader(false);
         console.log(error);
       }
     })
@@ -155,14 +155,14 @@ export class LoginComponent {
     const userMail: string = this.loginFormGroup.get('email')!.value;
     const password: string = this.loginFormGroup.get('password')!.value;
     this.loaderIsActive = true;
-    const loginPayload: SignupSignInPayload = this.generateLoginPayload(userMail, password);
+    const loginPayload: AuthRequest = this.generateLoginPayload(userMail, password);
     this.authService.login(loginPayload).subscribe({
       next: (response: APIResponse<SigninResponse>) => {
         this.loaderIsActive = false;
         this.loginFormGroup.reset();
-        if(response.isSuccess != true) {
+        if(!response.success) {
           const dialogData : InfoDialogData = {
-            infoMessage: response.errorMessages[0]?response.errorMessages[0]: 'An error occured',
+            infoMessage: response.message,
             statusIcon: IconStat.failed
           }
           this.dialog.open(InfoDialogComponent, {
@@ -171,8 +171,8 @@ export class LoginComponent {
           });
           return;
         }
-        const signinResponseContent: SigninResponse | undefined = response.result.content;
-        if (signinResponseContent.user == null) {
+        const signinResponseContent: SigninResponse | undefined = response?.data;
+        if (signinResponseContent?.user == null) {
           SessionStorageUtil.setItem(SessionStorageKeys.userMail, userMail);
           this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
           return;
@@ -189,7 +189,7 @@ export class LoginComponent {
     });
   }
 
-  generateLoginPayload(userMail: string, password: string): SignupSignInPayload {
+  generateLoginPayload(userMail: string, password: string): AuthRequest {
     return { email: userMail, password: password };
   }
 

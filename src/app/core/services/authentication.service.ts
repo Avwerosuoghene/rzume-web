@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from '../models/constants/api.routes';
 import { HttpHeaders } from '@angular/common/http';
-import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, SignOutPayload, SignupResponse, SignupSignInPayload, User, ValidateUserResponse } from '../models';
+import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, SignOutPayload, SignupResponse, AuthRequest, User, ValidateUserResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,8 @@ export class AuthenticationService {
   });
 
 
-  signup(payload: SignupSignInPayload) {
-    return this.apiService.post<APIResponse<SignupResponse>>(
+  signup(payload: AuthRequest) {
+    return this.apiService.post<APIResponse>(
       ApiRoutes.user.register, payload, false
     )
   }
@@ -29,7 +29,7 @@ export class AuthenticationService {
     )
   }
 
-  login(payload: SignupSignInPayload) {
+  login(payload: AuthRequest) {
     payload.password = window.btoa(payload.password.toString());
     return this.apiService.post<APIResponse<SigninResponse>>(
       ApiRoutes.user.login, payload, true
@@ -59,7 +59,7 @@ export class AuthenticationService {
 
 
 
-  onboard(payload: SignupSignInPayload) {
+  onboard(payload: AuthRequest) {
     return this.apiService.post<APIResponse<SigninResponse>>(
       ApiRoutes.user.login, payload, true
     )

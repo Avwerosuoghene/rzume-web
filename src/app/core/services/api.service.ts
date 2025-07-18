@@ -29,10 +29,10 @@ export class ApiService {
     return this.httpClient.get<T>(route, {
       headers, params
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ERROR_UNKNOWN ;
+      let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
-        statusCode : error.error.statusCode,
+        statusCode: error.statusCode,
         errorMessage: errorMsg
       }
       if (handleResponse)
@@ -53,10 +53,10 @@ export class ApiService {
     return this.httpClient.put<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ERROR_UNKNOWN ;
+      let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
-        statusCode : error.error.statusCode,
+        statusCode: error.statusCode,
         errorMessage: errorMsg
       }
       if (handleResponse)
@@ -73,10 +73,10 @@ export class ApiService {
     return this.httpClient.post<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.errorMessages? error?.error?.errorMessages[0]: ERROR_UNKNOWN ;
+      let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
-        statusCode : error.error.statusCode,
+        statusCode: error.statusCode,
         errorMessage: errorMsg
       }
       if (handleResponse)
