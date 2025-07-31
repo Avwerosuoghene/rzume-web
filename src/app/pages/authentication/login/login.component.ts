@@ -16,7 +16,7 @@ import { GoogleSignInComponent } from '../../../components/google-sign-in/google
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat, onBoardStages, SessionStorageKeys } from '../../../core/models/enums/shared.enums';
-import { APIResponse, ErrorResponse, GoogleSignInPayload, PasswordVisibility, SigninResponse, AuthRequest } from '../../../core/models';
+import { APIResponse, ErrorResponse, GoogleSignInPayload, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
 
 
 
@@ -41,56 +41,21 @@ export class LoginComponent {
   router = inject(Router);
   signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
   forgotPassRoute = `/${RootRoutes.auth}/${AuthRoutes.forgotPass}`;
-  googleSigninText: string = "Signin with Google";
+  GOOGLE_SIGNIN_BUTTON_TEXT = GOOGLE_SIGNIN_BUTTON_TEXT;
 
 
-  constructor(private authService: AuthenticationService) { }
+  constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService) { }
 
   ngOnInit(): void {
     this.initializeForm();
-
-    GoogleAuthService.loadGoogleScript().then(() => {
-      this.initializeGoogleSignIn();
-    }).catch(err => {
-      console.error('Google API script loading error:', err);
-    });
   }
-
-  get email() {
-    return this.loginFormGroup.get('email');
-  }
-
 
   triggerGoogleSignin() {
     this.googleButtonComponent.initiateGoogleSignup();
   }
 
-
-  initializeGoogleSignIn(): void {
-    google.accounts.id.initialize({
-      client_id: environment.googleClientId,
-      ux_mode: 'popup',
-      callback: (response: any) => {
-        this.handleCredentialResponse(response);
-      },
-    });
-    this.setGoogleButtonDisplay();
-
-
-    google.accounts.id.prompt();
-  }
-
-  setGoogleButtonDisplay() {
-    google.accounts.id.renderButton(
-      document.getElementById('google-btn'),
-      { theme: 'filled_blue', size: 'large', shape: 'rectangle', height: '100%', width: document.getElementById("google_btn_container")?.offsetWidth, }
-    );
-  }
-
-  testGoogleBtnClick() {
-    if (this.googleBtn) {
-      this.googleBtn.nativeElement.click();
-    }
+  getFormElement(controlName: string) {
+    return this.loginFormGroup.get(controlName);
   }
 
   isBtnDisabled(): boolean {
@@ -99,31 +64,21 @@ export class LoginComponent {
   }
 
   handleCredentialResponse(response: any) {
-    const googleSigninPayload: GoogleSignInPayload = { userToken: response.credential };
-    this.authService.googleLogin(googleSigninPayload).subscribe({
-      next: ({success, message}: APIResponse<SigninResponse>) => {
-        console.log(response)
+    this.googleAuthService.handleCredentialResponse(response, (success, token) => this.handleGoogleLoginSuccess(success, token), (error) => this.handleGoogleLoginError(error))
+  }
 
-        this.loaderIsActive = false;
-        this.googleButtonComponent.toggleLoader(false);
-        SessionStorageUtil.setItem(SessionStorageKeys.authToken, response.result.content.token!);
-        if (success) this.navigateOut(`/${RootRoutes.main}`);
+  handleGoogleLoginSuccess(success: boolean, token?: string): void {
+    this.toggleLoader(false);
+    this.googleButtonComponent.toggleLoader(false);
+    this.googleAuthService.handleGoogleAuthResponse(success, token);
+  }
 
-      },
-      error: (error: ErrorResponse) => {
-        this.loaderIsActive = false;
-        this.googleButtonComponent.toggleLoader(false);
-        console.log(error);
-      }
-    })
+  handleGoogleLoginError(error: ErrorResponse): void {
+    this.toggleLoader(false);
+    this.googleButtonComponent.toggleLoader(false);
   }
 
 
-
-
-  get password() {
-    return this.loginFormGroup.get('password');
-  }
 
   initializeForm(): void {
     this.loginFormGroup = this.fb.group({
@@ -147,46 +102,74 @@ export class LoginComponent {
   }
 
 
-
   submitLoginForm() {
     if (this.loginFormGroup.invalid) {
       return;
     }
-    const userMail: string = this.loginFormGroup.get('email')!.value;
-    const password: string = this.loginFormGroup.get('password')!.value;
-    this.loaderIsActive = true;
+    this.toggleLoader(true);
+
+    const userMail: string = this.getFormElement('email')?.value;
+    const password: string = this.getFormElement('password')?.value;
     const loginPayload: AuthRequest = this.generateLoginPayload(userMail, password);
     this.authService.login(loginPayload).subscribe({
-      next: (response: APIResponse<SigninResponse>) => {
-        this.loaderIsActive = false;
-        this.loginFormGroup.reset();
-        if(!response.success) {
-          const dialogData : InfoDialogData = {
-            infoMessage: response.message,
-            statusIcon: IconStat.failed
-          }
-          this.dialog.open(InfoDialogComponent, {
-            data:dialogData,
-            backdropClass: "blurred"
-          });
-          return;
-        }
-        const signinResponseContent: SigninResponse | undefined = response?.data;
-        if (signinResponseContent?.user == null) {
-          SessionStorageUtil.setItem(SessionStorageKeys.userMail, userMail);
-          this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
-          return;
-        }
-        SessionStorageUtil.setItem(SessionStorageKeys.authToken, signinResponseContent.token!);
-        if (signinResponseContent.user.onBoardingStage === onBoardStages.first) {
-          return this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`
-          )};
-        this.navigateOut(`/${RootRoutes.main}`);
-      },
-      error: (error: ErrorResponse) => {
-        this.loaderIsActive = false;
-      }
+      next: (response: APIResponse<SigninResponse>) => this.handleSignInSuccess(response, userMail),
+      error: (error: ErrorResponse) => this.handleSignInError(error)
+
     });
+  }
+
+  handleSignInSuccess(response: APIResponse<SigninResponse>, userMail: string) {
+    this.toggleLoader(false);
+    this.loginFormGroup.reset();
+
+    if (!response.success || !response.data) {
+      const dialogData: InfoDialogData = {
+        infoMessage: response.message,
+        statusIcon: IconStat.failed
+      }
+      this.showDialog(dialogData);
+      return;
+    }
+    const signinResponseContent: SigninResponse = response.data;
+    this.processSigninContent(signinResponseContent, userMail);
+  }
+
+  processSigninContent(signinData: SigninResponse, userMail: string): void {
+    if (!signinData.user) {
+      this.handleMissingUser(userMail);
+      return;
+    }
+
+    this.saveAuthToken(signinData.token!);
+    this.redirectAfterSignin(signinData.user.onBoardingStage);
+  }
+
+  saveAuthToken(token: string): void {
+    SessionStorageUtil.setItem(SessionStorageKeys.authToken, token);
+  }
+
+  redirectAfterSignin(stage: onBoardStages): void {
+    if (stage === onBoardStages.first) {
+      this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`);
+    } else {
+      this.navigateOut(`/${RootRoutes.main}`);
+    }
+  }
+
+  handleMissingUser(userMail: string): void {
+    SessionStorageUtil.setItem(SessionStorageKeys.userMail, userMail);
+    this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
+  }
+
+  showDialog(dialogData: InfoDialogData) {
+    this.dialog.open(InfoDialogComponent, {
+      data: dialogData,
+      backdropClass: "blurred"
+    });
+  }
+
+  handleSignInError(error: ErrorResponse) {
+    this.toggleLoader(false);
   }
 
   generateLoginPayload(userMail: string, password: string): AuthRequest {
@@ -197,7 +180,8 @@ export class LoginComponent {
     this.router.navigate([navigationRoute]);
   }
 
-  navigateToDashboard() {
-    console.log('dashboard');
+
+  toggleLoader(isActive: boolean) {
+    this.loaderIsActive = isActive;
   }
 }

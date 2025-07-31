@@ -26,11 +26,11 @@
         />
         <mat-icon matSuffix>person</mat-icon>
 
-        @if (email?.hasError('required')) {
+        @if (getFormElement('email')?.hasError('required')) {
 
         <mat-error> Email required </mat-error>
 
-        } @else if (email?.hasError('email')) {
+        } @else if (getFormElement('email')?.hasError('email')) {
 
         <mat-error> Please enter a valid mail </mat-error>
         }
@@ -48,7 +48,7 @@
           passwordVisibility === "password" ? "visibility_off" : "visibility"
         }}</mat-icon>
 
-        @if (password?.hasError('required')) {
+        @if (getFormElement('password')?.hasError('required')) {
         <mat-error> Password required </mat-error>
         }
       </mat-form-field>
@@ -83,10 +83,8 @@
           <p>Continue</p>
         </div>
       </button>
-
-
       <p>Or</p>
-      <app-google-sign-in (tokenEmitter)="handleCredentialResponse($event)" (click)="triggerGoogleSignin()" [googleBtnText] ="googleSigninText"  ></app-google-sign-in>
+      <app-google-sign-in (tokenEmitter)="handleCredentialResponse($event)" (click)="triggerGoogleSignin()" [googleBtnText] ="GOOGLE_SIGNIN_BUTTON_TEXT"  ></app-google-sign-in>
       </div>
 
 

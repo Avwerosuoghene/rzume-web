@@ -47,12 +47,12 @@ export class AuthenticationService {
   getActiveUser(userToken: string) {
     const apiRoute = ApiRoutes.user.getActiveUser;
     const updatedHeaders = this.defaultHeaders
-      .append('Authorization', userToken);
+      .append('Authorization', `Bearer ${userToken}`);
     const getRequestParams: GetRequestParams = {
       apiRoute: apiRoute,
       handleResponse: true
     }
-    return this.apiService.get<APIResponse<{ user: User, message: string }>>(
+    return this.apiService.get<APIResponse<User>>(
       getRequestParams, updatedHeaders
     )
   }

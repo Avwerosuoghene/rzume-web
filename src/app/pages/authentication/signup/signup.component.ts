@@ -8,8 +8,8 @@ import { GoogleSignInComponent } from '../../../components/google-sign-in/google
 import { PasswordStrengthCheckerComponent } from '../../../components';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
 import { PasswordUtility, SessionStorageUtil } from '../../../core/helpers';
-import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, PasswordStrength, GOOGLE_SIGNUP_BUTTON_TEXT } from '../../../core/models';
-import { AuthenticationService } from '../../../core/services';
+import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, PasswordStrength, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
+import { AuthenticationService, GoogleAuthService } from '../../../core/services';
 
 
 @Component({
@@ -29,11 +29,11 @@ export class SignupComponent implements OnInit {
   passwordVisibility: PasswordVisibility = PasswordVisibility.password;
   loaderIsActive: boolean = false;
   signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`;
-  GOOGLE_SIGNUP_BUTTON_TEXT = GOOGLE_SIGNUP_BUTTON_TEXT;
+  GOOGLE_SIGNIN_BUTTON_TEXT = GOOGLE_SIGNIN_BUTTON_TEXT;
 
   router = inject(Router);
 
-  constructor(private authService: AuthenticationService, private dialog: MatDialog) {
+  constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService, private dialog: MatDialog) {
 
   }
 
@@ -140,31 +140,18 @@ export class SignupComponent implements OnInit {
   }
 
   handleCredentialResponse(response: any) {
-    const googleSigninPayload: GoogleSignInPayload = { userToken: response.credential };
-    this.authService.googleLogin(googleSigninPayload).subscribe({
-      next: ({ success, data }: APIResponse<SigninResponse>) => this.handleGoogleLoginSuccess(success, data?.token),
-      error: (error: ErrorResponse) => this.handleGoogleLoginError(error),
-    })
+    this.googleAuthService.handleCredentialResponse(response, (success, token) => this.handleGoogleLoginSuccess(success, token), (error) => this.handleGoogleLoginError(error))
   }
 
   handleGoogleLoginSuccess(success: boolean, token?: string): void {
     this.toggleLoader(false);
     this.googleButtonComponent.toggleLoader(false);
-
-    if (token) {
-      SessionStorageUtil.setItem(SessionStorageKeys.authToken, token);
-    }
-
-    if (success) {
-      this.navigateOut(`/${RootRoutes.main}`);
-    }
+    this.googleAuthService.handleGoogleAuthResponse(success, token);
   }
 
   handleGoogleLoginError(error: ErrorResponse): void {
     this.toggleLoader(false);
     this.googleButtonComponent.toggleLoader(false);
-    this.googleButtonComponent.toggleLoader(false)
-    console.error(error);
   }
 
   navigateOut(navigationRoute: string) {

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageUtil } from '../helpers/session-storage.util';
 import { AuthRoutes, RootRoutes } from '../models/enums/application.routes.enums';
-import { APIResponse, User, ErrorResponse, SessionStorageKeys } from '../models';
+import { APIResponse, User, ErrorResponse, SessionStorageKeys, INACTIVE_USER } from '../models';
 import { AuthenticationService, StorageService } from '../services';
 
 
@@ -40,12 +40,12 @@ export class AuthGuardService {
 private getActiveUser(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.authService.getActiveUser(this.userToken!).subscribe({
-        next: (activeUserResponse: APIResponse<{user: User, message: string}>) => {
-          if (activeUserResponse.success && activeUserResponse.data?.user) {
-            this.storageService.setUser(activeUserResponse.data.user);
+        next: (activeUserResponse: APIResponse<User>) => {
+          if (activeUserResponse.success && activeUserResponse.data) {
+            this.storageService.setUser(activeUserResponse.data);
             resolve(true);
           } else {
-            reject(new Error('User is not active'));
+            reject(new Error(INACTIVE_USER));
           }
         },
         error: (error: ErrorResponse) => {
