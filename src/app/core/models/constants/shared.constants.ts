@@ -8,5 +8,7 @@ export const CONFIRM_DELETE_MSG = 'Kindly confirm you want to delete this item';
 
 export const QUERY_TOKEN = 'token';
 
+export const EMAIL = 'email';
+
 
 

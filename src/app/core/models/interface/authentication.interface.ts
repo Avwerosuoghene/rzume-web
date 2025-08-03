@@ -4,6 +4,10 @@ export interface AuthRequest {
   password: string
 }
 
+export interface GenerateEmailToken {
+  email: string
+}
+
 export interface SignOutPayload {
   email: string,
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from '../models/constants/api.routes';
 import { HttpHeaders } from '@angular/common/http';
-import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, SignOutPayload, SignupResponse, AuthRequest, User, ValidateUserResponse } from '../models';
+import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, SignOutPayload, SignupResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,34 +18,34 @@ export class AuthenticationService {
 
   signup(payload: AuthRequest) {
     return this.apiService.post<APIResponse>(
-      ApiRoutes.user.register, payload, false
+      ApiRoutes.auth.register, payload, false
     )
   }
 
   googleLogin(payload: GoogleSignInPayload) {
 
     return this.apiService.post<APIResponse<SigninResponse>>(
-      ApiRoutes.user.googleSigin, payload, true
+      ApiRoutes.auth.googleSigin, payload, true
     )
   }
 
   login(payload: AuthRequest) {
     payload.password = window.btoa(payload.password.toString());
     return this.apiService.post<APIResponse<SigninResponse>>(
-      ApiRoutes.user.login, payload, true
+      ApiRoutes.auth.login, payload, true
     )
   }
 
   logout(payload: SignOutPayload) {
     return this.apiService.post<APIResponse<null>>(
-      ApiRoutes.user.logout, payload, true
+      ApiRoutes.auth.logout, payload, true
     )
   }
 
 
 
   getActiveUser(userToken: string) {
-    const apiRoute = ApiRoutes.user.getActiveUser;
+    const apiRoute = ApiRoutes.auth.getActiveUser;
     const updatedHeaders = this.defaultHeaders
       .append('Authorization', `Bearer ${userToken}`);
     const getRequestParams: GetRequestParams = {
@@ -61,27 +61,30 @@ export class AuthenticationService {
 
   onboard(payload: AuthRequest) {
     return this.apiService.post<APIResponse<SigninResponse>>(
-      ApiRoutes.user.login, payload, true
+      ApiRoutes.auth.login, payload, true
     )
   }
 
 
-  generateToken(email: string) {
-    const apiRoute = ApiRoutes.user.emailToken;
-    const params: ApiUrlParam[] = [{ name: 'email', value: email }];
-    const getRequestParams: GetRequestParams = {
-      apiRoute: apiRoute,
-      _params: params,
-      handleResponse: false
-    }
-    return this.apiService.get<APIResponse<string>>(
-      getRequestParams, this.defaultHeaders
+  generateToken(payload: GenerateEmailToken) {
+    const apiRoute = ApiRoutes.auth.generateEmailToken;
+    // const params: ApiUrlParam[] = [{ name: 'email', value: email }];
+    // const getRequestParams: GetRequestParams = {
+    //   apiRoute: apiRoute,
+    //   handleResponse: false
+    // }
+    // return this.apiService.post<APIResponse<string>>(
+    //   getRequestParams, this.defaultHeaders
+    // )
+
+     return this.apiService.post<APIResponse<string>>(
+      ApiRoutes.auth.generateEmailToken, payload, true
     )
   }
 
-  validateToken(token: string) {
-    const apiRoute = ApiRoutes.user.validateToken;
-    const params: ApiUrlParam[] = [{ name: 'token', value: token }];
+  validateToken(token: string, email: string) {
+    const apiRoute = ApiRoutes.auth.validateToken;
+    const params: ApiUrlParam[] = [{ name: 'token', value: token }, { name: 'email', value: email }];
     const getRequestParams: GetRequestParams = {
       apiRoute: apiRoute,
       _params: params,

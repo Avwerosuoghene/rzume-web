@@ -8,7 +8,7 @@ import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
-import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, ValidateUserResponse } from '../../../core/models';
+import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, ValidateUserResponse } from '../../../core/models';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -34,26 +34,25 @@ export class EmailConfirmationComponent {
 
     this.route.queryParamMap.subscribe((params) => {
       const tokenValue: string | null = params.get(QUERY_TOKEN);
+      const email: string | null = params.get(EMAIL);
 
-      if (tokenValue) this.validateUser(tokenValue);
+      if (tokenValue && email) this.validateUser(tokenValue, email);
     });
   }
 
-  validateUser(tokenValue: string): void {
+  validateUser(tokenValue: string, email: string): void {
     this.loaderIsActive = true;
     this.emailValidationHeader = EMAIL_VALIDATING_HEADER;
     this.emailValidMsg = EMAIL_VALIDATING_MSG;
 
-
-
-    this.authService.validateToken(tokenValue).subscribe({
-      next: ({success, message,data}: APIResponse<ValidateUserResponse>) => {
+    this.authService.validateToken(tokenValue, email).subscribe({
+      next: ({ success, message, data }: APIResponse<ValidateUserResponse>) => {
         this.loaderIsActive = false;
         if (success) {
           this.emailValidationHeader = EMAIL_VALIDATED_HEADER;
           this.emailValidMsg = message;
           this.emailValidationBtnTxt = BTN_CONTINUE;
-          SessionStorageUtil.setItem(SessionStorageKeys.authToken,data?.token!);
+          SessionStorageUtil.setItem(SessionStorageKeys.authToken, data?.token!);
           return;
         }
 
@@ -62,7 +61,7 @@ export class EmailConfirmationComponent {
       },
       error: (error: any) => {
 
-        const errorMsg = error.errorMessage? error.errorMessage: error.errorMessages[0]?error.errorMessages[0]: 'Something went wrong';
+        const errorMsg = error.errorMessage ? error.errorMessage : error.errorMessages[0] ? error.errorMessages[0] : 'Something went wrong';
         this.loaderIsActive = false;
         this.emailValidationHeader = EMAIL_VALIDATION_ERROR_HEADER;
         this.emailValidMsg = errorMsg;
@@ -76,23 +75,20 @@ export class EmailConfirmationComponent {
   }
 
   sendAccountValidationMail(): void {
-
     this.loaderIsActive = true;
-    const email =  SessionStorageUtil.getItem(SessionStorageKeys.userMail);
+    const email = SessionStorageUtil.getItem(SessionStorageKeys.userMail);
     if (!email) this.openErrorDialog();
-    this.authService.generateToken(email!).subscribe({
-      next: ({success, message }: APIResponse<string>) => {
+    this.authService.generateToken({ email: email! }).subscribe({
+      next: ({ success, message }: APIResponse<string>) => {
         this.loaderIsActive = false;
         if (success) {
-          this.emailValidMsg =  message;
-
-
+          this.emailValidMsg = message;
         }
 
       },
       error: (error: ErrorResponse) => {
         this.loaderIsActive = false;
-        this.emailValidMsg =  error.errorMessage;
+        this.emailValidMsg = error.errorMessage;
       }
     })
   }

@@ -3,12 +3,12 @@ export class ApiRoutes {
   private static profileManagementRoute = 'api/v1/profilemanagement';
   private static utilityRoute = 'api/v1/profilemanagement';
 
-  static user = {
+  static auth = {
     register: `${this.authRoute}/register`,
     login: `${this.authRoute}/login`,
     logout: `${this.authRoute}/logout`,
-    emailToken: `${this.authRoute}/generate-email-token`,
-    validateToken: `${this.authRoute}/validate-user-account`,
+    generateEmailToken: `${this.authRoute}/resend-confirmation-email`,
+    validateToken: `${this.authRoute}/confirm-email`,
     googleSigin: `${this.authRoute}/google-signin`,
     getActiveUser: `${this.authRoute}/me`
   }
