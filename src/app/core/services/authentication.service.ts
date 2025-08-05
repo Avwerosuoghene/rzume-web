@@ -30,7 +30,6 @@ export class AuthenticationService {
   }
 
   login(payload: AuthRequest) {
-    payload.password = window.btoa(payload.password.toString());
     return this.apiService.post<APIResponse<SigninResponse>>(
       ApiRoutes.auth.login, payload, true
     )
