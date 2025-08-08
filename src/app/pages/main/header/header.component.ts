@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { NavigationEnd, Router } from '@angular/router';
-import { APIResponse, AuthRoutes, ErrorResponse, RootRoutes, SignOutPayload, User } from '../../../core/models';
+import { APIResponse, AuthRoutes, RootRoutes, User } from '../../../core/models';
 import { CoreModules } from '../../../core/modules';
 import { AuthenticationService, StorageService } from '../../../core/services';
 import { LayoutStateService } from '../../../core/services/layout.service';
@@ -47,31 +47,10 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  logout(){
-    const logoutPayload: SignOutPayload = {
-      email: this.userInfo!.email
-    }
-    this.utilityService.headerLoader.next(true);
+  logout() {
+    this.clearBrowserStorage();
 
-
-    this.authService.logout(logoutPayload).subscribe({
-      next: (response: APIResponse<null>) => {
-
-        this.utilityService.headerLoader.next(false);
-
-        if (response.success )  {
-          this.clearBrowserStorage();
-
-          this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.signin}`])
-        };
-
-      },
-      error: (error: ErrorResponse) => {
-        this.utilityService.headerLoader.next(false);
-
-        console.log(error);
-      }
-    })
+    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.signin}`]);
   }
 
   clearBrowserStorage() {

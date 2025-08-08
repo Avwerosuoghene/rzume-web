@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from '../models/constants/api.routes';
 import { HttpHeaders } from '@angular/common/http';
-import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, SignOutPayload, SignupResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken } from '../models';
+import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +32,6 @@ export class AuthenticationService {
   login(payload: AuthRequest) {
     return this.apiService.post<APIResponse<SigninResponse>>(
       ApiRoutes.auth.login, payload, true
-    )
-  }
-
-  logout(payload: SignOutPayload) {
-    return this.apiService.post<APIResponse<null>>(
-      ApiRoutes.auth.logout, payload, true
     )
   }
 
@@ -76,7 +70,7 @@ export class AuthenticationService {
     //   getRequestParams, this.defaultHeaders
     // )
 
-     return this.apiService.post<APIResponse<string>>(
+    return this.apiService.post<APIResponse<string>>(
       ApiRoutes.auth.generateEmailToken, payload, true
     )
   }

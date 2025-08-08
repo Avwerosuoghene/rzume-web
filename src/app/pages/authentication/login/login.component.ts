@@ -149,11 +149,7 @@ export class LoginComponent {
   }
 
   redirectAfterSignin(stage: onBoardStages): void {
-    if (stage === onBoardStages.first) {
-      this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.onboard}`);
-    } else {
-      this.navigateOut(`/${RootRoutes.main}`);
-    }
+    this.navigateOut(`/${RootRoutes.main}`);
   }
 
   handleMissingUser(userMail: string): void {
