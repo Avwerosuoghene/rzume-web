@@ -6,7 +6,7 @@ import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AddJobDialogData } from '../../core/models/interface/dialog-models-interface';
-import { DialogCloseResp } from '../../core/models/interface/shared.interface';
+import { DialogCloseResponse } from '../../core/models/interface/shared.interface';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -77,7 +77,7 @@ export class JobAddDialogComponent implements OnInit {
   }
 
   appNewApplication() {
-    const dialogCloseResp: DialogCloseResp = {
+    const dialogCloseResp: DialogCloseResponse = {
       applicationStat : IconStat.success,
       message : 'Application succesfully added'
 

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { NavigationEnd, Router } from '@angular/router';
-import { APIResponse, AuthRoutes, RootRoutes, User } from '../../../core/models';
+import {  AuthRoutes, RootRoutes, User } from '../../../core/models';
 import { CoreModules } from '../../../core/modules';
 import { AuthenticationService, StorageService } from '../../../core/services';
 import { LayoutStateService } from '../../../core/services/layout.service';

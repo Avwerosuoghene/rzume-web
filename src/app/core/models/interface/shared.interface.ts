@@ -1,5 +1,5 @@
 import { IconStat } from "../enums/shared.enums";
-import { User } from "./authentication.interface";
+import { User } from "./authentication.models";
 
 export interface GetRequestParams {
   apiRoute: string,
@@ -36,7 +36,7 @@ export interface FilterOption {
   label: string
 }
 
-export interface DialogCloseResp {
+export interface DialogCloseResponse {
 
   applicationStat: IconStat,
   message: string

@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomSearchInputComponent } from '../../../components/custom-search-input/custom-search-input.component';
 import { FilterDropdownComponent } from '../../../components/filter-dropdown/filter-dropdown.component';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { JobAddDialogComponent } from '../../../components/job-add-dialog/job-add-dialog.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { AddJobDialogData, DialogCloseResp, FilterOption, InfoDialogData } from '../../../core/models';
+import { AddJobDialogData, DialogCloseResponse, FilterOption, InfoDialogData } from '../../../core/models';
 import { LayoutStateService, MockDataService } from '../../../core/services';
+import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
+import { JOB_FILTER_OPTIONS, JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
+import { ComponentType } from '@angular/cdk/portal';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,21 +20,20 @@ import { LayoutStateService, MockDataService } from '../../../core/services';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
-  statHighLights: Array<{ description: string, value: number }> = [];
+export class DashboardComponent implements OnInit, OnDestroy {
+  statHighLights: Array<StatHighlight> = [];
   searchText: string = '';
-  filterOptions: Array<FilterOption> = [];
+  filterOptions: Array<FilterOption> = JOB_FILTER_OPTIONS;
 
   data: any[] = [];
-  columns: { header: string, field: string }[] = [];
-  totalPages: number = 1;
-  currentPage: number = 1;
-  itemsPerPage: number = 5;
-  totalItems: number = 0;
+  columns: Array<ColumnDefinition> = JOB_TABLE_COLUMNS;
+  totalPages: number = PAGINATION_DEFAULTS.totalPages;
+  currentPage: number = PAGINATION_DEFAULTS.currentPage;
+  itemsPerPage: number = PAGINATION_DEFAULTS.itemsPerPage;
+  totalItems: number = PAGINATION_DEFAULTS.totalItems;
   selectedItems: Array<any> = [];
   loaderIsActive: boolean = false;
-
-
+  destroy$ = new Subject<void>();
 
 
   constructor(private mockDataService: MockDataService, private utilityService: LayoutStateService, private dialog: MatDialog) {
@@ -40,26 +43,25 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.initiateStats();
-    this.setFilterOptions();
-    this.fetchData(1);
-    this.setupColumns();
-    this.initiateLoader();
+    this.fetchData(this.currentPage);
+    this.initiateGlobalLoader();
   }
 
-  isBtnDisabled() {
+  get buttonDisabled() {
     return (
       this.loaderIsActive);
   }
 
-  initiateLoader() {
-    this.utilityService.headerLoader.subscribe(loaderStatus => {
-      this.loaderIsActive = loaderStatus;
-    })
+  initiateGlobalLoader() {
+    this.utilityService.headerLoader
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(loaderStatus => {
+        this.loaderIsActive = loaderStatus;
+      });
   }
-  handleChangeInItemPerPage(event: any): void {
-    console.log(event);
-    this.itemsPerPage = event;
 
+  handleChangeInItemPerPage(event: number): void {
+    this.itemsPerPage = event;
   }
 
   handlePageChanged(page: number) {
@@ -68,11 +70,9 @@ export class DashboardComponent implements OnInit {
 
   fetchData(page: number): void {
     this.mockDataService.getOrders(page, this.itemsPerPage).subscribe(response => {
-
       this.data = response.data.data;
       this.totalItems = response.data.total;
       this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-
     });
   }
 
@@ -99,47 +99,36 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  setFilterOptions() {
-    this.filterOptions.push(
-      { value: 'option1', label: 'Option 1' },
-      { value: 'option2', label: 'Option 2' },
-      { value: 'option3', label: 'Option 3' }
-    )
-  }
 
-  setupColumns(): void {
-    this.columns = [
-      { header: 'Company', field: 'company' },
-      { header: 'Job Role', field: 'job_role' },
-      { header: 'Cv Used', field: 'cv' },
-      { header: 'Status', field: 'status' },
-      { header: 'Date', field: 'date' },
-    ];
-  }
-
-  addNewApplicationEtry() {
+  addNewApplicationEntry() {
     const dialogData: AddJobDialogData = {
       isEditing: false
     }
-    const jobAdditionDialog = this.dialog.open(JobAddDialogComponent, {
+    const jobAdditionDialog = this.openDialog<JobAddDialogComponent, AddJobDialogData>(
+      JobAddDialogComponent,
+      dialogData,
+      { disableClose: true }
+    );
+    jobAdditionDialog.afterClosed().subscribe(response => this.handleOnCloseJobDialog(response))
+  }
+
+  handleOnCloseJobDialog(response?: DialogCloseResponse): void {
+    if (!response) return
+
+    const dialogData: InfoDialogData = {
+      infoMessage: response?.message,
+      statusIcon: response?.applicationStat
+    }
+    this.openDialog<InfoDialogComponent, InfoDialogData>(InfoDialogComponent, dialogData);
+
+  }
+
+  openDialog<ComponentName, DialogData>(component: ComponentType<ComponentName>, dialogData: DialogData, options?: MatDialogConfig<DialogData>): MatDialogRef<ComponentName> {
+    return this.dialog.open(component, {
       data: dialogData,
       backdropClass: "blurred",
-      disableClose: true
+      ...options
     });
-    jobAdditionDialog.afterClosed().subscribe((res?:DialogCloseResp ) => {
-      if (!res) return
-
-    const dialogData : InfoDialogData = {
-      infoMessage: res.message,
-      statusIcon: res.applicationStat
-    }
-
-    this.dialog.open(InfoDialogComponent, {
-      data:dialogData,
-      backdropClass: "blurred"
-    });
-
-    })
   }
 
 
@@ -157,4 +146,12 @@ export class DashboardComponent implements OnInit {
     this.selectedItems = event;
   }
 
+  initiateLocalLoader(loaderState: boolean) {
+    this.loaderIsActive = loaderState;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

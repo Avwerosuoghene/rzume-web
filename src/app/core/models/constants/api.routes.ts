@@ -1,7 +1,7 @@
 export class ApiRoutes {
   private static authRoute = 'api/auth';
   private static profileManagementRoute = 'api/v1/profilemanagement';
-  private static utilityRoute = 'api/v1/profilemanagement';
+  private static jobApplicationRoute = 'api/v1/jobapplication';
 
   static auth = {
     register: `${this.authRoute}/register`,
@@ -10,6 +10,10 @@ export class ApiRoutes {
     validateToken: `${this.authRoute}/confirm-email`,
     googleSigin: `${this.authRoute}/google-signin`,
     getActiveUser: `${this.authRoute}/me`
+  }
+
+  static jobApplication = {
+    add: `${this.jobApplicationRoute}`,
   }
 
 

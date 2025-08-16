@@ -6,7 +6,7 @@ import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.component';
 import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
 import { AngularMaterialModules } from '../../core/modules';
-import { AddJobDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResp, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
+import { AddJobDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
 import { ViewUtilities } from '../../core/helpers';
 
 @Component({
@@ -29,10 +29,6 @@ export class CustomTableComponent {
 
   selectedItems: Array<any> = [];
   totalItems: number = 20;
-
-
-
-
 
   constructor(private dialog: MatDialog) {
 
@@ -94,7 +90,7 @@ export class CustomTableComponent {
       backdropClass: "blurred",
       disableClose: true
     });
-    jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResp) => {
+    jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResponse) => {
 
       if (!res) return
 
@@ -183,8 +179,6 @@ export class CustomTableComponent {
   isAllSelected(): boolean {
     return this.data.every(item => item.selected);
   }
-
-
 
 
 }
