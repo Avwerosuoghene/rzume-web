@@ -1,3 +1,4 @@
+import { DialogCloseStatus } from "../enums/dialog.enums";
 import { IconStat } from "../enums/shared.enums";
 import { User } from "./authentication.models";
 
@@ -36,10 +37,9 @@ export interface FilterOption {
   label: string
 }
 
-export interface DialogCloseResponse {
-
-  applicationStat: IconStat,
-  message: string
+export interface DialogCloseResponse<DialogData> {
+  data: DialogData,
+  status: DialogCloseStatus
 }
 
 

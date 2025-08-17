@@ -7,6 +7,7 @@ import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.consta
 import { JobAddDialogComponent } from '../job-add-dialog';
 import { DialogService } from '../../core/services/dialog.service';
 import { InfoDialogComponent } from '../info-dialog';
+import { JobApplicationDialogData } from '../../core/models/constants/job-application-dialog-data';
 
 @Component({
   selector: 'app-job-list-toolbar',
@@ -44,14 +45,11 @@ export class JobListToolbarComponent {
 
 
 
-  handleOnCloseJobDialog(response?: DialogCloseResponse): void {
+  handleOnCloseJobDialog(response?: DialogCloseResponse<JobApplicationDialogData>): void {
     if (!response) return
+    console.log(response.data);
 
-    const dialogData: InfoDialogData = {
-      infoMessage: response?.message,
-      statusIcon: response?.applicationStat
-    }
-    this.dialogService.openDialog<InfoDialogComponent, InfoDialogData>(InfoDialogComponent, dialogData);
+    // this.dialogService.openDialog<InfoDialogComponent, InfoDialogData>(InfoDialogComponent, dialogData);
 
   }
 }

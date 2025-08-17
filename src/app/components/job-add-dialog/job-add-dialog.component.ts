@@ -1,12 +1,12 @@
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ApplicationStatus, IconStat} from '../../core/models/enums/shared.enums';
+import { ApplicationStatus} from '../../core/models/enums/shared.enums';
 import { CoreModules } from '../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AddJobDialogData } from '../../core/models/interface/dialog-models-interface';
-import { DialogCloseResponse } from '../../core/models/interface/shared.interface';
+import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -22,8 +22,6 @@ export class JobAddDialogComponent implements OnInit {
   applicationStatusList : Array<string> = Object.values(ApplicationStatus);
   loaderIsActive: boolean = false;
   editMode: boolean = false;
-
-
 
   constructor(private dialogRef:  MatDialogRef<JobAddDialogComponent>,  @Inject(MAT_DIALOG_DATA) private addJobDialogData: AddJobDialogData){
 
@@ -61,12 +59,12 @@ export class JobAddDialogComponent implements OnInit {
     });
   }
 
-  cancelApplication(){
-    this.dialogRef.close();
-  }
+cancelApplication() {
+  this.dialogRef.close(DialogCloseStatus.Cancelled);
+}
 
   prepopulateFormFields() {
-    this.applicationFormGroup.setValue({
+    this.applicationFormGroup.patchValue({
       company: 'Example Company',
       role: 'Frontend Developer',
       cv_link: 'http://example.com/cv.pdf',
@@ -77,12 +75,11 @@ export class JobAddDialogComponent implements OnInit {
   }
 
   appNewApplication() {
-    const dialogCloseResp: DialogCloseResponse = {
-      applicationStat : IconStat.success,
-      message : 'Application succesfully added'
-
-    }
-    this.dialogRef.close(dialogCloseResp);
+    const submissionData = {
+      status: DialogCloseStatus.Submitted,
+      data: this.applicationFormGroup.value
+    };
+    this.dialogRef.close(submissionData);
   }
 
   get companyName() {

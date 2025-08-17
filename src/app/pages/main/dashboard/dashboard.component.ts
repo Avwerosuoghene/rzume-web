@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
-import { MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
 import { LayoutStateService, MockDataService } from '../../../core/services';
 import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
@@ -29,11 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loaderIsActive: boolean = false;
   destroy$ = new Subject<void>();
 
-
-  constructor(private mockDataService: MockDataService, private utilityService: LayoutStateService, private dialog: MatDialog) {
-
-  }
-
+  constructor(private mockDataService: MockDataService, private utilityService: LayoutStateService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.initiateJobStats();

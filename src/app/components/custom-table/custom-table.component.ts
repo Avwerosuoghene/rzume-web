@@ -8,6 +8,7 @@ import { JobStatusChangeComponent } from '../job-status-change/job-status-change
 import { AngularMaterialModules } from '../../core/modules';
 import { AddJobDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
 import { ViewUtilities } from '../../core/helpers';
+import { JobApplicationDialogData } from '../../core/models/constants/job-application-dialog-data';
 
 @Component({
   selector: 'app-custom-table',
@@ -90,19 +91,19 @@ export class CustomTableComponent {
       backdropClass: "blurred",
       disableClose: true
     });
-    jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResponse) => {
+    jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResponse<JobApplicationDialogData>) => {
 
       if (!res) return
 
-      const dialogData : InfoDialogData = {
-        infoMessage: res.message,
-        statusIcon: res.applicationStat
-      }
+      // const dialogData : InfoDialogData = {
+      //   infoMessage: res.message,
+      //   statusIcon: res.applicationStat
+      // }
 
-      this.dialog.open(InfoDialogComponent, {
-        data:dialogData,
-        backdropClass: "blurred"
-      });
+      // this.dialog.open(InfoDialogComponent, {
+      //   data:dialogData,
+      //   backdropClass: "blurred"
+      // });
 
 
     })

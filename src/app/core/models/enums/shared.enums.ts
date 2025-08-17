@@ -16,7 +16,7 @@ export enum onBoardStages {
 export enum IconStat {
   success = 'done',
   failed = 'close',
-  warn = 'warning'
+  warn = 'warning',
 }
 
 export enum SessionStorageKeys {
