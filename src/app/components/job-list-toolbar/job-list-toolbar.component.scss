@@ -1,0 +1,21 @@
+@import "../../styles/theme.scss";
+@import "../../styles/general_styles.scss";
+
+.job_toolbar_container {
+    margin-block: 24px;
+    padding: 18px 24px;
+    width: 100%;
+    background-color: $white;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+
+    .add_job_btn {
+      @extend .rzume-button;
+    }
+  }
+
+  .search_n_filter {
+    display: flex;
+    gap: 24px;
+  }

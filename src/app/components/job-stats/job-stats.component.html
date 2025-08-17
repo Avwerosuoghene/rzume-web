@@ -1,0 +1,8 @@
+  <div class="stat_highlight_container">
+    @for (statItem of statHighLights; track $index) {
+    <div class="stat_highlight_element">
+      <p class="light_text">{{ statItem.description }}</p>
+      <h3>{{ statItem.value }}</h3>
+    </div>
+    }
+  </div>

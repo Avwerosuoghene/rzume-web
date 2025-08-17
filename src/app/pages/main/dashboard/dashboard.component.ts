@@ -1,32 +1,26 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CustomSearchInputComponent } from '../../../components/custom-search-input/custom-search-input.component';
-import { FilterDropdownComponent } from '../../../components/filter-dropdown/filter-dropdown.component';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { JobAddDialogComponent } from '../../../components/job-add-dialog/job-add-dialog.component';
-import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
+import { MatDialog} from '@angular/material/dialog';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { AddJobDialogData, DialogCloseResponse, FilterOption, InfoDialogData } from '../../../core/models';
 import { LayoutStateService, MockDataService } from '../../../core/services';
 import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
-import { JOB_FILTER_OPTIONS, JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
-import { ComponentType } from '@angular/cdk/portal';
+import { JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
 import { Subject, takeUntil } from 'rxjs';
+import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
+import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, CustomSearchInputComponent, FilterDropdownComponent, CustomTableComponent],
+  imports: [AngularMaterialModules, CoreModules, JobListToolbarComponent, CustomTableComponent, JobStatsComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   statHighLights: Array<StatHighlight> = [];
-  searchText: string = '';
-  filterOptions: Array<FilterOption> = JOB_FILTER_OPTIONS;
 
   data: any[] = [];
-  columns: Array<ColumnDefinition> = JOB_TABLE_COLUMNS;
+  jobListColumns: Array<ColumnDefinition> = JOB_TABLE_COLUMNS;
   totalPages: number = PAGINATION_DEFAULTS.totalPages;
   currentPage: number = PAGINATION_DEFAULTS.currentPage;
   itemsPerPage: number = PAGINATION_DEFAULTS.itemsPerPage;
@@ -42,8 +36,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.initiateStats();
-    this.fetchData(this.currentPage);
+    this.initiateJobStats();
+    this.loadUserAppliedJobs(this.currentPage);
     this.initiateGlobalLoader();
   }
 
@@ -68,7 +62,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.currentPage = page;
   }
 
-  fetchData(page: number): void {
+  loadUserAppliedJobs(page: number): void {
     this.mockDataService.getOrders(page, this.itemsPerPage).subscribe(response => {
       this.data = response.data.data;
       this.totalItems = response.data.total;
@@ -76,9 +70,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
-  initiateStats() {
+  initiateJobStats() {
     this.statHighLights.push(
       {
         description: 'Total Job Application',
@@ -97,47 +89,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         value: 3
       }
     )
-  }
-
-
-  addNewApplicationEntry() {
-    const dialogData: AddJobDialogData = {
-      isEditing: false
-    }
-    const jobAdditionDialog = this.openDialog<JobAddDialogComponent, AddJobDialogData>(
-      JobAddDialogComponent,
-      dialogData,
-      { disableClose: true }
-    );
-    jobAdditionDialog.afterClosed().subscribe(response => this.handleOnCloseJobDialog(response))
-  }
-
-  handleOnCloseJobDialog(response?: DialogCloseResponse): void {
-    if (!response) return
-
-    const dialogData: InfoDialogData = {
-      infoMessage: response?.message,
-      statusIcon: response?.applicationStat
-    }
-    this.openDialog<InfoDialogComponent, InfoDialogData>(InfoDialogComponent, dialogData);
-
-  }
-
-  openDialog<ComponentName, DialogData>(component: ComponentType<ComponentName>, dialogData: DialogData, options?: MatDialogConfig<DialogData>): MatDialogRef<ComponentName> {
-    return this.dialog.open(component, {
-      data: dialogData,
-      backdropClass: "blurred",
-      ...options
-    });
-  }
-
-
-  handleFilterChange(filterValue: string): void {
-    console.log('Filter value:', filterValue);
-  }
-
-  onSearch(event: any) {
-    console.log(event);
   }
 
 

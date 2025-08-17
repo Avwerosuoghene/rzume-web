@@ -1,0 +1,15 @@
+  <div class="job_toolbar_container">
+    <button class="add_job_btn" mat-flat-button type="button" (click)="addNewApplicationEntry()" >
+      <mat-icon>add</mat-icon>
+      <p>Add Job</p>
+    </button>
+    <div class="search_n_filter">
+      <app-custom-search-input
+        (searchChange)="onSearch($event)"
+      ></app-custom-search-input>
+      <app-filter-dropdown
+        [filters]="filterOptions"
+        (filterChange)="handleFilterChange($event)"
+      ></app-filter-dropdown>
+    </div>
+  </div>

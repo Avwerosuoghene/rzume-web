@@ -17,5 +17,8 @@
             "username": "SA"
         }
     ],
-    "bitoAI.codeCompletion.enableAutoCompletion": false
+    "bitoAI.codeCompletion.enableAutoCompletion": false,
+    "cSpell.words": [
+        "rzume"
+    ]
 }

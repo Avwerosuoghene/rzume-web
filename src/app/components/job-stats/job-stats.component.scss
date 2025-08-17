@@ -1,0 +1,15 @@
+@import "../../styles/theme.scss";
+@import "../../styles/general_styles.scss";
+
+.stat_highlight_container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  .stat_highlight_element {
+    background-color: $white;
+    padding: 24px;
+    border-radius: 8px;
+  }
+  }
