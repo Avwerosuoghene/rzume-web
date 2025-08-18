@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
-import { MatDialog } from '@angular/material/dialog';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { LayoutStateService, MockDataService } from '../../../core/services';
+import {  MockDataService } from '../../../core/services';
 import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
 import { JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 
@@ -26,29 +25,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   itemsPerPage: number = PAGINATION_DEFAULTS.itemsPerPage;
   totalItems: number = PAGINATION_DEFAULTS.totalItems;
   selectedItems: Array<any> = [];
-  loaderIsActive: boolean = false;
   destroy$ = new Subject<void>();
 
-  constructor(private mockDataService: MockDataService, private utilityService: LayoutStateService, private dialog: MatDialog) { }
+  constructor(private mockDataService: MockDataService) { }
 
   ngOnInit(): void {
     this.initiateJobStats();
     this.loadUserAppliedJobs(this.currentPage);
-    this.initiateGlobalLoader();
   }
 
-  get buttonDisabled() {
-    return (
-      this.loaderIsActive);
-  }
-
-  initiateGlobalLoader() {
-    this.utilityService.headerLoader
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(loaderStatus => {
-        this.loaderIsActive = loaderStatus;
-      });
-  }
 
   handleChangeInItemPerPage(event: number): void {
     this.itemsPerPage = event;
@@ -91,10 +76,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   handleSelectionChanged(event: any) {
     this.selectedItems = event;
-  }
-
-  initiateLocalLoader(loaderState: boolean) {
-    this.loaderIsActive = loaderState;
   }
 
   ngOnDestroy() {

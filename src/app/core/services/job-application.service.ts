@@ -11,7 +11,7 @@ export class JobApplicationService {
 
   addApplication(payload: CreateApplicationPayload) {
     return this.apiService.post<APIResponse<boolean>>(
-      ApiRoutes.jobApplication.base, payload, true
+      ApiRoutes.jobApplication.base, payload, true,undefined,true
     );
   }
 

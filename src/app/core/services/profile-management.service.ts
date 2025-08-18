@@ -9,8 +9,6 @@ export class ProfileManagementService {
 
   constructor(private apiService: ApiService) { }
 
-
-
   onboard(payload: OnboardUserPayload<OnboardUserFirstStagePayload>) {
     return this.apiService.post<APIResponse<boolean>>(
       ApiRoutes.profileManagement.onboarding, payload, true

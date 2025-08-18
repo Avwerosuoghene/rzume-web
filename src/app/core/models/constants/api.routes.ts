@@ -1,7 +1,7 @@
 export class ApiRoutes {
   private static authRoute = 'api/auth';
   private static profileManagementRoute = 'api/v1/profilemanagement';
-  private static jobApplicationRoute = 'api/v1/jobapplication';
+  private static jobApplicationRoute = 'api/jobapplications';
 
   static auth = {
     register: `${this.authRoute}/register`,

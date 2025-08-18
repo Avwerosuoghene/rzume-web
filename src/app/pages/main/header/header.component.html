@@ -30,10 +30,7 @@
     <p class="light_text">28 October 2022</p>
 
   </div>
-  @if (loaderIsActive) {
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-
-  }
+  <app-global-circular-loader [isLoading]="loaderIsActive"></app-global-circular-loader>
 
 </div>
 

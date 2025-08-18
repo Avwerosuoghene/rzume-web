@@ -5,4 +5,4 @@ export * from './storage.service';
 export * from './google-auth.service';
 export * from './mock-data.service';
 export * from './timer.service';
-export * from './layout.service';
+export * from './loader.service';

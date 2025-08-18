@@ -1,9 +1,10 @@
 export enum ApplicationStatus {
-  wishList = 'Wishlist',
-  submitted = 'Submitted',
-  inProgress = 'InProgress',
-  offerReceived = 'OfferReceived',
-  applied = 'Applied',
+  Applied = 'Applied',
+  Wishlist = 'Wishlist',
+  Submitted = 'Submitted',
+  InProgress = 'InProgress',
+  OfferReceived = 'OfferReceived',
+  Rejected = 'Rejected'
 }
 
 export enum onBoardStages {

@@ -55,7 +55,7 @@ export class JobAddDialogComponent implements OnInit {
       cv_link: this.fb.control(''),
       job_link: this.fb.control(''),
       application_date:this.fb.control(''),
-      status:this.fb.control(ApplicationStatus.wishList),
+      status:this.fb.control(ApplicationStatus.Wishlist),
     });
   }
 
@@ -73,8 +73,9 @@ cancelApplication() {
       cv_link: 'http://example.com/cv.pdf',
       job_link: 'http://example.com/job',
       application_date: '2024-08-16',
-      status: ApplicationStatus.inProgress
+      status: ApplicationStatus.InProgress
     });
+
   }
 
   appNewApplication() {

@@ -4,7 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
-import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestParams, IconStat, InfoDialogData } from '../models';
+import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestParams, IconStat, InfoDialogData, SessionStorageKeys } from '../models';
+import { SessionStorageUtil } from '../helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class ApiService {
     'Content-type': 'application/json'
   });
 
-  public get<T>(apiRoute: string, handleResponse: boolean, requestParams?: ApiUrlParam[], reqHeaders?: HttpHeaders): Observable<T> {
+  public get<T>(apiRoute: string, handleResponse: boolean, requestParams?: ApiUrlParam[], reqHeaders?: HttpHeaders, withBearer: boolean = false
+  ): Observable<T> {
 
     let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
     let params = new HttpParams();
@@ -28,7 +30,6 @@ export class ApiService {
     }
 
     const headers = this.mergeHeaders(reqHeaders);
-
 
     return this.httpClient.get<T>(route, {
       headers, params
@@ -53,6 +54,7 @@ export class ApiService {
     let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
 
     const headers = this.mergeHeaders(reqHeaders);
+
     return this.httpClient.put<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
@@ -68,10 +70,13 @@ export class ApiService {
     }))
   }
 
-  public post<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders): Observable<T> {
+  public post<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false): Observable<T> {
     let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
 
-    const headers = this.mergeHeaders(reqHeaders);
+    let headers = this.mergeHeaders(reqHeaders);
+    if (withBearer) {
+      headers = this.withBearer(headers);
+    }
 
     return this.httpClient.post<T>(route, body, {
       headers
@@ -129,6 +134,11 @@ export class ApiService {
 
 
     return throwError(() => errorResponse);
+  }
+
+  private withBearer(headers: HttpHeaders): HttpHeaders {
+    const token = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
+    return token ? headers.set('Authorization', `Bearer ${token}`) : headers;
   }
 
   private mergeHeaders(reqHeaders?: HttpHeaders): HttpHeaders {

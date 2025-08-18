@@ -48,7 +48,7 @@ export class CustomTableComponent {
 
   changeJobStatus() {
     const dialogData: JobStatChangeDialogData = {
-      status: ApplicationStatus.inProgress
+      status: ApplicationStatus.InProgress
     }
     this.dialog.open(JobStatusChangeComponent, {
       data: dialogData,

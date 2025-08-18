@@ -11,10 +11,6 @@ export class AuthenticationService {
 
   constructor(private apiService: ApiService) { }
 
-  defaultHeaders = new HttpHeaders({
-    'Content-type': 'application/json'
-  });
-
 
   signup(payload: AuthRequest) {
     return this.apiService.post<APIResponse>(

@@ -4,12 +4,13 @@ import { NavigationEnd, Router } from '@angular/router';
 import {  AuthRoutes, RootRoutes, User } from '../../../core/models';
 import { CoreModules } from '../../../core/modules';
 import { AuthenticationService, StorageService } from '../../../core/services';
-import { LayoutStateService } from '../../../core/services/layout.service';
+import { LoaderService } from '../../../core/services/loader.service';
+import { GlobalCircularLoaderComponent } from '../../../components/global-circular-loader/global-circular-loader.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules],
+  imports: [AngularMaterialModules, CoreModules, GlobalCircularLoaderComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -21,7 +22,7 @@ export class HeaderComponent implements OnInit {
   loaderIsActive: boolean = false;
 
 
-  constructor(private storageService: StorageService, private authService: AuthenticationService, private utilityService: LayoutStateService) {
+  constructor(private storageService: StorageService, private authService: AuthenticationService, private utilityService: LoaderService) {
 
   }
 
@@ -34,7 +35,7 @@ export class HeaderComponent implements OnInit {
   }
 
   initiateLoader() {
-    this.utilityService.headerLoader.subscribe(loaderStatus => {
+    this.utilityService.globalLoaderSubject.subscribe(loaderStatus => {
       this.loaderIsActive = loaderStatus;
     })
   }
