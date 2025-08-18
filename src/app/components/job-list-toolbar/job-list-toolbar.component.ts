@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { AngularMaterialModules } from '../../core/modules';
 import { CustomSearchInputComponent } from '../custom-search-input';
 import { FilterDropdownComponent } from '../filter-dropdown';
-import { AddJobDialogData, DialogCloseResponse, FilterOption, InfoDialogData } from '../../core/models';
+import { AddJobDialogData, DialogCloseResponse, FilterOption } from '../../core/models';
 import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.constants';
 import { JobAddDialogComponent } from '../job-add-dialog';
 import { DialogService } from '../../core/services/dialog.service';
-import { InfoDialogComponent } from '../info-dialog';
 import { JobApplicationDialogData } from '../../core/models/constants/job-application-dialog-data';
+import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 
 @Component({
   selector: 'app-job-list-toolbar',
@@ -47,9 +47,8 @@ export class JobListToolbarComponent {
 
   handleOnCloseJobDialog(response?: DialogCloseResponse<JobApplicationDialogData>): void {
     if (!response) return
-    console.log(response.data);
-
-    // this.dialogService.openDialog<InfoDialogComponent, InfoDialogData>(InfoDialogComponent, dialogData);
-
+    if (response.status === DialogCloseStatus.Submitted) {
+      // Handle successful submission
+    }
   }
 }

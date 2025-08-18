@@ -13,7 +13,7 @@ export class ApiRoutes {
   }
 
   static jobApplication = {
-    add: `${this.jobApplicationRoute}`,
+    base: `${this.jobApplicationRoute}`,
   }
 
 

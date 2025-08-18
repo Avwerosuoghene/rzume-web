@@ -36,18 +36,19 @@ export class AuthenticationService {
   }
 
 
-
   getActiveUser(userToken: string) {
     const apiRoute = ApiRoutes.auth.getActiveUser;
-    const updatedHeaders = this.defaultHeaders
-      .append('Authorization', `Bearer ${userToken}`);
-    const getRequestParams: GetRequestParams = {
-      apiRoute: apiRoute,
-      handleResponse: true
-    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${userToken}`,
+    });
+
     return this.apiService.get<APIResponse<User>>(
-      getRequestParams, updatedHeaders
-    )
+      apiRoute,
+      true,
+      undefined,
+      headers
+    );
   }
 
 
@@ -60,31 +61,15 @@ export class AuthenticationService {
 
 
   generateToken(payload: GenerateEmailToken) {
-    const apiRoute = ApiRoutes.auth.generateEmailToken;
-    // const params: ApiUrlParam[] = [{ name: 'email', value: email }];
-    // const getRequestParams: GetRequestParams = {
-    //   apiRoute: apiRoute,
-    //   handleResponse: false
-    // }
-    // return this.apiService.post<APIResponse<string>>(
-    //   getRequestParams, this.defaultHeaders
-    // )
-
     return this.apiService.post<APIResponse<string>>(
       ApiRoutes.auth.generateEmailToken, payload, true
     )
   }
 
   validateToken(token: string, email: string) {
-    const apiRoute = ApiRoutes.auth.validateToken;
     const params: ApiUrlParam[] = [{ name: 'token', value: token }, { name: 'email', value: email }];
-    const getRequestParams: GetRequestParams = {
-      apiRoute: apiRoute,
-      _params: params,
-      handleResponse: false
-    }
     return this.apiService.get<APIResponse<ValidateUserResponse>>(
-      getRequestParams, this.defaultHeaders
+      ApiRoutes.auth.validateToken, false, params
     );
 
   }

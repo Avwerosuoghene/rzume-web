@@ -60,7 +60,10 @@ export class JobAddDialogComponent implements OnInit {
   }
 
 cancelApplication() {
-  this.dialogRef.close(DialogCloseStatus.Cancelled);
+   const cancellationData = {
+      status: DialogCloseStatus.Cancelled,
+    };
+  this.dialogRef.close(cancellationData);
 }
 
   prepopulateFormFields() {
