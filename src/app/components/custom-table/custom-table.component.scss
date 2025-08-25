@@ -42,7 +42,7 @@
     .row_element {
       &.applied {
         @extend .status_container;
-        background-color: $light-grey;
+        background-color: $light-gray;
       }
       &.interview {
         @extend .status_container;
@@ -70,16 +70,16 @@
       }
       &.wishlist {
         @extend .status_container;
-        background-color: $light-grey;
+        background-color: $light-gray;
 
         p {
-          color: $grey;
+          color: $gray;
         }
       }
     }
 
     td {
-      border-bottom: 1px solid $light-grey;
+      border-bottom: 1px solid $light-gray;
 
       padding: 20px 8px;
 
@@ -99,7 +99,7 @@
       position: relative;
       padding: 10px 20px;
       border-radius: 8px;
-      border: 1px solid $light-grey;
+      border: 1px solid $light-gray;
       background-color: $white;
       display: flex;
       align-items: center;

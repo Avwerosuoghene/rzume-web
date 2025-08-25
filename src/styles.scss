@@ -42,7 +42,7 @@ h3 {
   font-weight: 600;
 
   &.light_text{
-    color: $grey;
+    color: $gray;
 
   }
 }
@@ -53,7 +53,7 @@ h4 {
   font-weight: 700;
 
   &.light_text{
-    color: $grey;
+    color: $gray;
 
   }
 }
@@ -76,7 +76,7 @@ p {
     color: $basic-green;
   }
   &.light_text{
-    color: $grey;
+    color: $gray;
 
   }
   &.bold {
@@ -126,7 +126,7 @@ body {
   -webkit-appearance: none;
   appearance: none;
   background-color: $white;
-  border: 1px solid $light-grey;
+  border: 1px solid $light-gray;
   border-radius: 4px;
   cursor: pointer;
   outline: none;

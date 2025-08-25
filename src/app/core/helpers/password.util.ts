@@ -1,40 +1,118 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { PasswordVisibility } from "../models";
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { PasswordVisibility } from '../models';
+import { PasswordStrength } from '../models/enums/password-strength.enum';
+import { 
+  PASSWORD_CRITERIA_CONFIG, 
+  PASSWORD_STRENGTH_DESCRIPTIONS,
+  PASSWORD_STRENGTH_THRESHOLDS 
+} from '../models/constants/password.constants';
+
+export interface PasswordStrengthResult {
+  score: number;
+  strength: PasswordStrength;
+  description: string;
+}
 
 export class PasswordUtility {
-  static passwordVisibilityTimer: any;
-
-  public static passwordCriteria: Array<{ name: string, validator: (password: string) => boolean }> = [
-    { name: 'Length', validator: (password: string) => password.length >= 8 },
-    { name: 'Uppercase', validator: (password: string) => /[A-Z]/.test(password) },
-    { name: 'Lowercase', validator: (password: string) => /[a-z]/.test(password) },
-    { name: 'Number', validator: (password: string) => /[0-9]/.test(password) },
-    { name: 'Special Character', validator: (password: string) => /[!@#$%^&*(),.?":{}|<>]/.test(password) }
-  ];
-
-
+  private static passwordVisibilityTimer: any;
+  
+  /**
+   * Toggles password visibility between text and password types
+   */
   static toggleVisibility(passwordVisibility: PasswordVisibility): PasswordVisibility {
     if (passwordVisibility === PasswordVisibility.password) {
       clearTimeout(this.passwordVisibilityTimer);
       return PasswordVisibility.text;
-    } else {
-      return PasswordVisibility.password;
     }
+    return PasswordVisibility.password;
   }
 
-  static passwordMatchValidator(matchTo: string, reverse?: boolean): ValidatorFn {
+  /**
+   * Validates if two password fields match
+   */
+  static passwordMatchValidator(matchTo: string, reverse = false): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.parent && reverse) {
-        const c = (control.parent?.controls as any)[matchTo];
-        if (c) {
-          c.updateValueAndValidity();
-        }
-        return null
+      if (!control.parent) {
+        return null;
       }
-      return !!control.parent
-       && !!control.parent.value
-       && control.value === (control.parent?.controls as any)[matchTo].value ? null
-       : { matching: true }
+
+      if (reverse) {
+        return this.setupReverseValidation(control, matchTo);
+      }
+
+      return this.validatePasswordMatch(control, matchTo);
+    };
+  }
+
+  /**
+   * Checks password strength based on defined criteria
+   */
+  static checkPasswordStrength(password: string): PasswordStrengthResult {
+    if (!password) {
+      return this.getEmptyStrengthResult();
     }
+
+    const score = this.calculatePasswordScore(password);
+    const strength = this.determineStrengthLevel(score);
+    
+    return {
+      score,
+      strength,
+      description: this.getStrengthDescription(score)
+    };
+  }
+
+  private static setupReverseValidation(control: AbstractControl, matchTo: string): null {
+    const controlToMatch = control.parent?.get(matchTo);
+    if (controlToMatch) {
+      const subscription = controlToMatch.valueChanges.subscribe(() => {
+        control.updateValueAndValidity();
+        subscription.unsubscribe();
+      });
+    }
+    return null;
+  }
+
+  private static validatePasswordMatch(control: AbstractControl, matchTo: string): ValidationErrors | null {
+    const controlToMatch = control.parent?.get(matchTo);
+    
+    if (controlToMatch) {
+      const subscription = controlToMatch.valueChanges.subscribe(() => {
+        control.updateValueAndValidity();
+        subscription.unsubscribe();
+      });
+    }
+
+    return control.value === controlToMatch?.value 
+      ? null 
+      : { passwordMismatch: true };
+  }
+
+  private static calculatePasswordScore(password: string): number {
+    return PASSWORD_CRITERIA_CONFIG.reduce(
+      (count, criteria) => count + (criteria.validator(password) ? 1 : 0),
+      0
+    );
+  }
+
+  private static determineStrengthLevel(score: number): PasswordStrength {
+    if (score <= PASSWORD_STRENGTH_THRESHOLDS.WEAK) {
+      return PasswordStrength.WEAK;
+    }
+    return score <= PASSWORD_STRENGTH_THRESHOLDS.MEDIUM 
+      ? PasswordStrength.MEDIUM 
+      : PasswordStrength.STRONG;
+  }
+
+  private static getStrengthDescription(score: number): string {
+    return PASSWORD_STRENGTH_DESCRIPTIONS[Math.min(score, PASSWORD_STRENGTH_THRESHOLDS.STRONG)] || '';
+  }
+
+  private static getEmptyStrengthResult(): PasswordStrengthResult {
+    return {
+      score: 0,
+      strength: PasswordStrength.NONE,
+      description: ''
+    };
   }
 }

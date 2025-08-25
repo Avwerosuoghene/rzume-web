@@ -3,7 +3,7 @@
 .search-container {
   display: flex;
   align-items: center;
-  border: 1px solid $light-grey;
+  border: 1px solid $light-gray;
   border-radius: 8px;
   padding: 10px 16px;
   max-width: 400px;
@@ -22,6 +22,6 @@
   padding: 5px;
 
   &::placeholder {
-    color: $light-grey;
+    color: $light-gray;
   }
 }

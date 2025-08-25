@@ -1,8 +1,8 @@
-import { Component, Signal, WritableSignal, computed, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { PasswordUtility } from '../../core/helpers/password.util';
-import { PasswordStrengthLevels } from '../../core/models';
-
+import { PasswordUtility, type PasswordStrengthResult } from '../../core/helpers/password.util';
+import { PasswordStrength } from '../../core/models/enums/password-strength.enum';
+import { PASSWORD_STRENGTH_THRESHOLDS } from '../../core/models/constants/password.constants';
 
 @Component({
   selector: 'app-password-strength-checker',
@@ -12,48 +12,60 @@ import { PasswordStrengthLevels } from '../../core/models';
   styleUrl: './password-strength-checker.component.scss'
 })
 export class PasswordStrengthCheckerComponent {
-  passwordStrengthValue: WritableSignal<number> = signal(0);
-  passwordStrengthArray: Signal<Array<number>> = computed(() => Array.from({ length: this.passwordStrengthValue() }, (_, index) => 1 + index));
-  passwordStengthDescription: string = 'nan';
+  private readonly strengthResult = signal<PasswordStrengthResult>({
+    score: 0,
+    strength: PasswordStrength.NONE,
+    description: ''
+  });
 
+  /**
+   * Computed signal for the strength bars to display
+   */
+  readonly strengthBars = computed(() => 
+    Array.from({ length: this.strengthResult().score }, (_, index) => index + 1)
+  );
 
+  /**
+   * Computed signal for the strength description text
+   */
+  readonly strengthDescription = computed(() => 
+    this.strengthResult().description || ''
+  );
 
-  setPasswordStrengthClass(): string {
-
-    switch (true) {
-      case (this.passwordStrengthValue() >= 1 &&  this.passwordStrengthValue() <=2 ):
-        return 'weak';
-      case (this.passwordStrengthValue() > 2 && this.passwordStrengthValue() < 5):
-        return 'medium';
-      default:
-        return 'strong'
+  /**
+   * Computed signal for the strength CSS class
+   */
+  readonly strengthClass = computed(() => {
+    const score = this.strengthResult().score;
+    if (score === 0) return '';
+    
+    if (score <= PASSWORD_STRENGTH_THRESHOLDS.WEAK) {
+      return PasswordStrength.WEAK;
     }
+    return score <= PASSWORD_STRENGTH_THRESHOLDS.MEDIUM 
+      ? PasswordStrength.MEDIUM 
+      : PasswordStrength.STRONG;
+  });
+
+  /**
+   * Checks the strength of the provided password and updates the component state
+   * @param password The password to check
+   * @returns The password strength description
+   */
+  checkPasswordStrength(password: string): string {
+    const result = password.length > 0 
+      ? PasswordUtility.checkPasswordStrength(password)
+      : this.getEmptyStrengthResult();
+    
+    this.strengthResult.set(result);
+    return result.description;
   }
 
-
-  checkPasswordStrength(enteredPassword: string): string {
-    let criteriaCount: number = 0;
-    let isMinimumLengthMet: boolean = false;
-    this.passwordStrengthValue.set(0);
-
-
-    if (enteredPassword === '') {
-      this.passwordStengthDescription = 'nan'
-      return  this.passwordStengthDescription ;
+  private getEmptyStrengthResult(): PasswordStrengthResult {
+    return {
+      score: 0,
+      strength: PasswordStrength.NONE,
+      description: ''
     };
-
-    PasswordUtility.passwordCriteria.forEach(criteria => {
-      if (criteria.validator(enteredPassword)) {
-        if (criteria.name.toLowerCase() === 'length') isMinimumLengthMet = true;
-
-        criteriaCount++
-      }
-    });
-
-
-    this.passwordStrengthValue.set(criteriaCount);
-    this.passwordStengthDescription = PasswordStrengthLevels[this.passwordStrengthValue() - 1];
-
-    return this.passwordStengthDescription;
   }
 }
