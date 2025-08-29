@@ -7,6 +7,7 @@ import { JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/con
 import { Subject } from 'rxjs';
 import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
+import { JobApplicationService } from '../../../core/services/job-application.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +28,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   selectedItems: Array<any> = [];
   destroy$ = new Subject<void>();
 
-  constructor(private mockDataService: MockDataService) { }
+  constructor(
+    private mockDataService: MockDataService,
+    private jobApplicationService: JobApplicationService
+  ) { }
 
   ngOnInit(): void {
     this.initiateJobStats();
@@ -44,11 +48,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   loadUserAppliedJobs(page: number): void {
-    this.mockDataService.getOrders(page, this.itemsPerPage).subscribe(response => {
-      this.data = response.data.data;
-      this.totalItems = response.data.total;
-      this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+    this.jobApplicationService.getApplications({
+    }).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.data = response.data.items.map(item => ({
+            id: item.id,
+            company: item.companyName,
+            job_role: item.position,
+            status: item.status,
+            date: new Date(item.applicationDate).toLocaleDateString(),
+            location: item.location,
+            notes: item.notes
+          }));
+          this.totalItems = response.data.totalCount;
+          this.totalPages = response.data.totalPages;
+          this.currentPage = response.data.pageNumber;
+          this.itemsPerPage = response.data.pageSize;
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching job applications:', error);
+      }
     });
+    
   }
 
   initiateJobStats() {

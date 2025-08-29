@@ -16,9 +16,6 @@ export interface PasswordStrengthResult {
 export class PasswordUtility {
   private static passwordVisibilityTimer: any;
   
-  /**
-   * Toggles password visibility between text and password types
-   */
   static toggleVisibility(passwordVisibility: PasswordVisibility): PasswordVisibility {
     if (passwordVisibility === PasswordVisibility.password) {
       clearTimeout(this.passwordVisibilityTimer);
@@ -27,9 +24,6 @@ export class PasswordUtility {
     return PasswordVisibility.password;
   }
 
-  /**
-   * Validates if two password fields match
-   */
   static passwordMatchValidator(matchTo: string, reverse = false): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.parent) {
@@ -44,9 +38,6 @@ export class PasswordUtility {
     };
   }
 
-  /**
-   * Checks password strength based on defined criteria
-   */
   static checkPasswordStrength(password: string): PasswordStrengthResult {
     if (!password) {
       return this.getEmptyStrengthResult();

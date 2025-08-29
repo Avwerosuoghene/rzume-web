@@ -29,7 +29,11 @@ export class ApiService {
       })
     }
 
-    const headers = this.mergeHeaders(reqHeaders);
+    let headers = this.mergeHeaders(reqHeaders);
+
+    if (withBearer) {
+      headers = this.withBearer(headers);
+    }
 
     return this.httpClient.get<T>(route, {
       headers, params

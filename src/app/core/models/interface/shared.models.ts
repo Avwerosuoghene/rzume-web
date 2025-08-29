@@ -43,6 +43,17 @@ export interface DialogCloseResponse<DialogData> {
 }
 
 
+export interface PaginatedItem<ItemType> {
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  totalCount: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+  items: ItemType[];
+}
+
+
 
 
 
