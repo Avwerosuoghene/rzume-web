@@ -18,6 +18,8 @@ export interface JobApplicationFilter {
   position?: string;
   startDate?: Date;
   endDate?: Date;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface CreateApplicationPayload {

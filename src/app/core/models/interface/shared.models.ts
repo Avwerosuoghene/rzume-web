@@ -1,3 +1,4 @@
+import { HttpHeaders } from "@angular/common/http";
 import { DialogCloseStatus } from "../enums/dialog.enums";
 import { IconStat } from "../enums/shared.enums";
 import { User } from "./authentication.models";
@@ -51,6 +52,14 @@ export interface PaginatedItem<ItemType> {
   hasPrevious: boolean;
   hasNext: boolean;
   items: ItemType[];
+}
+
+export interface GetRequestOptions {
+  route: string;
+  handleResponse: boolean;
+  params?: ApiUrlParam[];
+  headers?: HttpHeaders;
+  withBearer?: boolean;
 }
 
 

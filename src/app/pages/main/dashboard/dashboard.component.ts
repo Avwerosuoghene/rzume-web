@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import {  MockDataService } from '../../../core/services';
+import { MockDataService } from '../../../core/services';
 import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
 import { JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
 import { Subject } from 'rxjs';
 import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 import { JobApplicationService } from '../../../core/services/job-application.service';
+import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
+import { JobApplicationItem } from '../../../core/models/interface/job-application.models';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,49 +31,82 @@ export class DashboardComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
 
   constructor(
-    private mockDataService: MockDataService,
+    private state: JobApplicationStateService,
     private jobApplicationService: JobApplicationService
   ) { }
 
   ngOnInit(): void {
     this.initiateJobStats();
-    this.loadUserAppliedJobs(this.currentPage);
+    this.setupApplicationSubscription();
+    this.loadUserAppliedJobs();
   }
 
-
-  handleChangeInItemPerPage(event: number): void {
-    this.itemsPerPage = event;
+  private setupApplicationSubscription() {
+    this.state.getApplications().subscribe(state => {
+      this.updateComponentState(state.items, {
+        totalCount: state.totalCount,
+        totalPages: state.totalPages,
+        currentPage: state.pageNumber,
+        pageSize: state.pageSize
+      });
+    });
   }
 
-  handlePageChanged(page: number) {
-    this.currentPage = page;
+  handleChangeInItemPerPage(itemsPerPage: number): void {
+    this.itemsPerPage = itemsPerPage;
+    this.currentPage = PAGINATION_DEFAULTS.currentPage;;
+    this.loadUserAppliedJobs();
   }
 
-  loadUserAppliedJobs(page: number): void {
+  handlePageChanged(page: number): void {
+
+    if (page !== this.currentPage) {
+      this.currentPage = page;
+      this.loadUserAppliedJobs();
+    }
+  }
+
+  loadUserAppliedJobs(): void {
     this.jobApplicationService.getApplications({
+      page: this.currentPage,
+      pageSize: this.itemsPerPage
     }).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.data = response.data.items.map(item => ({
-            id: item.id,
-            company: item.companyName,
-            job_role: item.position,
-            status: item.status,
-            date: new Date(item.applicationDate).toLocaleDateString(),
-            location: item.location,
-            notes: item.notes
-          }));
-          this.totalItems = response.data.totalCount;
-          this.totalPages = response.data.totalPages;
-          this.currentPage = response.data.pageNumber;
-          this.itemsPerPage = response.data.pageSize;
+          this.updateComponentState(response.data.items, {
+            totalCount: response.data.totalCount,
+            totalPages: response.data.totalPages,
+            currentPage: response.data.pageNumber,
+            pageSize: response.data.pageSize
+          });
         }
-      },
-      error: (error) => {
-        console.error('Error fetching job applications:', error);
       }
     });
-    
+  }
+
+  private mapApplicationToTableData(application: JobApplicationItem) {
+    return {
+      id: application.id,
+      company: application.companyName,
+      job_role: application.position,
+      status: application.status,
+      date: new Date(application.applicationDate).toLocaleDateString(),
+      location: application.location,
+      notes: application.notes
+    };
+  }
+
+  private updateComponentState(applications: JobApplicationItem[], pagination: {
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+  }) {
+    this.data = applications.map(app => this.mapApplicationToTableData(app));
+    this.totalItems = pagination.totalCount;
+    this.totalPages = pagination.totalPages;
+    this.currentPage = pagination.currentPage;
+    this.itemsPerPage = pagination.pageSize;
   }
 
   initiateJobStats() {

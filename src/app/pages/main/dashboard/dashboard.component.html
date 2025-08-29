@@ -1,5 +1,5 @@
 <section class="dashboard_container">
   <app-job-stats [statHighLights]="statHighLights"></app-job-stats>
   <app-job-list-toolbar></app-job-list-toolbar>
- <app-custom-table  (onSelectionChanged)=" handleSelectionChanged($event)" (pageChanged)="handlePageChanged($event)"  (itemPerPageChanged)="handleChangeInItemPerPage($event)" [columns]="jobListColumns" [totalPages]="totalPages" [data]="data"></app-custom-table>
+ <app-custom-table  (onSelectionChanged)="handleSelectionChanged($event)" (pageChanged)="handlePageChanged($event)"  (itemPerPageChanged)="handleChangeInItemPerPage($event)" [columns]="jobListColumns" [totalPages]="totalPages" [data]="data"></app-custom-table>
 </section>

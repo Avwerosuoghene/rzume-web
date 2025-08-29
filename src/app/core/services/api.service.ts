@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
-import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestParams, IconStat, InfoDialogData, SessionStorageKeys } from '../models';
+import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestOptions, GetRequestParams, IconStat, InfoDialogData, SessionStorageKeys } from '../models';
 import { SessionStorageUtil } from '../helpers';
 
 @Injectable({
@@ -18,25 +18,27 @@ export class ApiService {
     'Content-type': 'application/json'
   });
 
-  public get<T>(apiRoute: string, handleResponse: boolean, requestParams?: ApiUrlParam[], reqHeaders?: HttpHeaders, withBearer: boolean = false
-  ): Observable<T> {
+  public get<T>(options: GetRequestOptions): Observable<T> {
 
-    let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
-    let params = new HttpParams();
-    if (requestParams) {
-      requestParams.forEach(param => {
-        params = params.set(param.name, param.value);
+    const { route, params, headers, withBearer, handleResponse } = options;
+
+    let requestRoute: string = `${environment.apiBaseUrl}/${route}`;
+    let requestParams = new HttpParams();
+    if (params) {
+      params.forEach(param => {
+        requestParams = requestParams.set(param.name, param.value);
       })
     }
+    console.log(params);
 
-    let headers = this.mergeHeaders(reqHeaders);
+    let requestHeaders = this.mergeHeaders(headers);
 
     if (withBearer) {
-      headers = this.withBearer(headers);
+      requestHeaders = this.withBearer(requestHeaders);
     }
 
-    return this.httpClient.get<T>(route, {
-      headers, params
+    return this.httpClient.get<T>(requestRoute, {
+      headers: requestHeaders, params: requestParams
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 

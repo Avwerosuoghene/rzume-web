@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from '../models/constants/api.routes';
 import { HttpHeaders } from '@angular/common/http';
-import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken } from '../models';
+import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken, GetRequestOptions } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -39,12 +39,13 @@ export class AuthenticationService {
       Authorization: `Bearer ${userToken}`,
     });
 
-    return this.apiService.get<APIResponse<User>>(
-      apiRoute,
-      true,
-      undefined,
+    const getReqOptions: GetRequestOptions = {
+      route: apiRoute,
+      withBearer: true,
+      handleResponse: true,
       headers
-    );
+    }
+    return this.apiService.get<APIResponse<User>>(getReqOptions);
   }
 
 
@@ -64,9 +65,13 @@ export class AuthenticationService {
 
   validateToken(token: string, email: string) {
     const params: ApiUrlParam[] = [{ name: 'token', value: token }, { name: 'email', value: email }];
-    return this.apiService.get<APIResponse<ValidateUserResponse>>(
-      ApiRoutes.auth.validateToken, false, params
-    );
+    const getReqOptions: GetRequestOptions = {
+      route: ApiRoutes.auth.validateToken,
+      params,
+      withBearer: false,
+      handleResponse: true
+    } 
+    return this.apiService.get<APIResponse<ValidateUserResponse>>(getReqOptions);
 
   }
 

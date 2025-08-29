@@ -94,18 +94,6 @@ export class CustomTableComponent {
     jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResponse<JobApplicationDialogData>) => {
 
       if (!res) return
-
-      // const dialogData : InfoDialogData = {
-      //   infoMessage: res.message,
-      //   statusIcon: res.applicationStat
-      // }
-
-      // this.dialog.open(InfoDialogComponent, {
-      //   data:dialogData,
-      //   backdropClass: "blurred"
-      // });
-
-
     })
   }
 
@@ -115,7 +103,7 @@ export class CustomTableComponent {
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.itemPerPageChanged.emit(this.currentPage);
+    this.pageChanged.emit(this.currentPage);
 
   }
 
