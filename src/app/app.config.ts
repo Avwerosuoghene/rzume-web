@@ -3,13 +3,14 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './core/models/constants/app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync(), provideHttpClient(), provideClientHydration(), provideNativeDateAdapter(), {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync(), provideHttpClient(withInterceptorsFromDi()), provideClientHydration(), provideNativeDateAdapter(), {
     provide: 'SocialAuthServiceConfig',
     useValue: {
       autoLogin: false,
@@ -18,7 +19,7 @@ export const appConfig: ApplicationConfig = {
           id: GoogleLoginProvider.PROVIDER_ID,
           provider: new GoogleLoginProvider(
             '443013799790-9i8k2cqh0d16tf6qv4s2k5cfl2rdfgou.apps.googleusercontent.com', {
-            }
+          }
           )
         },
       ],
@@ -26,8 +27,12 @@ export const appConfig: ApplicationConfig = {
         console.error(err);
       }
     } as SocialAuthServiceConfig,
+  },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true,
   }
 
-
-]
+  ]
 };
