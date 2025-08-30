@@ -11,14 +11,15 @@ import { AngularMaterialModules } from '../../../core/modules';
 export class TablePagintionComponent {
   @Input() totalPages: number = 0;
   @Input() currentPage: number = 1;
-  @Input() itemsPerPage: number = 5;
+@Input() itemsPerPage: number = 5;
 
   @Output() itemsPerPageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
   pageSizeOptions: number[] = [5, 10, 20, 50];
 
   triggerItemsPerPageChange(event: any): void {
-    this.itemsPerPageChanged.emit(+event.target.value);
+    this.itemsPerPage = +event.target.value;
+    this.itemsPerPageChanged.emit(this.itemsPerPage);
   }
 
   triggerPageChange(page: number): void {

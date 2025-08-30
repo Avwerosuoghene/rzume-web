@@ -6,12 +6,13 @@ import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.component';
 import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
 import { AngularMaterialModules } from '../../core/modules';
-import { AddJobDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
+import { AddJobDialogData, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
 import { ViewUtilities } from '../../core/helpers';
 import { JobApplicationDialogData } from '../../core/models/constants/job-application-dialog-data';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableBodyComponent } from './table-body/table-body.component';
 import { TablePagintionComponent } from "./table-pagintion/table-pagintion.component";
+import { ColumnDefinition } from '../../core/models/interface/dashboard.models';
 
 @Component({
   selector: 'app-custom-table',
@@ -22,14 +23,13 @@ import { TablePagintionComponent } from "./table-pagintion/table-pagintion.compo
 })
 export class CustomTableComponent {
   @Input() data: any[] = [];
-  @Input() columns: { header: string, field: string }[] = [];
+  @Input() columns: ColumnDefinition[] = [];
   @Input() totalPages: number = 0;
   @Input() currentPage: number = 1;
-  itemsPerPage: number = 5;
+  // @Input() itemsPerPage: number = 10;
   @Output() itemPerPageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() onSelectionChanged: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
-
 
   selectedItems: Array<any> = [];
   totalItems: number = 20;
@@ -47,6 +47,7 @@ export class CustomTableComponent {
 
   onItemsPerPageChange(itemsPerPage: any): void {
     this.currentPage = 1;
+    
     this.itemPerPageChanged.emit(itemsPerPage);
 
   }

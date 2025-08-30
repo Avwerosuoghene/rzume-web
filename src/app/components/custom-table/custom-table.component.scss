@@ -3,17 +3,24 @@
 
 .table_outer_container {
   width: 100%;
-  
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  height: 500px;
+
   .table_container {
     width: 100%;
-    overflow-x: auto;
+    overflow: auto;
+    flex: 1;
   }
 
   .custom-table {
     width: 100%;
+    min-width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
-    
+    table-layout: auto;
+
     app-table-header,
     app-table-body {
       display: contents;

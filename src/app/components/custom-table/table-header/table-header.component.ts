@@ -1,4 +1,3 @@
-// src/app/components/custom-table/table-header/table-header.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ColumnDefinition } from '../../../core/models/interface/dashboard.models';
 import { CommonModule } from '@angular/common';
