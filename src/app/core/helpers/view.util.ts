@@ -7,6 +7,8 @@ export class ViewUtilities {
 
   private static _shortWidthTableItems: Array<string> =[
     'date',
+    'status',
+    'action'
   ];
 
   public static checkItemForLongElegibility(item: string):boolean {

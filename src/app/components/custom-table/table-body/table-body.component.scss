@@ -1,15 +1,36 @@
 @import "../../../styles/theme.scss";
 @import "../../../styles/general_styles.scss";
 
-td {
-  padding: 8px;
+.table-body {
+  width: 100%;
+}
 
+tbody {
+  width: 100%;
+}
+
+tr {
+  width: 100%;
+}
+
+td {
   &.set_width_long {
     min-width: 160px;
+    width: 25%;
   }
 
   &.set_width_short {
     min-width: 100px;
+    width: 15%;
+  }
+  
+  &.centered:first-child {
+    width: 60px;
+  }
+  
+  // Default columns get remaining space
+  &:not(.set_width_long):not(.set_width_short):not(.centered) {
+    width: auto;
   }
 }
 
@@ -54,7 +75,6 @@ td {
 
 td {
   border-bottom: 1px solid $light-gray;
-
   padding: 20px 8px;
 
   &.centered {

@@ -2,14 +2,21 @@
 @import "../../styles/general_styles.scss";
 
 .table_outer_container {
+  width: 100%;
+  
   .table_container {
     width: 100%;
-    
+    overflow-x: auto;
   }
 
   .custom-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    
+    app-table-header,
+    app-table-body {
+      display: contents;
+    }
   }
-
 }

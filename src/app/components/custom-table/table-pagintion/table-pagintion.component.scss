@@ -1,6 +1,11 @@
 @import "../../../styles/theme.scss";
 @import "../../../styles/general_styles.scss";
 
+:host {
+  width: 100%;
+  display: block;
+}
+
 .pagination {
   display: flex;
   justify-content: flex-end;
