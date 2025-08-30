@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
@@ -7,7 +7,6 @@ import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.componen
 import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
 import { AngularMaterialModules } from '../../core/modules';
 import { AddJobDialogData, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
-import { ViewUtilities } from '../../core/helpers';
 import { JobApplicationDialogData } from '../../core/models/constants/job-application-dialog-data';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableBodyComponent } from './table-body/table-body.component';
@@ -38,17 +37,8 @@ export class CustomTableComponent {
 
   }
 
-  ngOnInit(): void { 
-    console.log(this.columns)
-  }
-
-
-
   onItemsPerPageChange(itemsPerPage: any): void {
-    this.currentPage = 1;
-    
     this.itemPerPageChanged.emit(itemsPerPage);
-
   }
 
   changeJobStatus(status: string) {
@@ -74,7 +64,6 @@ export class CustomTableComponent {
     });
   }
 
-
   onCheckboxChange(item: any, event: any): void {
     this.selectedItems = [];
     if (event.target.checked) {
@@ -85,7 +74,6 @@ export class CustomTableComponent {
     }
     this.isAllSelected();
     this.onSelectionChanged.emit(this.selectedItems);
-
   }
 
   editJobApplication() {
@@ -98,74 +86,23 @@ export class CustomTableComponent {
       disableClose: true
     });
     jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResponse<JobApplicationDialogData>) => {
-
       if (!res) return
     })
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page;
-    this.pageChanged.emit(this.currentPage);
-
-  }
-
-
-
-  getPageNumbers(): number[] {
-    const pages = [];
-
-    if (this.totalPages <= 4) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      pages.push(1);
-
-      if (this.currentPage === 1 || this.currentPage === 2) {
-        pages.push(2, 3);
-      } else if (this.currentPage === this.totalPages || this.currentPage === this.totalPages - 1) {
-        pages.push(this.totalPages - 2, this.totalPages - 1);
-      } else {
-        pages.push(this.currentPage, this.currentPage + 1);
-        if (this.currentPage - 1 > 1) {
-          pages.push(this.currentPage - 1);
-        }
-      }
-
-      if (!pages.includes(this.totalPages)) {
-        pages.push(this.totalPages);
-      }
-    }
-
-    // Remove duplicates and sort
-    return [...new Set(pages)].sort((a, b) => a - b);
-  }
-
-  getStatusStyle(statusValue: string): string{
-
-    return ''
-  }
-
-  getLongWidthItems(item: string) {
-    return ViewUtilities.checkItemForLongElegibility(item);
-  }
-
-  getShortWidthItems(item: string) {
-    return ViewUtilities.checkItemForShortElegibility(item);
-
+    this.pageChanged.emit(page);
   }
 
   toggleAllSelections(event: any) {
     const checked = event.target.checked;
     this.selectedItems = [];
 
-
     this.data.forEach(item => {
       this.selectedItems.push(item);
       item.selected = checked;
     });
     this.onSelectionChanged.emit(this.selectedItems);
-
   }
 
   isAllSelected() {

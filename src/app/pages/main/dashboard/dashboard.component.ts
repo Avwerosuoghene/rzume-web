@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { MockDataService } from '../../../core/services';
 import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
 import { JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
 import { Subject } from 'rxjs';
