@@ -1,5 +1,6 @@
 import { FilterOption } from "../interface";
 import { ColumnDefinition } from "../interface/dashboard.models";
+import { APPLICATION_STATUS_OPTIONS } from "./application-status-options.constants";
 
 export const PAGINATION_DEFAULTS = {
   totalPages: 1,
@@ -17,8 +18,10 @@ export const JOB_TABLE_COLUMNS = [
   { header: 'Action', field: 'action' }
 ] as Array<ColumnDefinition>;
 
-export const JOB_FILTER_OPTIONS = [
-  { value: 'option1', label: 'Option 1' },
-  { value: 'option2', label: 'Option 2' },
-  { value: 'option3', label: 'Option 3' }
-] as Array<FilterOption>;
+export const JOB_FILTER_OPTIONS: FilterOption[] = [
+  { value: '', label: 'All Status' },
+  ...APPLICATION_STATUS_OPTIONS.map(option => ({
+    value: option.value,
+    label: option.name
+  }))
+];

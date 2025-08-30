@@ -14,8 +14,7 @@ export interface JobApplicationItem {
 
 export interface JobApplicationFilter {
   status?: ApplicationStatus;
-  companyName?: string;
-  position?: string;
+  searchQuery?: string;
   startDate?: Date;
   endDate?: Date;
   page?: number;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { AngularMaterialModules } from '../../core/modules';
 import { CustomSearchInputComponent } from '../custom-search-input';
 import { FilterDropdownComponent } from '../filter-dropdown';
@@ -11,7 +11,7 @@ import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { LoaderService } from '../../core/services';
 import { JobApplicationService } from '../../core/services/job-application.service';
 import { finalize } from 'rxjs';
-import { CreateApplicationPayload } from '../../core/models/interface/job-application.models';
+import { CreateApplicationPayload, JobApplicationFilter } from '../../core/models/interface/job-application.models';
 
 @Component({
   selector: 'app-job-list-toolbar',
@@ -23,15 +23,23 @@ import { CreateApplicationPayload } from '../../core/models/interface/job-applic
 export class JobListToolbarComponent {
   filterOptions: Array<FilterOption> = JOB_FILTER_OPTIONS;
 
+  @Output() filterChange = new EventEmitter<JobApplicationFilter>();
+  @Output() searchChange = new EventEmitter<string>();
+
   constructor(private dialogService: DialogService, private loaderService: LoaderService, private jobApplicationService: JobApplicationService) { }
 
-
   handleFilterChange(filterValue: string): void {
-    console.log('Filter value:', filterValue);
+    const filter: JobApplicationFilter = {};
+    
+    if (filterValue && filterValue !== '') {
+      filter.status = filterValue as ApplicationStatus;
+    }
+    
+    this.filterChange.emit(filter);
   }
 
-  onSearch(event: any) {
-    console.log(event);
+  onSearch(searchTerm: string) {
+    this.searchChange.emit(searchTerm);
   }
 
 

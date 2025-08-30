@@ -9,7 +9,7 @@ import { JobListToolbarComponent } from '../../../components/job-list-toolbar/jo
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
-import { JobApplicationItem } from '../../../core/models/interface/job-application.models';
+import { JobApplicationItem, JobApplicationFilter } from '../../../core/models/interface/job-application.models';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalItems: number = PAGINATION_DEFAULTS.totalItems;
   selectedItems: Array<any> = [];
   destroy$ = new Subject<void>();
+  currentFilter: JobApplicationFilter = {};
 
   constructor(
     private state: JobApplicationStateService,
@@ -68,6 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   loadUserAppliedJobs(): void {
     this.jobApplicationService.getApplications({
+      ...this.currentFilter,
       page: this.currentPage,
       pageSize: this.itemsPerPage
     }).subscribe({
@@ -134,6 +136,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   handleSelectionChanged(event: any) {
     this.selectedItems = event;
+  }
+
+  handleFilterChange(filter: JobApplicationFilter): void {
+    if (!filter.status || (filter.status as string) === '') {
+      this.currentFilter = { 
+        ...this.currentFilter,
+        status: undefined 
+      };
+    } else {
+      this.currentFilter = { ...this.currentFilter, ...filter };
+    }
+    
+    this.currentPage = PAGINATION_DEFAULTS.currentPage;
+    this.loadUserAppliedJobs();
+  }
+
+  handleSearchChange(searchTerm: string): void {
+    this.currentFilter = { 
+      ...this.currentFilter, 
+      searchQuery: searchTerm || undefined
+    };
+    this.currentPage = PAGINATION_DEFAULTS.currentPage;
+    this.loadUserAppliedJobs();
   }
 
   ngOnDestroy() {

@@ -97,8 +97,7 @@ export class JobApplicationService {
 
     const paramMap: Record<string, any> = {
       status: filter?.status?.toString(),
-      companyName: filter?.companyName,
-      position: filter?.position,
+      searchQuery: filter?.searchQuery,
       startDate: filter?.startDate?.toISOString(),
       endDate: filter?.endDate?.toISOString(),
       pageNumber: filter?.page,

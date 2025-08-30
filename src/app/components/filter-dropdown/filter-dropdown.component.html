@@ -7,7 +7,7 @@
     (change)="onFilterChange($event)"
   >
     @for (filter of filters; track $index) {
-    <option>{{ filter.label }}</option>
+    <option [value]="filter.value">{{ filter.label }}</option>
     }
   </select>
 </div>
