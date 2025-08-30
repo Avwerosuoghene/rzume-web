@@ -28,6 +28,7 @@ export class CustomTableComponent {
   @Output() itemPerPageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() onSelectionChanged: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+  @Output() jobApplicationUpdated: EventEmitter<any> = new EventEmitter<any>();
 
   selectedItems: Array<any> = [];
   totalItems: number = 20;
@@ -76,9 +77,10 @@ export class CustomTableComponent {
     this.onSelectionChanged.emit(this.selectedItems);
   }
 
-  editJobApplication() {
+  editJobApplication(application: any) {
     const dialogData: AddJobDialogData = {
-      isEditing: true
+      isEditing: true,
+      jobApplicationData: application
     }
     const jobAdditionDialog = this.dialog.open(JobAddDialogComponent, {
       data: dialogData,
@@ -86,7 +88,8 @@ export class CustomTableComponent {
       disableClose: true
     });
     jobAdditionDialog.afterClosed().subscribe((res?: DialogCloseResponse<JobApplicationDialogData>) => {
-      if (!res) return
+      if (!res) return;
+      this.jobApplicationUpdated.emit(res.data);
     })
   }
 

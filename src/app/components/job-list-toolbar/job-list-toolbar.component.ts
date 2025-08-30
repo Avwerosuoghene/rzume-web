@@ -25,6 +25,7 @@ export class JobListToolbarComponent {
 
   @Output() filterChange = new EventEmitter<JobApplicationFilter>();
   @Output() searchChange = new EventEmitter<string>();
+  @Output() jobApplicationUpdated = new EventEmitter<void>();
 
   constructor(private dialogService: DialogService, private loaderService: LoaderService, private jobApplicationService: JobApplicationService) { }
 
@@ -62,6 +63,50 @@ export class JobListToolbarComponent {
     if (response.status === DialogCloseStatus.Submitted) {
       this.createApplication(response.data);
     }
+  }
+
+  updateJobApplication(jobData: any) {
+    const dialogData: AddJobDialogData = {
+      isEditing: true,
+      jobApplicationData: jobData
+    }
+    console.log(jobData)
+    const jobUpdateDialog = this.dialogService.openDialog<JobAddDialogComponent, AddJobDialogData>(
+      JobAddDialogComponent,
+      dialogData,
+      { disableClose: true }
+    );
+    jobUpdateDialog.afterClosed().subscribe(response => this.handleOnCloseUpdateJobDialog(response, jobData.id))
+  }
+
+  private handleOnCloseUpdateJobDialog(response?: DialogCloseResponse<JobApplicationDialogData>, jobId?: string): void {
+    if (!response || !jobId) return
+    if (response.status === DialogCloseStatus.Submitted) {
+      this.processUpdateApplication(response.data, jobId);
+    }
+  }
+
+  private processUpdateApplication(data: JobApplicationDialogData, jobId: string): void {
+    this.loaderService.showLoader();
+    const payload = this.buildUpdatePayload(data);
+    
+    this.jobApplicationService.updateStatus(payload, jobId)
+      .pipe(finalize(() => this.loaderService.hideLoader()))
+      .subscribe({
+        next: () => {
+          this.jobApplicationUpdated.emit();
+        }
+      });
+  }
+
+  private buildUpdatePayload(data: JobApplicationDialogData) {
+    return {
+      position: data.role,
+      companyName: data.company,
+      jobLink: data.job_link,
+      resumeLink: data.cv_link,
+      status: data.status as ApplicationStatus
+    };
   }
 
   createApplication(data: JobApplicationDialogData) {

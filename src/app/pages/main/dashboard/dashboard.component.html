@@ -2,12 +2,14 @@
   <app-job-stats [statHighLights]="statHighLights"></app-job-stats>
   <app-job-list-toolbar 
     (filterChange)="handleFilterChange($event)"
-    (searchChange)="handleSearchChange($event)">
+    (searchChange)="handleSearchChange($event)"
+    (jobApplicationUpdated)="loadUserAppliedJobs()">
   </app-job-list-toolbar>
   <app-custom-table 
     (onSelectionChanged)="handleSelectionChanged($event)" 
     (pageChanged)="handlePageChanged($event)"  
     (itemPerPageChanged)="handleChangeInItemPerPage($event)" 
+    (jobApplicationUpdated)="handleJobApplicationUpdate($event)"
     [columns]="jobListColumns" 
     [totalPages]="totalPages" 
     [data]="data">

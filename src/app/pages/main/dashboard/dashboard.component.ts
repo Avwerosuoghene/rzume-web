@@ -9,6 +9,7 @@ import { JobStatsComponent } from '../../../components/job-stats/job-stats.compo
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
 import { JobApplicationItem, JobApplicationFilter } from '../../../core/models/interface/job-application.models';
+import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
 
 @Component({
   selector: 'app-dashboard',
@@ -139,25 +140,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   handleFilterChange(filter: JobApplicationFilter): void {
     if (!filter.status || (filter.status as string) === '') {
-      this.currentFilter = { 
+      this.currentFilter = {
         ...this.currentFilter,
-        status: undefined 
+        status: undefined
       };
     } else {
       this.currentFilter = { ...this.currentFilter, ...filter };
     }
-    
+
     this.currentPage = PAGINATION_DEFAULTS.currentPage;
     this.loadUserAppliedJobs();
   }
 
   handleSearchChange(searchTerm: string): void {
-    this.currentFilter = { 
-      ...this.currentFilter, 
+    this.currentFilter = {
+      ...this.currentFilter,
       searchQuery: searchTerm || undefined
     };
     this.currentPage = PAGINATION_DEFAULTS.currentPage;
     this.loadUserAppliedJobs();
+  }
+
+  handleJobApplicationUpdate(updateData: any): void {
+    if (!updateData || updateData.status === DialogCloseStatus.Cancelled) return;
+
+    this.processJobApplicationUpdate(updateData);
+  }
+
+  private processJobApplicationUpdate(updateData: any): void {
+    this.jobApplicationService.updateJobApplication(updateData.id, updateData)
+      .subscribe({
+        next: () => {
+          this.loadUserAppliedJobs();
+        }
+      });
   }
 
   ngOnDestroy() {

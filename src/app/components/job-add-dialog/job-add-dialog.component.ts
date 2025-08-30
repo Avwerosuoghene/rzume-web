@@ -69,21 +69,34 @@ cancelApplication() {
 }
 
   prepopulateFormFields() {
-    this.applicationFormGroup.patchValue({
-      company: 'Example Company',
-      role: 'Frontend Developer',
-      cv_link: 'http://example.com/cv.pdf',
-      job_link: 'http://example.com/job',
-      application_date: '2024-08-16',
-      status: ApplicationStatus.InProgress
-    });
-
+    console.log('job data')
+    console.log(this.addJobDialogData.jobApplicationData);
+    if (this.addJobDialogData.jobApplicationData) {
+      const jobData = this.addJobDialogData.jobApplicationData;
+      console.log(jobData)
+      this.applicationFormGroup.patchValue({
+        company: jobData.company || '',
+        role: jobData.job_role || '',
+        cv_link: jobData.cv_link || '',
+        job_link: jobData.job_link || '',
+        application_date: jobData.date || '',
+        status: jobData.status || ApplicationStatus.Wishlist
+      });
+    }
   }
 
+
+
   appNewApplication() {
+    const formData = this.applicationFormGroup.value;
     const submissionData = {
       status: DialogCloseStatus.Submitted,
-      data: this.applicationFormGroup.value
+      data: {
+        ...formData,
+        ...(this.editMode && this.addJobDialogData.jobApplicationData?.id && {
+          id: this.addJobDialogData.jobApplicationData.id
+        })
+      }
     };
     this.dialogRef.close(submissionData);
   }

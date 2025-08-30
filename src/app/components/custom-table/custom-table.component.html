@@ -11,7 +11,7 @@
         [data]="data"
         [columns]="columns"
         (checkBoxChanged)="onCheckboxChange($event.item, $event.event)"
-        (edit)="editJobApplication()"
+        (edit)="editJobApplication($event)"
         (delete)="deleteJob()"
         (statusChange)="changeJobStatus($event)"
       ></app-table-body>

@@ -50,6 +50,12 @@ export class JobApplicationService {
     );
   }
 
+  updateJobApplication(applicationId: string, payload: any) {
+    return this.apiService.put<APIResponse<boolean>>(
+      `${ApiRoutes.jobApplication.base}/${applicationId}`, payload, true
+    );
+  }
+
   deleteApplication(applicationId: string) {
     return this.apiService.delete<APIResponse<boolean>>(
       `${ApiRoutes.jobApplication.base}/${applicationId}`, true

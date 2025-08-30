@@ -7,6 +7,7 @@ export interface InfoDialogData {
 
 export interface AddJobDialogData {
   isEditing: boolean;
+  jobApplicationData?: any;
 }
 
 export interface JobStatChangeDialogData {

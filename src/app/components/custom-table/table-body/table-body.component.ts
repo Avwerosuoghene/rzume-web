@@ -25,8 +25,8 @@ export class TableBodyComponent {
     this.checkBoxChanged.emit({item, event});
   }
 
-  triggerApplicationEdit(): void {
-    this.edit.emit();
+  triggerApplicationEdit(application: any): void {
+    this.edit.emit(application);
   }
 
   triggerDelete(): void {
