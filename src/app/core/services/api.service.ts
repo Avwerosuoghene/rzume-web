@@ -29,7 +29,6 @@ export class ApiService {
         requestParams = requestParams.set(param.name, param.value);
       })
     }
-    console.log(params);
 
     let requestHeaders = this.mergeHeaders(headers);
 
