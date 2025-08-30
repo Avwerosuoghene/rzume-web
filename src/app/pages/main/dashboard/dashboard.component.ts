@@ -86,15 +86,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private mapApplicationToTableData(application: JobApplicationItem) {
+  private mapApplicationToTableData(application: JobApplicationItem): JobApplicationItem {
     return {
       id: application.id,
-      company: application.companyName,
-      job_role: application.position,
-      status: application.status,
-      date: new Date(application.applicationDate).toLocaleDateString(),
-      location: application.location,
-      notes: application.notes
+      position: application.position,
+      companyName: application.companyName,
+      userId: application.userId,
+      applicationDate: new Date(application.applicationDate).toLocaleDateString(),
+      jobLink: application.jobLink,
+      resumeLink: application.resumeLink,
+      status: application.status
     };
   }
 

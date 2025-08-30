@@ -11,7 +11,9 @@
     (itemPerPageChanged)="handleChangeInItemPerPage($event)" 
     (jobApplicationUpdated)="handleJobApplicationUpdate($event)"
     [columns]="jobListColumns" 
-    [totalPages]="totalPages" 
+    [totalPages]="totalPages"
+    [currentPage]="currentPage"
+    [itemsPerPage]="itemsPerPage"
     [data]="data">
   </app-custom-table>
 </section>

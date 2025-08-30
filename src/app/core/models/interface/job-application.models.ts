@@ -3,12 +3,14 @@ import { PaginatedItem } from "./shared.models";
 
 export interface JobApplicationItem {
   id: string;
-  companyName: string;
   position: string;
-  status: string;
+  companyName: string;
+  userId: string;
   applicationDate: string;
-  location: string;
-  notes: string;
+  jobLink: string;
+  resumeLink: string;
+  status: string;
+  selected?: boolean; 
 }
 
 

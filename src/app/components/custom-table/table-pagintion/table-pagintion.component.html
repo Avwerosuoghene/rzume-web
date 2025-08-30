@@ -16,7 +16,7 @@
       <button (click)="triggerPageChange(currentPage - 1)" class="first_btn">
         Previous
       </button>
-      } @for (page of getPageNumbers(); track $index) {
+      } @for (page of pageNumbers; track $index) {
       <button
         [class.active]="page === currentPage"
         [class.first_btn]="page === 1 && currentPage === 1"

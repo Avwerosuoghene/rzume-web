@@ -6,12 +6,11 @@ import { AddJobDialogData, ApplicationStatus, DialogCloseResponse, FilterOption 
 import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.constants';
 import { JobAddDialogComponent } from '../job-add-dialog';
 import { DialogService } from '../../core/services/dialog.service';
-import { JobApplicationDialogData } from '../../core/models/constants/job-application-dialog-data';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { LoaderService } from '../../core/services';
 import { JobApplicationService } from '../../core/services/job-application.service';
 import { finalize } from 'rxjs';
-import { CreateApplicationPayload, JobApplicationFilter } from '../../core/models/interface/job-application.models';
+import { CreateApplicationPayload, JobApplicationFilter, JobApplicationItem } from '../../core/models/interface/job-application.models';
 
 @Component({
   selector: 'app-job-list-toolbar',
@@ -58,7 +57,7 @@ export class JobListToolbarComponent {
 
 
 
-  handleOnCloseJobDialog(response?: DialogCloseResponse<JobApplicationDialogData>): void {
+  handleOnCloseJobDialog(response?: DialogCloseResponse<JobApplicationItem>): void {
     if (!response) return
     if (response.status === DialogCloseStatus.Submitted) {
       this.createApplication(response.data);
@@ -79,14 +78,14 @@ export class JobListToolbarComponent {
     jobUpdateDialog.afterClosed().subscribe(response => this.handleOnCloseUpdateJobDialog(response, jobData.id))
   }
 
-  private handleOnCloseUpdateJobDialog(response?: DialogCloseResponse<JobApplicationDialogData>, jobId?: string): void {
+  private handleOnCloseUpdateJobDialog(response?: DialogCloseResponse<JobApplicationItem>, jobId?: string): void {
     if (!response || !jobId) return
     if (response.status === DialogCloseStatus.Submitted) {
       this.processUpdateApplication(response.data, jobId);
     }
   }
 
-  private processUpdateApplication(data: JobApplicationDialogData, jobId: string): void {
+  private processUpdateApplication(data: JobApplicationItem, jobId: string): void {
     this.loaderService.showLoader();
     const payload = this.buildUpdatePayload(data);
     
@@ -99,23 +98,23 @@ export class JobListToolbarComponent {
       });
   }
 
-  private buildUpdatePayload(data: JobApplicationDialogData) {
+  private buildUpdatePayload(data: JobApplicationItem) {
     return {
-      position: data.role,
-      companyName: data.company,
-      jobLink: data.job_link,
-      resumeLink: data.cv_link,
+      position: data.position,
+      companyName: data.companyName,
+      jobLink: data.jobLink,
+      resumeLink: data.resumeLink,
       status: data.status as ApplicationStatus
     };
   }
 
-  createApplication(data: JobApplicationDialogData) {
+  createApplication(data: JobApplicationItem) {
     this.loaderService.showLoader();
     const payload: CreateApplicationPayload = {
-      position: data.role,
-      companyName: data.company,
-      jobLink: data.job_link,
-      resumeLink: data.cv_link,
+      position: data.position,
+      companyName: data.companyName,
+      jobLink: data.jobLink,
+      resumeLink: data.resumeLink,
       status: data.status as ApplicationStatus
     };
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules';
 
 @Component({
@@ -8,14 +8,15 @@ import { AngularMaterialModules } from '../../../core/modules';
   templateUrl: './table-pagintion.component.html',
   styleUrl: './table-pagintion.component.scss'
 })
-export class TablePagintionComponent {
+export class TablePagintionComponent implements OnInit, OnChanges {
   @Input() totalPages: number = 0;
   @Input() currentPage: number = 1;
-@Input() itemsPerPage: number = 5;
+  @Input() itemsPerPage: number = 5;
 
   @Output() itemsPerPageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
   pageSizeOptions: number[] = [5, 10, 20, 50];
+  pageNumbers: number[] = [];
 
   triggerItemsPerPageChange(event: any): void {
     this.itemsPerPage = +event.target.value;
@@ -26,9 +27,23 @@ export class TablePagintionComponent {
     this.pageChanged.emit(page);
   }
 
+  ngOnInit(): void {
+    this.calculatePageNumbers();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['totalPages'] || changes['currentPage']) {
+      this.calculatePageNumbers();
+    }
+  }
 
   getPageNumbers(): number[] {
+    return this.pageNumbers;
+  }
+
+  private calculatePageNumbers(): void {
     const pages = [];
+    // console.log(this.totalPages)
 
     if (this.totalPages <= 4) {
       for (let i = 1; i <= this.totalPages; i++) {
@@ -53,6 +68,6 @@ export class TablePagintionComponent {
       }
     }
 
-    return [...new Set(pages)].sort((a, b) => a - b);
+    this.pageNumbers = [...new Set(pages)].sort((a, b) => a - b);
   }
 }

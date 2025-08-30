@@ -50,7 +50,7 @@ export class JobApplicationService {
     );
   }
 
-  updateJobApplication(applicationId: string, payload: any) {
+  updateJobApplication(applicationId: string, payload: UpdateJobApplicationPayload) {
     return this.apiService.put<APIResponse<boolean>>(
       `${ApiRoutes.jobApplication.base}/${applicationId}`, payload, true
     );

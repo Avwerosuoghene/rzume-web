@@ -16,11 +16,3 @@ export interface PaginatedResponse<T> {
   total: number;
 }
 
-export interface JobApplication {
-  company: string;
-  job_role: string;
-  cv: string;
-  status: string;
-  date: string;
-  selected?: boolean; 
-}

@@ -10,11 +10,11 @@ export const PAGINATION_DEFAULTS = {
 } as const;
 
 export const JOB_TABLE_COLUMNS = [
-  { header: 'Company', field: 'company' },
-  { header: 'Job Role', field: 'job_role' },
-  { header: 'Cv Used', field: 'cv' },
+  { header: 'Company', field: 'companyName' },
+  { header: 'Job Role', field: 'position' },
+  { header: 'Resume Link', field: 'resumeLink' },
   { header: 'Status', field: 'status' },
-  { header: 'Date', field: 'date' },
+  { header: 'Date', field: 'applicationDate' },
   { header: 'Action', field: 'action' }
 ] as Array<ColumnDefinition>;
 

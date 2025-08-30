@@ -75,11 +75,11 @@ cancelApplication() {
       const jobData = this.addJobDialogData.jobApplicationData;
       console.log(jobData)
       this.applicationFormGroup.patchValue({
-        company: jobData.company || '',
-        role: jobData.job_role || '',
-        cv_link: jobData.cv_link || '',
-        job_link: jobData.job_link || '',
-        application_date: jobData.date || '',
+        company: jobData.companyName || '',
+        role: jobData.position || '',
+        cv_link: jobData.resumeLink || '',
+        job_link: jobData.jobLink || '',
+        application_date: jobData.applicationDate || '',
         status: jobData.status || ApplicationStatus.Wishlist
       });
     }
