@@ -7,6 +7,8 @@ export interface StatHighlight {
 export interface ColumnDefinition {
   header: string;
   field: string;
+  width?: string;
+  sortable?: boolean;
 }
 
 export interface PaginatedResponse<T> {

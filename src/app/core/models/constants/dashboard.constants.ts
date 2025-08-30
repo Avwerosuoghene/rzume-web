@@ -14,6 +14,7 @@ export const JOB_TABLE_COLUMNS = [
   { header: 'Cv Used', field: 'cv' },
   { header: 'Status', field: 'status' },
   { header: 'Date', field: 'date' },
+  { header: 'Action', field: 'action' }
 ] as Array<ColumnDefinition>;
 
 export const JOB_FILTER_OPTIONS = [

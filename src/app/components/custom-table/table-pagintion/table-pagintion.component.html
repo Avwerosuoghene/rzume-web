@@ -1,0 +1,34 @@
+<div class="pagination">
+    <div class="item_per_page_container">
+      <p>{{ itemsPerPage }}</p>
+      <mat-icon id="expand_icon">arrow_forward_ios</mat-icon>
+
+      <select (change)="triggerItemsPerPageChange($event)">
+        @for (option of pageSizeOptions; track $index) {
+        <option [value]="option">
+          {{ option }}
+        </option>
+        }
+      </select>
+    </div>
+    <div class="navigation_buttons">
+      @if (currentPage > 1) {
+      <button (click)="triggerPageChange(currentPage - 1)" class="first_btn">
+        Previous
+      </button>
+      } @for (page of getPageNumbers(); track $index) {
+      <button
+        [class.active]="page === currentPage"
+        [class.first_btn]="page === 1 && currentPage === 1"
+        [class.last_btn]="page === totalPages && currentPage === totalPages"
+        (click)="triggerPageChange(page)"
+      >
+        {{ page }}
+      </button>
+      } @if (currentPage < totalPages) {
+      <button (click)="triggerPageChange(currentPage + 1)" class="last_btn">
+        Next
+      </button>
+      }
+    </div>
+  </div>

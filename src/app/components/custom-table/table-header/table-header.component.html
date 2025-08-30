@@ -1,0 +1,29 @@
+
+
+  <thead>
+    <tr>
+      <th>
+        <input
+          type="checkbox"
+          (change)="toggleAllSelectionsEvent($event)"
+          [checked]="allSelected"
+          class="custom-checkbox"
+        />
+      </th>
+
+      @for (col of columns; track $index) {
+      <th
+        [ngClass]="
+          getLongWidthItems(col.field)
+            ? 'set_width_long'
+            : getShortWidthItems(col.field)
+            ? 'set_width_short'
+            : ''
+        "
+      >
+        <p>{{ col.header }}</p>
+      </th>
+
+      }
+    </tr>
+  </thead>

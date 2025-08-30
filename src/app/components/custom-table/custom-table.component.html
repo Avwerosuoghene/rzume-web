@@ -1,119 +1,28 @@
 <div class="table_outer_container">
   <div class="table_container">
     <table class="custom-table">
-      <thead>
-        <tr>
-          <th>
-            <input
-              type="checkbox"
-              (change)="toggleAllSelections($event)"
-              [checked]="isAllSelected()"
-              class="custom-checkbox"
-            />
-          </th>
+      <app-table-header
+        [columns]="columns"
+        [allSelected]="allItemsSelected"
+        (selectAll)="toggleAllSelections($event)"
+      ></app-table-header>
 
-          @for (col of columns; track $index) {
-          <th
-            [ngClass]="
-              getLongWidthItems(col.field)
-                ? 'set_width_long'
-                : getShortWidthItems(col.field)
-                ? 'set_width_short'
-                : ''
-            "
-          >
-            <p>{{ col.header }}</p>
-          </th>
-
-          }
-          <th>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of data; track $index) {
-        <tr>
-          <td class="centered">
-            <input
-              type="checkbox"
-              (change)="onCheckboxChange(item, $event)"
-              [(ngModel)]="item.selected"
-              class="custom-checkbox"
-            />
-          </td>
-          @for (col of columns; track $index) {
-          <td
-            [ngClass]="
-              getLongWidthItems(col.field)
-                ? 'set_width_long'
-                : getShortWidthItems(col.field)
-                ? 'set_width_short'
-                : ''
-            "
-          >
-            <div class="row_element" [ngClass]="col.field === 'status' ? (item[col.field] || '').toLowerCase() : ''">
-              <p>{{ item[col.field] || 'Not Provided' }}</p>
-            </div>
-          </td>
-          }
-
-          <td class="centered">
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="more options">
-              <mat-icon>more_horiz</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="editJobApplication()">
-                <mat-icon>edit</mat-icon>
-                <span>Edit</span>
-              </button>
-              <button mat-menu-item (click)="changeJobStatus()">
-                <mat-icon>swap_horiz</mat-icon>
-                <span> Change Status</span>
-              </button>
-              <button mat-menu-item (click)="deleteJob()">
-                <mat-icon>delete</mat-icon>
-                <span> Remove</span>
-              </button>
-            </mat-menu>
-
-          </td>
-        </tr>
-        }
-      </tbody>
+      <app-table-body
+        [data]="data"
+        [columns]="columns"
+        (checkBoxChanged)="onCheckboxChange($event.item, $event.event)"
+        (edit)="editJobApplication()"
+        (delete)="deleteJob()"
+        (statusChange)="changeJobStatus($event)"
+      ></app-table-body>
     </table>
   </div>
-  <div class="pagination">
-    <div class="item_per_page_container">
-      <p>{{ itemsPerPage }}</p>
-      <mat-icon id="expand_icon">arrow_forward_ios</mat-icon>
+  <app-table-pagintion
+    [totalPages]="totalPages"
+    [currentPage]="currentPage"
+    [itemsPerPage]="itemsPerPage"
+    (itemsPerPageChanged)="onItemsPerPageChange($event)"
+    (pageChanged)="onPageChange($event)"
+  ></app-table-pagintion>
 
-      <select (change)="onItemsPerPageChange($event)">
-        @for (option of [5, 10, 20, 50]; track $index) {
-        <option [value]="option">
-          {{ option }}
-        </option>
-        }
-      </select>
-    </div>
-    <div class="navigation_buttons">
-      @if (currentPage > 1) {
-      <button (click)="onPageChange(currentPage - 1)" class="first_btn">
-        Previous
-      </button>
-      } @for (page of getPageNumbers(); track $index) {
-      <button
-        [class.active]="page === currentPage"
-        [class.first_btn]="page === 1 && currentPage === 1"
-        [class.last_btn]="page === totalPages && currentPage === totalPages"
-        (click)="onPageChange(page)"
-      >
-        {{ page }}
-      </button>
-      } @if (currentPage < totalPages) {
-      <button (click)="onPageChange(currentPage + 1)" class="last_btn">
-        Next
-      </button>
-      }
-    </div>
-  </div>
 </div>

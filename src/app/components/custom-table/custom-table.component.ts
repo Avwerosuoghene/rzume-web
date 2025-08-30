@@ -9,11 +9,14 @@ import { AngularMaterialModules } from '../../core/modules';
 import { AddJobDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
 import { ViewUtilities } from '../../core/helpers';
 import { JobApplicationDialogData } from '../../core/models/constants/job-application-dialog-data';
+import { TableHeaderComponent } from './table-header/table-header.component';
+import { TableBodyComponent } from './table-body/table-body.component';
+import { TablePagintionComponent } from "./table-pagintion/table-pagintion.component";
 
 @Component({
   selector: 'app-custom-table',
   standalone: true,
-  imports: [FormsModule, CommonModule, AngularMaterialModules],
+  imports: [FormsModule, CommonModule, AngularMaterialModules, TableHeaderComponent, TableBodyComponent, TablePagintionComponent],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
 })
@@ -30,25 +33,27 @@ export class CustomTableComponent {
 
   selectedItems: Array<any> = [];
   totalItems: number = 20;
+  allItemsSelected: boolean = false;
 
   constructor(private dialog: MatDialog) {
 
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    console.log(this.columns)
+  }
 
 
 
-  onItemsPerPageChange(event: any): void {
-    this.itemsPerPage = +event.target.value;
+  onItemsPerPageChange(itemsPerPage: any): void {
     this.currentPage = 1;
-    this.itemPerPageChanged.emit(this.itemsPerPage);
+    this.itemPerPageChanged.emit(itemsPerPage);
 
   }
 
-  changeJobStatus() {
+  changeJobStatus(status: string) {
     const dialogData: JobStatChangeDialogData = {
-      status: ApplicationStatus.InProgress
+      status: status
     }
     this.dialog.open(JobStatusChangeComponent, {
       data: dialogData,
@@ -78,6 +83,7 @@ export class CustomTableComponent {
       const itemIndex = this.selectedItems.indexOf(item);
       this.selectedItems.splice(itemIndex, 1);
     }
+    this.isAllSelected();
     this.onSelectionChanged.emit(this.selectedItems);
 
   }
@@ -96,10 +102,6 @@ export class CustomTableComponent {
       if (!res) return
     })
   }
-
-
-
-
 
   onPageChange(page: number): void {
     this.currentPage = page;
@@ -157,6 +159,7 @@ export class CustomTableComponent {
     const checked = event.target.checked;
     this.selectedItems = [];
 
+
     this.data.forEach(item => {
       this.selectedItems.push(item);
       item.selected = checked;
@@ -165,8 +168,8 @@ export class CustomTableComponent {
 
   }
 
-  isAllSelected(): boolean {
-    return this.data.every(item => item.selected);
+  isAllSelected() {
+    this.allItemsSelected = this.data.every(item => item.selected);
   }
 
 

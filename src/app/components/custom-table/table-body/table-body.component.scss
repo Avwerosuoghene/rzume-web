@@ -1,0 +1,63 @@
+@import "../../../styles/theme.scss";
+@import "../../../styles/general_styles.scss";
+
+td {
+  padding: 8px;
+
+  &.set_width_long {
+    min-width: 160px;
+  }
+
+  &.set_width_short {
+    min-width: 100px;
+  }
+}
+
+.row_element {
+  &.applied {
+    @extend .status_container;
+    background-color: $light-gray;
+  }
+  &.interview {
+    @extend .status_container;
+    background-color: $amber-light;
+
+    p {
+      color: $amber;
+    }
+  }
+  &.rejected {
+    @extend .status_container;
+    background-color: $warning-light;
+
+    p {
+      color: $warning;
+    }
+  }
+  &.offer {
+    @extend .status_container;
+    background-color: $basic-green-light;
+
+    p {
+      color: $basic-green;
+    }
+  }
+  &.wishlist {
+    @extend .status_container;
+    background-color: $light-gray;
+
+    p {
+      color: $gray;
+    }
+  }
+}
+
+td {
+  border-bottom: 1px solid $light-gray;
+
+  padding: 20px 8px;
+
+  &.centered {
+    text-align: center;
+  }
+}
