@@ -26,7 +26,6 @@ export class CustomTableComponent {
   @Input() columns: ColumnDefinition[] = [];
   @Input() totalPages: number = 0;
   @Input() currentPage: number = 1;
-  // @Input() itemsPerPage: number = 10;
   @Output() itemPerPageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() onSelectionChanged: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();

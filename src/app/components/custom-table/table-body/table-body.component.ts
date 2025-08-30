@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules';
-import { ViewUtilities } from '../../../core/helpers';
+import { ApplicationUtil, ViewUtilities } from '../../../core/helpers';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ColumnDefinition } from '../../../core/models/interface/dashboard.models';
+import { ColumnDefinition } from '../../../core/models';
 
 @Component({
   selector: 'app-table-body',
@@ -43,6 +43,9 @@ export class TableBodyComponent {
 
   getShortWidthItems(item: string) {
     return ViewUtilities.checkItemForShortElegibility(item);
+  }
 
+  getStatusDisplayName(status: string): string {
+    return ApplicationUtil.getDisplayName(status);
   }
 }

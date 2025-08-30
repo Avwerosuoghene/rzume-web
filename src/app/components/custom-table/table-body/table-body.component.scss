@@ -39,7 +39,17 @@ td {
     @extend .status_container;
     background-color: $light-gray;
   }
-  &.interview {
+  
+  &.wishlist {
+    @extend .status_container;
+    background-color: $light-gray;
+
+    p {
+      color: $gray;
+    }
+  }
+  
+  &.submitted {
     @extend .status_container;
     background-color: $amber-light;
 
@@ -47,15 +57,17 @@ td {
       color: $amber;
     }
   }
-  &.rejected {
+  
+  &.inprogress {
     @extend .status_container;
-    background-color: $warning-light;
+    background-color: $amber-light;
 
     p {
-      color: $warning;
+      color: $amber;
     }
   }
-  &.offer {
+  
+  &.offerreceived {
     @extend .status_container;
     background-color: $basic-green-light;
 
@@ -63,12 +75,13 @@ td {
       color: $basic-green;
     }
   }
-  &.wishlist {
+  
+  &.rejected {
     @extend .status_container;
-    background-color: $light-gray;
+    background-color: $warning-light;
 
     p {
-      color: $gray;
+      color: $warning;
     }
   }
 }

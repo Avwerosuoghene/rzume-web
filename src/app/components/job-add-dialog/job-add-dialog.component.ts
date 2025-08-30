@@ -7,6 +7,8 @@ import { CircularLoaderComponent } from '../circular-loader/circular-loader.comp
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AddJobDialogData } from '../../core/models/interface/dialog-models-interface';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
+import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
+import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -19,7 +21,7 @@ export class JobAddDialogComponent implements OnInit {
   applicationFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
   maxDate: Date = new Date();
-  applicationStatusList : Array<string> = Object.values(ApplicationStatus);
+  applicationStatusOptions: ApplicationStatusOption[] = APPLICATION_STATUS_OPTIONS;
   loaderIsActive: boolean = false;
   editMode: boolean = false;
 

@@ -39,7 +39,7 @@
         col.field === 'status' ? (item[col.field] || '').toLowerCase() : ''
       "
     >
-      <p>{{ item[col.field] || "Not Provided" }}</p>
+      <p>{{ col.field === 'status' ? getStatusDisplayName(item[col.field]) : (item[col.field] || "Not Provided") }}</p>
     </div>
   </td>
 </ng-template>
