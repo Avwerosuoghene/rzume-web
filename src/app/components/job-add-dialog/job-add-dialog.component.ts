@@ -44,22 +44,23 @@ export class JobAddDialogComponent implements OnInit {
 
   initializeForm(): void {
     this.applicationFormGroup = this.fb.group({
-      company: this.fb.control('', {
+      companyName: this.fb.control('', {
         validators: [
           Validators.required,
         ]
       }),
-      role: this.fb.control('', {
+      position: this.fb.control('', {
         validators: [
           Validators.required
         ]
       }),
-      cv_link: this.fb.control(''),
-      job_link: this.fb.control(''),
-      application_date:this.fb.control(''),
+      resumeLink: this.fb.control(''),
+      jobLink: this.fb.control(''),
+      applicationDate:this.fb.control(''),
       status:this.fb.control(ApplicationStatus.Wishlist),
     });
   }
+
 
 cancelApplication() {
    const cancellationData = {
@@ -69,17 +70,15 @@ cancelApplication() {
 }
 
   prepopulateFormFields() {
-    console.log('job data')
-    console.log(this.addJobDialogData.jobApplicationData);
+
     if (this.addJobDialogData.jobApplicationData) {
       const jobData = this.addJobDialogData.jobApplicationData;
-      console.log(jobData)
       this.applicationFormGroup.patchValue({
-        company: jobData.companyName || '',
-        role: jobData.position || '',
-        cv_link: jobData.resumeLink || '',
-        job_link: jobData.jobLink || '',
-        application_date: jobData.applicationDate || '',
+        companyName: jobData.companyName || '',
+        position: jobData.position || '',
+        resumeLink: jobData.resumeLink || '',
+        jobLink: jobData.jobLink || '',
+        applicationDate: jobData.applicationDate ,
         status: jobData.status || ApplicationStatus.Wishlist
       });
     }
@@ -93,6 +92,7 @@ cancelApplication() {
       status: DialogCloseStatus.Submitted,
       data: {
         ...formData,
+        applicationDate: formData.applicationDate || undefined,
         ...(this.editMode && this.addJobDialogData.jobApplicationData?.id && {
           id: this.addJobDialogData.jobApplicationData.id
         })
@@ -102,10 +102,10 @@ cancelApplication() {
   }
 
   get companyName() {
-    return this.applicationFormGroup.get('company');
+    return this.applicationFormGroup.get('companyName');
   }
   get jobRole() {
-    return this.applicationFormGroup.get('role');
+    return this.applicationFormGroup.get('position');
   }
 
 }

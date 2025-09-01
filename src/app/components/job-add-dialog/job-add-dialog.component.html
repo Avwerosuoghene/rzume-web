@@ -15,8 +15,8 @@
           matInput
           placeholder="Enter company name"
           type="text"
-          formControlName="company"
-          name="company"
+          formControlName="companyName"
+          name="companyName"
         />
 
       </mat-form-field>
@@ -25,8 +25,8 @@
         <input
           matInput
           placeholder="Enter job role"
-          formControlName="role"
-          name="role"
+          formControlName="position"
+          name="position"
         />
 
 
@@ -40,8 +40,8 @@
         <input
           matInput
           placeholder="Enter link to cv"
-          formControlName="cv_link"
-          name="cv_link"
+          formControlName="resumeLink"
+          name="resumeLink"
         />
       </mat-form-field>
 
@@ -50,15 +50,15 @@
         <input
           matInput
           placeholder="Enter link to job"
-          formControlName="job_link"
-          name="job_link"
+          formControlName="jobLink"
+          name="jobLink"
         />
       </mat-form-field>
 
       <div class="application-status_date-container">
         <mat-form-field appearance="outline" >
           <mat-label>Date Applied</mat-label>
-          <input matInput [matDatepicker]="picker"  formControlName="application_date" [max]="maxDate">
+          <input matInput [matDatepicker]="picker"  formControlName="applicationDate" [max]="maxDate">
 
           <mat-datepicker-toggle matIconSuffix [for]="picker">
             <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>

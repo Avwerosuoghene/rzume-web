@@ -29,6 +29,7 @@ export interface CreateApplicationPayload {
   jobLink?: string;
   resumeLink?: string;
   status: ApplicationStatus;
+  applicationDate?: string;
 }
 
 export interface UpdateJobApplicationPayload {

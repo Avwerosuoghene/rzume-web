@@ -59,6 +59,7 @@ export class JobListToolbarComponent {
 
   handleOnCloseJobDialog(response?: DialogCloseResponse<JobApplicationItem>): void {
     if (!response) return
+  
     if (response.status === DialogCloseStatus.Submitted) {
       this.createApplication(response.data);
     }
@@ -115,6 +116,7 @@ export class JobListToolbarComponent {
       companyName: data.companyName,
       jobLink: data.jobLink,
       resumeLink: data.resumeLink,
+      applicationDate: data.applicationDate,  
       status: data.status as ApplicationStatus
     };
 
