@@ -8,9 +8,4 @@ export enum PasswordVisibility {
   text = 'text'
 }
 
-export enum PasswordStrength {
-  weak = 'Weak',
-  medium = 'Medium',
-  strong = 'Strong'
-}
 

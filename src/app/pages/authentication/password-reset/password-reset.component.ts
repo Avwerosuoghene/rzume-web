@@ -5,8 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
 import { APIResponse, AuthRoutes, ErrorResponse, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, StatusIcon, ToggledPassword } from '../../../core/models';
-import { PasswordUtility } from '../../../core/helpers';
+import { PasswordStrengthResult, PasswordUtility } from '../../../core/helpers';
 import { ProfileManagementService } from '../../../core/services';
+import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 
 @Component({
   selector: 'app-password-reset',
@@ -22,7 +23,7 @@ export class PasswordResetComponent {
   router = inject(Router);
   route = inject(ActivatedRoute);
   fb = inject(NonNullableFormBuilder);
-  passwordStrength!: string;
+  passwordStrength!: PasswordStrengthResult;
   passwordVisibility: PasswordVisibility = PasswordVisibility.password;
   confirmPasswordVisibility: PasswordVisibility = PasswordVisibility.password;
   tokenValue: string | null = null;
@@ -144,7 +145,7 @@ export class PasswordResetComponent {
 
   isBtnDisabled(): boolean {
     return (this.resetPassFormGroup.invalid ||
-      this.passwordStrength != 'Strong' ||
+      this.passwordStrength.strength != PasswordStrength.STRONG ||
       this.loaderIsActive);
   }
 

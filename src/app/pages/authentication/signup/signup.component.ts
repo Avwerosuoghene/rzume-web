@@ -1,15 +1,17 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, OnDestroy } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { PasswordStrengthCheckerComponent } from '../../../components';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
-import { PasswordUtility, SessionStorageUtil } from '../../../core/helpers';
-import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, PasswordStrength, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
+import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil } from '../../../core/helpers';
+import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
 import { AuthenticationService, GoogleAuthService } from '../../../core/services';
+import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 
 
 @Component({
@@ -19,13 +21,16 @@ import { AuthenticationService, GoogleAuthService } from '../../../core/services
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
   @ViewChild(GoogleSignInComponent) googleButtonComponent!: GoogleSignInComponent;
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
 
+  private destroy$ = new Subject<void>();
+  private passwordInput$ = new Subject<void>();
+
   signupFormGroup!: FormGroup;
   fb = inject(NonNullableFormBuilder);
-  passwordStrength!: string;
+  passwordStrength: PasswordStrengthResult = { score: 0, strength: PasswordStrength.NONE };
   passwordVisibility: PasswordVisibility = PasswordVisibility.password;
   loaderIsActive: boolean = false;
   signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`;
@@ -39,6 +44,24 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeSignupForm();
+    this.setupPasswordValidation();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupPasswordValidation(): void {
+    const debounceDelay = 300;
+  
+    this.passwordInput$.pipe(
+      debounceTime(debounceDelay),   
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      const password = this.signupFormGroup.get(PasswordVisibility.password)?.value ?? '';
+      this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(password);
+    });
   }
 
 
@@ -47,7 +70,7 @@ export class SignupComponent implements OnInit {
   }
 
   validatePassword(): void {
-    this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.signupFormGroup.get(PasswordVisibility.password)?.value);
+    this.passwordInput$.next();
   }
 
   togglePasswordVisibility(): void {
@@ -55,9 +78,17 @@ export class SignupComponent implements OnInit {
   }
 
   isBtnDisabled(): boolean {
-    return (this.signupFormGroup.invalid ||
-      this.passwordStrength != PasswordStrength.strong ||
-      this.loaderIsActive);
+    if (this.signupFormInvalid() || this.loaderIsActive) {
+      return true;
+    }
+    
+    const isStrongEnough = this.passwordStrength.strength === PasswordStrength.STRONG 
+                            
+    return !isStrongEnough;
+  }
+
+  private signupFormInvalid(): boolean {
+    return this.signupFormGroup.invalid;
   }
 
   initializeSignupForm(): void {

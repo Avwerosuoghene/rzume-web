@@ -1,13 +1,3 @@
-import { PasswordStrength } from '../enums/password-strength.enum';
-
-export const PASSWORD_STRENGTH_DESCRIPTIONS: Record<number, string> = {
-  0: 'Too short',
-  1: 'Very weak',
-  2: 'Weak',
-  3: 'Medium',
-  4: 'Strong',
-  5: 'Very strong'
-} as const;
 
 export const PASSWORD_CRITERIA = {
   MIN_LENGTH: 8,

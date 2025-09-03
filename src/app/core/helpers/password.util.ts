@@ -3,14 +3,12 @@ import { PasswordVisibility } from '../models';
 import { PasswordStrength } from '../models/enums/password-strength.enum';
 import { 
   PASSWORD_CRITERIA_CONFIG, 
-  PASSWORD_STRENGTH_DESCRIPTIONS,
   PASSWORD_STRENGTH_THRESHOLDS 
 } from '../models/constants/password.constants';
 
 export interface PasswordStrengthResult {
   score: number;
   strength: PasswordStrength;
-  description: string;
 }
 
 export class PasswordUtility {
@@ -44,12 +42,10 @@ export class PasswordUtility {
     }
 
     const score = this.calculatePasswordScore(password);
-    const strength = this.determineStrengthLevel(score);
     
     return {
       score,
-      strength,
-      description: this.getStrengthDescription(score)
+      strength:  this.determineStrengthLevel(score),
     };
   }
 
@@ -95,15 +91,10 @@ export class PasswordUtility {
       : PasswordStrength.STRONG;
   }
 
-  private static getStrengthDescription(score: number): string {
-    return PASSWORD_STRENGTH_DESCRIPTIONS[Math.min(score, PASSWORD_STRENGTH_THRESHOLDS.STRONG)] || '';
-  }
-
   private static getEmptyStrengthResult(): PasswordStrengthResult {
     return {
       score: 0,
-      strength: PasswordStrength.NONE,
-      description: ''
+      strength: PasswordStrength.NONE
     };
   }
 }

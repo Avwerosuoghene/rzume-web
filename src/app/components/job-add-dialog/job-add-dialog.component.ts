@@ -78,7 +78,7 @@ cancelApplication() {
         position: jobData.position || '',
         resumeLink: jobData.resumeLink || '',
         jobLink: jobData.jobLink || '',
-        applicationDate: jobData.applicationDate ,
+        applicationDate: jobData.applicationDate ? new Date(jobData.applicationDate) : null, 
         status: jobData.status || ApplicationStatus.Wishlist
       });
     }

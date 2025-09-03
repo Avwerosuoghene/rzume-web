@@ -58,7 +58,7 @@ export class ApiService {
   public put<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders): Observable<T> {
     let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
 
-    const headers = this.mergeHeaders(reqHeaders);
+    let headers = this.withBearer(this.mergeHeaders(reqHeaders));
 
     return this.httpClient.put<T>(route, body, {
       headers
