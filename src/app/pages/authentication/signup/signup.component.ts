@@ -77,19 +77,18 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.passwordVisibility = PasswordUtility.toggleVisibility(this.passwordVisibility);
   }
 
-  isBtnDisabled(): boolean {
-    if (this.signupFormInvalid() || this.loaderIsActive) {
-      return true;
-    }
-    
-    const isStrongEnough = this.passwordStrength.strength === PasswordStrength.STRONG 
-                            
-    return !isStrongEnough;
+
+  get isBtnDisabled(): boolean {
+    const password = this.signupFormGroup.get(PasswordVisibility.password)?.value || '';
+  
+    return (
+      this.signupFormGroup.invalid ||
+      this.loaderIsActive ||
+      this.passwordStrength.strength !== PasswordStrength.STRONG ||
+      !password
+    );
   }
 
-  private signupFormInvalid(): boolean {
-    return this.signupFormGroup.invalid;
-  }
 
   initializeSignupForm(): void {
     this.signupFormGroup = this.fb.group({
