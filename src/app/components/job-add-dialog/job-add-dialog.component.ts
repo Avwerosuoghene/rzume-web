@@ -86,7 +86,7 @@ cancelApplication() {
 
 
 
-  appNewApplication() {
+  addApplication() {
     const formData = this.applicationFormGroup.value;
     const submissionData = {
       status: DialogCloseStatus.Submitted,

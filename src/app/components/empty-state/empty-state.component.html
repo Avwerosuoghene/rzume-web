@@ -1,0 +1,14 @@
+<div class="empty-state-container">
+  <div class="empty-state-icon">
+    <mat-icon >{{icon}}</mat-icon>
+  </div>
+  <h2>{{title}}</h2>
+  <p class="empty-state-message">{{message}}</p>
+  
+  <ng-container *ngIf="showAction">
+    <button class="action-button" mat-flat-button type="button" (click)="actionButtonClicked()">
+      {{actionText}}
+    </button>
+    
+  </ng-container>
+</div>

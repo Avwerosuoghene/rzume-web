@@ -10,11 +10,21 @@ import { JobApplicationService } from '../../../core/services/job-application.se
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
 import { JobApplicationItem, JobApplicationFilter } from '../../../core/models/interface/job-application.models';
 import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
+import { EmptyStateComponent } from '../../../components/empty-state/empty-state.component';
+import { AddJobDialogData } from '../../../core/models';
+import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, JobListToolbarComponent, CustomTableComponent, JobStatsComponent],
+  imports: [
+    AngularMaterialModules,
+    CoreModules,
+    JobListToolbarComponent,
+    CustomTableComponent,
+    JobStatsComponent,
+    EmptyStateComponent
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -28,12 +38,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   itemsPerPage: number = PAGINATION_DEFAULTS.itemsPerPage;
   totalItems: number = PAGINATION_DEFAULTS.totalItems;
   selectedItems: Array<any> = [];
+  showEmptyState: boolean = false;
   destroy$ = new Subject<void>();
   currentFilter: JobApplicationFilter = {};
 
   constructor(
     private state: JobApplicationStateService,
-    private jobApplicationService: JobApplicationService
+    private jobApplicationService: JobApplicationService,
+    private jobDialogService: JobApplicationDialogService
   ) { }
 
   ngOnInit(): void {
@@ -105,6 +117,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     currentPage: number;
     pageSize: number;
   }) {
+    this.showEmptyState = applications.length === 0;
     this.data = applications.map(app => this.mapApplicationToTableData(app));
     this.totalItems = pagination.totalCount;
     this.totalPages = pagination.totalPages;
@@ -168,11 +181,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.processJobApplicationUpdate(updateData);
   }
 
-  private processJobApplicationUpdate(updateData: any): void {
+  processJobApplicationUpdate(updateData: any): void {
     this.jobApplicationService.updateJobApplication(updateData.id, updateData)
       .subscribe({
         next: () => {
           this.loadUserAppliedJobs();
+        }
+      });
+  }
+
+
+  addNewApplicationEntry() {
+    const dialogData: AddJobDialogData = { isEditing: false };
+    this.jobDialogService.openAddJobDialog(dialogData)
+      .afterClosed()
+      .subscribe(response => {
+        this.jobDialogService.handleDialogClose(response, payload => {
+          this.jobDialogService.createApplication(payload, () => this.loadUserAppliedJobs());
+        });
+      });
+  }
+
+  updateJobApplication(jobData: JobApplicationItem) {
+    const dialogData: AddJobDialogData = { isEditing: true, jobApplicationData: jobData };
+    this.jobDialogService.openAddJobDialog(dialogData)
+      .afterClosed()
+      .subscribe(response => {
+        if (!response) return;
+        if (response.status === DialogCloseStatus.Submitted && response.data) {
+          this.jobDialogService.updateApplication(response.data, jobData.id, () => this.loadUserAppliedJobs());
         }
       });
   }

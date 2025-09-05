@@ -1,19 +1,35 @@
 <section class="dashboard_container">
   <app-job-stats [statHighLights]="statHighLights"></app-job-stats>
-  <app-job-list-toolbar 
-    (filterChange)="handleFilterChange($event)"
-    (searchChange)="handleSearchChange($event)"
-    (jobApplicationUpdated)="loadUserAppliedJobs()">
-  </app-job-list-toolbar>
-  <app-custom-table 
-    (onSelectionChanged)="handleSelectionChanged($event)" 
-    (pageChanged)="handlePageChanged($event)"  
-    (itemPerPageChanged)="handleChangeInItemPerPage($event)" 
-    (jobApplicationUpdated)="handleJobApplicationUpdate($event)"
-    [columns]="jobListColumns" 
-    [totalPages]="totalPages"
-    [currentPage]="currentPage"
-    [itemsPerPage]="itemsPerPage"
-    [data]="data">
-  </app-custom-table>
+  
+  @if (!showEmptyState) {
+    <app-job-list-toolbar 
+      (filterChange)="handleFilterChange($event)"
+      (searchChange)="handleSearchChange($event)"
+      (jobApplicationUpdated)="loadUserAppliedJobs()"
+      (jobApplicationAddition)="addNewApplicationEntry()">
+    </app-job-list-toolbar>
+  }
+  
+  @if (showEmptyState) {
+    <app-empty-state 
+      title="No Applications Yet"
+      message="You haven't added any job applications yet. Click the button below to get started!"
+      icon="work_outline"
+      [showAction]="true"
+      actionText="Add First Application"
+      (actionButtonClickedEvent)="addNewApplicationEntry()">
+    </app-empty-state>
+  } @else {
+    <app-custom-table 
+      (onSelectionChanged)="handleSelectionChanged($event)" 
+      (pageChanged)="handlePageChanged($event)"  
+      (itemPerPageChanged)="handleChangeInItemPerPage($event)" 
+      (jobApplicationUpdate)="updateJobApplication($event)"
+      [columns]="jobListColumns" 
+      [totalPages]="totalPages"
+      [currentPage]="currentPage"
+      [itemsPerPage]="itemsPerPage"
+      [data]="data">
+    </app-custom-table>
+  }
 </section>
