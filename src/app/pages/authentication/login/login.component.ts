@@ -10,13 +10,14 @@ import { AuthenticationService } from '../../../core/services/authentication.ser
 import { Router } from '@angular/router';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
-import { environment } from '../../../../environments/environment.development';
 import { GoogleAuthService } from '../../../core/services/google-auth.service';
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat, onBoardStages, SessionStorageKeys } from '../../../core/models/enums/shared.enums';
-import { APIResponse, ErrorResponse, GoogleSignInPayload, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
+import { APIResponse, ErrorResponse, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
+import { OnboardingStages } from '../../../core/models/enums/profile.enum';
+import { RoutingUtilService } from '../../../core/services/routing-util.service';
 
 
 
@@ -44,7 +45,7 @@ export class LoginComponent {
   GOOGLE_SIGNIN_BUTTON_TEXT = GOOGLE_SIGNIN_BUTTON_TEXT;
 
 
-  constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService) { }
+  constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService, private routingUtilService: RoutingUtilService) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -120,16 +121,20 @@ export class LoginComponent {
   handleSignInSuccess(response: APIResponse<SigninResponse>, userMail: string): void {
     this.toggleLoader(false);
     this.loginFormGroup.reset();
-  
+
     if (response.success && response.data) {
       this.processSigninContent(response.data, userMail);
       return;
     }
-  
+
     this.showDialog({
       infoMessage: response.message,
       statusIcon: IconStat.failed
     });
+  }
+
+  private shouldRedirectToOnboard(stage: number): boolean {
+    return stage < OnboardingStages.BasicInfoCompleted;
   }
 
   processSigninContent(signinData: SigninResponse, userMail: string): void {
@@ -139,20 +144,23 @@ export class LoginComponent {
     }
 
     this.saveAuthToken(signinData.token!);
-    this.redirectAfterSignin(signinData.user.onBoardingStage);
+
+    if (this.shouldRedirectToOnboard(signinData.user.onBoardingStage)) {
+      this.routingUtilService.navigateToAuth(AuthRoutes.onboard);
+      return;
+    }
+
+    this.routingUtilService.navigateToMain();
   }
 
   saveAuthToken(token: string): void {
     SessionStorageUtil.setItem(SessionStorageKeys.authToken, token);
   }
 
-  redirectAfterSignin(stage: onBoardStages): void {
-    this.navigateOut(`/${RootRoutes.main}`);
-  }
 
   handleMissingUser(userMail: string): void {
     SessionStorageUtil.setItem(SessionStorageKeys.userMail, userMail);
-    this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.emailConfirmation}`);
+    this.routingUtilService.navigateToAuth(AuthRoutes.emailConfirmation);
   }
 
   showDialog(dialogData: InfoDialogData) {
