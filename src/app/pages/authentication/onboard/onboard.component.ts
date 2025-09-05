@@ -5,10 +5,12 @@ import { Router } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { SessionStorageKeys, OnboardUserPayload, OnboardUserFirstStagePayload, APIResponse, RootRoutes, ErrorResponse, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes } from '../../../core/models';
+import { SessionStorageKeys, APIResponse, RootRoutes, ErrorResponse, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes } from '../../../core/models';
 import { ProfileManagementService } from '../../../core/services';
 import { slideOutAnimation } from '../../../core/animations';
 import { SessionStorageUtil } from '../../../core/helpers';
+import { UpdateProfilePayload } from '../../../core/models/interface/profile.models';
+import { finalize, pipe } from 'rxjs';
 
 @Component({
   selector: 'app-onboard',
@@ -58,34 +60,26 @@ export class OnboardComponent {
       this.loaderIsActive);
   }
 
-  submitOnboardForm() {
-    if (this.onboardFormGroup.invalid) {
-      return;
-    }
-    const userToken = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
-    const userName: string = this.onboardFormGroup.get('username')!.value;
-    if (!userToken) return this.openErrorDialog();
-    const onBoardUserPayload: OnboardUserPayload<OnboardUserFirstStagePayload> = this.generateOnBoardPayload(userName, userToken!);
-    this.loaderIsActive = true;
+  submitOnboardForm(): void {
+    if (this.onboardFormGroup.invalid) return;
 
-    this.profileMgmtService.onboard(onBoardUserPayload).subscribe({
-      next: ({success}: APIResponse<boolean>) => {
-        this.loaderIsActive = false;
+    const updateProfilePayload = {
+      userName: this.onboardFormGroup.get('username')?.value ?? ''
+    };
+
+    this.toggleLoader(true);
+
+    this.profileMgmtService.update(updateProfilePayload).pipe(
+      finalize(() => this.toggleLoader(false))
+    ).subscribe({
+      next: ({ success }: APIResponse<boolean>) => {
         this.onboardFormGroup.reset();
+
         if (success) {
-
           this.navigateOut(`/${RootRoutes.main}`);
-          return
         }
-
-      },
-      error: (error: ErrorResponse) => {
-        this.loaderIsActive = false;
-
-
       }
     });
-
   }
 
   openErrorDialog() {
@@ -110,15 +104,9 @@ export class OnboardComponent {
 
   }
 
-  generateOnBoardPayload(userName: string, token: string): OnboardUserPayload<OnboardUserFirstStagePayload> {
-    return {
-      onBoardingStage: 0,
-      onboardUserPayload: {
-        userName
-      },
-      userMail: '',
-      token
-    }
+  toggleLoader(isActive: boolean) {
+    this.loaderIsActive = isActive;
   }
+
 
 }

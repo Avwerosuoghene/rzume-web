@@ -79,7 +79,6 @@ export class LoginComponent {
   }
 
 
-
   initializeForm(): void {
     this.loginFormGroup = this.fb.group({
       email: this.fb.control('', {
@@ -118,20 +117,19 @@ export class LoginComponent {
     });
   }
 
-  handleSignInSuccess(response: APIResponse<SigninResponse>, userMail: string) {
+  handleSignInSuccess(response: APIResponse<SigninResponse>, userMail: string): void {
     this.toggleLoader(false);
     this.loginFormGroup.reset();
-
-    if (!response.success || !response.data) {
-      const dialogData: InfoDialogData = {
-        infoMessage: response.message,
-        statusIcon: IconStat.failed
-      }
-      this.showDialog(dialogData);
+  
+    if (response.success && response.data) {
+      this.processSigninContent(response.data, userMail);
       return;
     }
-    const signinResponseContent: SigninResponse = response.data;
-    this.processSigninContent(signinResponseContent, userMail);
+  
+    this.showDialog({
+      infoMessage: response.message,
+      statusIcon: IconStat.failed
+    });
   }
 
   processSigninContent(signinData: SigninResponse, userMail: string): void {

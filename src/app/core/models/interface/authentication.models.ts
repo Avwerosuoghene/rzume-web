@@ -13,19 +13,6 @@ export interface GoogleSignInPayload {
   userToken: string,
 }
 
-export interface OnboardUserPayload<T> {
-  onBoardingStage: number,
-
-  onboardUserPayload: T,
-
-  userMail: string
-
-}
-
-
-export interface OnboardUserFirstStagePayload {
-  userName: string
-}
 
 export interface RequestPassResetPayload {
   email: string
@@ -61,14 +48,6 @@ export interface ValidateUserResponse {
 
 export interface AccountValidationResponse {
   accountActivated: boolean
-}
-export interface OnboardUserPayload<T> {
-  onBoardingStage: number,
-
-  onboardUserPayload: T,
-
-  token: string
-
 }
 
 

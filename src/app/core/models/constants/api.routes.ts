@@ -1,6 +1,6 @@
 export class ApiRoutes {
   private static authRoute = 'api/auth';
-  private static profileManagementRoute = 'api/v1/profilemanagement';
+  private static profileManagementRoute = 'api/profilemanagement';
   private static jobApplicationRoute = 'api/jobapplications';
 
   static auth = {
@@ -19,7 +19,7 @@ export class ApiRoutes {
 
   static profileManagement = {
     uploads: `${this.profileManagementRoute}/upload`,
-    onboarding: `${this.profileManagementRoute}/user-onboarding`,
+    update: `${this.profileManagementRoute}/update`,
     requestPassReset: `${this.profileManagementRoute}/request-password-reset`,
     resetPassword: `${this.profileManagementRoute}/reset-password`,
   }

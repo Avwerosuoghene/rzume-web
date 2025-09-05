@@ -1,5 +1,4 @@
 import { ApplicationStatus } from "../enums";
-import { PaginatedItem } from "./shared.models";
 
 export interface JobApplicationItem {
   id: string;
