@@ -1,8 +1,8 @@
-import { StatusIcon } from "../types/shared.types";
+import { IconStat } from "../enums";
 
 export interface InfoDialogData {
   infoMessage: string;
-  statusIcon: StatusIcon;
+  statusIcon: IconStat;
 }
 
 export interface AddJobDialogData {

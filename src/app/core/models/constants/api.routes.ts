@@ -11,6 +11,7 @@ export class ApiRoutes {
     googleSigin: `${this.authRoute}/google-signin`,
     getActiveUser: `${this.authRoute}/me`,
     forgotPassword: `${this.authRoute}/forgot-password`,
+    resetPassword: `${this.authRoute}/reset-password`,
   }
 
   static jobApplication = {
@@ -21,8 +22,6 @@ export class ApiRoutes {
   static profileManagement = {
     uploads: `${this.profileManagementRoute}/upload`,
     update: `${this.profileManagementRoute}/update`,
-    requestPassReset: `${this.profileManagementRoute}/request-password-reset`,
-    resetPassword: `${this.profileManagementRoute}/reset-password`,
   }
 
   static utility = {

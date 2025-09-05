@@ -31,3 +31,7 @@ export const GOOGLE_SCRIPT_ERROR = 'Google API script loading error:';
 export const GOOGLE_SIGNIN_BUTTON_TEXT = 'Sign in with Google';
 
 export const INACTIVE_USER = 'User is not active';
+
+export const PASSWORD_RESET_SUCCESS = 'Password reset succesfully';
+
+export const PASSWORD_RESET_FAILED = 'Password reset failed';

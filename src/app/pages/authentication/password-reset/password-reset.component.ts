@@ -4,10 +4,12 @@ import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
-import { APIResponse, AuthRoutes, ErrorResponse, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, StatusIcon, ToggledPassword } from '../../../core/models';
+import { APIResponse, AuthRoutes, ErrorResponse, IconStat, PASSWORD_RESET_FAILED, PASSWORD_RESET_SUCCESS, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, ToggledPassword } from '../../../core/models';
 import { PasswordStrengthResult, PasswordUtility } from '../../../core/helpers';
-import { ProfileManagementService } from '../../../core/services';
+import { AuthenticationService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
+import { finalize, Subject, takeUntil } from 'rxjs';
+import { RoutingUtilService } from '../../../core/services/routing-util.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -17,77 +19,83 @@ import { PasswordStrength } from '../../../core/models/enums/password-strength.e
   styleUrl: './password-reset.component.scss'
 })
 export class PasswordResetComponent {
+  PassWordResetScreens = PassWordResetScreens;
+  IconStat = IconStat;
+  PasswordVisibility = PasswordVisibility; 
+  ToggledPassword = ToggledPassword; 
+
   activePasswordResetScreen: PassWordResetScreens = PassWordResetScreens.formScreen;
   resetPassFormGroup!: FormGroup;
-  loaderIsActive: boolean = false;
-  router = inject(Router);
-  route = inject(ActivatedRoute);
-  fb = inject(NonNullableFormBuilder);
+  loaderIsActive = false;
+
   passwordStrength!: PasswordStrengthResult;
   passwordVisibility: PasswordVisibility = PasswordVisibility.password;
   confirmPasswordVisibility: PasswordVisibility = PasswordVisibility.password;
+
   tokenValue: string | null = null;
   userMail: string | null = null;
+
+  passwordResetCompleteIcon: IconStat = IconStat.success;
+  resetCompleteMessage = '';
+
+  router = inject(Router);
+  route = inject(ActivatedRoute);
+  fb = inject(NonNullableFormBuilder);
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
-  passwordResetCompleteIcon: StatusIcon = 'done';
-  resetCompleteMessage: string = '';
 
+  destroy$ = new Subject<void>();
 
+  constructor(private authenticationService: AuthenticationService, private routerService: RoutingUtilService) { }
 
-  constructor(private profileManagementService: ProfileManagementService) {
-
-  }
 
 
   ngOnInit(): void {
     this.initializeForm();
-    this.route.queryParamMap.subscribe(params => {
-      this.tokenValue = params.get('token');
-      this.userMail = params.get('email');
-    });
+    this.subscribeToQueryParams();
+  }
+
+  subscribeToQueryParams(): void {
+    this.route.queryParamMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        this.tokenValue = params.get('token');
+        this.userMail = params.get('email');
+      });
   }
 
   initializeForm(): void {
     this.resetPassFormGroup = this.fb.group({
-      password: this.fb.control('', {
-        validators: [
-          Validators.required
-        ]
-      }),
-      confirmPassword: this.fb.control('', {
-        validators: [
-          Validators.required, PasswordUtility.passwordMatchValidator('password')
-        ]
-      }),
-    })
-    this.password!.valueChanges.subscribe(() => {
-      this.confirmPassword!.updateValueAndValidity();
+      password: this.fb.control('', [Validators.required]),
+      confirmPassword: this.fb.control('', [Validators.required, PasswordUtility.passwordMatchValidator('password')])
     });
+
+    this.password?.valueChanges.subscribe(() => this.confirmPassword?.updateValueAndValidity());
+  }
+
+
+  get password() {
+    return this.resetPassFormGroup.get('password');
   }
 
   get confirmPassword() {
     return this.resetPassFormGroup.get('confirmPassword');
   }
 
-  get password() {
-    return this.resetPassFormGroup.get('password');
-  }
 
   get isFormValid(): boolean {
-    if (!this.tokenValue || !this.userMail) {
-      return false;
-    }
-    
-    const password = this.resetPassFormGroup.get('password')?.value;
-    const confirmPassword = this.resetPassFormGroup.get('confirmPassword')?.value;
-    const passwordsMatch = password === confirmPassword;
+    if (!this.tokenValue || !this.userMail) return false;
+
+    const passwordsMatch = this.password?.value === this.confirmPassword?.value;
     const isPasswordStrong = this.passwordStrength?.strength === PasswordStrength.STRONG;
-    
+
     return this.resetPassFormGroup.valid && passwordsMatch && isPasswordStrong;
   }
 
   validatePassword(): void {
-    this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.resetPassFormGroup.get('password')?.value);
+    const passwordValue = this.password?.value;
+    if (passwordValue) {
+      this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(passwordValue);
+    }
   }
 
   togglePasswordVisibility(toggledPass: ToggledPassword): void {
@@ -95,46 +103,40 @@ export class PasswordResetComponent {
   }
 
   submitPasswordResetForm() {
-
     if (this.resetPassFormGroup.invalid) {
       return
     }
 
-    this.loaderIsActive = true;
-    const passwordResetPayload: ResetPassword = {
+    const passwordResetPayload: ResetPassword = this.getPasswordResetPayload();
+    this.toggleLoader(true);
+
+    this.authenticationService.resetPassword(passwordResetPayload).pipe(finalize(() => this.toggleLoader(false))).subscribe({
+      next: (response: APIResponse<boolean>) => this.handleResetSuccess(response),
+      error: (error: ErrorResponse) => this.handleResetError(error)
+    });
+
+  }
+
+  getPasswordResetPayload(): ResetPassword {
+    return {
       email: this.userMail!,
       password: this.password!.value,
       resetToken: this.tokenValue!
-    }
-    this.profileManagementService.resetPassword(passwordResetPayload).subscribe({
-      next: ({success}: APIResponse<boolean>) => {
-        this.loaderIsActive = false;
-        this.resetPassFormGroup.reset();
-        this.activePasswordResetScreen = PassWordResetScreens.successScreen;
-        if (success) {
-          this.passwordResetCompleteIcon = 'done';
-          this.resetCompleteMessage = 'Password reset succesfully';
-          return;
+    };
+  }
 
-        }
+  handleResetSuccess(response: APIResponse<boolean>): void {
+    this.resetPassFormGroup.reset();
+    this.activePasswordResetScreen = PassWordResetScreens.successScreen;
 
-        this.passwordResetCompleteIcon = 'close';
-        this.resetCompleteMessage = 'Password reset failed';
+    this.passwordResetCompleteIcon = response.success ? IconStat.success : IconStat.failed;
+    this.resetCompleteMessage = response.success ? PASSWORD_RESET_SUCCESS : PASSWORD_RESET_FAILED;
+  }
 
-
-
-      },
-      error: (error: ErrorResponse) => {
-        this.loaderIsActive = false;
-        console.log(error.errorMessage);
-        this.activePasswordResetScreen = PassWordResetScreens.successScreen;
-        this.passwordResetCompleteIcon = 'close';
-        this.resetCompleteMessage = error.errorMessage;
-
-      }
-    });
-
-
+  handleResetError(error: ErrorResponse): void {
+    this.activePasswordResetScreen = PassWordResetScreens.successScreen;
+    this.passwordResetCompleteIcon = IconStat.failed;
+    this.resetCompleteMessage = error.errorMessage;
   }
 
   goBackToForm() {
@@ -143,8 +145,7 @@ export class PasswordResetComponent {
   }
 
   goToLogin() {
-    this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.signin}`]);
-
+    this.routerService.navigateToAuth(AuthRoutes.signin);
   }
 
 
@@ -153,6 +154,10 @@ export class PasswordResetComponent {
     return (this.resetPassFormGroup.invalid ||
       this.passwordStrength.strength != PasswordStrength.STRONG ||
       this.loaderIsActive);
+  }
+
+  toggleLoader(state: boolean): void {
+    this.loaderIsActive = state;
   }
 
 

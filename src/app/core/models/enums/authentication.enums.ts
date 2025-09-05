@@ -8,4 +8,10 @@ export enum PasswordVisibility {
   text = 'text'
 }
 
+export enum ToggledPassword {
+  passwordVisibility = 'passwordVisibility',
+  confirmPasswordVisibility = 'confirmPasswordVisibility'
+}
+
+
 

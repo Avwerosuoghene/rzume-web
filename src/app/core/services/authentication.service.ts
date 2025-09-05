@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from '../models/constants/api.routes';
 import { HttpHeaders } from '@angular/common/http';
-import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken, GetRequestOptions, RequestPassResetPayload } from '../models';
+import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken, GetRequestOptions, RequestPassResetPayload, ResetPassword } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -63,16 +63,23 @@ export class AuthenticationService {
       params,
       withBearer: false,
       handleResponse: true
-    } 
+    }
     return this.apiService.get<APIResponse<ValidateUserResponse>>(getReqOptions);
 
   }
 
-    requestPassReset(payload: RequestPassResetPayload) {
-      return this.apiService.post<APIResponse<boolean>>(
-        ApiRoutes.auth.forgotPassword, payload, true
-      )
-    }
+  requestPassReset(payload: RequestPassResetPayload) {
+    return this.apiService.post<APIResponse<boolean>>(
+      ApiRoutes.auth.forgotPassword, payload, true
+    )
+  }
+
+  resetPassword(payload: ResetPassword) {
+
+    return this.apiService.post<APIResponse<boolean>>(
+      ApiRoutes.auth.resetPassword, payload, false
+    )
+  }
 
 
   loadGoogleScript(): Promise<void> {

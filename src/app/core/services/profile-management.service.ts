@@ -18,12 +18,6 @@ export class ProfileManagementService {
 
 
 
-  resetPassword(payload: ResetPassword) {
-    payload.password = window.btoa(payload.password.toString())
 
-    return this.apiService.post<APIResponse<boolean>>(
-      ApiRoutes.profileManagement.resetPassword, payload, false
-    )
-  }
 
 }
