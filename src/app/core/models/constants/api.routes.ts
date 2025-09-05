@@ -9,7 +9,8 @@ export class ApiRoutes {
     generateEmailToken: `${this.authRoute}/resend-confirmation-email`,
     validateToken: `${this.authRoute}/confirm-email`,
     googleSigin: `${this.authRoute}/google-signin`,
-    getActiveUser: `${this.authRoute}/me`
+    getActiveUser: `${this.authRoute}/me`,
+    forgotPassword: `${this.authRoute}/forgot-password`,
   }
 
   static jobApplication = {

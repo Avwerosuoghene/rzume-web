@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { APIResponse, ApiRoutes, RequestPassResetPayload, ResetPassword } from '../models';
+import { APIResponse, ApiRoutes, ResetPassword } from '../models';
 import { UpdateProfilePayload } from '../models/interface/profile.models';
 
 @Injectable({
@@ -16,11 +16,7 @@ export class ProfileManagementService {
     );
   }
 
-  requestPassReset(payload: RequestPassResetPayload) {
-    return this.apiService.post<APIResponse<boolean>>(
-      ApiRoutes.profileManagement.requestPassReset, payload, true
-    )
-  }
+
 
   resetPassword(payload: ResetPassword) {
     payload.password = window.btoa(payload.password.toString())

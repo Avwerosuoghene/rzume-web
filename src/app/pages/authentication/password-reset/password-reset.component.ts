@@ -40,16 +40,10 @@ export class PasswordResetComponent {
 
 
   ngOnInit(): void {
-
-    this.getTokenAndEmail()
     this.initializeForm();
-
-  }
-
-  getTokenAndEmail(): void {
-    this.route.params.subscribe(params => {
-      this.tokenValue = decodeURIComponent(params['token']);
-      this.userMail = decodeURIComponent(params['email']);
+    this.route.queryParamMap.subscribe(params => {
+      this.tokenValue = params.get('token');
+      this.userMail = params.get('email');
     });
   }
 
@@ -79,6 +73,18 @@ export class PasswordResetComponent {
     return this.resetPassFormGroup.get('password');
   }
 
+  get isFormValid(): boolean {
+    if (!this.tokenValue || !this.userMail) {
+      return false;
+    }
+    
+    const password = this.resetPassFormGroup.get('password')?.value;
+    const confirmPassword = this.resetPassFormGroup.get('confirmPassword')?.value;
+    const passwordsMatch = password === confirmPassword;
+    const isPasswordStrong = this.passwordStrength?.strength === PasswordStrength.STRONG;
+    
+    return this.resetPassFormGroup.valid && passwordsMatch && isPasswordStrong;
+  }
 
   validatePassword(): void {
     this.passwordStrength = this.passwordCheckerComp.checkPasswordStrength(this.resetPassFormGroup.get('password')?.value);

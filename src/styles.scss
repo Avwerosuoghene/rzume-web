@@ -71,7 +71,7 @@ a {
 
 }
 
-p {
+p, span {
   &.green_text {
     color: $basic-green;
   }

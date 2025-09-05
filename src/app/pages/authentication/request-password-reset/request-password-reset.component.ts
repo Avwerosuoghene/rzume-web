@@ -7,13 +7,12 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { ProfileManagementService } from '../../../core/services/profile-management.service';
 import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat } from '../../../core/models/enums/shared.enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { Subscription } from 'rxjs';
-import { TimerService } from '../../../core/services';
-import { RequestPassResetPayload, APIResponse, ErrorResponse } from '../../../core/models';
+import { finalize, Observable, startWith } from 'rxjs';
+import { AuthenticationService, TimerService } from '../../../core/services';
+import { RequestPassResetPayload, APIResponse } from '../../../core/models';
 
 @Component({
   selector: 'app-request-password-reset',
@@ -23,94 +22,80 @@ import { RequestPassResetPayload, APIResponse, ErrorResponse } from '../../../co
   styleUrl: './request-password-reset.component.scss'
 })
 export class RequestPasswordResetComponent implements OnDestroy {
-  signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
+  signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`;
+
   passResetReqFormGroup!: FormGroup;
-  readonly dialog: MatDialog = inject(MatDialog);
-  loaderIsActive: boolean = false;
-  router = inject(Router);
-  fb = inject(NonNullableFormBuilder);
-  timerSubscription: Subscription | null = null;
-  timerValues: { minutes: number, seconds: number, timer: number } = {
-    minutes: 0, seconds: 0, timer: 0
-  }
+  loaderIsActive = false;
 
+  timerValues$!: Observable<{ minutes: number; seconds: number; timer: number }>;
 
-  constructor(private profileManagementService: ProfileManagementService, private timerService: TimerService) {
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
 
-  }
+  constructor(
+    private authenticationService: AuthenticationService,
+    private timerService: TimerService
+  ) { }
 
 
   ngOnInit(): void {
     this.initializeForm();
+    this.subscribeToTimer();
   }
 
 
 
   initializeForm(): void {
     this.passResetReqFormGroup = this.fb.group({
-      email: this.fb.control('', {
-        validators: [
-          Validators.required,
-          Validators.email
-        ]
-      })
-    })
+      email: this.fb.control('', [Validators.required, Validators.email])
+    });
   }
 
-  setTimer() {
-    this.timerService.setTimer();
-    this.timerService.timeValues$.subscribe(
-      timeData => {
-        this.timerValues.minutes = timeData.minutes;
-        this.timerValues.seconds = timeData.seconds;
-        this.timerValues.timer = timeData.timer
-      }
-    )
+  subscribeToTimer(): void {
+    this.timerValues$ = this.timerService.timeValues$.pipe(
+      startWith({ minutes: 0, seconds: 0, timer: 0 })
+    );
   }
 
-  computeDisplayedSeconds(): string {
-    return this.timerValues.seconds < 10 ? `0${this.timerValues.seconds.toString()}` : this.timerValues.seconds.toString();
+  computeDisplayedSeconds(seconds: number): string {
+    return seconds.toString().padStart(2, '0');
   }
 
-  submitForm() {
-    if (this.passResetReqFormGroup.invalid) {
-      return;
-    }
+  submitForm(): void {
+    if (this.passResetReqFormGroup.invalid) return;
 
+    const email = this.passResetReqFormGroup.get('email')!.value;
+    const payload: RequestPassResetPayload = { email };
 
+    this.toggleLoader(true);
 
-    const email: string = this.passResetReqFormGroup.get('email')!.value;
-    this.loaderIsActive = true;
-    const requestPassResetPayload: RequestPassResetPayload = {
-      email
-    }
-    this.profileManagementService.requestPassReset(requestPassResetPayload).subscribe({
-      next: ({success, message}: APIResponse<boolean>) => {
-        this.loaderIsActive = false;
+    this.authenticationService.requestPassReset(payload).pipe(finalize(() => this.toggleLoader(false))).subscribe({
+      next: ({ success, message }: APIResponse<boolean>) => {
         this.passResetReqFormGroup.reset();
-        this.setTimer();
         if (success) {
-          const dialogData: InfoDialogData = {
-            infoMessage: message,
-            statusIcon: IconStat.success
-          }
-
-          this.dialog.open(InfoDialogComponent, {
-            data: dialogData,
-            backdropClass: "blurred"
-          });
+          this.timerService.setTimer();
+          this.showDialog(message, IconStat.success);
         }
-      },
-      error: (error: ErrorResponse) => {
-        this.loaderIsActive = false;
       }
     });
+  }
 
+  toggleLoader(isActive: boolean): void {
+    this.loaderIsActive = isActive;
+  }
+
+  showDialog(message: string, icon: IconStat): void {
+    const dialogData: InfoDialogData = { infoMessage: message, statusIcon: icon };
+    this.dialog.open(InfoDialogComponent, { data: dialogData, backdropClass: 'blurred' });
   }
 
   ngOnDestroy(): void {
     this.timerService.clearTimer();
   }
 
+  get emailControl() {
+    return this.passResetReqFormGroup.get('email');
+  }
 
 }
