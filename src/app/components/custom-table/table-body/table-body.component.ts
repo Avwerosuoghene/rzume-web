@@ -15,19 +15,19 @@ import { JobApplicationItem } from '../../../core/models/interface/job-applicati
 })
 export class TableBodyComponent {
 
-  @Input() data: any[] = [];
+  @Input() data: JobApplicationItem[] = [];
   @Input() columns: ColumnDefinition[] = [];
-  @Input() selectedItems: any[] = [];
+  @Input() selectedItems: JobApplicationItem[] = [];
   @Output() checkBoxChanged = new EventEmitter<any>();
-  @Output() edit = new EventEmitter<any>(); 
-  @Output() delete = new EventEmitter<any>();
+  @Output() edit = new EventEmitter<JobApplicationItem>(); 
+  @Output() delete = new EventEmitter<JobApplicationItem>();
   @Output() statusChange = new EventEmitter<{item: JobApplicationItem}>();
 
-  triggerCheckboxChange(item: any, event: any): void {
+  triggerCheckboxChange(item: JobApplicationItem, event: any): void {
     this.checkBoxChanged.emit({item, event});
   }
 
-  triggerApplicationEdit(application: any): void {
+  triggerApplicationEdit(application: JobApplicationItem): void {
     this.edit.emit(application);
   }
 

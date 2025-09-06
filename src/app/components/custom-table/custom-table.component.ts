@@ -28,11 +28,11 @@ export class CustomTableComponent {
   @Input() itemsPerPage: number = 5;
   @Output() itemPerPageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
-  @Output() onSelectionChanged: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
-  @Output() jobApplicationUpdate: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onSelectionChanged: EventEmitter<Array<JobApplicationItem>> = new EventEmitter<Array<JobApplicationItem>>();
+  @Output() jobApplicationUpdate: EventEmitter<JobApplicationItem> = new EventEmitter<JobApplicationItem>();
   @Output() jobStatusUpdate: EventEmitter<{item: JobApplicationItem}> = new EventEmitter<{item: JobApplicationItem}>();
 
-  selectedItems: Array<any> = [];
+  selectedItems: Array<JobApplicationItem> = [];
   totalItems: number = 20;
   allItemsSelected: boolean = false;
 
@@ -40,7 +40,7 @@ export class CustomTableComponent {
 
   }
 
-  onItemsPerPageChange(itemsPerPage: any): void {
+  onItemsPerPageChange(itemsPerPage: number): void {
     this.itemPerPageChanged.emit(itemsPerPage);
   }
 
@@ -83,7 +83,7 @@ export class CustomTableComponent {
     });
   }
 
-  onCheckboxChange(item: any, event: any): void {
+  onCheckboxChange(item: JobApplicationItem, event: any): void {
     this.selectedItems = [];
     if (event.target.checked) {
       this.selectedItems.push(item);
@@ -95,7 +95,7 @@ export class CustomTableComponent {
     this.onSelectionChanged.emit(this.selectedItems);
   }
 
-  editJobApplication(application: any) {
+  editJobApplication(application: JobApplicationItem) {
     this.jobApplicationUpdate.emit(application);
   }
 

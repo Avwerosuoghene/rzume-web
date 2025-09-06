@@ -31,13 +31,13 @@ import { JobApplicationDialogService } from '../../../core/services/job-applicat
 export class DashboardComponent implements OnInit, OnDestroy {
   statHighLights: Array<StatHighlight> = [];
 
-  data: any[] = [];
+  data: JobApplicationItem[] = [];
   jobListColumns: Array<ColumnDefinition> = JOB_TABLE_COLUMNS;
   totalPages: number = PAGINATION_DEFAULTS.totalPages;
   currentPage: number = PAGINATION_DEFAULTS.currentPage;
   itemsPerPage: number = PAGINATION_DEFAULTS.itemsPerPage;
   totalItems: number = PAGINATION_DEFAULTS.totalItems;
-  selectedItems: Array<any> = [];
+  selectedItems: Array<JobApplicationItem> = [];
   showEmptyState: boolean = false;
   destroy$ = new Subject<void>();
   currentFilter: JobApplicationFilter = {};

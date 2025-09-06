@@ -70,8 +70,6 @@ export class HeaderComponent implements OnInit {
   }
 
   subscribeToRoute(): void {
-
-
     this.router.events
       .subscribe((event: any) => {
         if (event instanceof NavigationEnd) {
