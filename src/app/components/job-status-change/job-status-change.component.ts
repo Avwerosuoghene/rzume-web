@@ -1,42 +1,64 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+
 import { JobStatChangeDialogData } from '../../core/models/interface/dialog-models-interface';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CoreModules } from '../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
-import { ApplicationStatus } from '../../core/models/enums/shared.enums';
-import { FormGroup } from '@angular/forms';
+import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
+import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
+import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 
 @Component({
   selector: 'app-job-status-change',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, CircularLoaderComponent],
+  imports: [
+    AngularMaterialModules,
+    CoreModules,
+    CircularLoaderComponent,
+    ReactiveFormsModule
+  ],
   templateUrl: './job-status-change.component.html',
-  styleUrl: './job-status-change.component.scss'
+  styleUrls: ['./job-status-change.component.scss']
 })
 export class JobStatusChangeComponent implements OnInit {
-  @ViewChild("jobStatusForm", {static: false}) jobStatusForm!: FormGroup;
+  jobStatusForm: FormGroup;
   loaderIsActive: boolean = false;
-  applicationStatusList : Array<string> = Object.values(ApplicationStatus);
+  applicationStatusOptions: ApplicationStatusOption[] = APPLICATION_STATUS_OPTIONS;
 
-
-  constructor (private dialogRef:  MatDialogRef<JobStatusChangeComponent>, @Inject(MAT_DIALOG_DATA) private jobStatusData: JobStatChangeDialogData ) {
-
+  constructor(
+    private dialogRef: MatDialogRef<JobStatusChangeComponent>,
+    @Inject(MAT_DIALOG_DATA) private jobStatusData: JobStatChangeDialogData
+  ) {
+    this.jobStatusForm = new FormGroup({
+      status: new FormControl('')
+    });
   }
 
   ngOnInit(): void {
     this.getCurrentStatus();
   }
 
-  cancelAction(){
-    this.dialogRef.close();
+  cancelAction() {
+    this.dialogRef.close({
+      status: DialogCloseStatus.Cancelled
+    });
   }
 
   getCurrentStatus() {
-    this.jobStatusForm.controls['status'].setValue(this.jobStatusData.status);
+    this.jobStatusForm.get('status')?.setValue(this.jobStatusData.jobItem.status);
   }
 
   changeJobStatus() {
-
+    if (this.jobStatusForm.valid) {
+      const newStatus = this.jobStatusForm.get('status')?.value;
+      this.dialogRef.close({
+        status: DialogCloseStatus.Submitted,
+        data: {
+          status: newStatus
+        }
+      });
+    }
   }
 }

@@ -4,6 +4,7 @@ import { ApplicationUtil, ViewUtilities } from '../../../core/helpers';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColumnDefinition } from '../../../core/models';
+import { JobApplicationItem } from '../../../core/models/interface/job-application.models';
 
 @Component({
   selector: 'app-table-body',
@@ -20,7 +21,7 @@ export class TableBodyComponent {
   @Output() checkBoxChanged = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>(); 
   @Output() delete = new EventEmitter<any>();
-  @Output() statusChange = new EventEmitter<string>();
+  @Output() statusChange = new EventEmitter<{item: JobApplicationItem}>();
 
   triggerCheckboxChange(item: any, event: any): void {
     this.checkBoxChanged.emit({item, event});
@@ -34,8 +35,8 @@ export class TableBodyComponent {
     this.delete.emit();
   }
 
-  triggerStatusChange(status: string): void {
-    this.statusChange.emit(status);
+  triggerStatusChange(item: JobApplicationItem): void {
+    this.statusChange.emit({ item });
   }
 
   getLongWidthItems(item: string) {

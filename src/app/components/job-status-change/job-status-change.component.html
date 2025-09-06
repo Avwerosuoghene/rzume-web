@@ -8,18 +8,21 @@
   </div>
 
   <form
-    #jobStatusForm="ngForm"
+    [formGroup]="jobStatusForm"
     (ngSubmit)="changeJobStatus()"
     id="job_status_form"
   >
     <div class="form-input-container">
       <mat-form-field appearance="outline">
         <mat-label>Choose an option</mat-label>
-        <mat-select formControlName="status">
-          @for (status of applicationStatusList; track $index) {
-          <mat-option [value]="status">{{ status }}</mat-option>
+        <mat-select formControlName="status" required>
+          @for (option of applicationStatusOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.name }}</mat-option>
           }
         </mat-select>
+        <mat-error *ngIf="jobStatusForm.get('status')?.hasError('required')">
+          Status is required
+        </mat-error>
       </mat-form-field>
 
       <button

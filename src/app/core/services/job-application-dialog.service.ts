@@ -39,11 +39,11 @@ export class JobApplicationDialogService {
       });
   }
 
-  updateApplication(data: JobApplicationItem, jobId: string, onComplete?: () => void): void {
+  updateApplication(data: JobApplicationItem,  onComplete?: () => void): void {
     const payload = this.buildUpdatePayload(data);
 
     this.loaderService.showLoader();
-    this.jobApplicationService.updateJobApplication(jobId, payload)
+    this.jobApplicationService.updateJobApplication(payload)
       .pipe(finalize(() => this.loaderService.hideLoader()))
       .subscribe({
         next: () => onComplete?.(),
@@ -53,12 +53,12 @@ export class JobApplicationDialogService {
 
   private buildCreatePayload(data: JobApplicationItem): CreateApplicationPayload {
     return {
-      position: data.position,
-      companyName: data.companyName,
-      jobLink: data.jobLink,
-      resumeLink: data.resumeLink,
-      applicationDate: data.applicationDate,
-      status: data.status as ApplicationStatus
+      position: data?.position,
+      companyName: data?.companyName,
+      jobLink: data?.jobLink,
+      resumeLink: data?.resumeLink,
+      applicationDate: data?.applicationDate,
+      status: data?.status as ApplicationStatus
     };
   }
 

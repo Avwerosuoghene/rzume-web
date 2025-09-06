@@ -11,7 +11,7 @@ import { JobApplicationStateService } from '../../../core/services/job-applicati
 import { JobApplicationItem, JobApplicationFilter } from '../../../core/models/interface/job-application.models';
 import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
 import { EmptyStateComponent } from '../../../components/empty-state/empty-state.component';
-import { AddJobDialogData } from '../../../core/models';
+import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
 import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
 
 @Component({
@@ -104,7 +104,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       position: application.position,
       companyName: application.companyName,
       userId: application.userId,
-      applicationDate: new Date(application.applicationDate).toLocaleDateString(),
+      applicationDate: application.applicationDate ? new Date(application.applicationDate).toLocaleDateString() : '',
       jobLink: application.jobLink,
       resumeLink: application.resumeLink,
       status: application.status
@@ -182,7 +182,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   processJobApplicationUpdate(updateData: any): void {
-    this.jobApplicationService.updateJobApplication(updateData.id, updateData)
+    this.jobApplicationService.updateJobApplication(updateData)
       .subscribe({
         next: () => {
           this.loadUserAppliedJobs();
@@ -206,12 +206,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const dialogData: AddJobDialogData = { isEditing: true, jobApplicationData: jobData };
     this.jobDialogService.openAddJobDialog(dialogData)
       .afterClosed()
-      .subscribe(response => {
-        if (!response) return;
-        if (response.status === DialogCloseStatus.Submitted && response.data) {
-          this.jobDialogService.updateApplication(response.data, jobData.id, () => this.loadUserAppliedJobs());
-        }
-      });
+      .subscribe(response => this.handleUpdateDialogResponse(response, jobData.id));
+  }
+
+  handleUpdateDialogResponse(
+    response: DialogCloseResponse<JobApplicationItem> | undefined,
+    jobId: string
+  ) {
+    if (!response) return;
+    if (response.status === DialogCloseStatus.Submitted && response.data) {
+      this.jobDialogService.updateApplication(response.data, () => this.loadUserAppliedJobs());
+    }
+  }
+
+  handleStatusUpdate(updateData: { item: JobApplicationItem}) {
+    this.jobDialogService.updateApplication(updateData.item, () => this.loadUserAppliedJobs());
   }
 
   ngOnDestroy() {

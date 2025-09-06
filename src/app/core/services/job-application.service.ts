@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { APIResponse, ApiRoutes, ApiUrlParam, GetRequestOptions, PaginatedItem } from '../models';
-import { CreateApplicationPayload, JobApplicationFilter, JobApplicationItem, UpdateJobApplicationPayload } from '../models/interface/job-application.models';
+import { CreateApplicationPayload, JobApplicationFilter, JobApplicationItem } from '../models/interface/job-application.models';
 import { tap } from 'rxjs';
 import { JobApplicationStateService } from './job-application-state.service';
 
@@ -44,15 +44,15 @@ export class JobApplicationService {
   }
 
 
-  updateStatus(payload: UpdateJobApplicationPayload, applicationId: string) {
+  updateStatus(payload: JobApplicationItem, applicationId: string) {
     return this.apiService.put<APIResponse<boolean>>(
       `${ApiRoutes.jobApplication.base}/${applicationId}`, payload, true
     );
   }
 
-  updateJobApplication(applicationId: string, payload: UpdateJobApplicationPayload) {
+  updateJobApplication(payload: JobApplicationItem) {
     return this.apiService.put<APIResponse<boolean>>(
-      `${ApiRoutes.jobApplication.base}/${applicationId}`, payload, true
+      `${ApiRoutes.jobApplication.base}/${payload.id}`, payload, true
     );
   }
 

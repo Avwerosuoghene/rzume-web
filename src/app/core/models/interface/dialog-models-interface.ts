@@ -1,4 +1,5 @@
 import { IconStat } from "../enums";
+import { JobApplicationItem } from "./job-application.models";
 
 export interface InfoDialogData {
   infoMessage: string;
@@ -11,7 +12,7 @@ export interface AddJobDialogData {
 }
 
 export interface JobStatChangeDialogData {
-  status: string
+  jobItem: JobApplicationItem
 }
 
 

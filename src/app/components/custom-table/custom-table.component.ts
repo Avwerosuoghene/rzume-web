@@ -11,6 +11,7 @@ import { TableBodyComponent } from './table-body/table-body.component';
 import { TablePagintionComponent } from "./table-pagintion/table-pagintion.component";
 import { ColumnDefinition } from '../../core/models/interface/dashboard.models';
 import { JobApplicationItem } from '../../core/models/interface/job-application.models';
+import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 
 @Component({
   selector: 'app-custom-table',
@@ -29,6 +30,7 @@ export class CustomTableComponent {
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() onSelectionChanged: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
   @Output() jobApplicationUpdate: EventEmitter<any> = new EventEmitter<any>();
+  @Output() jobStatusUpdate: EventEmitter<{item: JobApplicationItem}> = new EventEmitter<{item: JobApplicationItem}>();
 
   selectedItems: Array<any> = [];
   totalItems: number = 20;
@@ -42,15 +44,31 @@ export class CustomTableComponent {
     this.itemPerPageChanged.emit(itemsPerPage);
   }
 
-  changeJobStatus(status: string) {
+  changeJobStatus(data: {item: JobApplicationItem}) {
     const dialogData: JobStatChangeDialogData = {
-      status: status
-    }
-    this.dialog.open(JobStatusChangeComponent, {
+      jobItem: data.item
+    };
+    
+    const dialogRef = this.dialog.open(JobStatusChangeComponent, {
       data: dialogData,
       backdropClass: "blurred",
       disableClose: true
-    })
+    });
+
+    dialogRef.afterClosed().subscribe((response) => {
+      if (!response || response.status !== DialogCloseStatus.Submitted) {
+        return;
+      }
+
+      const updatedJobItem: JobApplicationItem = {
+        id: data.item.id,
+        status: response.data.status
+      };
+      
+      this.jobStatusUpdate.emit({
+        item: updatedJobItem
+      });
+    });
   }
 
   deleteJob() {
