@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { APIResponse, ApiRoutes, ApiUrlParam, GetRequestOptions, PaginatedItem } from '../models';
-import { CreateApplicationPayload, JobApplicationFilter, JobApplicationItem } from '../models/interface/job-application.models';
+import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem } from '../models/interface/job-application.models';
 import { tap } from 'rxjs';
 import { JobApplicationStateService } from './job-application-state.service';
 
@@ -56,9 +56,9 @@ export class JobApplicationService {
     );
   }
 
-  deleteApplication(applicationId: string) {
+  deleteApplication(deleteApplicationsPayload: DeleteApplicationsPayload) {
     return this.apiService.delete<APIResponse<boolean>>(
-      `${ApiRoutes.jobApplication.base}/${applicationId}`, true
+      `${ApiRoutes.jobApplication.base}/${deleteApplicationsPayload.ids}`, true, undefined, deleteApplicationsPayload
     );
   }
 

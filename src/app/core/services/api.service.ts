@@ -100,12 +100,16 @@ export class ApiService {
     }))
   }
 
-  public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders): Observable<T> {
+  public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: any): Observable<T> {
     const route: string = `${environment.apiBaseUrl}/${apiRoute}`;
 
     const headers = this.mergeHeaders(reqHeaders);
+    const options = {
+      headers,
+      body
+    };
 
-    return this.httpClient.delete<T>(route, { headers }).pipe(
+    return this.httpClient.delete<T>(route, options).pipe(
       catchError((error) => {
         const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 

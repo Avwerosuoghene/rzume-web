@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
 import { AngularMaterialModules } from '../../core/modules';
-import {  CONFIRM_DELETE_MSG, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
+import { ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableBodyComponent } from './table-body/table-body.component';
 import { TablePagintionComponent } from "./table-pagintion/table-pagintion.component";
@@ -30,7 +30,8 @@ export class CustomTableComponent {
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() onSelectionChanged: EventEmitter<Array<JobApplicationItem>> = new EventEmitter<Array<JobApplicationItem>>();
   @Output() jobApplicationUpdate: EventEmitter<JobApplicationItem> = new EventEmitter<JobApplicationItem>();
-  @Output() jobStatusUpdate: EventEmitter<{item: JobApplicationItem}> = new EventEmitter<{item: JobApplicationItem}>();
+  @Output() jobStatusUpdate: EventEmitter<{ item: JobApplicationItem }> = new EventEmitter<{ item: JobApplicationItem }>();
+  @Output() jobApplicationsDelete: EventEmitter<string[]> = new EventEmitter<string[]>();
 
   selectedItems: Array<JobApplicationItem> = [];
   totalItems: number = 20;
@@ -44,55 +45,102 @@ export class CustomTableComponent {
     this.itemPerPageChanged.emit(itemsPerPage);
   }
 
-  changeJobStatus(data: {item: JobApplicationItem}) {
-    const dialogData: JobStatChangeDialogData = {
-      jobItem: data.item
-    };
-    
-    const dialogRef = this.dialog.open(JobStatusChangeComponent, {
+  changeJobStatus(data: { item: JobApplicationItem }) {
+    const dialogRef = this.openJobStatusDialog(data.item);
+
+    dialogRef.afterClosed().subscribe(response => {
+      this.handleDialogResponse(response, data.item);
+    });
+  }
+
+  openJobStatusDialog(item: JobApplicationItem) {
+    const dialogData: JobStatChangeDialogData = { jobItem: item };
+    return this.dialog.open(JobStatusChangeComponent, {
       data: dialogData,
-      backdropClass: "blurred",
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe((response) => {
-      if (!response || response.status !== DialogCloseStatus.Submitted) {
-        return;
-      }
-
-      const updatedJobItem: JobApplicationItem = {
-        id: data.item.id,
-        status: response.data.status
-      };
-      
-      this.jobStatusUpdate.emit({
-        item: updatedJobItem
-      });
+      backdropClass: 'blurred',
+      disableClose: true,
     });
   }
 
-  deleteJob() {
-    const dialogData : InfoDialogData = {
-      infoMessage: CONFIRM_DELETE_MSG,
-      statusIcon: IconStat.success
-    }
+  handleDialogResponse(
+    response: DialogCloseResponse<{ status: ApplicationStatus }> | undefined,
+    item: JobApplicationItem
+  ) {
+    if (!response || response.status !== DialogCloseStatus.Submitted) return;
 
-    const deleteConfirmDialog = this.dialog.open(InfoDialogComponent, {
-      data:dialogData,
-      backdropClass: "blurred"
-    });
+    const updatedJobItem = this.buildUpdatedJobItem(item, response.data.status);
+    this.emitJobStatusUpdate(updatedJobItem);
   }
 
-  onCheckboxChange(item: JobApplicationItem, event: any): void {
-    this.selectedItems = [];
-    if (event.target.checked) {
-      this.selectedItems.push(item);
+  buildUpdatedJobItem(item: JobApplicationItem, status: ApplicationStatus): JobApplicationItem {
+    return { id: item.id, status };
+  }
+
+  emitJobStatusUpdate(item: JobApplicationItem) {
+    this.jobStatusUpdate.emit({ item });
+  }
+
+  deleteApplications() {
+    const message = this.buildDeleteMessage();
+    const ids = this.selectedItems.map(item => item.id);
+  
+    const dialogRef = this.openConfirmationDialog(message);
+  
+    dialogRef.afterClosed().subscribe(response => {
+      this.handleDeleteDialogClose(response, ids);
+    });
+  }
+  
+  openConfirmationDialog(message: string) {
+    const dialogData: InfoDialogData = {
+      infoMessage: message,
+      statusIcon: IconStat.success,
+    };
+  
+    return this.dialog.open(InfoDialogComponent, {
+      data: dialogData,
+      backdropClass: 'blurred',
+      disableClose: true,
+    });
+  }
+  
+  handleDeleteDialogClose(
+    response: DialogCloseResponse<any> | undefined,
+    ids: string[]
+  ): void {
+    if (response?.status !== DialogCloseStatus.Submitted) return;
+
+    this.jobApplicationsDelete.emit(ids);
+  }
+
+  buildDeleteMessage(): string {
+   
+    return this.selectedItems.length > 1
+      ? `Kindly confirm you want to delete ${this.selectedItems.length} applications`
+      : CONFIRM_DELETE_MSG;
+  }
+
+  onCheckboxChange(item: JobApplicationItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+  
+    if (input.checked) {
+      this.addSelectedItem(item);
     } else {
-      const itemIndex = this.selectedItems.indexOf(item);
-      this.selectedItems.splice(itemIndex, 1);
+      this.removeSelectedItem(item);
     }
+  
     this.isAllSelected();
     this.onSelectionChanged.emit(this.selectedItems);
+  }
+  
+  addSelectedItem(item: JobApplicationItem): void {
+    if (!this.selectedItems.some(selected => selected.id === item.id)) {
+      this.selectedItems = [...this.selectedItems, item]; 
+    }
+  }
+  
+  removeSelectedItem(item: JobApplicationItem): void {
+    this.selectedItems = this.selectedItems.filter(selected => selected.id !== item.id);
   }
 
   editJobApplication(application: JobApplicationItem) {
@@ -105,7 +153,7 @@ export class CustomTableComponent {
 
   toggleAllSelections(event: any) {
     const checked = event.target.checked;
-    
+
     if (checked) {
       this.selectedItems = [...this.data];
       this.data.forEach(item => item.selected = true);
@@ -113,7 +161,7 @@ export class CustomTableComponent {
       this.selectedItems = [];
       this.data.forEach(item => item.selected = false);
     }
-    
+
     this.onSelectionChanged.emit(this.selectedItems);
   }
 

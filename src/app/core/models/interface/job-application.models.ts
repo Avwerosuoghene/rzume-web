@@ -31,3 +31,7 @@ export interface CreateApplicationPayload {
   applicationDate?: string;
 }
 
+export interface DeleteApplicationsPayload{
+  ids: string[];
+}
+
