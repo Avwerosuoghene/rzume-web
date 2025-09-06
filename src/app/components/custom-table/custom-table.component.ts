@@ -3,10 +3,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
-import { JobAddDialogComponent } from '../job-add-dialog/job-add-dialog.component';
 import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
 import { AngularMaterialModules } from '../../core/modules';
-import { AddJobDialogData, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
+import {  CONFIRM_DELETE_MSG, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableBodyComponent } from './table-body/table-body.component';
 import { TablePagintionComponent } from "./table-pagintion/table-pagintion.component";
@@ -88,12 +87,15 @@ export class CustomTableComponent {
 
   toggleAllSelections(event: any) {
     const checked = event.target.checked;
-    this.selectedItems = [];
-
-    this.data.forEach(item => {
-      this.selectedItems.push(item);
-      item.selected = checked;
-    });
+    
+    if (checked) {
+      this.selectedItems = [...this.data];
+      this.data.forEach(item => item.selected = true);
+    } else {
+      this.selectedItems = [];
+      this.data.forEach(item => item.selected = false);
+    }
+    
     this.onSelectionChanged.emit(this.selectedItems);
   }
 

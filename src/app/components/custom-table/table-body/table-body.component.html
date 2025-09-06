@@ -54,17 +54,19 @@
       <mat-icon>more_horiz</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="triggerApplicationEdit(item)">
-        <mat-icon>edit</mat-icon>
-        <span>Edit</span>
-      </button>
-      <button mat-menu-item (click)="triggerStatusChange(item.status)">
-        <mat-icon>swap_horiz</mat-icon>
-        <span> Change Status</span>
-      </button>
+      <ng-container *ngIf="!selectedItems?.length">
+        <button mat-menu-item (click)="triggerApplicationEdit(item)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="triggerStatusChange(item.status)">
+          <mat-icon>swap_horiz</mat-icon>
+          <span>Change Status</span>
+        </button>
+      </ng-container>
       <button mat-menu-item (click)="triggerDelete()">
         <mat-icon>delete</mat-icon>
-        <span> Remove</span>
+        <span>Remove</span>
       </button>
     </mat-menu>
   </td>

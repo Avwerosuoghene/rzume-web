@@ -16,6 +16,7 @@ export class TableBodyComponent {
 
   @Input() data: any[] = [];
   @Input() columns: ColumnDefinition[] = [];
+  @Input() selectedItems: any[] = [];
   @Output() checkBoxChanged = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>(); 
   @Output() delete = new EventEmitter<any>();
