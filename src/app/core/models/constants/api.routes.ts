@@ -16,6 +16,7 @@ export class ApiRoutes {
 
   static jobApplication = {
     base: `${this.jobApplicationRoute}`,
+    stats: `${this.jobApplicationRoute}/stats`,
   }
 
 

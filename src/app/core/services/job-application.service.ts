@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { APIResponse, ApiRoutes, ApiUrlParam, GetRequestOptions, PaginatedItem } from '../models';
-import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem } from '../models/interface/job-application.models';
+import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem, JobApplicationStats } from '../models/interface/job-application.models';
 import { tap } from 'rxjs';
 import { JobApplicationStateService } from './job-application-state.service';
 
@@ -83,6 +83,19 @@ export class JobApplicationService {
     return this.apiService.get<APIResponse<PaginatedItem<JobApplicationItem>>>(options)
       .pipe(tap(response => this.handleGetApplicationResponse(response)));
   }
+
+  getStats() {
+    const apiRoute = ApiRoutes.jobApplication.stats;
+
+
+    const getReqOptions: GetRequestOptions = {
+      route: apiRoute,
+      withBearer: true,
+      handleResponse: true,
+    }
+    return this.apiService.get<APIResponse<JobApplicationStats>>(getReqOptions);
+  }
+
 
   private updateFilterAndPagination(filter?: JobApplicationFilter): void {
     if (!filter) return;

@@ -35,3 +35,19 @@ export interface DeleteApplicationsPayload{
   ids: string[];
 }
 
+export interface JobApplicationStats{
+  totalApplications: JobApplicationStatItemDto;
+  applied: JobApplicationStatItemDto;
+  wishlist: JobApplicationStatItemDto;
+  submitted: JobApplicationStatItemDto;
+  inProgress: JobApplicationStatItemDto;
+  offerReceived: JobApplicationStatItemDto;
+  rejected: JobApplicationStatItemDto;
+}
+
+export interface JobApplicationStatItemDto
+{
+    description: string;
+    value: number;
+}
+

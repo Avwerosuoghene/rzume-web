@@ -8,7 +8,7 @@ import { JobListToolbarComponent } from '../../../components/job-list-toolbar/jo
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
-import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload } from '../../../core/models/interface/job-application.models';
+import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload, JobApplicationStatItemDto } from '../../../core/models/interface/job-application.models';
 import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
 import { EmptyStateComponent } from '../../../components/empty-state/empty-state.component';
 import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
@@ -29,7 +29,7 @@ import { JobApplicationDialogService } from '../../../core/services/job-applicat
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  statHighLights: Array<StatHighlight> = [];
+  statHighLights: JobApplicationStatItemDto[] = [];
 
   data: JobApplicationItem[] = [];
   jobListColumns: Array<ColumnDefinition> = JOB_TABLE_COLUMNS;
@@ -78,6 +78,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.loadUserAppliedJobs();
     }
   }
+  
+  reloadDashboardData() {
+    this.initiateJobStats();
+    this.loadUserAppliedJobs();
+  }
 
   loadUserAppliedJobs(): void {
     this.jobApplicationService.getApplications({
@@ -125,25 +130,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.itemsPerPage = pagination.pageSize;
   }
 
-  initiateJobStats() {
-    this.statHighLights.push(
-      {
-        description: 'Total Job Application',
-        value: 20
-      },
-      {
-        description: 'Total Interviews',
-        value: 2
-      },
-      {
-        description: 'Total Rejections',
-        value: 305
-      },
-      {
-        description: 'Total Offers',
-        value: 3
+  initiateJobStats(): void {
+    this.jobApplicationService.getStats().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const stats = response.data;
+          this.statHighLights = [
+            stats.totalApplications,
+            stats.rejected,
+            stats.inProgress,
+            stats.offerReceived
+          ].filter(Boolean);
+        }
       }
-    )
+    });
   }
 
 
@@ -185,7 +185,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.jobApplicationService.updateJobApplication(updateData)
       .subscribe({
         next: () => {
-          this.loadUserAppliedJobs();
+          this.reloadDashboardData();
         }
       });
   }
@@ -197,7 +197,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .afterClosed()
       .subscribe(response => {
         this.jobDialogService.handleDialogClose(response, payload => {
-          this.jobDialogService.createApplication(payload, () => this.loadUserAppliedJobs());
+          this.jobDialogService.createApplication(payload, () => this.reloadDashboardData());
         });
       });
   }
@@ -215,12 +215,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {
     if (!response) return;
     if (response.status === DialogCloseStatus.Submitted && response.data) {
-      this.jobDialogService.updateApplication(response.data, () => this.loadUserAppliedJobs());
+      this.jobDialogService.updateApplication(response.data, () => this.reloadDashboardData());
     }
   }
 
   handleStatusUpdate(updateData: { item: JobApplicationItem }) {
-    this.jobDialogService.updateApplication(updateData.item, () => this.loadUserAppliedJobs());
+    this.jobDialogService.updateApplication(updateData.item, () => this.reloadDashboardData());
   }
 
   handleDeleteApplications(applicationIds: string[]): void {
@@ -228,7 +228,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.jobApplicationService.deleteApplication(deletePayload).subscribe({
       next: () => {
-        this.loadUserAppliedJobs();
+        this.reloadDashboardData();
       }
     });
   }
