@@ -8,7 +8,7 @@ import { JobListToolbarComponent } from '../../../components/job-list-toolbar/jo
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
-import { JobApplicationItem, JobApplicationFilter } from '../../../core/models/interface/job-application.models';
+import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload } from '../../../core/models/interface/job-application.models';
 import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
 import { EmptyStateComponent } from '../../../components/empty-state/empty-state.component';
 import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
@@ -219,8 +219,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleStatusUpdate(updateData: { item: JobApplicationItem}) {
+  handleStatusUpdate(updateData: { item: JobApplicationItem }) {
     this.jobDialogService.updateApplication(updateData.item, () => this.loadUserAppliedJobs());
+  }
+
+  handleDeleteApplications(applicationIds: string[]): void {
+    const deletePayload: DeleteApplicationsPayload = { ids: applicationIds };
+
+    this.jobApplicationService.deleteApplication(deletePayload).subscribe({
+      next: () => {
+        this.loadUserAppliedJobs();
+      }
+    });
   }
 
   ngOnDestroy() {

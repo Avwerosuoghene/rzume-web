@@ -13,7 +13,7 @@
         [selectedItems]="selectedItems"
         (checkBoxChanged)="onCheckboxChange($event.item, $event.event)"
         (edit)="editJobApplication($event)"
-        (delete)="deleteApplications()"
+        (delete)="handleDelete($event)"
         (statusChange)="changeJobStatus($event)"
       ></app-table-body>
     </table>

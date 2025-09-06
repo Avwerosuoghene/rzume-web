@@ -80,12 +80,11 @@ export class CustomTableComponent {
     this.jobStatusUpdate.emit({ item });
   }
 
-  deleteApplications() {
+  handleDelete(ids: string[]) {
     const message = this.buildDeleteMessage();
-    const ids = this.selectedItems.map(item => item.id);
-  
+    
     const dialogRef = this.openConfirmationDialog(message);
-  
+    
     dialogRef.afterClosed().subscribe(response => {
       this.handleDeleteDialogClose(response, ids);
     });
@@ -108,8 +107,9 @@ export class CustomTableComponent {
     response: DialogCloseResponse<any> | undefined,
     ids: string[]
   ): void {
+    console.log(response);
     if (response?.status !== DialogCloseStatus.Submitted) return;
-
+    
     this.jobApplicationsDelete.emit(ids);
   }
 

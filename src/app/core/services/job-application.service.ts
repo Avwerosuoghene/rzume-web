@@ -58,7 +58,7 @@ export class JobApplicationService {
 
   deleteApplication(deleteApplicationsPayload: DeleteApplicationsPayload) {
     return this.apiService.delete<APIResponse<boolean>>(
-      `${ApiRoutes.jobApplication.base}/${deleteApplicationsPayload.ids}`, true, undefined, deleteApplicationsPayload
+      ApiRoutes.jobApplication.base, true, undefined, deleteApplicationsPayload
     );
   }
 

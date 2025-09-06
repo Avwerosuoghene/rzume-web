@@ -103,7 +103,7 @@ export class ApiService {
   public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: any): Observable<T> {
     const route: string = `${environment.apiBaseUrl}/${apiRoute}`;
 
-    const headers = this.mergeHeaders(reqHeaders);
+    const headers = this.withBearer(this.mergeHeaders(reqHeaders));
     const options = {
       headers,
       body

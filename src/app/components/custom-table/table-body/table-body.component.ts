@@ -20,7 +20,7 @@ export class TableBodyComponent {
   @Input() selectedItems: JobApplicationItem[] = [];
   @Output() checkBoxChanged = new EventEmitter<any>();
   @Output() edit = new EventEmitter<JobApplicationItem>(); 
-  @Output() delete = new EventEmitter<JobApplicationItem>();
+  @Output() delete = new EventEmitter<string[]>();
   @Output() statusChange = new EventEmitter<{item: JobApplicationItem}>();
 
   triggerCheckboxChange(item: JobApplicationItem, event: any): void {
@@ -31,8 +31,12 @@ export class TableBodyComponent {
     this.edit.emit(application);
   }
 
-  triggerDelete(): void {
-    this.delete.emit();
+  triggerDelete(item: JobApplicationItem): void {
+    if (this.selectedItems.length > 0) {
+      this.delete.emit(this.selectedItems.map(i => i.id));
+    } else {
+      this.delete.emit([item.id]);
+    }
   }
 
   triggerStatusChange(item: JobApplicationItem): void {

@@ -26,6 +26,7 @@
       (itemPerPageChanged)="handleChangeInItemPerPage($event)" 
       (jobApplicationUpdate)="updateJobApplication($event)"
       (jobStatusUpdate)="handleStatusUpdate($event)"
+      (jobApplicationsDelete)="handleDeleteApplications($event)"
       [columns]="jobListColumns" 
       [totalPages]="totalPages"
       [currentPage]="currentPage"

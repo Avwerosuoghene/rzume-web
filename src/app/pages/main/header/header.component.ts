@@ -44,7 +44,6 @@ export class HeaderComponent implements OnInit {
   getUserInfo() {
     this.storageService.user$.subscribe(user => {
       this.userInfo = user;
-      console.log(this.userInfo);
 
     });
   }
