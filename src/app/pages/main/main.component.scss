@@ -5,15 +5,24 @@
   height: 100vh;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 344px calc(100vw - 344px);
+  grid-template-columns: 244px calc(100vw - 244px);
   grid-template-rows: 134px auto;
 
   .main-sidebar {
     background-color: $white;
     border-right: 1px solid $light-gray;
     height: 100vh;
-    width: 344px;
+    width: 244px;
     grid-row: span 2;
+    transition: width 0.3s ease;
+  }
+
+  @media (min-width: 950px) {
+    grid-template-columns: 344px calc(100vw - 344px);
+    
+    .main-sidebar {
+      width: 344px;
+    }
   }
 
   .main-header-container{
