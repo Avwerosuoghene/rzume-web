@@ -29,18 +29,31 @@ hr.header {
     .profile_pic {
       width: 56px;
       height: 56px;
+      border: none;
       border-radius: 50%;
       background-color: $rzume-blue;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
+      padding: 0;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      user-select: none;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+      
+      &:active {
+        outline: none;
+      }
 
-
-
-    mat-icon#expand_icon {
-
-      transform: rotate(90deg);
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
   }
 

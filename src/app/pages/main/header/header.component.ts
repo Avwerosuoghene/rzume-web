@@ -22,6 +22,8 @@ export class HeaderComponent implements OnInit {
   userToken: string | null = null;
   loaderIsActive: boolean = false;
 
+  todaysDate: string = new Date().toDateString();
+
 
   constructor(private storageService: StorageService, private authHelper: AuthHelperService, private utilityService: LoaderService) {
 

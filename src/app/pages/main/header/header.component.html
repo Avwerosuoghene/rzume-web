@@ -8,11 +8,8 @@
     </div>
     <div class="profile_img_section">
       <img id="alert_icon" src="assets/icons/bell-icon.png" alt="alert-icon">
-      <div class="profile_pic">
+      <button class="profile_pic" [matMenuTriggerFor]="menu" aria-label="User menu">
         <img src="assets/images/default_pic.png" alt="">
-      </div>
-      <button [matMenuTriggerFor]="menu"  id="expand_icon_btn" mat-icon-button aria-label="expand-button">
-        <mat-icon id="expand_icon">arrow_forward_ios</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="logout()" >
@@ -27,7 +24,7 @@
   <hr class="header" />
   <div class="section_lower">
     <p>{{activeComponent | titlecase}}</p>
-    <p class="light_text">28 October 2022</p>
+    <p class="light_text">{{todaysDate | date: 'MMM dd yyyy' }}</p>
 
   </div>
   <app-global-circular-loader [isLoading]="loaderIsActive"></app-global-circular-loader>
