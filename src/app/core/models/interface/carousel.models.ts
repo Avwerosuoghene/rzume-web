@@ -1,25 +1,27 @@
-import { StatHighlight } from "./dashboard.models";
-
-export interface CarouselConfig {
-    items: StatHighlight[];
-    itemsPerView: number;
+export interface CarouselItem {
+    id: string | number;
+    title?: string;
+    description?: string;
+    imageUrl?: string;
+  }
+  
+  export enum CarouselNavigationMode {
+    Loop = 'loop',
+    Bounded = 'bounded'
+  }
+  
+  export interface CarouselConfig {
+    navigationMode?: CarouselNavigationMode;
     showDots?: boolean;
     showArrows?: boolean;
-    autoPlay?: boolean;
-    autoPlayInterval?: number;
+    itemClass?: string;
+    activeItemClass?: string;
   }
   
-  export enum CarouselBreakpoints {
-    Mobile = 0,
-    Tablet = 768,
-    Desktop = 1024,
-  }
-  
-  export const DEFAULT_CAROUSEL_CONFIG: Omit<CarouselConfig, 'items'> = {
-    itemsPerView: 1,
+  export const DEFAULT_CAROUSEL_CONFIG: CarouselConfig = {
+    navigationMode: CarouselNavigationMode.Bounded,
     showDots: true,
     showArrows: true,
-    autoPlay: false,
-    autoPlayInterval: 5000,
+    itemClass: 'carousel-item',
+    activeItemClass: 'active'
   };
-  
