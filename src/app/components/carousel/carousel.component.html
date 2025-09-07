@@ -1,0 +1,19 @@
+<div class="carousel">
+  <div class="carousel-container">
+    <ng-content></ng-content>
+  </div>
+  
+  <button class="carousel-nav prev" (click)="prev()">
+    &lt;
+  </button>
+  <button class="carousel-nav next" (click)="next()">
+    &gt;
+  </button>
+  
+  <div class="carousel-indicators">
+    <span *ngFor="let item of items; let i = index" 
+          [class.active]="i === currentIndex"
+          (click)="goTo(item)">
+    </span>
+  </div>
+</div>
