@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
@@ -20,7 +20,7 @@ import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
   templateUrl: './custom-table.component.html',
   styleUrls: ['./custom-table.component.scss']
 })
-export class CustomTableComponent {
+export class CustomTableComponent  {
   @Input() data: JobApplicationItem[] = [];
   @Input() columns: ColumnDefinition[] = [];
   @Input() totalPages: number = 0;
@@ -107,7 +107,6 @@ export class CustomTableComponent {
     response: DialogCloseResponse<any> | undefined,
     ids: string[]
   ): void {
-    console.log(response);
     if (response?.status !== DialogCloseStatus.Submitted) return;
     
     this.jobApplicationsDelete.emit(ids);

@@ -57,6 +57,7 @@ export class JobApplicationDialogService {
       companyName: data?.companyName,
       jobLink: data?.jobLink,
       resumeLink: data?.resumeLink,
+      notes: data?.notes,
       applicationDate: data?.applicationDate,
       status: data?.status as ApplicationStatus
     };
@@ -68,6 +69,7 @@ export class JobApplicationDialogService {
       position: data.position,
       companyName: data.companyName,
       jobLink: data.jobLink,
+      notes: data.notes,
       resumeLink: data.resumeLink,
       status: data.status as ApplicationStatus,
       applicationDate: data.applicationDate

@@ -56,6 +56,7 @@ export class JobAddDialogComponent implements OnInit {
       }),
       resumeLink: this.fb.control(''),
       jobLink: this.fb.control(''),
+      notes: this.fb.control(''),
       applicationDate:this.fb.control(''),
       status:this.fb.control(ApplicationStatus.Wishlist),
     });
@@ -70,7 +71,6 @@ cancelApplication() {
 }
 
   prepopulateFormFields() {
-
     if (this.addJobDialogData.jobApplicationData) {
       const jobData = this.addJobDialogData.jobApplicationData;
       this.applicationFormGroup.patchValue({
@@ -78,6 +78,7 @@ cancelApplication() {
         position: jobData.position || '',
         resumeLink: jobData.resumeLink || '',
         jobLink: jobData.jobLink || '',
+        notes: jobData.notes || '',
         applicationDate: jobData.applicationDate ? new Date(jobData.applicationDate) : null, 
         status: jobData.status || ApplicationStatus.Wishlist
       });

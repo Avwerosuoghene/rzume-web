@@ -5,9 +5,10 @@ export interface JobApplicationItem {
   position?: string;
   companyName?: string;
   userId?: string;
-  applicationDate?: string;
+  applicationDate?: Date;
   jobLink?: string;
   resumeLink?: string;
+  notes?: string;
   status: string;
   selected?: boolean; 
 }
@@ -27,8 +28,9 @@ export interface CreateApplicationPayload {
   companyName?: string;
   jobLink?: string;
   resumeLink?: string;
+  notes?: string;
   status: ApplicationStatus;
-  applicationDate?: string;
+  applicationDate?: Date;
 }
 
 export interface DeleteApplicationsPayload{

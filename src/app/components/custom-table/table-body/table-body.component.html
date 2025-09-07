@@ -39,7 +39,15 @@
         col.field === 'status' ? (item[col.field] || '').toLowerCase() : ''
       "
     >
-      <p>{{ col.field === 'status' ? getStatusDisplayName(item[col.field]) : (item[col.field] || "Not Provided") }}</p>
+      <p>
+        @if (col.field === 'status') {
+        {{ getStatusDisplayName(item[col.field]) }}
+        } @else if (col.field === 'applicationDate') {
+        {{ item[col.field]  | date:'MM/dd/yyyy' }}
+        } @else {
+        {{ item[col.field] || "Not Provided" }}
+        }
+      </p>
     </div>
   </td>
 </ng-template>

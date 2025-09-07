@@ -13,7 +13,7 @@ import { JobApplicationItem } from '../../../core/models/interface/job-applicati
   templateUrl: './table-body.component.html',
   styleUrl: './table-body.component.scss'
 })
-export class TableBodyComponent {
+export class TableBodyComponent  {
 
   @Input() data: JobApplicationItem[] = [];
   @Input() columns: ColumnDefinition[] = [];

@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.loadUserAppliedJobs();
     }
   }
-  
+
   reloadDashboardData() {
     this.initiateJobStats();
     this.loadUserAppliedJobs();
@@ -109,10 +109,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
       position: application.position,
       companyName: application.companyName,
       userId: application.userId,
-      applicationDate: application.applicationDate ? new Date(application.applicationDate).toLocaleDateString() : '',
+      applicationDate: application.applicationDate
+        ? new Date(application.applicationDate)
+        : undefined,
       jobLink: application.jobLink,
       resumeLink: application.resumeLink,
-      status: application.status
+      status: application.status,
+      notes: application.notes
     };
   }
 

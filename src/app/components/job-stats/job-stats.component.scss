@@ -6,7 +6,6 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
-  min-height: 120px;
 
   .stat_highlight_element {
     background-color: $white;
@@ -14,27 +13,21 @@
     border-radius: 8px;
   }
 
-  .loading-state {
+  .loading-state{
     grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 32px;
-    background-color: $white;
-    border-radius: 8px;
-    color: $text-secondary;
-
-    mat-spinner {
-      margin: 0 auto;
+    
+    .loading-text {
+      margin-right: 4px;
     }
-
-    span {
-      font-size: 0.9rem;
-      color: $text-secondary;
+  
+    .dots::after {
+      content: "";
+      display: inline-block;
+      animation: dots 1.5s steps(3, end) infinite;
     }
   }
+
+
 }
 
 @keyframes dots {

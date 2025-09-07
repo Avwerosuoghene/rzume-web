@@ -2,12 +2,16 @@
   <div class="title_elements">
     <h3 class="light_text">Add Job Application</h3>
 
-    <button mat-icon-button  (click)="cancelApplication()">
+    <button mat-icon-button (click)="cancelApplication()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
-  <form [formGroup]="applicationFormGroup" (ngSubmit)="addApplication()" id="add_job_form">
+  <form
+    [formGroup]="applicationFormGroup"
+    (ngSubmit)="addApplication()"
+    id="add_job_form"
+  >
     <div class="form-input-container">
       <mat-form-field appearance="outline">
         <mat-label>Company</mat-label>
@@ -18,7 +22,6 @@
           formControlName="companyName"
           name="companyName"
         />
-
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Role</mat-label>
@@ -28,7 +31,6 @@
           formControlName="position"
           name="position"
         />
-
 
         @if (jobRole?.hasError('required')) {
         <mat-error> Job role required </mat-error>
@@ -55,10 +57,26 @@
         />
       </mat-form-field>
 
+      <mat-form-field appearance="outline" class="notes-field">
+        <mat-label>Notes</mat-label>
+        <textarea
+          matInput
+          placeholder="Add any additional notes"
+          formControlName="notes"
+          name="notes"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+
       <div class="application-status_date-container">
-        <mat-form-field appearance="outline" >
+        <mat-form-field appearance="outline">
           <mat-label>Date Applied</mat-label>
-          <input matInput [matDatepicker]="picker"  formControlName="applicationDate" [max]="maxDate">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="applicationDate"
+            [max]="maxDate"
+          />
 
           <mat-datepicker-toggle matIconSuffix [for]="picker">
             <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
@@ -66,38 +84,33 @@
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" >
+        <mat-form-field appearance="outline">
           <mat-label>Choose an option</mat-label>
-          <mat-select  formControlName="status">
-            @for (statusOption of applicationStatusOptions; track statusOption.value) {
-              <mat-option [value]="statusOption.value">{{statusOption.name}}</mat-option>
-              }
+          <mat-select formControlName="status">
+            @for (statusOption of applicationStatusOptions; track
+            statusOption.value) {
+            <mat-option [value]="statusOption.value">{{
+              statusOption.name
+            }}</mat-option>
+            }
           </mat-select>
         </mat-form-field>
-
       </div>
 
+      <button
+        id="add_job_btn"
+        mat-flat-button
+        [disabled]="isBtnDisabled()"
+        type="submit"
+      >
+        <div class="button-elements">
+          @if (loaderIsActive) {
+          <app-circular-loader></app-circular-loader>
+          }
 
-
-
-
-        <button
-          id="add_job_btn"
-          mat-flat-button
-          [disabled]="isBtnDisabled()"
-          type="submit"
-        >
-          <div class="button-elements">
-            @if (loaderIsActive) {
-            <app-circular-loader></app-circular-loader>
-            }
-
-            <p>{{editMode? 'Update': 'Add' + ' Job Application'}}</p>
-          </div>
-        </button>
-
+          <p>{{ editMode ? "Update" : "Add" + " Job Application" }}</p>
+        </div>
+      </button>
     </div>
   </form>
 </div>
-
-
