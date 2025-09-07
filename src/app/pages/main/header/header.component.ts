@@ -80,5 +80,9 @@ export class HeaderComponent implements OnInit {
       });
   }
 
+  toggleSidebar(): void {
+    console.log('Sidebar toggle clicked');
+  }
+
 
 }

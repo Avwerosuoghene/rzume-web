@@ -1,7 +1,9 @@
 <div class="header_container">
 
   <div class="section_upper">
-
+    <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+      <mat-icon>menu</mat-icon>
+    </button>
     <div class="welcome_section">
       <p class="light_text">Welcome</p>
       <h4>{{userInfo?.userName}}</h4>
