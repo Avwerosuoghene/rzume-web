@@ -16,3 +16,11 @@ export interface PaginatedResponse<T> {
   total: number;
 }
 
+export interface EmptyStateConfig {
+  title: string;
+  message: string;
+  icon: string;
+  showAction?: boolean;
+  actionText?: string;
+}
+

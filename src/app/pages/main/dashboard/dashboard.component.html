@@ -1,23 +1,29 @@
 <section class="dashboard_container">
   <app-job-stats [statHighLights]="statHighLights"></app-job-stats>
-  
   @if (!showEmptyState) {
-    <app-job-list-toolbar 
-      (filterChange)="handleFilterChange($event)"
-      (searchChange)="handleSearchChange($event)"
-      (jobApplicationUpdated)="loadUserAppliedJobs()"
-      (jobApplicationAddition)="addNewApplicationEntry()">
-    </app-job-list-toolbar>
+  <app-job-list-toolbar 
+    (filterChange)="handleFilterChange($event)"
+    (searchChange)="handleSearchChange($event)"
+    (jobApplicationUpdated)="loadUserAppliedJobs()"
+    (jobApplicationAddition)="addNewApplicationEntry()">
+  </app-job-list-toolbar>
   }
   
   @if (showEmptyState) {
     <app-empty-state 
-      title="No Applications Yet"
-      message="You haven't added any job applications yet. Click the button below to get started!"
-      icon="work_outline"
-      [showAction]="true"
-      actionText="Add First Application"
+      [title]="EMPTY_STATES.noApplications.title"
+      [message]="EMPTY_STATES.noApplications.message"
+      [icon]="EMPTY_STATES.noApplications.icon"
+      [showAction]="EMPTY_STATES.noApplications.showAction"
+      [actionText]="EMPTY_STATES.noApplications.actionText"
       (actionButtonClickedEvent)="addNewApplicationEntry()">
+    </app-empty-state>
+  } @else if (!hasSearchResults) {
+    <app-empty-state 
+      [title]="EMPTY_STATES.noSearchResults.title"
+      [message]="EMPTY_STATES.noSearchResults.message"
+      [icon]="EMPTY_STATES.noSearchResults.icon"
+      [showAction]="EMPTY_STATES.noSearchResults.showAction">
     </app-empty-state>
   } @else {
     <app-custom-table 

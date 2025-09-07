@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
 import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
-import { JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
+import { EMPTY_STATES, JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
 import { Subject } from 'rxjs';
 import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
@@ -29,6 +29,8 @@ import { JobApplicationDialogService } from '../../../core/services/job-applicat
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  EMPTY_STATES = EMPTY_STATES;
+
   statHighLights: JobApplicationStatItemDto[] = [];
 
   data: JobApplicationItem[] = [];
@@ -38,9 +40,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   itemsPerPage: number = PAGINATION_DEFAULTS.itemsPerPage;
   totalItems: number = PAGINATION_DEFAULTS.totalItems;
   selectedItems: Array<JobApplicationItem> = [];
-  showEmptyState: boolean = false;
+  showEmptyState: boolean = true;
+  hasSearchResults: boolean = true;
   destroy$ = new Subject<void>();
   currentFilter: JobApplicationFilter = {};
+  
 
   constructor(
     private state: JobApplicationStateService,
@@ -119,14 +123,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
     };
   }
 
-  private updateComponentState(applications: JobApplicationItem[], pagination: {
+  updateComponentState(
+    applications: JobApplicationItem[],
+    pagination: {
+      totalCount: number;
+      totalPages: number;
+      currentPage: number;
+      pageSize: number;
+    }
+  ) {
+    this.updateFilterState(applications);
+    this.data = applications.map(this.mapApplicationToTableData);
+    this.updatePagination(pagination);
+  }
+  
+  updateFilterState(applications: JobApplicationItem[]) {
+    const hasNoApplications = applications.length === 0;
+    const hasNoFilters = !this.currentFilter?.searchQuery && !Object.values(this.currentFilter || {}).some(val => val);
+    this.showEmptyState = hasNoApplications && hasNoFilters;
+    this.hasSearchResults = !hasNoApplications;
+  }
+  
+  updatePagination(pagination: {
     totalCount: number;
     totalPages: number;
     currentPage: number;
     pageSize: number;
   }) {
-    this.showEmptyState = applications.length === 0;
-    this.data = applications.map(app => this.mapApplicationToTableData(app));
     this.totalItems = pagination.totalCount;
     this.totalPages = pagination.totalPages;
     this.currentPage = pagination.currentPage;

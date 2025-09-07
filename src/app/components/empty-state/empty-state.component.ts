@@ -11,11 +11,11 @@ import { NgIf } from '@angular/common';
   styleUrl: './empty-state.component.scss'
 })
 export class EmptyStateComponent {
-  @Input() title: string = 'No Applications Yet';
-  @Input() message: string = 'You haven\'t added any job applications yet. Click the button below to get started!';
-  @Input() icon: string = 'work_outline';
-  @Input() showAction: boolean = true;
-  @Input() actionText: string = 'Add First Application';
+  @Input() title: string | undefined;
+  @Input() message: string | undefined;
+  @Input() icon: string | undefined;
+  @Input() showAction: boolean | undefined;
+  @Input() actionText: string | undefined;
 
    @Output() actionButtonClickedEvent = new EventEmitter<void>();
 

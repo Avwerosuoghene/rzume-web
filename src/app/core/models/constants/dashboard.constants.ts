@@ -1,5 +1,6 @@
+import { EmptyStateIcon } from "../enums";
 import { FilterOption } from "../interface";
-import { ColumnDefinition } from "../interface/dashboard.models";
+import { ColumnDefinition, EmptyStateConfig } from "../interface/dashboard.models";
 import { APPLICATION_STATUS_OPTIONS } from "./application-status-options.constants";
 
 export const PAGINATION_DEFAULTS = {
@@ -26,3 +27,20 @@ export const JOB_FILTER_OPTIONS: FilterOption[] = [
     label: option.name
   }))
 ];
+
+
+export const EMPTY_STATES = {
+  noApplications: {
+    title: 'No Applications Yet',
+    message: "You haven't added any job applications yet. Click the button below to get started!",
+    icon: EmptyStateIcon.NoApplications,
+    showAction: true,
+    actionText: 'Add First Application'
+  },
+  noSearchResults: {
+    title: 'No Matching Results',
+    message: 'No job applications match your search or filter criteria. Try adjusting your search or filters.',
+    icon: EmptyStateIcon.NoResults,
+    showAction: false
+  }
+};

@@ -26,6 +26,11 @@ export enum SessionStorageKeys {
   userData = 'userData'
 }
 
+export enum EmptyStateIcon {
+  NoApplications = 'work_outline',
+  NoResults = 'search_off',
+}
+
 
 
 
