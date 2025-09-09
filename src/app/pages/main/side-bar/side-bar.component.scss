@@ -1,21 +1,49 @@
 @import "../../../styles/theme.scss";
 
-
 .sidebar_container {
-  padding: 16px;
+  padding: 0;
   height: 100%;
   overflow-y: auto;
 
-  #rzume_logo {
-    width: 100px;
-    margin-bottom: 32px;
-    transition: width 0.3s ease, margin-bottom 0.3s ease;
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 10px; 
+    position: relative;
+
+    #rzume_logo {
+      width: 100px;
+      transition: width 0.3s ease, margin-bottom 0.3s ease;
+    }
+
+    .close-button {
+      display: block; 
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      mat-icon {
+        color: $rzume-blue;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
   }
 
-  @media (min-width: 950px) {
-    #rzume_logo {
-      width: 144px;
-      margin-bottom: 42px;
+  .sidebar_menu {
+    
+    p.light_text {
+      display: none;
     }
   }
 
@@ -31,9 +59,40 @@
       gap: 16px;
       cursor: pointer;
 
+
       &.active {
         background-color: $light-blue;
       }
     }
+  }
+
+  @media (min-width: 800px) {
+    .sidebar-header {
+      margin-bottom: 32px;
+
+      .close-button {
+        display: none; 
+      }
+    }
+
+  }
+
+  @media (min-width: 950px) {
+    padding: 16px; 
+
+    .sidebar-header {
+      #rzume_logo {
+        width: 144px;
+      }
+    }
+
+
+    .sidebar_menu {
+
+      p.light_text {
+        display: inline; 
+      }
+
+  }
   }
 }

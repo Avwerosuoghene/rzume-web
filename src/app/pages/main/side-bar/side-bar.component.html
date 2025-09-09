@@ -1,9 +1,14 @@
 <div class="sidebar_container">
-  <img
-    id="rzume_logo"
-    src="assets/icons/rzume_logo_text.png"
-    alt="rzume logo"
-  />
+  <div class="sidebar-header">
+    <img
+      id="rzume_logo"
+      src="assets/icons/rzume_logo_text.png"
+      alt="rzume logo"
+    />
+    <button class="close-button" (click)="onClose()" aria-label="Close sidebar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
   <div class="sidebar_menu">
     <p class="light_text">Menu</p>
     <div class="side_menu_items">

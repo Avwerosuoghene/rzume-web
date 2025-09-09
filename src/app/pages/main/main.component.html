@@ -2,7 +2,7 @@
   <div class="overlay" (click)="closeSidebar()" [class.visible]="sidebarOpen"></div>
   
   <div class="main-sidebar" [class.open]="sidebarOpen">
-    <app-side-bar></app-side-bar>
+    <app-side-bar (closeSidebar)="closeSidebar()"></app-side-bar>
   </div>
 
   <div class="main-header-container">
