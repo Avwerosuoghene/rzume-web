@@ -1,7 +1,7 @@
 <section class="dashboard_container">
   <app-job-stats [statHighLights]="statHighLights"></app-job-stats>
   @if (!showEmptyState) {
-  <app-job-list-toolbar 
+  <app-job-list-toolbar class="job-list-toolbar" 
     (filterChange)="handleFilterChange($event)"
     (searchChange)="handleSearchChange($event)"
     (jobApplicationUpdated)="loadUserAppliedJobs()"

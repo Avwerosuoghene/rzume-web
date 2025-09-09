@@ -25,6 +25,10 @@
 
   app-job-list-toolbar {
     flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   app-custom-table {
