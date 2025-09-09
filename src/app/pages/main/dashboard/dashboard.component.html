@@ -26,6 +26,7 @@
       [showAction]="EMPTY_STATES.noSearchResults.showAction">
     </app-empty-state>
   } @else {
+    <app-job-card-list [jobs]="data"></app-job-card-list>
     <app-custom-table 
       (onSelectionChanged)="handleSelectionChanged($event)" 
       (pageChanged)="handlePageChanged($event)"  

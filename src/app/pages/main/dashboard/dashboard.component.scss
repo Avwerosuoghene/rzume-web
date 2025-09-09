@@ -36,6 +36,18 @@
     min-height: 0; 
     display: block;
     overflow: hidden;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  app-job-card-list {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: block;
+    }
   }
 
   .stat_highlight_container {

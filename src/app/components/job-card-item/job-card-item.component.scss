@@ -1,0 +1,52 @@
+@import "../../styles/theme.scss";
+
+.card-container {
+  background-color: white;
+  border: 1px solid $light-gray;
+  border-radius: 24px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .card-header, .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .company-info {
+    .company-name {
+      font-weight: bold;
+    }
+    .job-role {
+      font-size: 0.9em;
+      color: $light-gray;
+    }
+  }
+
+  .action-icons {
+    display: flex;
+  }
+
+  .url-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    a {
+      color: $rzume-blue;
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px; 
+    }
+  }
+
+  .date {
+    font-size: 0.8em;
+    color: $light-gray;
+    align-self: flex-end;
+  }
+}

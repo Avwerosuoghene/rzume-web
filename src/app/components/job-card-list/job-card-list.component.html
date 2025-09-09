@@ -1,0 +1,12 @@
+<app-job-card-tabs 
+  [tabs]="tabs" 
+  [activeTab]="activeTab" 
+  (tabChange)="handleTabChange($event)">
+</app-job-card-tabs>
+
+<div class="card-list-container">
+  <app-job-card-item 
+    *ngFor="let job of jobs" 
+    [job]="job">
+  </app-job-card-item>
+</div>

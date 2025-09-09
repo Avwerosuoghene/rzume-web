@@ -1,0 +1,25 @@
+<div class="card-container">
+  <div class="card-header">
+    <div class="company-info">
+      <p class="company-name">{{ job.companyName }}</p>
+      <p class="job-role">{{ job.position }}</p>
+    </div>
+    <div class="action-icons">
+      <button mat-icon-button>
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="url-section">
+      <a [href]="job.jobLink" target="_blank">{{ job.jobLink }}</a>
+      <button mat-icon-button>
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+    <p class="date">{{ job.applicationDate | date: 'shortDate' }}</p>
+  </div>
+</div>

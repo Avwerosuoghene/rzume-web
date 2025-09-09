@@ -14,6 +14,7 @@ import { EmptyStateComponent } from '../../../components/empty-state/empty-state
 import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
 import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
 import { SearchStateService } from '../../../core/services/search-state.service';
+import { JobCardListComponent } from "../../../components/job-card-list/job-card-list.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -24,8 +25,9 @@ import { SearchStateService } from '../../../core/services/search-state.service'
     JobListToolbarComponent,
     CustomTableComponent,
     JobStatsComponent,
-    EmptyStateComponent
-  ],
+    EmptyStateComponent,
+    JobCardListComponent
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

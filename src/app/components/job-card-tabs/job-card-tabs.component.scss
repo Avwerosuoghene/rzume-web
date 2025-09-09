@@ -1,0 +1,26 @@
+@import "../../styles/theme.scss";
+
+.tabs-container {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid $light-gray;
+  margin-bottom: 16px;
+
+  button {
+    flex: 1;
+    padding: 12px 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: $light-gray;
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+
+    &.active {
+      color: $rzume-blue;
+      font-weight: bold;
+      background-color: rgba($rzume-blue, 0.1);
+      border-radius: 24px;
+    }
+  }
+}
