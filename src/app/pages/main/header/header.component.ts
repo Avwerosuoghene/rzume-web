@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { NavigationEnd, Router } from '@angular/router';
 import { User } from '../../../core/models';
@@ -17,6 +17,7 @@ import { AuthHelperService } from '../../../core/services/auth-helper.service';
 })
 export class HeaderComponent implements OnInit {
   router = inject(Router);
+  @Output() sidebarToggle = new EventEmitter<void>();
   activeComponent: string = '';
   userInfo: User | null = null;
   userToken: string | null = null;
@@ -81,7 +82,7 @@ export class HeaderComponent implements OnInit {
   }
 
   toggleSidebar(): void {
-    console.log('Sidebar toggle clicked');
+    this.sidebarToggle.emit();
   }
 
 
