@@ -7,11 +7,13 @@ import { StorageService } from '../../../core/services';
 import { LoaderService } from '../../../core/services/loader.service';
 import { GlobalCircularLoaderComponent } from '../../../components/global-circular-loader/global-circular-loader.component';
 import { AuthHelperService } from '../../../core/services/auth-helper.service';
+import { CustomSearchInputComponent } from '../../../components/custom-search-input/custom-search-input.component';
+import { SearchStateService } from '../../../core/services/search-state.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, GlobalCircularLoaderComponent],
+  imports: [AngularMaterialModules, CoreModules, GlobalCircularLoaderComponent, CustomSearchInputComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -26,9 +28,12 @@ export class HeaderComponent implements OnInit {
   todaysDate: string = new Date().toDateString();
 
 
-  constructor(private storageService: StorageService, private authHelper: AuthHelperService, private utilityService: LoaderService) {
-
-  }
+  constructor(
+    private storageService: StorageService, 
+    private authHelper: AuthHelperService, 
+    private utilityService: LoaderService,
+    private searchStateService: SearchStateService
+  ) {}
 
 
   ngOnInit(): void {
@@ -85,5 +90,7 @@ export class HeaderComponent implements OnInit {
     this.sidebarToggle.emit();
   }
 
-
+  onSearchChange(searchTerm: string): void {
+    this.searchStateService.updateSearchTerm(searchTerm);
+  }
 }

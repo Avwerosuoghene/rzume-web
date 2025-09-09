@@ -13,6 +13,7 @@ import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
 import { EmptyStateComponent } from '../../../components/empty-state/empty-state.component';
 import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
 import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
+import { SearchStateService } from '../../../core/services/search-state.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -49,12 +50,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private state: JobApplicationStateService,
     private jobApplicationService: JobApplicationService,
-    private jobDialogService: JobApplicationDialogService
+    private jobDialogService: JobApplicationDialogService,
+    private searchStateService: SearchStateService
   ) { }
 
   ngOnInit(): void {
     this.initiateJobStats();
     this.setupApplicationSubscription();
+    this.setupSearchSubscription();
     this.loadUserAppliedJobs();
   }
 
@@ -66,6 +69,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         currentPage: state.pageNumber,
         pageSize: state.pageSize
       });
+    });
+  }
+
+  private setupSearchSubscription() {
+    this.searchStateService.filter$.subscribe(filter => {
+      this.currentFilter = filter;
+      this.currentPage = PAGINATION_DEFAULTS.currentPage;
+      this.loadUserAppliedJobs();
     });
   }
 
@@ -179,26 +190,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   handleFilterChange(filter: JobApplicationFilter): void {
+    const currentFilter = this.searchStateService.getCurrentFilter();
+    let updatedFilter: JobApplicationFilter;
+    
     if (!filter.status || (filter.status as string) === '') {
-      this.currentFilter = {
-        ...this.currentFilter,
+      updatedFilter = {
+        ...currentFilter,
         status: undefined
       };
     } else {
-      this.currentFilter = { ...this.currentFilter, ...filter };
+      updatedFilter = { ...currentFilter, ...filter };
     }
 
-    this.currentPage = PAGINATION_DEFAULTS.currentPage;
-    this.loadUserAppliedJobs();
+    this.searchStateService.updateFilter(updatedFilter);
   }
 
   handleSearchChange(searchTerm: string): void {
-    this.currentFilter = {
-      ...this.currentFilter,
-      searchQuery: searchTerm || undefined
-    };
-    this.currentPage = PAGINATION_DEFAULTS.currentPage;
-    this.loadUserAppliedJobs();
+    this.searchStateService.updateSearchTerm(searchTerm);
   }
 
   handleJobApplicationUpdate(updateData: any): void {

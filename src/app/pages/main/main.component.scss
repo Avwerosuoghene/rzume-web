@@ -20,8 +20,12 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 134px auto;
+  grid-template-rows: 80px auto;
   overflow: hidden;
+
+  @media (min-width: 800px) {
+    grid-template-rows: 134px auto;
+  }
 
   .main-sidebar {
     position: fixed;
@@ -52,12 +56,24 @@
     width: 100%;
     grid-column: 1;
     padding: 10px;
+    background: transparent;
+
+    @media (max-width: 799px) {
+      padding: 0;
+      background: none;
+    }
 
     .main-header-elements {
       border-bottom: 1px solid $light-gray;
       display: flex;
       align-items: center;
       height: 100%;
+      background: transparent;
+
+      @media (max-width: 799px) {
+        border-bottom: none;
+        background: none;
+      }
     }
   }
 
