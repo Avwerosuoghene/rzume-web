@@ -36,7 +36,7 @@
       </button>
 
       <div class="search-section">
-        <app-custom-search-input (searchChange)="onSearchChange($event)"></app-custom-search-input>
+        <app-custom-search-input (searchChange)="onSearchChange($event)" [borderRadius]="borderRadius"></app-custom-search-input>
       </div>
 
       <ng-container *ngTemplateOutlet="profileSection; context: { menu: mobileMenu }"></ng-container>

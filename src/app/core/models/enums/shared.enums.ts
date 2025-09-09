@@ -31,6 +31,13 @@ export enum EmptyStateIcon {
   NoResults = 'search_off',
 }
 
+export enum BorderRadius {
+  small = 8,
+  medium = 14,
+  large = 24,
+  extraLarge = 68
+}
+
 
 
 

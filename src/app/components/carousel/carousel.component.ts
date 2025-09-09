@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
+import { BorderRadius } from '../../core/models';
 import {
   CarouselConfig,
   CarouselItem,
@@ -15,6 +16,7 @@ import {
   styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent implements OnChanges {
+  borderRadius = BorderRadius.medium;
   @Input() config: Partial<CarouselConfig> = {};
   @Input() items: CarouselItem[] = [];
 

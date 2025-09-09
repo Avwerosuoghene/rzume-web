@@ -6,6 +6,7 @@
     <div class="search_n_filter">
       <app-custom-search-input
         (searchChange)="onSearch($event)"
+        [borderRadius]="borderRadius"
       ></app-custom-search-input>
       <app-filter-dropdown
         [filters]="filterOptions"

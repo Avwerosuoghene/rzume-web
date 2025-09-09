@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { AngularMaterialModules } from '../../core/modules';
 import { CustomSearchInputComponent } from '../custom-search-input';
 import { FilterDropdownComponent } from '../filter-dropdown';
-import {  ApplicationStatus, FilterOption } from '../../core/models';
+import {  ApplicationStatus, BorderRadius, FilterOption } from '../../core/models';
 import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.constants';
 import { JobApplicationFilter } from '../../core/models/interface/job-application.models';
 
@@ -14,6 +14,7 @@ import { JobApplicationFilter } from '../../core/models/interface/job-applicatio
   styleUrl: './job-list-toolbar.component.scss'
 })
 export class JobListToolbarComponent {
+  borderRadius = BorderRadius.small;
   filterOptions: Array<FilterOption> = JOB_FILTER_OPTIONS;
 
   @Output() filterChange = new EventEmitter<JobApplicationFilter>();

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { NavigationEnd, Router } from '@angular/router';
-import { User } from '../../../core/models';
+import { BorderRadius, User } from '../../../core/models';
 import { CoreModules } from '../../../core/modules';
 import { StorageService } from '../../../core/services';
 import { LoaderService } from '../../../core/services/loader.service';
@@ -18,6 +18,7 @@ import { SearchStateService } from '../../../core/services/search-state.service'
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
+  borderRadius = BorderRadius.extraLarge;
   router = inject(Router);
   @Output() sidebarToggle = new EventEmitter<void>();
   activeComponent: string = '';

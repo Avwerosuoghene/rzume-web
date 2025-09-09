@@ -1,16 +1,21 @@
-import { Component, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output, OnDestroy, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { searchInputAnimations } from '../../core/animations';
 
 @Component({
   selector: 'app-custom-search-input',
   standalone: true,
-  imports: [ FormsModule],
+  imports: [ FormsModule, CommonModule],
   templateUrl: './custom-search-input.component.html',
-  styleUrl: './custom-search-input.component.scss'
+  styleUrl: './custom-search-input.component.scss',
+  animations: [searchInputAnimations.iconAnimation]
 })
 export class CustomSearchInputComponent implements OnDestroy {
+  @Input() borderRadius: number = 8;
   searchText: string = '';
+  isFocused = false;
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 

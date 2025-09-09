@@ -1,4 +1,12 @@
-<div class="search-container">
-  <img src="assets/icons/search-icon.png" alt="search icon" >
-  <input type="text" class="search-input" placeholder="Search"  [(ngModel)]="searchText" (ngModelChange)="onSearch($event)" >
+<div class="search-container" [style.border-radius.px]="borderRadius">
+  <img *ngIf="!isFocused && !searchText" @iconAnimation src="assets/icons/search-icon.png" alt="search icon">
+  <input 
+    type="text" 
+    class="search-input" 
+    placeholder="Search"  
+    [(ngModel)]="searchText" 
+    (ngModelChange)="onSearch($event)"
+    (focus)="isFocused = true"
+    (blur)="isFocused = false"
+  >
 </div>
