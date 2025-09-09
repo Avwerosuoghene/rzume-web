@@ -1,10 +1,12 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { RouterModules } from '../../core/modules/router-modules';
-import { BODY_SCROLL_DEFAULT, BODY_SCROLL_LOCK, MOBILE_BREAKPOINT } from '../../core/models';
+import { BODY_SCROLL_DEFAULT, BODY_SCROLL_LOCK, MOBILE_BREAKPOINT } from '../../core/models/constants/shared.constants';
+import { UiStateService } from '../../core/services/ui-state.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -13,12 +15,28 @@ import { BODY_SCROLL_DEFAULT, BODY_SCROLL_LOCK, MOBILE_BREAKPOINT } from '../../
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   sidebarOpen = false;
-  isMobileView = window.innerWidth < MOBILE_BREAKPOINT;
+  isMobileView = false;
+  subscriptions = new Subscription();
+
+  constructor(private uiState: UiStateService) { }
 
   ngOnInit() {
     this.updateLayout();
+    this.initiateSubscriptions();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  initiateSubscriptions() {
+    this.subscriptions.add(
+      this.uiState.isMobile$.subscribe(isMobile => {
+        this.isMobileView = isMobile;
+      })
+    );
   }
 
   @HostListener('window:resize')
@@ -41,7 +59,7 @@ export class MainComponent implements OnInit {
   updateLayout() {
     this.isMobileView = window.innerWidth < MOBILE_BREAKPOINT;
     if (!this.isMobileView) {
-      this.closeSidebar(); 
+      this.closeSidebar();
     }
   }
 

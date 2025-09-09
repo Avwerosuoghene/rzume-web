@@ -1,17 +1,30 @@
-  <div class="stat_highlight_container">
-    @if (statHighLights && statHighLights.length > 0) {
-      @for (statItem of statHighLights; track $index) {
-      <div class="stat_highlight_element">
-        <p class="light_text">{{ statItem.description }}</p>
-        <h3>{{ statItem.value }}</h3>
-      </div>
+  @if (!isMobile) {
+    <!-- Desktop/Tablet View -->
+    <div class="stat_highlight_container">
+      @if (statHighLights && statHighLights.length > 0) {
+        @for (statItem of statHighLights; track $index) {
+        <div class="stat_highlight_element">
+          <p class="light_text">{{ statItem.description }}</p>
+          <h3>{{ statItem.value }}</h3>
+        </div>
+        }
+      } @else {
+        <div class="stat_highlight_element loading-state">
+          <span class="loading-text">Fetching stats</span>
+          <span class="dots"></span>
+        </div>
       }
+    </div>
+  } @else {
+    <!-- Mobile Carousel View -->
+    @if (statHighLights && statHighLights.length > 0) {
+      <div class="mobile-carousel">
+        <app-carousel [items]="carouselItems"></app-carousel>
+      </div>
     } @else {
       <div class="stat_highlight_element loading-state">
         <span class="loading-text">Fetching stats</span>
         <span class="dots"></span>
       </div>
     }
-  </div>
-
-  <!-- <app-carousel [items]="carouselItems"></app-carousel> -->
+  }
