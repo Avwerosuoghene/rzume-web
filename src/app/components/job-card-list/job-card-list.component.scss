@@ -1,16 +1,24 @@
+@import "../../styles/general_styles.scss";
 
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.card-list-container {
-  flex: 1; 
-  overflow-y: auto;
-  padding-bottom: 16px;
+.job-card-list-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+
+  .card-list-container {
+    flex: 1; 
+    overflow-y: auto;
+    padding-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .add_job_btn {
+    @extend .rzume-button;
 }
+}
+

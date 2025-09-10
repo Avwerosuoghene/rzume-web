@@ -30,7 +30,8 @@
       [jobs]="data"
       (jobApplicationUpdate)="updateJobApplication($event)"
       (jobStatusUpdate)="handleStatusUpdate($event)"
-      (jobApplicationsDelete)="handleDeleteApplications($event)">
+      (jobApplicationsDelete)="handleDeleteApplications($event)"
+      (jobApplicationAddition)="addNewApplicationEntry()">
     </app-job-card-list>
     <app-custom-table 
       (onSelectionChanged)="handleSelectionChanged($event)" 
