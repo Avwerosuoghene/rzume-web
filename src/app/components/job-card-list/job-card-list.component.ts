@@ -18,7 +18,7 @@ export class JobCardListComponent implements OnChanges {
   @Output() jobApplicationsDelete = new EventEmitter<string[]>();
   @Input() jobs: JobApplicationItem[] = [];
   
-  tabs = JOB_FILTER_OPTIONS;
+  tabs = JOB_FILTER_OPTIONS.filter(option => option.value !== '' );
   activeTab: string = this.tabs[0].value;
   filteredJobs: JobApplicationItem[] = [];
 
