@@ -1,19 +1,25 @@
 @import "../../../../styles/theme.scss";
+@import "../../../../styles/fonts.scss";
+
 
 .tabs-container {
   display: flex;
   width: 100%;
-  border-bottom: 1px solid $light-gray;
   margin-bottom: 16px;
+  // gap: 24px;
+
+  @media (min-width: 950px) {
+    gap: 24px;
+  }
 
   button {
     flex: 1;
-    padding: 12px 0;
+    padding: 6px 0;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: $light-gray;
-    font-size: 16px;
+    color: $gray;
+    font-size: 10px;
     transition: all 0.2s ease-in-out;
 
     &.active {
