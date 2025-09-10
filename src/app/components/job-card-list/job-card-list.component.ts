@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { JobCardTabsComponent } from './partials/job-card-tabs/job-card-tabs.component';
 import { JobCardItemComponent } from './partials/job-card-item/job-card-item.component';
 import { JobApplicationItem } from '../../core/models/interface/job-application.models';
-import { ApplicationStatus } from '../../core/models';
+import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.constants';
 
 @Component({
   selector: 'app-job-card-list',
@@ -18,8 +18,8 @@ export class JobCardListComponent implements OnChanges {
   @Output() jobApplicationsDelete = new EventEmitter<string[]>();
   @Input() jobs: JobApplicationItem[] = [];
   
-  tabs = [ApplicationStatus.Applied, ApplicationStatus.InProgress, ApplicationStatus.OfferReceived, ApplicationStatus.Rejected];
-  activeTab: string = ApplicationStatus.Applied;
+  tabs = JOB_FILTER_OPTIONS;
+  activeTab: string = this.tabs[0].value;
   filteredJobs: JobApplicationItem[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {

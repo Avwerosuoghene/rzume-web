@@ -14,15 +14,11 @@ export const APPLICATION_STATUS_OPTIONS: ApplicationStatusOption[] = [
     value: ApplicationStatus.Applied
   },
   {
-    name: 'Submitted',
-    value: ApplicationStatus.Submitted
-  },
-  {
     name: 'In Progress',
     value: ApplicationStatus.InProgress
   },
   {
-    name: 'Offer Received',
+    name: 'Offered',
     value: ApplicationStatus.OfferReceived
   },
   {

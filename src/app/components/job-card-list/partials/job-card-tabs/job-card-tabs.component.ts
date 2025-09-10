@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FilterOption } from '../../../../core/models';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,11 +10,12 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./job-card-tabs.component.scss']
 })
 export class JobCardTabsComponent {
-  @Input() tabs: string[] = [];
+  @Input() tabs: FilterOption[] = [];
   @Input() activeTab: string = '';
   @Output() tabChange = new EventEmitter<string>();
 
-  selectTab(tab: string) {
-    this.tabChange.emit(tab);
+  selectTab(tab: FilterOption) {
+    this.activeTab = tab.value;
+    this.tabChange.emit(tab.value);
   }
 }
