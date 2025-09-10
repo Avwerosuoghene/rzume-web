@@ -28,7 +28,6 @@ td {
     width: 60px;
   }
   
-  // Default columns get remaining space
   &:not(.set_width_long):not(.set_width_short):not(.centered) {
     width: auto;
   }

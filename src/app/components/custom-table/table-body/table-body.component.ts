@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColumnDefinition } from '../../../core/models';
 import { JobApplicationItem } from '../../../core/models/interface/job-application.models';
+import { TruncatePipe } from '../../../core/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-table-body',
   standalone: true,
-  imports: [AngularMaterialModules, CommonModule, FormsModule],
+  imports: [AngularMaterialModules, CommonModule, FormsModule, TruncatePipe],
   templateUrl: './table-body.component.html',
   styleUrl: './table-body.component.scss'
 })

@@ -45,7 +45,7 @@
         } @else if (col.field === 'applicationDate') {
         {{ item[col.field]  | date:'MM/dd/yyyy' }}
         } @else {
-        {{ item[col.field] || "Not Provided" }}
+        {{ (item[col.field] || "Not Provided") | truncate: 15 }}
         }
       </p>
     </div>
