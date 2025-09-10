@@ -31,15 +31,18 @@
     }
   }
 
+  .empty_state_wrapper{
+    display: block;
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
   app-custom-table {
     flex: 1;
     min-height: 0; 
     display: block;
     overflow: hidden;
-
-    @media (max-width: 768px) {
-      display: none;
-    }
   }
 
   app-job-card-list {

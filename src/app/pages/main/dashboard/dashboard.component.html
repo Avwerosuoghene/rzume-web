@@ -1,50 +1,44 @@
 <section class="dashboard_container">
   <app-job-stats [statHighLights]="statHighLights"></app-job-stats>
   @if (!showEmptyState) {
-  <app-job-list-toolbar class="job-list-toolbar" 
+  <app-job-list-toolbar
+    class="job-list-toolbar"
     (filterChange)="handleFilterChange($event)"
     (searchChange)="handleSearchChange($event)"
     (jobApplicationUpdated)="loadUserAppliedJobs()"
-    (jobApplicationAddition)="addNewApplicationEntry()">
+    (jobApplicationAddition)="addNewApplicationEntry()"
+  >
   </app-job-list-toolbar>
   }
-  
-  @if (showEmptyState) {
-    <app-empty-state 
-      [title]="EMPTY_STATES.noApplications.title"
-      [message]="EMPTY_STATES.noApplications.message"
-      [icon]="EMPTY_STATES.noApplications.icon"
-      [showAction]="EMPTY_STATES.noApplications.showAction"
-      [actionText]="EMPTY_STATES.noApplications.actionText"
-      (actionButtonClickedEvent)="addNewApplicationEntry()">
-    </app-empty-state>
-  } @else if (!hasSearchResults) {
-    <app-empty-state 
-      [title]="EMPTY_STATES.noSearchResults.title"
-      [message]="EMPTY_STATES.noSearchResults.message"
-      [icon]="EMPTY_STATES.noSearchResults.icon"
-      [showAction]="EMPTY_STATES.noSearchResults.showAction">
-    </app-empty-state>
-  } @else {
-    <app-job-card-list 
-      [jobs]="data"
+  <app-empty-state-wrapper
+    [data]="data"
+    [currentFilter]="currentFilter"
+    (actionButtonClicked)="addNewApplicationEntry()"
+    class="empty_state_wrapper"
+  >
+    <app-custom-table
+      (onSelectionChanged)="handleSelectionChanged($event)"
+      (pageChanged)="handlePageChanged($event)"
+      (itemPerPageChanged)="handleChangeInItemPerPage($event)"
       (jobApplicationUpdate)="updateJobApplication($event)"
       (jobStatusUpdate)="handleStatusUpdate($event)"
       (jobApplicationsDelete)="handleDeleteApplications($event)"
-      (jobApplicationAddition)="addNewApplicationEntry()">
-    </app-job-card-list>
-    <app-custom-table 
-      (onSelectionChanged)="handleSelectionChanged($event)" 
-      (pageChanged)="handlePageChanged($event)"  
-      (itemPerPageChanged)="handleChangeInItemPerPage($event)" 
-      (jobApplicationUpdate)="updateJobApplication($event)"
-      (jobStatusUpdate)="handleStatusUpdate($event)"
-      (jobApplicationsDelete)="handleDeleteApplications($event)"
-      [columns]="jobListColumns" 
+      [columns]="jobListColumns"
       [totalPages]="totalPages"
       [currentPage]="currentPage"
       [itemsPerPage]="itemsPerPage"
-      [data]="data">
+      [data]="data"
+    >
     </app-custom-table>
-  }
+  </app-empty-state-wrapper>
+
+  <app-job-card-list
+    [jobs]="data"
+    (jobApplicationUpdate)="updateJobApplication($event)"
+    (jobStatusUpdate)="handleStatusUpdate($event)"
+    (jobApplicationsDelete)="handleDeleteApplications($event)"
+    (jobApplicationAddition)="addNewApplicationEntry()"
+    (filterChange)="handleFilterChange($event)"
+  >
+  </app-job-card-list>
 </section>

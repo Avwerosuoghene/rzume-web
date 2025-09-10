@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { ColumnDefinition, StatHighlight } from '../../../core/models/interface/dashboard.models';
+import { ColumnDefinition } from '../../../core/models/interface/dashboard.models';
 import { EMPTY_STATES, JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
 import { Subject } from 'rxjs';
 import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
@@ -10,11 +10,11 @@ import { JobApplicationService } from '../../../core/services/job-application.se
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
 import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload, JobApplicationStatItemDto } from '../../../core/models/interface/job-application.models';
 import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
-import { EmptyStateComponent } from '../../../components/empty-state/empty-state.component';
 import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
 import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
 import { SearchStateService } from '../../../core/services/search-state.service';
 import { JobCardListComponent } from "../../../components/job-card-list/job-card-list.component";
+import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrapper/empty-state-wrapper.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -25,8 +25,8 @@ import { JobCardListComponent } from "../../../components/job-card-list/job-card
     JobListToolbarComponent,
     CustomTableComponent,
     JobStatsComponent,
-    EmptyStateComponent,
-    JobCardListComponent
+    JobCardListComponent,
+    EmptyStateWrapperComponent
 ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'

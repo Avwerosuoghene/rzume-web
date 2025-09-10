@@ -1,0 +1,21 @@
+@if (showEmptyState) {
+  <app-empty-state
+    [title]="EMPTY_STATES.noApplications.title"
+    [message]="EMPTY_STATES.noApplications.message"
+    [icon]="EMPTY_STATES.noApplications.icon"
+    [showAction]="EMPTY_STATES.noApplications.showAction"
+    [actionText]="EMPTY_STATES.noApplications.actionText"
+    (actionButtonClickedEvent)="onAction()"
+  >
+  </app-empty-state>
+} @else if (!hasSearchResults) {
+  <app-empty-state
+    [title]="EMPTY_STATES.noSearchResults.title"
+    [message]="EMPTY_STATES.noSearchResults.message"
+    [icon]="EMPTY_STATES.noSearchResults.icon"
+    [showAction]="EMPTY_STATES.noSearchResults.showAction"
+  >
+  </app-empty-state>
+} @else {
+  <ng-content></ng-content>
+}

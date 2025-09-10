@@ -6,19 +6,29 @@
   >
   </app-job-card-tabs>
 
-  <div class="card-list-container">
-    <app-job-card-item
-      *ngFor="let job of jobs"
-      [job]="job"
-      (edit)="jobApplicationUpdate.emit($event)"
-      (delete)="jobApplicationsDelete.emit([$event.id])"
-      (statusChange)="jobStatusUpdate.emit({ item: $event })"
+  <app-empty-state-wrapper 
+    [data]="jobs" 
+    [currentFilter]="currentFilter" 
+    (actionButtonClicked)="jobApplicationAddition.emit()"
+  >
+    <div class="card-list-container">
+      <app-job-card-item
+        *ngFor="let job of jobs"
+        [job]="job"
+        (edit)="jobApplicationUpdate.emit($event)"
+        (delete)="jobApplicationsDelete.emit([$event.id])"
+        (statusChange)="jobStatusUpdate.emit({ item: $event })"
+      >
+      </app-job-card-item>
+    </div>
+    <button
+      class="add_job_btn"
+      mat-flat-button
+      type="button"
+      (click)="jobApplicationAddition.emit()"
     >
-    </app-job-card-item>
-  </div>
-
-  <button class="add_job_btn" mat-flat-button type="button" (click)="jobApplicationAddition.emit()" >
-    <mat-icon class="add_icon">add</mat-icon>
-    <p>Add Job</p>
-  </button>
+      <mat-icon class="add_icon">add</mat-icon>
+      <p>Add Job</p>
+    </button>
+  </app-empty-state-wrapper>
 </div>
