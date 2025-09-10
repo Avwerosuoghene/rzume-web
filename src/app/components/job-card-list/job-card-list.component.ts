@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JobCardTabsComponent } from './partials/job-card-tabs/job-card-tabs.component';
 import { JobCardItemComponent } from './partials/job-card-item/job-card-item.component';
@@ -13,6 +13,9 @@ import { ApplicationStatus } from '../../core/models';
   styleUrls: ['./job-card-list.component.scss']
 })
 export class JobCardListComponent implements OnChanges {
+  @Output() jobApplicationUpdate = new EventEmitter<JobApplicationItem>();
+  @Output() jobStatusUpdate = new EventEmitter<{ item: JobApplicationItem }>();
+  @Output() jobApplicationsDelete = new EventEmitter<string[]>();
   @Input() jobs: JobApplicationItem[] = [];
   
   tabs = [ApplicationStatus.Applied, ApplicationStatus.InProgress, ApplicationStatus.OfferReceived, ApplicationStatus.Rejected];

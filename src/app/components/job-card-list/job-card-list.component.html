@@ -7,6 +7,9 @@
 <div class="card-list-container">
   <app-job-card-item 
     *ngFor="let job of jobs" 
-    [job]="job">
+    [job]="job"
+    (edit)="jobApplicationUpdate.emit($event)"
+    (delete)="jobApplicationsDelete.emit([$event.id])"
+    (statusChange)="jobStatusUpdate.emit({ item: $event })">
   </app-job-card-item>
 </div>

@@ -5,15 +5,27 @@
       <p class="job-role">{{ job.position }}</p>
     </div>
     <div class="action-icons">
-      <button mat-icon-button>
-        <mat-icon>edit</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="more options">
+        <mat-icon>more_vert</mat-icon>
       </button>
-      <button mat-icon-button>
-        <mat-icon>delete</mat-icon>
-      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="triggerApplicationEdit(job)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="triggerStatusChange(job)">
+          <mat-icon>swap_horiz</mat-icon>
+          <span>Change Status</span>
+        </button>
+        <button mat-menu-item (click)="triggerDelete(job)">
+          <mat-icon>delete</mat-icon>
+          <span>Remove</span>
+        </button>
+      </mat-menu>
     </div>
   </div>
   <div class="card-footer">
+    @if (job.jobLink) {
     <div class="url-section">
       
       <a [href]="job.jobLink" target="_blank">{{ job.jobLink }}</a>
@@ -21,6 +33,7 @@
         <mat-icon class="copy-icon">content_copy</mat-icon>
       </button>
     </div>
+    }
     <p class="date">{{ job.applicationDate | date: 'MMM dd yyyy' }}</p>
   </div>
 </div>
