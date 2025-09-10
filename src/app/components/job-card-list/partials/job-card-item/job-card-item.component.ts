@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobApplicationItem } from '../../core/models/interface/job-application.models';
+import { JobApplicationItem } from '../../../../core/models/interface/job-application.models';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 

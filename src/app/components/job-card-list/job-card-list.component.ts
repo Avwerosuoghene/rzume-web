@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobCardTabsComponent } from '../job-card-tabs/job-card-tabs.component';
-import { JobCardItemComponent } from '../job-card-item/job-card-item.component';
+import { JobCardTabsComponent } from './partials/job-card-tabs/job-card-tabs.component';
+import { JobCardItemComponent } from './partials/job-card-item/job-card-item.component';
 import { JobApplicationItem } from '../../core/models/interface/job-application.models';
 import { ApplicationStatus } from '../../core/models';
 

@@ -1,10 +1,11 @@
-@import "../../styles/theme.scss";
+@import "../../../../styles/theme.scss";
+@import "../../../../styles/fonts.scss";
 
 .card-container {
   background-color: white;
   border: 1px solid $light-gray;
   border-radius: 24px;
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -17,11 +18,13 @@
 
   .company-info {
     .company-name {
-      font-weight: bold;
+      font-size: $regular-font-size;
+      font-weight: $regular-font-weight;
+      color: $black;
     }
     .job-role {
-      font-size: 0.9em;
-      color: $light-gray;
+      font-size: $small-font-size;
+      color: $gray;
     }
   }
 
@@ -35,18 +38,32 @@
     gap: 8px;
 
     a {
-      color: $rzume-blue;
+      color: $gray;
       text-decoration: none;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 150px; 
+      padding: 10px;
+      background-color: $extra-light-gray;
+      border-radius: 24px;
     }
+
+    .copy-icon-button {
+      padding: 10px;
+      background-color: $extra-light-gray;
+      border-radius: 24px;
+
+      .copy-icon {
+        color: $gray;
+      }
+    }
+    
   }
 
   .date {
-    font-size: 0.8em;
-    color: $light-gray;
+    font-size: $small-font-size;
+    color: $gray;
     align-self: flex-end;
   }
 }

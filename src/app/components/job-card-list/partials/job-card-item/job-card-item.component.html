@@ -15,11 +15,12 @@
   </div>
   <div class="card-footer">
     <div class="url-section">
+      
       <a [href]="job.jobLink" target="_blank">{{ job.jobLink }}</a>
-      <button mat-icon-button>
-        <mat-icon>content_copy</mat-icon>
+      <button mat-icon-button class="copy-icon-button">
+        <mat-icon class="copy-icon">content_copy</mat-icon>
       </button>
     </div>
-    <p class="date">{{ job.applicationDate | date: 'shortDate' }}</p>
+    <p class="date">{{ job.applicationDate | date: 'MMM dd yyyy' }}</p>
   </div>
 </div>
