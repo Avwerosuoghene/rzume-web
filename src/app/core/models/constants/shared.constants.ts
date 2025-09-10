@@ -17,5 +17,10 @@ export const MOBILE_BREAKPOINT = 800;
 export const BODY_SCROLL_LOCK = 'hidden';
 export const BODY_SCROLL_DEFAULT = '';
 
+export const COPY_SUCCESS_MESSAGE = 'Link copied to clipboard!';
+export const SNACKBAR_CLOSE_LABEL = 'Close';
+export const SNACKBAR_DURATION = 2000;
+
+
 
 

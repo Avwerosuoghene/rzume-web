@@ -29,7 +29,7 @@
     <div class="url-section">
       
       <a [href]="job.jobLink" target="_blank">{{ job.jobLink }}</a>
-      <button mat-icon-button class="copy-icon-button">
+      <button mat-icon-button class="copy-icon-button" (click)="copyLink(job.jobLink)">
         <mat-icon class="copy-icon">content_copy</mat-icon>
       </button>
     </div>
