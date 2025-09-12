@@ -27,18 +27,18 @@
     flex-shrink: 0;
   }
 
-  .empty_state_wrapper{
-    display: block;
+  .empty_state_wrapper {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     min-height: 0;
+
+    app-custom-table {
+      flex: 1;
+      min-height: 0;
+    }
   }
 
-  app-custom-table {
-    flex: 1;
-    min-height: 0; 
-    display: block;
-    overflow: hidden;
-  }
 
   app-job-card-list {
     display: flex; 
