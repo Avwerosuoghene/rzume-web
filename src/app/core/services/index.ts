@@ -7,3 +7,4 @@ export * from './mock-data.service';
 export * from './timer.service';
 export * from './loader.service';
 export * from './search-state.service';
+export * from './screen-manager.service';
