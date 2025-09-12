@@ -3,7 +3,7 @@ import { CustomTableComponent } from '../../../components/custom-table/custom-ta
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
 import { ColumnDefinition } from '../../../core/models/interface/dashboard.models';
 import { EMPTY_STATES, JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, finalize } from 'rxjs';
 import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 import { JobApplicationService } from '../../../core/services/job-application.service';
@@ -46,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   showEmptyState: boolean = true;
   destroy$ = new Subject<void>();
   currentFilter: JobApplicationFilter = {};
+  isLoading: boolean = false;
   isMobile: boolean = false;
 
   constructor(
@@ -90,8 +91,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ).subscribe(filter => {
       this.currentFilter = filter;
       this.currentPage = PAGINATION_DEFAULTS.currentPage;
+      this.itemsPerPage = PAGINATION_DEFAULTS.itemsPerPage;
       this.loadUserAppliedJobs();
     });
+  }
+
+  handleLoadMore(): void {
+    this.itemsPerPage += 5;
+    this.loadUserAppliedJobs();
   }
 
   handleChangeInItemPerPage(itemsPerPage: number): void {
@@ -113,13 +120,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   loadUserAppliedJobs(): void {
+    this.setIsLoading(true);
     this.jobApplicationService.getApplications({
       ...this.currentFilter,
       page: this.currentPage,
       pageSize: this.itemsPerPage
-    }).subscribe({
+    }).pipe(
+      finalize(() => this.setIsLoading(false))
+    ).subscribe({
       next: (response) => {
         if (response.success && response.data) {
+          
           this.updateComponentState(response.data.items, {
             totalCount: response.data.totalCount,
             totalPages: response.data.totalPages,
@@ -261,6 +272,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.reloadDashboardData();
       }
     });
+  }
+
+  setIsLoading(isLoading: boolean): void {
+    this.isLoading = isLoading;
   }
 
   ngOnDestroy() {

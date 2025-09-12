@@ -26,6 +26,12 @@
 
   .add_job_btn {
     @extend .rzume-button;
+    display: flex;
+
+    .button_elements {
+        display: flex;
+        align-items: center;
+    }
 }
 }
 

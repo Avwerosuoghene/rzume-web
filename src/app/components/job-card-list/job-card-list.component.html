@@ -11,7 +11,7 @@
     [currentFilter]="currentFilter" 
     (actionButtonClicked)="handleAddJobApplication()"
   >
-    <div class="card-list-container">
+    <div class="card-list-container" #cardListContainer>
       <app-job-card-item
         *ngFor="let job of jobs"
         [job]="job"
@@ -27,8 +27,12 @@
     mat-flat-button
     type="button"
     (click)="handleAddJobApplication()"
+    [disabled]="isLoading"
   >
-    <mat-icon class="add_icon">add</mat-icon>
-    <p>Add Job</p>
+    @if (isLoading) {
+      <app-circular-loader></app-circular-loader>
+    } @else {
+        <p>Add Job</p>
+    }
   </button>
 </div>

@@ -3,11 +3,14 @@
   @if (isMobile) {
     <app-job-card-list
       [jobs]="data"
+      [isLoading]="isLoading"
+      [totalItems]="totalItems"
       (jobApplicationUpdate)="updateJobApplication($event)"
       (jobStatusUpdate)="handleStatusUpdate($event)"
       (jobApplicationsDelete)="handleDeleteApplications($event)"
       (jobApplicationAddition)="addNewApplicationEntry()"
       (filterChange)="handleFilterChange($event)"
+      (loadMore)="handleLoadMore()"
     >
     </app-job-card-list>
   } @else {

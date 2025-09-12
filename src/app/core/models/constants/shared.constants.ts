@@ -21,6 +21,9 @@ export const COPY_SUCCESS_MESSAGE = 'Link copied to clipboard!';
 export const SNACKBAR_CLOSE_LABEL = 'Close';
 export const SNACKBAR_DURATION = 2000;
 
+export const SCROLL_DEBOUNCE_TIME = 200;
+export const SCROLL_THRESHOLD = 50;
+
 
 
 

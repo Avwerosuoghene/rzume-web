@@ -4,10 +4,10 @@ import { ColumnDefinition, EmptyStateConfig } from "../interface/dashboard.model
 import { APPLICATION_STATUS_OPTIONS } from "./application-status-options.constants";
 
 export const PAGINATION_DEFAULTS = {
-  totalPages: 1,
-  currentPage: 1,
-  itemsPerPage: 5,
-  totalItems: 0,
+  totalPages: 1 as number,
+  currentPage: 1 as number,
+  itemsPerPage: 5 as number,
+  totalItems: 0 as number,
 } as const;
 
 export const JOB_TABLE_COLUMNS = [
