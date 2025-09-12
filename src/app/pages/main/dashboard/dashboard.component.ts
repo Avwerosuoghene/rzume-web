@@ -3,7 +3,7 @@ import { CustomTableComponent } from '../../../components/custom-table/custom-ta
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
 import { ColumnDefinition } from '../../../core/models/interface/dashboard.models';
 import { EMPTY_STATES, JOB_TABLE_COLUMNS, PAGINATION_DEFAULTS } from '../../../core/models/constants/dashboard.constants';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { JobListToolbarComponent } from '../../../components/job-list-toolbar/job-list-toolbar.component';
 import { JobStatsComponent } from '../../../components/job-stats/job-stats.component';
 import { JobApplicationService } from '../../../core/services/job-application.service';
@@ -12,7 +12,7 @@ import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload, Jo
 import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
 import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
 import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
-import { SearchStateService } from '../../../core/services/search-state.service';
+import { ScreenManagerService, SearchStateService } from '../../../core/services';
 import { JobCardListComponent } from "../../../components/job-card-list/job-card-list.component";
 import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrapper/empty-state-wrapper.component";
 
@@ -46,23 +46,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
   showEmptyState: boolean = true;
   destroy$ = new Subject<void>();
   currentFilter: JobApplicationFilter = {};
-  
+  isMobile: boolean = false;
 
   constructor(
     private state: JobApplicationStateService,
     private jobApplicationService: JobApplicationService,
     private jobDialogService: JobApplicationDialogService,
-    private searchStateService: SearchStateService
+    private searchStateService: SearchStateService,
+    private screenManager: ScreenManagerService
   ) { }
 
   ngOnInit(): void {
+    this.setupScreenManagerSubscription();
     this.initiateJobStats();
     this.setupApplicationSubscription();
     this.setupSearchSubscription();
   }
 
+  setupScreenManagerSubscription(): void {
+    this.screenManager.isMobile$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isMobile => {
+        this.isMobile = isMobile;
+      });
+  }
+
   setupApplicationSubscription() {
-    this.state.getApplications().subscribe(state => {
+    this.state.getApplications().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(state => {
       this.updateComponentState(state.items, {
         totalCount: state.totalCount,
         totalPages: state.totalPages,
@@ -73,7 +85,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private setupSearchSubscription() {
-    this.searchStateService.filter$.subscribe(filter => {
+    this.searchStateService.filter$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(filter => {
       this.currentFilter = filter;
       this.currentPage = PAGINATION_DEFAULTS.currentPage;
       this.loadUserAppliedJobs();
@@ -87,7 +101,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   handlePageChanged(page: number): void {
-
     if (page !== this.currentPage) {
       this.currentPage = page;
       this.loadUserAppliedJobs();

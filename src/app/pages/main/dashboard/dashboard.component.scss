@@ -25,17 +25,12 @@
 
   app-job-list-toolbar {
     flex-shrink: 0;
-
-    @media (max-width: 768px) {
-      display: none;
-    }
   }
 
   .empty_state_wrapper{
     display: block;
-    @media (max-width: 768px) {
-      display: none;
-    }
+    flex: 1;
+    min-height: 0;
   }
 
   app-custom-table {
@@ -46,13 +41,9 @@
   }
 
   app-job-card-list {
-    display: none;
-
-    @media (max-width: 768px) {
-      display: flex; 
-      flex: 1;
-      min-height: 0;
-    }
+    display: flex; 
+    flex: 1;
+    min-height: 0;
   }
 
   .stat_highlight_container {

@@ -1,44 +1,46 @@
 <section class="dashboard_container">
   <app-job-stats [statHighLights]="statHighLights"></app-job-stats>
-  @if (!showEmptyState) {
-  <app-job-list-toolbar
-    class="job-list-toolbar"
-    (filterChange)="handleFilterChange($event)"
-    (searchChange)="handleSearchChange($event)"
-    (jobApplicationUpdated)="loadUserAppliedJobs()"
-    (jobApplicationAddition)="addNewApplicationEntry()"
-  >
-  </app-job-list-toolbar>
-  }
-  <app-empty-state-wrapper
-    [data]="data"
-    [currentFilter]="currentFilter"
-    (actionButtonClicked)="addNewApplicationEntry()"
-    class="empty_state_wrapper"
-  >
-    <app-custom-table
-      (onSelectionChanged)="handleSelectionChanged($event)"
-      (pageChanged)="handlePageChanged($event)"
-      (itemPerPageChanged)="handleChangeInItemPerPage($event)"
+  @if (isMobile) {
+    <app-job-card-list
+      [jobs]="data"
       (jobApplicationUpdate)="updateJobApplication($event)"
       (jobStatusUpdate)="handleStatusUpdate($event)"
       (jobApplicationsDelete)="handleDeleteApplications($event)"
-      [columns]="jobListColumns"
-      [totalPages]="totalPages"
-      [currentPage]="currentPage"
-      [itemsPerPage]="itemsPerPage"
-      [data]="data"
+      (jobApplicationAddition)="addNewApplicationEntry()"
+      (filterChange)="handleFilterChange($event)"
     >
-    </app-custom-table>
-  </app-empty-state-wrapper>
-
-  <app-job-card-list
-    [jobs]="data"
-    (jobApplicationUpdate)="updateJobApplication($event)"
-    (jobStatusUpdate)="handleStatusUpdate($event)"
-    (jobApplicationsDelete)="handleDeleteApplications($event)"
-    (jobApplicationAddition)="addNewApplicationEntry()"
-    (filterChange)="handleFilterChange($event)"
-  >
-  </app-job-card-list>
+    </app-job-card-list>
+  } @else {
+    @if (!showEmptyState) {
+      <app-job-list-toolbar
+        class="job-list-toolbar"
+        (filterChange)="handleFilterChange($event)"
+        (searchChange)="handleSearchChange($event)"
+        (jobApplicationUpdated)="loadUserAppliedJobs()"
+        (jobApplicationAddition)="addNewApplicationEntry()"
+      >
+      </app-job-list-toolbar>
+    }
+    <app-empty-state-wrapper
+      [data]="data"
+      [currentFilter]="currentFilter"
+      (actionButtonClicked)="addNewApplicationEntry()"
+      class="empty_state_wrapper"
+    >
+      <app-custom-table
+        (onSelectionChanged)="handleSelectionChanged($event)"
+        (pageChanged)="handlePageChanged($event)"
+        (itemPerPageChanged)="handleChangeInItemPerPage($event)"
+        (jobApplicationUpdate)="updateJobApplication($event)"
+        (jobStatusUpdate)="handleStatusUpdate($event)"
+        (jobApplicationsDelete)="handleDeleteApplications($event)"
+        [columns]="jobListColumns"
+        [totalPages]="totalPages"
+        [currentPage]="currentPage"
+        [itemsPerPage]="itemsPerPage"
+        [data]="data"
+      >
+      </app-custom-table>
+    </app-empty-state-wrapper>
+  }
 </section>

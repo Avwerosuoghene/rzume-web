@@ -92,11 +92,7 @@ hr.header {
 }
 
 .desktop-header {
-  display: none;
-
-  @media (min-width: 800px) {
-    display: block;
-  }
+  display: block;
 }
 
 /* Mobile header */
@@ -104,10 +100,6 @@ hr.header {
   display: block;
   height: 100%;
   background-color: $extra-light-gray;
-
-  @media (min-width: 800px) {
-    display: none;
-  }
 
   .mobile-header-content {
     display: flex;
