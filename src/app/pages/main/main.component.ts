@@ -45,10 +45,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   toggleSidebar() {
-    if (this.isMobileView) {
-      this.sidebarOpen = !this.sidebarOpen;
-      this.lockScroll(this.sidebarOpen);
-    }
+    this.sidebarOpen = !this.sidebarOpen;
+    this.lockScroll(this.sidebarOpen);
   }
 
   closeSidebar() {

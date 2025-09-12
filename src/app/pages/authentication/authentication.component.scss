@@ -12,11 +12,9 @@
   position: relative;
   padding: 20px;
 
-  @media (min-width: 700px) {
+  @media (min-width: 600px) {
     padding: 55px 52px;
   }
-
-
 
 
   .auth-elements {
@@ -27,7 +25,7 @@
     height: 100%;
     gap: 56px;
 
-    @media (min-width: 700px) {
+    @media (min-width: 601px) {
       grid-template-columns: 1fr 1fr;
 
     }
@@ -35,7 +33,7 @@
     .auth-left_element {
 
       display: none;
-      @media (min-width: 700px) {
+      @media (min-width: 601px) {
         display: block;
         background-image: url("../../../assets/images/auth-image.png");
         background-size: cover;
@@ -61,7 +59,7 @@
         width: 80px;
 
 
-        @media (min-width: 700px) {
+        @media (min-width: 601px) {
           width: 144px;
         }
       }

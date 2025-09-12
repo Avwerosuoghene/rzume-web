@@ -16,7 +16,7 @@ form {
 .mat-icon-button,
 .mat-fab,
 .mat-mini-fab {
-  border-radius: 10px; /* Change this value to the desired border-radius */
+  border-radius: 10px; 
 }
 
 .blurred {
@@ -111,7 +111,7 @@ body {
 .desktop_only {
   display: none;
 
-  @media (min-width: 700px) {
+  @media (min-width: 599px) {
     display: block;
   }
 }
@@ -121,12 +121,24 @@ body {
 .mobile_only {
   display: block;
 
-  @media (min-width: 700px) {
+  @media (min-width: 599px) {
     display: none;
   }
 
 }
 
+
+@media (max-width: 599px) {
+  .add-job-dialog-panel {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw !important;
+
+    .mat-mdc-dialog-container .mdc-dialog__surface {
+      border-radius: 0;
+    }
+  }
+}
 
 .custom-checkbox {
   position: relative;

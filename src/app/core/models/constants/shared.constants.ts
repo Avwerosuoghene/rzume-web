@@ -13,7 +13,7 @@ export const QUERY_TOKEN = 'token';
 
 export const EMAIL = 'email';
 
-export const MOBILE_BREAKPOINT = 800;
+export const MOBILE_BREAKPOINT = 599;
 export const BODY_SCROLL_LOCK = 'hidden';
 export const BODY_SCROLL_DEFAULT = '';
 

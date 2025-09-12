@@ -17,7 +17,7 @@ export class JobApplicationDialogService {
   ) {}
 
   openAddJobDialog(data: AddJobDialogData): MatDialogRef<JobAddDialogComponent, DialogCloseResponse<JobApplicationItem>> {
-    return this.dialog.open(JobAddDialogComponent, { data, disableClose: true });
+    return this.dialog.open(JobAddDialogComponent, { data, disableClose: true, panelClass: 'add-job-dialog-panel' });
   }
 
   handleDialogClose(
