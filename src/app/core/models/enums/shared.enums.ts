@@ -4,7 +4,8 @@ export enum ApplicationStatus {
   Submitted = 'Submitted',
   InProgress = 'InProgress',
   OfferReceived = 'OfferReceived',
-  Rejected = 'Rejected'
+  Rejected = 'Rejected',
+  All = ''
 }
 
 export enum onBoardStages {

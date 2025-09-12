@@ -1,6 +1,6 @@
 import { EmptyStateIcon } from "../enums";
 import { FilterOption } from "../interface";
-import { ColumnDefinition, EmptyStateConfig } from "../interface/dashboard.models";
+import { ColumnDefinition } from "../interface/dashboard.models";
 import { APPLICATION_STATUS_OPTIONS } from "./application-status-options.constants";
 
 export const PAGINATION_DEFAULTS = {

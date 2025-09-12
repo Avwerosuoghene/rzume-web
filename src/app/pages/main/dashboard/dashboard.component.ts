@@ -9,12 +9,15 @@ import { JobStatsComponent } from '../../../components/job-stats/job-stats.compo
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
 import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload, JobApplicationStatItemDto } from '../../../core/models/interface/job-application.models';
-import { DialogCloseStatus } from '../../../core/models/enums/dialog.enums';
-import { AddJobDialogData, DialogCloseResponse } from '../../../core/models';
 import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
 import { ScreenManagerService, SearchStateService } from '../../../core/services';
 import { JobCardListComponent } from "../../../components/job-card-list/job-card-list.component";
 import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrapper/empty-state-wrapper.component";
+import { buildPagination, mapApplicationToTableData, mapJobStats, normalizeFilter, resetPagination, updateFilterState, updatePagination } from '../../../core/helpers/dashboard.utils';
+import { DialogHelperUtil } from '../../../core/helpers/dialog-helper.util';
+import { ITEMS_INCREMENT } from '../../../core/models';
+
+
 
 @Component({
   selector: 'app-dashboard',
@@ -27,35 +30,40 @@ import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrap
     JobStatsComponent,
     JobCardListComponent,
     EmptyStateWrapperComponent
-],
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  EMPTY_STATES = EMPTY_STATES;
+  readonly EMPTY_STATES = EMPTY_STATES;
+  readonly JOB_TABLE_COLUMNS = JOB_TABLE_COLUMNS;
 
   statHighLights: JobApplicationStatItemDto[] = [];
-
   data: JobApplicationItem[] = [];
-  jobListColumns: Array<ColumnDefinition> = JOB_TABLE_COLUMNS;
-  totalPages: number = PAGINATION_DEFAULTS.totalPages;
-  currentPage: number = PAGINATION_DEFAULTS.currentPage;
-  itemsPerPage: number = PAGINATION_DEFAULTS.itemsPerPage;
-  totalItems: number = PAGINATION_DEFAULTS.totalItems;
+  jobListColumns: Array<ColumnDefinition> = this.JOB_TABLE_COLUMNS;
+
+  totalPages = PAGINATION_DEFAULTS.totalPages;
+  currentPage = PAGINATION_DEFAULTS.currentPage;
+  itemsPerPage = PAGINATION_DEFAULTS.itemsPerPage;
+  totalItems = PAGINATION_DEFAULTS.totalItems;
+  
+
   selectedItems: Array<JobApplicationItem> = [];
-  showEmptyState: boolean = true;
-  destroy$ = new Subject<void>();
+  showEmptyState = true;
+  isLoading = false;
+  isMobile = false;
+
   currentFilter: JobApplicationFilter = {};
-  isLoading: boolean = false;
-  isMobile: boolean = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private state: JobApplicationStateService,
     private jobApplicationService: JobApplicationService,
     private jobDialogService: JobApplicationDialogService,
     private searchStateService: SearchStateService,
-    private screenManager: ScreenManagerService
-  ) { }
+    private screenManager: ScreenManagerService,
+    private dialogHelper: DialogHelperUtil
+  ) {}
 
   ngOnInit(): void {
     this.setupScreenManagerSubscription();
@@ -64,46 +72,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.setupSearchSubscription();
   }
 
-  setupScreenManagerSubscription(): void {
+
+  private setupScreenManagerSubscription(): void {
     this.screenManager.isMobile$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(isMobile => {
-        this.isMobile = isMobile;
-      });
+      .subscribe(isMobile => this.isMobile = isMobile);
   }
 
-  setupApplicationSubscription() {
-    this.state.getApplications().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(state => {
-      this.updateComponentState(state.items, {
-        totalCount: state.totalCount,
-        totalPages: state.totalPages,
-        currentPage: state.pageNumber,
-        pageSize: state.pageSize
-      });
-    });
+  private setupApplicationSubscription(): void {
+    this.state.getApplications()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(state => this.updateComponentState(state.items, buildPagination(state)));
   }
 
-  private setupSearchSubscription() {
-    this.searchStateService.filter$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(filter => {
-      this.currentFilter = filter;
-      this.currentPage = PAGINATION_DEFAULTS.currentPage;
-      this.itemsPerPage = PAGINATION_DEFAULTS.itemsPerPage;
-      this.loadUserAppliedJobs();
-    });
+  private setupSearchSubscription(): void {
+    this.searchStateService.filter$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(filter => {
+        const pagination = resetPagination();
+        this.currentFilter = filter;
+        this.currentPage = pagination.currentPage;
+        this.itemsPerPage = pagination.itemsPerPage;
+        this.loadUserAppliedJobs();
+      });
   }
 
   handleLoadMore(): void {
-    this.itemsPerPage += 5;
+    this.itemsPerPage += ITEMS_INCREMENT;
     this.loadUserAppliedJobs();
   }
 
   handleChangeInItemPerPage(itemsPerPage: number): void {
     this.itemsPerPage = itemsPerPage;
-    this.currentPage = PAGINATION_DEFAULTS.currentPage;;
+    this.currentPage = PAGINATION_DEFAULTS.currentPage;
     this.loadUserAppliedJobs();
   }
 
@@ -114,171 +115,86 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  reloadDashboardData() {
+  reloadDashboardData(): void {
     this.initiateJobStats();
     this.loadUserAppliedJobs();
   }
 
   loadUserAppliedJobs(): void {
     this.setIsLoading(true);
+
     this.jobApplicationService.getApplications({
       ...this.currentFilter,
       page: this.currentPage,
       pageSize: this.itemsPerPage
     }).pipe(
       finalize(() => this.setIsLoading(false))
-    ).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          
-          this.updateComponentState(response.data.items, {
-            totalCount: response.data.totalCount,
-            totalPages: response.data.totalPages,
-            currentPage: response.data.pageNumber,
-            pageSize: response.data.pageSize
-          });
-        }
+    ).subscribe(response => {
+      if (response.success && response.data) {
+        this.updateComponentState(response.data.items, {
+          totalCount: response.data.totalCount,
+          totalPages: response.data.totalPages,
+          currentPage: response.data.pageNumber,
+          pageSize: response.data.pageSize
+        });
       }
     });
   }
 
-  private mapApplicationToTableData(application: JobApplicationItem): JobApplicationItem {
-    return {
-      id: application.id,
-      position: application.position,
-      companyName: application.companyName,
-      userId: application.userId,
-      applicationDate: application.applicationDate
-        ? new Date(application.applicationDate)
-        : undefined,
-      jobLink: application.jobLink,
-      resumeLink: application.resumeLink,
-      status: application.status,
-      notes: application.notes
-    };
+  private initiateJobStats(): void {
+    this.jobApplicationService.getStats()
+      .subscribe(response => {
+        if (response.success && response.data) {
+          this.statHighLights = mapJobStats(response.data);
+        }
+      });
   }
 
-  updateComponentState(
+  private updateComponentState(
     applications: JobApplicationItem[],
-    pagination: {
-      totalCount: number;
-      totalPages: number;
-      currentPage: number;
-      pageSize: number;
-    }
-  ) {
-    this.updateFilterState(applications);
-    this.data = applications.map(this.mapApplicationToTableData);
-    this.updatePagination(pagination);
-  }
-  
-  updateFilterState(applications: JobApplicationItem[]) {
-    const hasNoApplications = applications.length === 0;
-    const hasNoFilters = !this.currentFilter?.searchQuery && !Object.values(this.currentFilter || {}).some(val => val);
-    this.showEmptyState = hasNoApplications && hasNoFilters;
-  }
-  
-  updatePagination(pagination: {
-    totalCount: number;
-    totalPages: number;
-    currentPage: number;
-    pageSize: number;
-  }) {
-    this.totalItems = pagination.totalCount;
-    this.totalPages = pagination.totalPages;
-    this.currentPage = pagination.currentPage;
-    this.itemsPerPage = pagination.pageSize;
+    pagination: { totalCount: number; totalPages: number; currentPage: number; pageSize: number }
+  ): void {
+    this.showEmptyState = updateFilterState(applications, this.currentFilter);
+    this.data = applications.map(mapApplicationToTableData);
+    updatePagination(pagination, this);
   }
 
-  initiateJobStats(): void {
-    this.jobApplicationService.getStats().subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          const stats = response.data;
-          this.statHighLights = [
-            stats.totalApplications,
-            stats.rejected,
-            stats.inProgress,
-            stats.offerReceived
-          ].filter(Boolean);
-        }
-      }
-    });
+  private setIsLoading(isLoading: boolean): void {
+    this.isLoading = isLoading;
   }
 
+  addNewApplicationEntry(): void {
+    this.dialogHelper.openAddApplicationDialog(() => this.reloadDashboardData());
 
+  }
 
-  handleSelectionChanged(event: any) {
+  updateJobApplication(jobData: JobApplicationItem): void {
+    this.dialogHelper.openEditApplicationDialog(jobData, () => this.reloadDashboardData());
+  }
+
+  handleStatusUpdate(updateData: { item: JobApplicationItem }): void {
+    this.jobDialogService.updateApplication(updateData.item, () => this.reloadDashboardData());
+  }
+
+  handleDeleteApplications(applicationIds: string[]): void {
+    const deletePayload: DeleteApplicationsPayload = { ids: applicationIds };
+    this.jobApplicationService.deleteApplication(deletePayload)
+      .subscribe(() => this.reloadDashboardData());
+  }
+
+  handleSelectionChanged(event: any): void {
     this.selectedItems = event;
   }
 
   handleFilterChange(filter: JobApplicationFilter): void {
-    const currentFilter = this.searchStateService.getCurrentFilter();
-    let updatedFilter: JobApplicationFilter;
-    
-    if (!filter.status || (filter.status as string) === '') {
-      updatedFilter = {
-        ...currentFilter,
-        status: undefined
-      };
-    } else {
-      updatedFilter = { ...currentFilter, ...filter };
-    }
-
-    this.searchStateService.updateFilter(updatedFilter);
+    this.searchStateService.updateFilter(normalizeFilter(this.currentFilter, filter));
   }
 
   handleSearchChange(searchTerm: string): void {
     this.searchStateService.updateSearchTerm(searchTerm);
   }
 
-  addNewApplicationEntry() {
-    const dialogData: AddJobDialogData = { isEditing: false };
-    this.jobDialogService.openAddJobDialog(dialogData)
-      .afterClosed()
-      .subscribe(response => {
-        this.jobDialogService.handleDialogClose(response, payload => {
-          this.jobDialogService.createApplication(payload, () => this.reloadDashboardData());
-        });
-      });
-  }
-
-  updateJobApplication(jobData: JobApplicationItem) {
-    const dialogData: AddJobDialogData = { isEditing: true, jobApplicationData: jobData };
-    this.jobDialogService.openAddJobDialog(dialogData)
-      .afterClosed()
-      .subscribe(response => this.handleUpdateDialogResponse(response, jobData.id));
-  }
-
-  handleUpdateDialogResponse(
-    response: DialogCloseResponse<JobApplicationItem> | undefined,
-    jobId: string
-  ) {
-    if (!response) return;
-    if (response.status === DialogCloseStatus.Submitted && response.data) {
-      this.jobDialogService.updateApplication(response.data, () => this.reloadDashboardData());
-    }
-  }
-
-  handleStatusUpdate(updateData: { item: JobApplicationItem }) {
-    this.jobDialogService.updateApplication(updateData.item, () => this.reloadDashboardData());
-  }
-
-  handleDeleteApplications(applicationIds: string[]): void {
-    const deletePayload: DeleteApplicationsPayload = { ids: applicationIds };
-
-    this.jobApplicationService.deleteApplication(deletePayload).subscribe({
-      next: () => {
-        this.reloadDashboardData();
-      }
-    });
-  }
-
-  setIsLoading(isLoading: boolean): void {
-    this.isLoading = isLoading;
-  }
-
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }

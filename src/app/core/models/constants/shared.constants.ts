@@ -23,6 +23,8 @@ export const SNACKBAR_DURATION = 2000;
 
 export const SCROLL_DEBOUNCE_TIME = 200;
 export const SCROLL_THRESHOLD = 50;
+export const ITEMS_INCREMENT = 5;
+
 
 
 
