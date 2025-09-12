@@ -44,7 +44,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalItems: number = PAGINATION_DEFAULTS.totalItems;
   selectedItems: Array<JobApplicationItem> = [];
   showEmptyState: boolean = true;
-  hasSearchResults: boolean = true;
   destroy$ = new Subject<void>();
   currentFilter: JobApplicationFilter = {};
   
@@ -60,10 +59,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.initiateJobStats();
     this.setupApplicationSubscription();
     this.setupSearchSubscription();
-    this.loadUserAppliedJobs();
   }
 
-  private setupApplicationSubscription() {
+  setupApplicationSubscription() {
     this.state.getApplications().subscribe(state => {
       this.updateComponentState(state.items, {
         totalCount: state.totalCount,
@@ -154,7 +152,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const hasNoApplications = applications.length === 0;
     const hasNoFilters = !this.currentFilter?.searchQuery && !Object.values(this.currentFilter || {}).some(val => val);
     this.showEmptyState = hasNoApplications && hasNoFilters;
-    this.hasSearchResults = !hasNoApplications;
   }
   
   updatePagination(pagination: {
@@ -210,22 +207,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   handleSearchChange(searchTerm: string): void {
     this.searchStateService.updateSearchTerm(searchTerm);
   }
-
-  handleJobApplicationUpdate(updateData: any): void {
-    if (!updateData || updateData.status === DialogCloseStatus.Cancelled) return;
-
-    this.processJobApplicationUpdate(updateData);
-  }
-
-  processJobApplicationUpdate(updateData: any): void {
-    this.jobApplicationService.updateJobApplication(updateData)
-      .subscribe({
-        next: () => {
-          this.reloadDashboardData();
-        }
-      });
-  }
-
 
   addNewApplicationEntry() {
     const dialogData: AddJobDialogData = { isEditing: false };

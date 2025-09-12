@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AngularMaterialModules } from '../../core/modules';
 import { CustomSearchInputComponent } from '../custom-search-input';
 import { FilterDropdownComponent } from '../filter-dropdown';
@@ -13,7 +13,7 @@ import { JobApplicationFilter } from '../../core/models/interface/job-applicatio
   templateUrl: './job-list-toolbar.component.html',
   styleUrl: './job-list-toolbar.component.scss'
 })
-export class JobListToolbarComponent {
+export class JobListToolbarComponent implements OnInit {
   borderRadius = BorderRadius.small;
   filterOptions: Array<FilterOption> = JOB_FILTER_OPTIONS;
 
@@ -22,6 +22,10 @@ export class JobListToolbarComponent {
   @Output() jobApplicationAddition = new EventEmitter<void>();
 
   constructor() { }
+
+  ngOnInit(): void {
+    this.handleFilterChange('');
+  }
 
   handleFilterChange(filterValue: string): void {
     const filter: JobApplicationFilter = {};

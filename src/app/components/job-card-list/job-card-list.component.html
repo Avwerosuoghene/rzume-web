@@ -9,7 +9,7 @@
   <app-empty-state-wrapper 
     [data]="jobs" 
     [currentFilter]="currentFilter" 
-    (actionButtonClicked)="jobApplicationAddition.emit()"
+    (actionButtonClicked)="handleAddJobApplication()"
   >
     <div class="card-list-container">
       <app-job-card-item
@@ -21,14 +21,14 @@
       >
       </app-job-card-item>
     </div>
-    <button
-      class="add_job_btn"
-      mat-flat-button
-      type="button"
-      (click)="jobApplicationAddition.emit()"
-    >
-      <mat-icon class="add_icon">add</mat-icon>
-      <p>Add Job</p>
-    </button>
   </app-empty-state-wrapper>
+  <button
+    class="add_job_btn"
+    mat-flat-button
+    type="button"
+    (click)="handleAddJobApplication()"
+  >
+    <mat-icon class="add_icon">add</mat-icon>
+    <p>Add Job</p>
+  </button>
 </div>

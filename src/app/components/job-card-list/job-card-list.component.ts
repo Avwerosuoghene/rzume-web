@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JobCardTabsComponent } from './partials/job-card-tabs/job-card-tabs.component';
 import { JobCardItemComponent } from './partials/job-card-item/job-card-item.component';
@@ -15,27 +15,28 @@ import { ApplicationStatus } from '../../core/models';
   templateUrl: './job-card-list.component.html',
   styleUrls: ['./job-card-list.component.scss']
 })
-export class JobCardListComponent implements OnChanges {
+export class JobCardListComponent{
   @Output() jobApplicationUpdate = new EventEmitter<JobApplicationItem>();
   @Output() jobStatusUpdate = new EventEmitter<{ item: JobApplicationItem }>();
   @Output() jobApplicationsDelete = new EventEmitter<string[]>();
   @Output() jobApplicationAddition = new EventEmitter<void>();
   @Input() jobs: JobApplicationItem[] = [];
   currentFilter: JobApplicationFilter = {};
-  
+
   @Output() filterChange = new EventEmitter<JobApplicationFilter>();
 
   tabs = JOB_FILTER_OPTIONS.filter(option => option.value !== '');
   activeTab: string = this.tabs[0].value;
 
-  ngOnChanges(changes: SimpleChanges): void {
-
-  }
 
   handleTabChange(tab: string) {
     this.activeTab = tab;
     this.currentFilter.status = this.activeTab as ApplicationStatus;
     this.filterChange.emit(this.currentFilter);
+  }
+
+  handleAddJobApplication() {
+    this.jobApplicationAddition.emit();
   }
 
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FilterOption } from '../../../../core/models';
 import { CommonModule } from '@angular/common';
 
@@ -9,10 +9,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './job-card-tabs.component.html',
   styleUrls: ['./job-card-tabs.component.scss']
 })
-export class JobCardTabsComponent {
+export class JobCardTabsComponent implements OnInit {
   @Input() tabs: FilterOption[] = [];
   @Input() activeTab: string = '';
   @Output() tabChange = new EventEmitter<string>();
+
+  ngOnInit(): void {
+    this.selectTab(this.tabs[0]);
+  }
 
   selectTab(tab: FilterOption) {
     this.activeTab = tab.value;

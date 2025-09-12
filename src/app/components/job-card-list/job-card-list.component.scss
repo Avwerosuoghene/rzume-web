@@ -8,6 +8,13 @@
   overflow: hidden;
   width: 100%;
 
+  app-empty-state-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
   .card-list-container {
     flex: 1; 
     overflow-y: auto;
