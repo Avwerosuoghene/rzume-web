@@ -20,9 +20,15 @@ export class DialogHelperService {
     component: any,
     data: any,
     onSubmit: (response: DialogCloseResponse<T>) => void,
-    disableClose: boolean = true,
+    config: { disableClose?: boolean; panelClass?: string } = {}
   ): void {
-    this.dialog.open(component, { data, backdropClass: 'blurred', disableClose })
+    const dialogConfig = {
+      data,
+      backdropClass: 'blurred',
+      disableClose: config.disableClose ?? true,
+      panelClass: config.panelClass,
+    };
+    this.dialog.open(component, dialogConfig)
       .afterClosed()
       .subscribe((response: DialogCloseResponse<T> | undefined) => {
         if (response?.status === DialogCloseStatus.Submitted) {
@@ -40,7 +46,8 @@ export class DialogHelperService {
       (response) => {
         const payload = this.buildCreatePayload(response.data!);
         this.createApplication(payload, onSuccess);
-      }
+      },
+      { panelClass: 'add-job-dialog-panel' }
     );
   }
 
@@ -52,7 +59,8 @@ export class DialogHelperService {
       dialogData,
       (response) => {
         this.updateApplication(response.data!, onSuccess);
-      }
+      },
+      { panelClass: 'add-job-dialog-panel' }
     );
   }
 
@@ -89,7 +97,7 @@ export class DialogHelperService {
       InfoDialogComponent,
       dialogData,
       () => onConfirm(),
-      false
+      { disableClose: false }
     );
   }
 

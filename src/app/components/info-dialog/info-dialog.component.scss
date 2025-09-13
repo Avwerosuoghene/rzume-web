@@ -17,12 +17,21 @@
   }
   #info-dialog-msg {
     text-align: center;
-    font-size: $bold-font-medium;
+    font-size: $regular-font-size;
+
+    @media (min-width: 600px) {
+      font-size: $bold-font-medium;
+    }
   }
 
   .info-dialog-icon {
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
+
+    @media (min-width: 600px) {
+      width: 4rem;
+      height: 4rem;
+    }
     @extend .success_fail_icon;
   }
 
