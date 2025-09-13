@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ConfigService } from './config.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, catchError, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
 import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestOptions, GetRequestParams, IconStat, InfoDialogData, SessionStorageKeys } from '../models';
 import { SessionStorageUtil } from '../helpers';
@@ -12,7 +12,7 @@ import { SessionStorageUtil } from '../helpers';
 })
 export class ApiService {
 
-  constructor(private httpClient: HttpClient, private dialog: MatDialog) { }
+  constructor(private httpClient: HttpClient, private dialog: MatDialog, private configService: ConfigService) { }
 
   private readonly defaultHeaders = new HttpHeaders({
     'Content-type': 'application/json'
@@ -22,7 +22,7 @@ export class ApiService {
 
     const { route, params, headers, withBearer, handleResponse } = options;
 
-    let requestRoute: string = `${environment.apiBaseUrl}/${route}`;
+    let requestRoute: string = `${this.configService.apiUrls.backend}/${route}`;
     let requestParams = new HttpParams();
     if (params) {
       params.forEach(param => {
@@ -56,7 +56,7 @@ export class ApiService {
   }
 
   public put<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders): Observable<T> {
-    let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
+    let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
     let headers = this.withBearer(this.mergeHeaders(reqHeaders));
 
@@ -76,7 +76,7 @@ export class ApiService {
   }
 
   public post<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false): Observable<T> {
-    let route: string = `${environment.apiBaseUrl}/${apiRoute}`;
+    let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
     let headers = this.mergeHeaders(reqHeaders);
     if (withBearer) {
@@ -101,7 +101,7 @@ export class ApiService {
   }
 
   public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: any): Observable<T> {
-    const route: string = `${environment.apiBaseUrl}/${apiRoute}`;
+    const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
     const headers = this.withBearer(this.mergeHeaders(reqHeaders));
     const options = {

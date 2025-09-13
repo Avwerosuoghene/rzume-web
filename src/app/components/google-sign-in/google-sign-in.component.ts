@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../core/services/authentication.service';
+import { ConfigService } from '../../core/services/config.service';
 import { GOOGLE_SCRIPT_ERROR } from '../../core/models';
 
 declare let google: any;
@@ -22,7 +22,7 @@ export class GoogleSignInComponent implements OnInit {
   loaderIsActive: boolean = false;
 
 
-  constructor(private cdr: ChangeDetectorRef, private authService: AuthenticationService) {
+  constructor(private cdr: ChangeDetectorRef, private authService: AuthenticationService, private configService: ConfigService) {
   }
 
 
@@ -47,7 +47,7 @@ export class GoogleSignInComponent implements OnInit {
     googleLoginWrapper.classList.add('custom-google-button');
     document.body.appendChild(googleLoginWrapper);
     google.accounts.id.initialize({
-      client_id: environment.googleClientId,
+      client_id: this.configService.apiUrls.googleAuth,
       ux_mode: 'popup',
       callback: (token: string) => {
         this.tokenEmitter.emit(token);

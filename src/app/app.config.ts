@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './core/models/constants/app.routes';
@@ -8,30 +8,38 @@ import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { ConfigService } from './core/services/config.service';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync(), provideHttpClient(withInterceptorsFromDi()), provideClientHydration(), provideNativeDateAdapter(), {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync(), provideHttpClient(withInterceptorsFromDi()), provideClientHydration(), provideNativeDateAdapter(),
+  {
     provide: 'SocialAuthServiceConfig',
-    useValue: {
-      autoLogin: false,
-      providers: [
-        {
-          id: GoogleLoginProvider.PROVIDER_ID,
-          provider: new GoogleLoginProvider(
-            '443013799790-9i8k2cqh0d16tf6qv4s2k5cfl2rdfgou.apps.googleusercontent.com', {
-          }
-          )
-        },
-      ],
-      onError: (err) => {
-        console.error(err);
-      }
-    } as SocialAuthServiceConfig,
+    useFactory: (configService: ConfigService) => {
+      return {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(configService.apiUrls.googleAuth, {})
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig;
+    },
+    deps: [ConfigService]
   },
   {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true,
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: (configService: ConfigService) => () => configService.loadConfig(),
+    deps: [ConfigService],
+    multi: true
   }
 
   ]
