@@ -16,7 +16,8 @@ describe('PasswordResetComponent', () => {
     const routingUtilServiceSpy = jasmine.createSpyObj('RoutingUtilService', ['navigateToRoute']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const activatedRouteSpy = {
-      queryParams: of({ token: 'mock-token' })
+      queryParams: of({ token: 'mock-token' }),
+      pipe: jasmine.createSpy('pipe').and.returnValue(of({ token: 'mock-token' }))
     };
 
     authServiceSpy.resetPassword.and.returnValue(of({ success: true, statusCode: 200, message: 'Success', data: undefined }));

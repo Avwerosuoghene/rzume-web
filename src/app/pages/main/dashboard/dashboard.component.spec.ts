@@ -124,7 +124,7 @@ describe('DashboardComponent', () => {
     expect(component.statHighLights).toEqual([]);
     expect(component.selectedItems).toEqual([]);
     expect(component.currentPage).toBe(1);
-    expect(component.itemsPerPage).toBe(10);
+    expect(component.itemsPerPage).toBe(5);
   });
 
   it('should load job applications on init', () => {
@@ -164,12 +164,30 @@ describe('DashboardComponent', () => {
 
   it('should handle page changes', () => {
     component.currentPage = 1; // Set initial page
+    
+    // Mock the API response to return data that will update the component state
+    const mockResponse = {
+      success: true,
+      statusCode: 200,
+      message: 'Success',
+      data: {
+        items: [],
+        totalCount: 0,
+        totalPages: 1,
+        pageNumber: 2,
+        pageSize: 5,
+        hasPrevious: false,
+        hasNext: false
+      }
+    };
+    mockJobApplicationService.getApplications.and.returnValue(of(mockResponse));
+    
     component.handlePageChanged(2);
 
     expect(component.currentPage).toBe(2);
     expect(mockJobApplicationService.getApplications).toHaveBeenCalledWith({
       page: 2,
-      pageSize: component.itemsPerPage
+      pageSize: 5
     });
   });
 
@@ -183,7 +201,24 @@ describe('DashboardComponent', () => {
   });
 
   it('should handle items per page change', () => {
-    component.itemsPerPage = 10; // Set initial value
+    component.itemsPerPage = 5; // Set initial value
+    
+    const mockResponse = {
+      success: true,
+      statusCode: 200,
+      message: 'Success',
+      data: {
+        items: [],
+        totalCount: 0,
+        totalPages: 1,
+        pageNumber: 1,
+        pageSize: 20,
+        hasPrevious: false,
+        hasNext: false
+      }
+    };
+    mockJobApplicationService.getApplications.and.returnValue(of(mockResponse));
+    
     component.handleChangeInItemPerPage(20);
 
     expect(component.itemsPerPage).toBe(20);
@@ -238,12 +273,12 @@ describe('DashboardComponent', () => {
   });
 
   it('should handle load more', () => {
-    component.itemsPerPage = 10; // Set initial value
+    component.itemsPerPage = 5; // Set initial value to match default
     const initialItemsPerPage = component.itemsPerPage;
     
     component.handleLoadMore();
     
-    expect(component.itemsPerPage).toBe(15); // 10 + 5
+    expect(component.itemsPerPage).toBe(10); // 5 + 5
     expect(mockJobApplicationService.getApplications).toHaveBeenCalled();
   });
 

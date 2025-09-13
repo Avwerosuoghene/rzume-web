@@ -14,8 +14,8 @@ describe('SideBarComponent', () => {
 
   const mockConfig = {
     featureFlags: {
-      profileManagement: true,
-      analytics: false
+      enableProfileManagement: true,
+      enableAnalytics: false
     }
   };
 
