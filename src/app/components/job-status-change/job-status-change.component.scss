@@ -1,10 +1,13 @@
 @import "../../styles/general_styles.scss";
 
-
 .change_job_status {
-  padding: 50px 60px;
-  max-width: 500px;
-  width: 80vw;
+  padding: 20px 30px;
+
+  @media (min-width: 600px) {
+    padding: 50px 60px;
+    max-width: 500px;
+    width: 80vw;
+  }
 
   .title_elements {
     display: flex;
@@ -19,7 +22,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center
+    justify-content: center;
   }
   #update_status_btn {
     @extend .rzume-button;

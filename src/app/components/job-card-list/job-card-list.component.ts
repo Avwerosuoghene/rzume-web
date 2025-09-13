@@ -102,6 +102,12 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy {
       this.jobApplicationsDelete.emit([item.id]);
     });
   }
+
+  handleJobStatusUpdate(item: JobApplicationItem) {
+    this.dialogHelper.openJobStatusDialog(item, (updatedJobItem) => {
+      this.jobStatusUpdate.emit({ item: updatedJobItem });
+    });
+  }
   
 
   ngOnDestroy(): void {

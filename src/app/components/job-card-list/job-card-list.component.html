@@ -17,7 +17,7 @@
         [job]="job"
         (edit)="jobApplicationUpdate.emit($event)"
         (delete)="handleJobApplicationDelete($event)"
-        (statusChange)="jobStatusUpdate.emit({ item: $event })"
+        (statusChange)="handleJobStatusUpdate($event)"
       >
       </app-job-card-item>
     </div>
