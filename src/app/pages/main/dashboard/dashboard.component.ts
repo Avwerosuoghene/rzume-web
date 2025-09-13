@@ -9,13 +9,12 @@ import { JobStatsComponent } from '../../../components/job-stats/job-stats.compo
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
 import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload, JobApplicationStatItemDto } from '../../../core/models/interface/job-application.models';
-import { JobApplicationDialogService } from '../../../core/services/job-application-dialog.service';
 import { ScreenManagerService, SearchStateService } from '../../../core/services';
 import { JobCardListComponent } from "../../../components/job-card-list/job-card-list.component";
 import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrapper/empty-state-wrapper.component";
 import { buildPagination, mapApplicationToTableData, mapJobStats, normalizeFilter, resetPagination, updateFilterState, updatePagination } from '../../../core/helpers/dashboard.utils';
-import { DialogHelperUtil } from '../../../core/helpers/dialog-helper.util';
 import { ITEMS_INCREMENT } from '../../../core/models';
+import { DialogHelperService } from '../../../core/services/dialog-helper.service';
 
 
 
@@ -59,10 +58,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private state: JobApplicationStateService,
     private jobApplicationService: JobApplicationService,
-    private jobDialogService: JobApplicationDialogService,
     private searchStateService: SearchStateService,
     private screenManager: ScreenManagerService,
-    private dialogHelper: DialogHelperUtil
+    private dialogHelperService: DialogHelperService
   ) {}
 
   ngOnInit(): void {
@@ -164,16 +162,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   addNewApplicationEntry(): void {
-    this.dialogHelper.openAddApplicationDialog(() => this.reloadDashboardData());
+    this.dialogHelperService.openAddApplicationDialog(() => this.reloadDashboardData());
 
   }
 
   updateJobApplication(jobData: JobApplicationItem): void {
-    this.dialogHelper.openEditApplicationDialog(jobData, () => this.reloadDashboardData());
+    this.dialogHelperService.openEditApplicationDialog(jobData, () => this.reloadDashboardData());
   }
 
   handleStatusUpdate(updateData: { item: JobApplicationItem }): void {
-    this.jobDialogService.updateApplication(updateData.item, () => this.reloadDashboardData());
+    this.dialogHelperService.updateApplication(updateData.item, () => this.reloadDashboardData());
   }
 
   handleDeleteApplications(applicationIds: string[]): void {

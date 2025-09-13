@@ -4,13 +4,17 @@
 
 
 .info-dialog-container {
-  width: 400px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 30px;
   gap: 16px;
+
+  @media (min-width: 600px) {
+    width: 400px;
+  }
   #info-dialog-msg {
     text-align: center;
     font-size: $bold-font-medium;

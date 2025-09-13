@@ -23,6 +23,7 @@ import { AngularMaterialModules } from '../../core/modules';
 import { EmptyStateWrapperComponent } from '../empty-state-wrapper/empty-state-wrapper.component';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { ApplicationStatus, SCROLL_DEBOUNCE_TIME, SCROLL_THRESHOLD } from '../../core/models';
+import { DialogHelperService } from '../../core/services/dialog-helper.service';
 
 @Component({
   selector: 'app-job-card-list',
@@ -57,6 +58,8 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy {
   readonly tabs = JOB_FILTER_OPTIONS.filter(option => option.value !== '');
   activeTab = this.tabs[0]?.value ?? '';
   currentFilter: JobApplicationFilter = {};
+
+  constructor(private dialogHelper: DialogHelperService) {}
 
   ngAfterViewInit(): void {
     this.setupScrollListener();
@@ -93,6 +96,13 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy {
   handleAddJobApplication(): void {
     this.jobApplicationAddition.emit();
   }
+
+  handleJobApplicationDelete(item: JobApplicationItem){
+    this.dialogHelper.openDeleteConfirmation([item], () => {
+      this.jobApplicationsDelete.emit([item.id]);
+    });
+  }
+  
 
   ngOnDestroy(): void {
     this.destroy$.next();

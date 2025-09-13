@@ -16,7 +16,7 @@
         *ngFor="let job of jobs"
         [job]="job"
         (edit)="jobApplicationUpdate.emit($event)"
-        (delete)="jobApplicationsDelete.emit([$event.id])"
+        (delete)="handleJobApplicationDelete($event)"
         (statusChange)="jobStatusUpdate.emit({ item: $event })"
       >
       </app-job-card-item>

@@ -12,6 +12,7 @@ import { TablePagintionComponent } from "./table-pagintion/table-pagintion.compo
 import { ColumnDefinition } from '../../core/models/interface/dashboard.models';
 import { JobApplicationItem } from '../../core/models/interface/job-application.models';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
+import { DialogHelperService } from '../../core/services/dialog-helper.service';
 
 @Component({
   selector: 'app-custom-table',
@@ -20,7 +21,7 @@ import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
   templateUrl: './custom-table.component.html',
   styleUrls: ['./custom-table.component.scss']
 })
-export class CustomTableComponent  {
+export class CustomTableComponent {
   @Input() data: JobApplicationItem[] = [];
   @Input() columns: ColumnDefinition[] = [];
   @Input() totalPages: number = 0;
@@ -37,7 +38,7 @@ export class CustomTableComponent  {
   totalItems: number = 20;
   allItemsSelected: boolean = false;
 
-  constructor(private dialog: MatDialog) {
+  constructor(private dialogHelper: DialogHelperService) {
 
   }
 
@@ -46,21 +47,11 @@ export class CustomTableComponent  {
   }
 
   changeJobStatus(data: { item: JobApplicationItem }) {
-    const dialogRef = this.openJobStatusDialog(data.item);
-
-    dialogRef.afterClosed().subscribe(response => {
-      this.handleDialogResponse(response, data.item);
+    this.dialogHelper.openJobStatusDialog(data.item, (updatedJobItem) => {
+      this.jobStatusUpdate.emit({ item: updatedJobItem });
     });
   }
 
-  openJobStatusDialog(item: JobApplicationItem) {
-    const dialogData: JobStatChangeDialogData = { jobItem: item };
-    return this.dialog.open(JobStatusChangeComponent, {
-      data: dialogData,
-      backdropClass: 'blurred',
-      disableClose: true,
-    });
-  }
 
   handleDialogResponse(
     response: DialogCloseResponse<{ status: ApplicationStatus }> | undefined,
@@ -81,63 +72,32 @@ export class CustomTableComponent  {
   }
 
   handleDelete(ids: string[]) {
-    const message = this.buildDeleteMessage();
-    
-    const dialogRef = this.openConfirmationDialog(message);
-    
-    dialogRef.afterClosed().subscribe(response => {
-      this.handleDeleteDialogClose(response, ids);
+    this.dialogHelper.openDeleteConfirmation(this.selectedItems, () => {
+      this.jobApplicationsDelete.emit(ids);
     });
-  }
-  
-  openConfirmationDialog(message: string) {
-    const dialogData: InfoDialogData = {
-      infoMessage: message,
-      statusIcon: IconStat.success,
-    };
-  
-    return this.dialog.open(InfoDialogComponent, {
-      data: dialogData,
-      backdropClass: 'blurred',
-      disableClose: true,
-    });
-  }
-  
-  handleDeleteDialogClose(
-    response: DialogCloseResponse<any> | undefined,
-    ids: string[]
-  ): void {
-    if (response?.status !== DialogCloseStatus.Submitted) return;
-    
-    this.jobApplicationsDelete.emit(ids);
   }
 
-  buildDeleteMessage(): string {
-   
-    return this.selectedItems.length > 1
-      ? `Kindly confirm you want to delete ${this.selectedItems.length} applications`
-      : CONFIRM_DELETE_MSG;
-  }
+
 
   onCheckboxChange(item: JobApplicationItem, event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input.checked) {
       this.addSelectedItem(item);
     } else {
       this.removeSelectedItem(item);
     }
-  
+
     this.isAllSelected();
     this.onSelectionChanged.emit(this.selectedItems);
   }
-  
+
   addSelectedItem(item: JobApplicationItem): void {
     if (!this.selectedItems.some(selected => selected.id === item.id)) {
-      this.selectedItems = [...this.selectedItems, item]; 
+      this.selectedItems = [...this.selectedItems, item];
     }
   }
-  
+
   removeSelectedItem(item: JobApplicationItem): void {
     this.selectedItems = this.selectedItems.filter(selected => selected.id !== item.id);
   }
