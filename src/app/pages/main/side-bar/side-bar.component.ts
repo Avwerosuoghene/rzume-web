@@ -31,12 +31,12 @@ export class SideBarComponent {
         icon: 'assets/icons/dashboard-icon.png',
         route:`/${RootRoutes.main}/${MainRoutes.dashboard}`
       },
-      {
-        name: 'Profile',
+      // {
+      //   name: 'Profile',
 
-        icon: 'assets/icons/user-profile-icon.png',
-        route:`/${RootRoutes.main}/${MainRoutes.profileManagement}`
-      },
+      //   icon: 'assets/icons/user-profile-icon.png',
+      //   route:`/${RootRoutes.main}/${MainRoutes.profileManagement}`
+      // },
     ]
   }
 
