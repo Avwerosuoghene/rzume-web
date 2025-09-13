@@ -19,9 +19,10 @@ export class DialogHelperService {
   private openAndHandleDialog<T>(
     component: any,
     data: any,
-    onSubmit: (response: DialogCloseResponse<T>) => void
+    onSubmit: (response: DialogCloseResponse<T>) => void,
+    disableClose: boolean = true,
   ): void {
-    this.dialog.open(component, { data, backdropClass: 'blurred', disableClose: true })
+    this.dialog.open(component, { data, backdropClass: 'blurred', disableClose })
       .afterClosed()
       .subscribe((response: DialogCloseResponse<T> | undefined) => {
         if (response?.status === DialogCloseStatus.Submitted) {
@@ -78,13 +79,25 @@ export class DialogHelperService {
     return { ...data };
   }
 
-  openDeleteConfirmation(selectedItems: JobApplicationItem[], onConfirm: () => void): void {
-    const dialogData: InfoDialogData = {
+  openDeleteConfirmation(
+    selectedItems: JobApplicationItem[],
+    onConfirm: () => void
+  ): void {
+    const dialogData = this.buildDeleteDialogData(selectedItems);
+  
+    this.openAndHandleDialog<void>(
+      InfoDialogComponent,
+      dialogData,
+      () => onConfirm(),
+      false
+    );
+  }
+
+  private buildDeleteDialogData(selectedItems: JobApplicationItem[]): InfoDialogData {
+    return {
       infoMessage: this.buildDeleteMessage(selectedItems),
       statusIcon: IconStat.success,
     };
-
-    this.openAndHandleDialog<any>(InfoDialogComponent, dialogData, () => onConfirm());
   }
 
   openJobStatusDialog(item: JobApplicationItem, onSubmit: (updated: JobApplicationItem) => void): void {
