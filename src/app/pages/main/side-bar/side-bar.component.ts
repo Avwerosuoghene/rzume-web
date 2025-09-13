@@ -1,9 +1,10 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { RouterModules } from '../../../core/modules/router-modules';
-import { MainRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
-import { MainComponent } from '../main.component';
 import { CommonModule } from '@angular/common';
+import { ConfigService } from '../../../core/services/config.service';
 import { MatIconModule } from '@angular/material/icon';
+import { SideBarElement } from '../../../core/models';
+import { getBaseRoutes, getFeatureRoutes } from '../../../core/helpers/dashboard.utils';
 
 @Component({
   selector: 'app-side-bar',
@@ -13,8 +14,9 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './side-bar.component.scss'
 })
 export class SideBarComponent {
+  constructor(private configService: ConfigService) { }
   @Output() closeSidebar = new EventEmitter<void>();
-  sideBarElements!: Array< {name: string, icon: string, route: string}>;
+  sideBarElements!: Array<SideBarElement>;
 
   ngOnInit(): void {
     this.initializeSideBarNavs();
@@ -24,20 +26,11 @@ export class SideBarComponent {
     this.closeSidebar.emit();
   }
 
-  initializeSideBarNavs(): void {
-    this.sideBarElements = [
-      {
-        name: 'Dashboard',
-        icon: 'assets/icons/dashboard-icon.png',
-        route:`/${RootRoutes.main}/${MainRoutes.dashboard}`
-      },
-      // {
-      //   name: 'Profile',
+  private initializeSideBarNavs(): void {
+    const baseRoutes = getBaseRoutes();
+    const featureRoutes = getFeatureRoutes(this.configService);
 
-      //   icon: 'assets/icons/user-profile-icon.png',
-      //   route:`/${RootRoutes.main}/${MainRoutes.profileManagement}`
-      // },
-    ]
+    this.sideBarElements = [...baseRoutes, ...featureRoutes];
   }
 
 }

@@ -13,9 +13,8 @@ import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
 import { GoogleAuthService } from '../../../core/services/google-auth.service';
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat, onBoardStages, SessionStorageKeys } from '../../../core/models/enums/shared.enums';
-import { APIResponse, ErrorResponse, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
+import { APIResponse, ErrorResponse, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT, InfoDialogData } from '../../../core/models';
 import { OnboardingStages } from '../../../core/models/enums/profile.enum';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
 

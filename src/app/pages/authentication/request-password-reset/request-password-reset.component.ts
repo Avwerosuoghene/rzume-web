@@ -7,12 +7,11 @@ import { RouterModules } from '../../../core/modules/router-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
 import { IconStat } from '../../../core/models/enums/shared.enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { finalize, Observable, startWith } from 'rxjs';
 import { AuthenticationService, TimerService } from '../../../core/services';
-import { RequestPassResetPayload, APIResponse } from '../../../core/models';
+import { RequestPassResetPayload, APIResponse, InfoDialogData } from '../../../core/models';
 
 @Component({
   selector: 'app-request-password-reset',

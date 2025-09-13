@@ -4,7 +4,7 @@ import { InfoDialogComponent } from './info-dialog.component';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatDialogHarness } from '@angular/material/dialog/testing';
-import { InfoDialogData } from '../../core/models/interface/dialog-models-interface';
+import { InfoDialogData } from '../../core/models/interface/dialog-models';
 
 const data: InfoDialogData = {
   infoMessage: 'Mock message',

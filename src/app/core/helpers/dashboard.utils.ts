@@ -1,5 +1,7 @@
+import { SideBarElement, RootRoutes, MainRoutes } from "../models";
 import { PAGINATION_DEFAULTS } from "../models/constants/dashboard.constants";
 import { JobApplicationFilter, JobApplicationItem, JobApplicationStatItemDto } from "../models/interface/job-application.models";
+import { ConfigService } from "../services/config.service";
 
 export function hasActiveFilters(filter: JobApplicationFilter): boolean {
     return !!filter?.searchQuery || Object.values(filter || {}).some(val => !!val);
@@ -63,4 +65,28 @@ export function buildPagination(data: any) {
         currentPage: data.pageNumber,
         pageSize: data.pageSize
     };
+}
+
+export function getBaseRoutes(): SideBarElement[] {
+    return [
+        {
+            name: 'Dashboard',
+            icon: 'assets/icons/dashboard-icon.png',
+            route: `/${RootRoutes.main}/${MainRoutes.dashboard}`
+        }
+    ];
+}
+
+export function getFeatureRoutes(configService: ConfigService): SideBarElement[] {
+    const routes: SideBarElement[] = [];
+
+    if (configService.featureFlags.enableProfileManagement) {
+        routes.push({
+            name: 'Profile',
+            icon: 'assets/icons/user-profile-icon.png',
+            route: `/${RootRoutes.main}/${MainRoutes.profileManagement}`
+        });
+    }
+
+    return routes;
 }

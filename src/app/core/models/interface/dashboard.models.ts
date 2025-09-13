@@ -24,3 +24,11 @@ export interface EmptyStateConfig {
   actionText?: string;
 }
 
+export interface SideBarElement {
+  name: string;
+  icon: string;
+  route: string;
+}
+
+
+

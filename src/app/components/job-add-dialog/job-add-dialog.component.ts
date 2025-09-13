@@ -5,10 +5,10 @@ import { CoreModules } from '../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AddJobDialogData } from '../../core/models/interface/dialog-models-interface';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
+import { AddJobDialogData } from '../../core/models';
 
 @Component({
   selector: 'app-job-add-dialog',

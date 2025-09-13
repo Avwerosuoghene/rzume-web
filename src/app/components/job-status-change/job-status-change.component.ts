@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { JobStatChangeDialogData } from '../../core/models/interface/dialog-models-interface';
+import { JobStatChangeDialogData } from '../../core/models/interface/dialog-models';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CoreModules } from '../../core/modules/core-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';

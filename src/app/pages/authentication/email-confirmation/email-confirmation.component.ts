@@ -7,8 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { InfoDialogData } from '../../../core/models/interface/dialog-models-interface';
-import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, ValidateUserResponse } from '../../../core/models';
+import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, InfoDialogData, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, ValidateUserResponse } from '../../../core/models';
 
 @Component({
   selector: 'app-email-confirmation',
