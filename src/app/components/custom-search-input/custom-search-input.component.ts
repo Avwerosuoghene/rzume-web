@@ -2,15 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, OnDestroy, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
-import { searchInputAnimations } from '../../core/animations';
 
 @Component({
   selector: 'app-custom-search-input',
   standalone: true,
-  imports: [ FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './custom-search-input.component.html',
   styleUrl: './custom-search-input.component.scss',
-  animations: [searchInputAnimations.iconAnimation]
 })
 export class CustomSearchInputComponent implements OnDestroy {
   @Input() borderRadius: number = 8;
@@ -22,13 +20,17 @@ export class CustomSearchInputComponent implements OnDestroy {
   @Output() searchChange: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() {
-    this.searchSubject.pipe(
-      debounceTime(500), 
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(searchTerm => {
-      this.searchChange.emit(searchTerm);
-    });
+    this.setupSearchListener();
+  }
+
+  setupSearchListener(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(searchTerm => this.searchChange.emit(searchTerm));
   }
 
   onSearch(value: string): void {
