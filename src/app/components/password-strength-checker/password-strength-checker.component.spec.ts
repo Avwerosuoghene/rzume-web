@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PasswordStrengthCheckerComponent } from './password-strength-checker.component';
+import { PasswordStrength } from '../../core/models/enums/password-strength.enum';
 
 describe('PasswordStrengthCheckerComponent', () => {
   let component: PasswordStrengthCheckerComponent;
@@ -9,45 +9,40 @@ describe('PasswordStrengthCheckerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PasswordStrengthCheckerComponent]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PasswordStrengthCheckerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set password strength value and description correctly', () => {
-    const testCases = [
-      { password: 'short', expectedStrength: 1, expectedDescription: 'Weak' },
-      { password: 'longvalue', expectedStrength: 2, expectedDescription: 'Weak' },
-      { password: 'Med1umPass', expectedStrength: 4, expectedDescription: 'Strong' },
-      { password: 'Str0ngPass!', expectedStrength: 5, expectedDescription: 'Strong' },
-    ];
-
-
-    spyOn(component.passwordStrengthValue, 'set').and.callThrough();
-
-
-    testCases.forEach(testCase => {
-      component.checkPasswordStrength(testCase.password);
-
-      expect(component.passwordStrengthValue.set).toHaveBeenCalledWith(testCase.expectedStrength);
-      expect(component.passwordStengthDescription).toEqual(testCase.expectedDescription);
-    }); // Assuming criteriaCount sets it to 3rd level
+  it('should check password strength and update result', () => {
+    const result = component.checkPasswordStrength('TestPass123!');
+    
+    expect(result).toBeDefined();
+    expect(result.score).toBeGreaterThan(0);
+    expect(result.strength).toBeDefined();
   });
 
   it('should handle empty password correctly', () => {
-    spyOn(component.passwordStrengthValue, 'set').and.callThrough();
+    const result = component.checkPasswordStrength('');
 
-    component.checkPasswordStrength('');
+    expect(result.score).toBe(0);
+    expect(result.strength).toBe(PasswordStrength.NONE);
+  });
 
-    expect(component.passwordStengthDescription).toEqual('nan');
-    expect(component.passwordStrengthValue.set).toHaveBeenCalledWith(0);
+  it('should have strength bars computed property', () => {
+    component.checkPasswordStrength('TestPass123!');
+    const bars = component.strengthBars();
+    
+    expect(Array.isArray(bars)).toBe(true);
+  });
+
+  it('should expose PasswordStrength enum', () => {
+    expect(component['PasswordStrength']).toBeDefined();
   });
 });

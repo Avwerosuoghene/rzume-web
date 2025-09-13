@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InfoDialogComponent } from './info-dialog.component';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatDialogHarness } from '@angular/material/dialog/testing';
 import { InfoDialogData } from '../../core/models/interface/dialog-models';
+import { IconStat } from '../../core/models/enums/shared.enums';
 
 const data: InfoDialogData = {
   infoMessage: 'Mock message',
+  statusIcon: IconStat.success
 };
 
 describe('InfoDialogComponent', () => {
