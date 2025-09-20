@@ -42,15 +42,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Google Cloud CLI
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Setup Google Cloud CLI
+      uses: google-github-actions/setup-gcloud@v2
 
     - name: Configure Docker to use gcloud as a credential helper
       run: gcloud auth configure-docker
@@ -61,6 +59,9 @@ jobs:
           --build-arg API_URL=${{ secrets.API_URL }} \
           --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
           --build-arg GOOGLE_PROJECT_ID=${{ secrets.GOOGLE_PROJECT_ID }} \
+          --build-arg GOOGLE_AUTH_URI=${{ secrets.GOOGLE_AUTH_URI }} \
+          --build-arg GOOGLE_TOKEN_URI=${{ secrets.GOOGLE_TOKEN_URI }} \
+          --build-arg GOOGLE_AUTH_PROVIDER_CERT_URL=${{ secrets.GOOGLE_AUTH_PROVIDER_CERT_URL }} \
           --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
           --build-arg FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
           --build-arg ENABLE_PROFILE_MANAGEMENT=${{ secrets.ENABLE_PROFILE_MANAGEMENT }} \
@@ -68,20 +69,20 @@ jobs:
           --build-arg ENABLE_ADVANCED_SEARCH=${{ secrets.ENABLE_ADVANCED_SEARCH }} \
           --build-arg APP_VERSION=${{ github.sha }} \
           --build-arg ENVIRONMENT=production \
-          -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} \
-          -t gcr.io/$PROJECT_ID/$SERVICE_NAME:latest .
+          -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+          -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest .
 
     - name: Push Docker image to Container Registry
       run: |
-        docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }}
-        docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:latest
+        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
 
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy $SERVICE_NAME \
-          --image gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} \
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
+          --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
           --platform managed \
-          --region $REGION \
+          --region ${{ env.REGION }} \
           --allow-unauthenticated \
           --port 8080 \
           --memory 512Mi \
@@ -93,7 +94,7 @@ jobs:
 
     - name: Get service URL
       run: |
-        SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --platform managed --region $REGION --format 'value(status.url)')
+        SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --platform managed --region ${{ env.REGION }} --format 'value(status.url)')
         echo "Service deployed at: $SERVICE_URL"
         echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_OUTPUT
 
