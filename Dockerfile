@@ -28,6 +28,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Copy built Angular app
 COPY --from=build /app/dist/rzume_web/browser /usr/share/nginx/html
 
+# COPY --from=build /app/src/assets/config/config.json /usr/share/nginx/html/assets/config/config.json
+
 RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx \
     && chown -R 1001:1001 /var/cache/nginx /var/run /var/log/nginx /usr/share/nginx/html
 

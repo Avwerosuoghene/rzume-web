@@ -93,7 +93,7 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-public
+# public - commented out to allow copying assets in Docker
 
 # Storybook build outputs
 .out
