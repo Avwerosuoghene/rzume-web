@@ -8,7 +8,7 @@ cat > src/assets/config/config.json << EOF
     "googleAuth": "${GOOGLE_CLIENT_ID}"
   },
   "featureFlags": {
-    "enableProfileManagement": false,
+    "enableProfileManagement": false
   }
 }
 EOF
