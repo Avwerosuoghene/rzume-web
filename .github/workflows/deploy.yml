@@ -124,10 +124,14 @@ jobs:
       - name: Configure Docker to use Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev --quiet
 
+      - name: Set image name
+        id: set_image_name
+        run: echo "image_name=${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
+          image-ref: ${{ steps.set_image_name.outputs.image_name }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           trivy-flags: '--server ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev'
