@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ChangeDetectorRef, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
@@ -15,16 +15,25 @@ import { Subscription } from 'rxjs';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit, OnDestroy {
+export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
   sidebarOpen = false;
   isMobileView = false;
   subscriptions = new Subscription();
+  private isInitialized = false;
 
-  constructor(private uiState: UiStateService) { }
+  constructor(private uiState: UiStateService, private cdr: ChangeDetectorRef, private ngZone: NgZone) { }
 
   ngOnInit() {
     this.updateLayout();
     this.initiateSubscriptions();
+  }
+
+  ngAfterViewInit() {
+    // Ensure proper initialization after view is ready
+    setTimeout(() => {
+      this.isInitialized = true;
+      this.cdr.detectChanges();
+    }, 100);
   }
 
   ngOnDestroy() {
@@ -50,8 +59,17 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   closeSidebar() {
-    this.sidebarOpen = false;
-    this.lockScroll(false);
+    this.ngZone.run(() => {
+      if (!this.isInitialized) {
+        // If not initialized yet, wait and try again
+        setTimeout(() => this.closeSidebar(), 50);
+        return;
+      }
+      console.log('Main component closeSidebar called');
+      this.sidebarOpen = false;
+      this.lockScroll(false);
+      this.cdr.detectChanges();
+    });
   }
 
   updateLayout() {

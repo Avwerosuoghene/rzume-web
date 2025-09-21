@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../../core/services/config.service';
@@ -13,13 +13,16 @@ import { getBaseRoutes, getFeatureRoutes } from '../../../core/helpers/dashboard
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.scss'
 })
-export class SideBarComponent {
-  constructor(private configService: ConfigService) { }
+export class SideBarComponent implements OnInit {
+  constructor(private configService: ConfigService, private cdr: ChangeDetectorRef) { }
   @Output() closeSidebar = new EventEmitter<void>();
-  sideBarElements!: Array<SideBarElement>;
+  sideBarElements: Array<SideBarElement> = [];
 
   ngOnInit(): void {
     this.initializeSideBarNavs();
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   onClose(event?: Event): void {

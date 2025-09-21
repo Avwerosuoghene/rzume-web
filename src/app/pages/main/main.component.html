@@ -1,5 +1,5 @@
 <div class="main-container">
-  <div class="overlay" (click)="closeSidebar()" [class.visible]="sidebarOpen"></div>
+  <div class="overlay" (click)="closeSidebar()" (touchstart)="closeSidebar()" [class.visible]="sidebarOpen"></div>
   
   <div class="main-sidebar" [class.open]="sidebarOpen">
     <app-side-bar (closeSidebar)="closeSidebar()"></app-side-bar>

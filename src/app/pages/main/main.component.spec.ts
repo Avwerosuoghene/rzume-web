@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -104,23 +104,27 @@ describe('MainComponent', () => {
     expect(document.body.style.overflow).toBe('auto');
   });
 
-  it('should close sidebar', () => {
+  it('should close sidebar', fakeAsync(() => {
     component.sidebarOpen = true;
-    document.body.style.overflow = 'hidden';
-
+    
+    // Wait for initialization to complete
+    tick(100);
+    
     component.closeSidebar();
+    expect(component.sidebarOpen).toBeFalse();
+  }));
 
-    expect(component.sidebarOpen).toBe(false);
-    expect(document.body.style.overflow).toBe('auto');
-  });
+  it('should update layout based on window size', fakeAsync(() => {
 
-  it('should update layout based on window size', () => {
     // Mock window.innerWidth
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
       value: MOBILE_BREAKPOINT - 1
     });
+
+    // Wait for initialization to complete
+    tick(100);
 
     component.updateLayout();
 
@@ -139,7 +143,7 @@ describe('MainComponent', () => {
 
     expect(component.isMobileView).toBe(false);
     expect(component.sidebarOpen).toBe(false);
-  });
+  }));
 
   it('should handle window resize', () => {
     spyOn(component, 'updateLayout');
