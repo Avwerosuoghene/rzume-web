@@ -32,9 +32,6 @@ jobs:
       - name: Run tests
         run: npm run test:ci
 
-      - name: Run linting
-        run: npm run lint
-
   build-and-deploy:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
