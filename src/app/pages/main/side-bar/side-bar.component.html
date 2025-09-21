@@ -5,7 +5,12 @@
       src="assets/icons/rzume_logo_text.png"
       alt="rzume logo"
     />
-    <button class="close-button" (click)="onClose()" aria-label="Close sidebar">
+    <button 
+      class="close-button" 
+      (click)="onClose($event)" 
+      (touchstart)="onClose($event)"
+      aria-label="Close sidebar"
+      type="button">
       <mat-icon>close</mat-icon>
     </button>
   </div>

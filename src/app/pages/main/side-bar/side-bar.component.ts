@@ -22,7 +22,11 @@ export class SideBarComponent {
     this.initializeSideBarNavs();
   }
 
-  onClose(): void {
+  onClose(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.closeSidebar.emit();
   }
 

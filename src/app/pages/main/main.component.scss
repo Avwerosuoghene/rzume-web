@@ -41,11 +41,7 @@
     }
 
     &.open {
-      transform: translateX(1%);
-
-      @media (min-width: 600px) {
-        transform: translateX(0);
-      }
+      transform: translateX(0);
     }
 
     @media (min-width: 800px) {
