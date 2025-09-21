@@ -97,6 +97,17 @@ jobs:
           echo "Service deployed at: $SERVICE_URL"
           echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_OUTPUT
 
+      - name: Clean up old images in Artifact Registry
+        if: success()
+        run: |
+          chmod +x scripts/cleanup-artifact-registry.sh
+          ./scripts/cleanup-artifact-registry.sh
+        env:
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          SERVICE_NAME: ${{ env.SERVICE_NAME }}
+          REPOSITORY: ${{ env.REPOSITORY }}
+          ARTIFACT_REGISTRY_REGION: ${{ env.ARTIFACT_REGISTRY_REGION }}
+
   security-scan:
     needs: build-and-deploy
     runs-on: ubuntu-latest
