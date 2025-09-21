@@ -156,9 +156,9 @@ describe('JobCardListComponent', () => {
     it('should update active tab and emit filter change', () => {
       spyOn(component.filterChange, 'emit');
       
-      component.handleTabChange('inProgress');
+      component.handleTabChange('InProgress');
 
-      expect(component.activeTab).toBe('inProgress');
+      expect(component.activeTab).toBe('InProgress');
       expect(component.currentFilter.status).toBe(ApplicationStatus.InProgress);
       expect(component.filterChange.emit).toHaveBeenCalledWith(component.currentFilter);
     });

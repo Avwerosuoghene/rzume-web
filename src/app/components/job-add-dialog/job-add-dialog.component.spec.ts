@@ -3,6 +3,7 @@ import { JobAddDialogComponent } from './job-add-dialog.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('JobAddDialogComponent', () => {
   let component: JobAddDialogComponent;
@@ -16,7 +17,7 @@ describe('JobAddDialogComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [JobAddDialogComponent],
+      imports: [JobAddDialogComponent, NoopAnimationsModule],
       providers: [
         { provide: MatDialogRef, useValue: mockDialogRef }, 
         { provide: MAT_DIALOG_DATA, useValue: mockDialogData },

@@ -15,7 +15,7 @@ export const EMAIL = 'email';
 
 export const MOBILE_BREAKPOINT = 599;
 export const BODY_SCROLL_LOCK = 'hidden';
-export const BODY_SCROLL_DEFAULT = '';
+export const BODY_SCROLL_DEFAULT = 'auto';
 
 export const COPY_SUCCESS_MESSAGE = 'Link copied to clipboard!';
 export const SNACKBAR_CLOSE_LABEL = 'Close';

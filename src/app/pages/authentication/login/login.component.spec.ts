@@ -187,8 +187,8 @@ describe('LoginComponent', () => {
   });
 
   it('should have correct route properties', () => {
-    expect(component.signUpRoute).toContain('signup');
-    expect(component.forgotPassRoute).toContain('forgotPass');
+    expect(component.signUpRoute).toContain('register');
+    expect(component.forgotPassRoute).toContain('request-pass-reset');
   });
 
   it('should submit login form successfully', () => {

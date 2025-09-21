@@ -7,10 +7,10 @@ describe('JobCardTabsComponent', () => {
   let fixture: ComponentFixture<JobCardTabsComponent>;
 
   const mockTabs: FilterOption[] = [
-    { label: 'All', value: 'all' },
-    { label: 'Applied', value: 'applied' },
-    { label: 'In Progress', value: 'inProgress' },
-    { label: 'Rejected', value: 'rejected' }
+    { label: 'All', value: '' },
+    { label: 'Applied', value: 'Applied' },
+    { label: 'In Progress', value: 'InProgress' },
+    { label: 'Rejected', value: 'Rejected' }
   ];
 
   beforeEach(async () => {

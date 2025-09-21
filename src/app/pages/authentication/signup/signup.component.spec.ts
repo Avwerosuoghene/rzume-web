@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { SignupComponent } from './signup.component';
@@ -9,8 +9,9 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialogHarness } from '@angular/material/dialog/testing';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
-import { Router, ActivatedRoute, provideRouter } from '@angular/router';
-import { RouterTestingHarness } from '@angular/router/testing';
+import { Router, ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LoginComponent } from '../login/login.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { GoogleAuthService } from '../../../core/services/google-auth.service';
@@ -27,21 +28,25 @@ describe('SignupComponent', () => {
   let mockDialog: jasmine.SpyObj<MatDialog>;
 
   beforeEach(async () => {
-    const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['signup']);
+    const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['signup', 'loadGoogleScript']);
+    authServiceSpy.loadGoogleScript.and.returnValue(Promise.resolve());
     const googleAuthServiceSpy = jasmine.createSpyObj('GoogleAuthService', ['handleCredentialResponse', 'handleGoogleAuthResponse']);
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    const mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
+    mockDialogRef.afterClosed.and.returnValue(of(true));
+    const dialogSpy = jasmine.createSpyObj('MatDialog', ['open'], {
+      _openDialogs: []
+    });
+    dialogSpy.open.and.returnValue(mockDialogRef);
     const activatedRouteSpy = {
       queryParams: of({}),
       params: of({})
     };
 
     await TestBed.configureTestingModule({
-      imports: [SignupComponent, NoopAnimationsModule],
+      imports: [SignupComponent, NoopAnimationsModule, RouterTestingModule, HttpClientTestingModule],
       providers: [
         { provide: AuthenticationService, useValue: authServiceSpy },
         { provide: GoogleAuthService, useValue: googleAuthServiceSpy },
-        { provide: Router, useValue: routerSpy },
         { provide: MatDialog, useValue: dialogSpy },
         { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
@@ -63,6 +68,7 @@ describe('SignupComponent', () => {
     mockAuthService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
     mockGoogleAuthService = TestBed.inject(GoogleAuthService) as jasmine.SpyObj<GoogleAuthService>;
     mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    spyOn(mockRouter, 'navigate');
     mockDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     
     fixture.detectChanges();
@@ -173,6 +179,7 @@ describe('SignupComponent', () => {
   it('should handle signup error', () => {
     const mockError: ErrorResponse = { errorMessage: 'Signup failed', statusCode: 400 };
     mockAuthService.signup.and.returnValue(throwError(mockError));
+    spyOn(component, 'showErrorDialog');
     
     component.signupFormGroup.patchValue({
       email: 'test@example.com',
@@ -183,7 +190,7 @@ describe('SignupComponent', () => {
     
     component.submitSignupForm();
     
-    expect(mockDialog.open).toHaveBeenCalled();
+    expect(component.showErrorDialog).toHaveBeenCalledWith('Signup failed');
     expect(component.loaderIsActive).toBe(false);
   });
 
@@ -211,9 +218,9 @@ describe('SignupComponent', () => {
     
     component.resetSignupForm();
     
-    expect(component.signupFormGroup.get('email')?.value).toBeNull();
-    expect(component.signupFormGroup.get('password')?.value).toBeNull();
-    expect(component.signupFormGroup.get('termsChecked')?.value).toBeNull();
+    expect(component.signupFormGroup.get('email')?.value).toBe('');
+    expect(component.signupFormGroup.get('password')?.value).toBe('');
+    expect(component.signupFormGroup.get('termsChecked')?.value).toBe(false);
   });
 
   it('should cleanup subscriptions on destroy', () => {

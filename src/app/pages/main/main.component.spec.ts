@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { of, Subject } from 'rxjs';
 
 import { MainComponent } from './main.component';
@@ -30,7 +32,9 @@ describe('MainComponent', () => {
     configServiceSpy.loadConfig.and.returnValue(Promise.resolve());
 
     await TestBed.configureTestingModule({
-      imports: [MainComponent, NoopAnimationsModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [MainComponent, NoopAnimationsModule, RouterTestingModule.withRoutes([
+        { path: 'main/dashboard', component: MainComponent }
+      ]), HttpClientTestingModule],
       providers: [
         { provide: UiStateService, useValue: uiStateServiceSpy },
         { provide: ConfigService, useValue: configServiceSpy }
@@ -42,12 +46,16 @@ describe('MainComponent', () => {
     mockUiStateService = TestBed.inject(UiStateService) as jasmine.SpyObj<UiStateService>;
     mockConfigService = TestBed.inject(ConfigService) as jasmine.SpyObj<ConfigService>;
 
+    // Navigate to a valid route to set router.url
+    const router = TestBed.inject(Router);
+    await router.navigate(['/main/dashboard']);
+
     fixture.detectChanges();
   });
 
   afterEach(() => {
-    // Clean up any DOM modifications
-    document.body.style.overflow = '';
+    // Clean up any DOM modifications - restore to default 'auto'
+    document.body.style.overflow = 'auto';
     if (component) {
       component.ngOnDestroy();
     }
