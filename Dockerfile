@@ -1,5 +1,10 @@
-# Step 1: Build the Angular application
+# Step 1: Build Angular app
 FROM node:20-alpine AS build
+
+# Build arguments
+ARG API_URL
+ARG GOOGLE_CLIENT_ID
+ARG GOOGLE_PROJECT_ID
 
 WORKDIR /app
 COPY package*.json ./
