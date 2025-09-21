@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
 import { PasswordResetComponent } from './password-reset.component';
@@ -13,17 +14,17 @@ describe('PasswordResetComponent', () => {
 
   beforeEach(async () => {
     const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['resetPassword']);
-    const routingUtilServiceSpy = jasmine.createSpyObj('RoutingUtilService', ['navigateToRoute']);
+    const routingUtilServiceSpy = jasmine.createSpyObj('RoutingUtilService', ['navigateToAuth']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    
     const activatedRouteSpy = {
-      queryParams: of({ token: 'mock-token' }),
-      pipe: jasmine.createSpy('pipe').and.returnValue(of({ token: 'mock-token' }))
+      queryParamMap: of(new Map([['token', 'mock-token'], ['email', 'test@example.com']]))
     };
 
     authServiceSpy.resetPassword.and.returnValue(of({ success: true, statusCode: 200, message: 'Success', data: undefined }));
 
     await TestBed.configureTestingModule({
-      imports: [PasswordResetComponent, NoopAnimationsModule],
+      imports: [PasswordResetComponent, NoopAnimationsModule, ReactiveFormsModule],
       providers: [
         { provide: AuthenticationService, useValue: authServiceSpy },
         { provide: RoutingUtilService, useValue: routingUtilServiceSpy },
@@ -35,6 +36,15 @@ describe('PasswordResetComponent', () => {
 
     fixture = TestBed.createComponent(PasswordResetComponent);
     component = fixture.componentInstance;
+    
+    // Mock the ViewChild component before detectChanges
+    component.passwordCheckerComp = {
+      checkPasswordStrength: jasmine.createSpy('checkPasswordStrength').and.returnValue({ 
+        score: 4, 
+        strength: 'STRONG' 
+      })
+    } as any;
+    
     fixture.detectChanges();
   });
 

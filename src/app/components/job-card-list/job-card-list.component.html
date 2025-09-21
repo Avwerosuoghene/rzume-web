@@ -6,9 +6,9 @@
   >
   </app-job-card-tabs>
 
-  <app-empty-state-wrapper 
-    [data]="jobs" 
-    [currentFilter]="currentFilter" 
+  <app-empty-state-wrapper
+    [data]="jobs"
+    [currentFilter]="currentFilter"
     (actionButtonClicked)="handleAddJobApplication()"
   >
     <div class="card-list-container" #cardListContainer>
@@ -22,6 +22,9 @@
       </app-job-card-item>
     </div>
   </app-empty-state-wrapper>
+
+  @if (!showEmptyState) {
+
   <button
     class="add_job_btn"
     mat-flat-button
@@ -30,9 +33,10 @@
     [disabled]="isLoading"
   >
     @if (isLoading) {
-      <app-circular-loader></app-circular-loader>
+    <app-circular-loader></app-circular-loader>
     } @else {
-        <p>Add Job</p>
+    <p>Add Job</p>
     }
   </button>
+  }
 </div>

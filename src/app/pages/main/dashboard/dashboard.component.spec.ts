@@ -39,22 +39,31 @@ describe('DashboardComponent', () => {
 
   const mockApiResponse = {
     success: true,
+    statusCode: 200,
+    message: 'Success',
     data: {
       items: mockJobApplications,
       totalCount: 2,
       totalPages: 1,
       pageNumber: 1,
-      pageSize: 10
+      pageSize: 10,
+      hasPrevious: false,
+      hasNext: false
     }
   };
 
   const mockStatsResponse = {
     success: true,
+    statusCode: 200,
+    message: 'Success',
     data: {
       totalApplications: { description: 'Total', value: 10 },
       applied: { description: 'Applied', value: 5 },
       inProgress: { description: 'In Progress', value: 3 },
-      rejected: { description: 'Rejected', value: 2 }
+      rejected: { description: 'Rejected', value: 2 },
+      wishlist: { description: 'Wishlist', value: 0 },
+      submitted: { description: 'Submitted', value: 0 },
+      offerReceived: { description: 'Offer Received', value: 0 }
     }
   };
 
@@ -82,12 +91,13 @@ describe('DashboardComponent', () => {
     // Setup default return values
     jobApplicationServiceSpy.getApplications.and.returnValue(of(mockApiResponse));
     jobApplicationServiceSpy.getStats.and.returnValue(of(mockStatsResponse));
+    jobApplicationServiceSpy.deleteApplication.and.returnValue(of({ success: true, statusCode: 200, message: 'Success', data: true }));
     jobApplicationStateServiceSpy.getApplications.and.returnValue(of({ 
-      items: [], 
-      totalCount: 0,
+      items: mockJobApplications, 
+      totalCount: 2,
       pageNumber: 1,
       pageSize: 10,
-      totalPages: 0,
+      totalPages: 1,
       hasPrevious: false,
       hasNext: false
     }));
@@ -112,11 +122,27 @@ describe('DashboardComponent', () => {
     mockSearchStateService = TestBed.inject(SearchStateService) as jasmine.SpyObj<SearchStateService>;
     mockDialogHelperService = TestBed.inject(DialogHelperService) as jasmine.SpyObj<DialogHelperService>;
     
-    // Don't trigger detectChanges here to test initial state
+  });
+
+  afterEach(() => {
+    if (component) {
+      component.ngOnDestroy();
+    }
+    if (fixture) {
+      fixture.destroy();
+    }
   });
 
   it('should create', () => {
+    // Ensure all observables return proper values before detectChanges
     expect(component).toBeTruthy();
+    
+    // Initialize component after mocks are set up
+    fixture.detectChanges();
+    
+    expect(component).toBeTruthy();
+    expect(component.data).toBeDefined();
+    expect(component.statHighLights).toBeDefined();
   });
 
   it('should initialize with default values', () => {
@@ -128,13 +154,16 @@ describe('DashboardComponent', () => {
   });
 
   it('should load job applications on init', () => {
-    fixture.detectChanges(); // Trigger ngOnInit
+    // Add error handling to observables to prevent uncaught errors
+    mockJobApplicationService.getApplications.and.returnValue(of(mockApiResponse));
+    mockJobApplicationService.getStats.and.returnValue(of(mockStatsResponse));
+    
+    fixture.detectChanges(); 
     expect(mockJobApplicationService.getApplications).toHaveBeenCalled();
     expect(mockJobApplicationService.getStats).toHaveBeenCalled();
   });
 
   it('should update component state when loading applications', () => {
-    // Setup mock data for this test
     const mockPaginatedResponse = {
       items: mockJobApplications,
       totalCount: 2,

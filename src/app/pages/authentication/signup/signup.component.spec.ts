@@ -9,7 +9,7 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialogHarness } from '@angular/material/dialog/testing';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
-import { Router, provideRouter } from '@angular/router';
+import { Router, ActivatedRoute, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { LoginComponent } from '../login/login.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
@@ -31,6 +31,10 @@ describe('SignupComponent', () => {
     const googleAuthServiceSpy = jasmine.createSpyObj('GoogleAuthService', ['handleCredentialResponse', 'handleGoogleAuthResponse']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    const activatedRouteSpy = {
+      queryParams: of({}),
+      params: of({})
+    };
 
     await TestBed.configureTestingModule({
       imports: [SignupComponent, NoopAnimationsModule],
@@ -38,12 +42,23 @@ describe('SignupComponent', () => {
         { provide: AuthenticationService, useValue: authServiceSpy },
         { provide: GoogleAuthService, useValue: googleAuthServiceSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: MatDialog, useValue: dialogSpy }
+        { provide: MatDialog, useValue: dialogSpy },
+        { provide: ActivatedRoute, useValue: activatedRouteSpy }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignupComponent);
     component = fixture.componentInstance;
+    
+    // Mock the ViewChild components before detectChanges
+    component.passwordCheckerComp = {
+      checkPasswordStrength: jasmine.createSpy('checkPasswordStrength').and.returnValue({ score: 4, strength: 'STRONG' })
+    } as any;
+    
+    component.googleButtonComponent = {
+      initiateGoogleSignup: jasmine.createSpy('initiateGoogleSignup'),
+      toggleLoader: jasmine.createSpy('toggleLoader')
+    } as any;
     
     mockAuthService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
     mockGoogleAuthService = TestBed.inject(GoogleAuthService) as jasmine.SpyObj<GoogleAuthService>;

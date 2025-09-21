@@ -6,7 +6,9 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
+  SimpleChanges,
+  OnChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { fromEvent, Subject } from 'rxjs';
@@ -39,7 +41,7 @@ import { DialogHelperService } from '../../core/services/dialog-helper.service';
   templateUrl: './job-card-list.component.html',
   styleUrls: ['./job-card-list.component.scss']
 })
-export class JobCardListComponent implements AfterViewInit, OnDestroy {
+export class JobCardListComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Output() jobApplicationUpdate = new EventEmitter<JobApplicationItem>();
   @Output() jobStatusUpdate = new EventEmitter<{ item: JobApplicationItem }>();
   @Output() jobApplicationsDelete = new EventEmitter<string[]>();
@@ -50,6 +52,8 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy {
   @Input() jobs: JobApplicationItem[] = [];
   @Input() isLoading = false;
   @Input() totalItems = 0;
+  showEmptyState: boolean = false;
+
 
   @ViewChild('cardListContainer') private cardListContainer?: ElementRef<HTMLElement>;
 
@@ -59,10 +63,16 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy {
   activeTab = this.tabs[0]?.value ?? '';
   currentFilter: JobApplicationFilter = {};
 
-  constructor(private dialogHelper: DialogHelperService) {}
+  constructor(private dialogHelper: DialogHelperService) { }
 
   ngAfterViewInit(): void {
     this.setupScrollListener();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['jobs'] || changes['currentFilter']) {
+      this.updateDisplayState();
+    }
   }
 
   setupScrollListener(): void {
@@ -75,12 +85,12 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy {
 
   handleScroll(event: Event): void {
     const target = event.target as HTMLElement;
-  
+
     if (this.isAtBottom(target) && this.jobs.length < this.totalItems) {
       this.loadMore.emit();
     }
   }
-  
+
   isAtBottom(target: HTMLElement): boolean {
     return target.scrollTop + target.clientHeight >= target.scrollHeight - SCROLL_THRESHOLD;
   }
@@ -108,10 +118,18 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy {
       this.jobStatusUpdate.emit({ item: updatedJobItem });
     });
   }
-  
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  updateDisplayState(): void {
+    const hasNoItems = !this.jobs || this.jobs.length === 0;
+    const hasActiveFilters = this.currentFilter && (this.currentFilter.searchQuery || this.currentFilter.status);
+
+    this.showEmptyState = hasNoItems && !hasActiveFilters;
+    console.log(this.showEmptyState)
+  }
+
 }

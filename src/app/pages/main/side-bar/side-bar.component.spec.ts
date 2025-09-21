@@ -21,7 +21,7 @@ describe('SideBarComponent', () => {
 
   beforeEach(async () => {
     const configServiceSpy = jasmine.createSpyObj('ConfigService', ['getConfig'], {
-      config: mockConfig
+      featureFlags: mockConfig.featureFlags
     });
 
     await TestBed.configureTestingModule({
