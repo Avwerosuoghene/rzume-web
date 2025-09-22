@@ -1,64 +1,129 @@
 
-# Rzume Web - Job Application Tracking System
+# Rzume - Job Application Tracking System
 
-A modern Angular 18 web application for tracking job applications with Google OAuth integration, built with Angular Material and designed for scalable deployment.
+**Rzume** is a modern web application built with Angular 18 for tracking and managing job applications. It features a clean, responsive UI using Angular Material, secure user authentication with Google OAuth, and a fully automated deployment pipeline to Google Cloud Run.
 
-## Table of Contents
+---
 
-- [Architecture Overview](#architecture-overview)
-- [Tech Stack](#tech-stack)
-- [Component Map](#component-map)
-- [Data Flow & Sequence](#data-flow--sequence)
-- [Setup Instructions](#setup-instructions)
-- [Configuration & Environment](#configuration--environment)
-- [Running Tests](#running-tests)
-- [CI/CD](#cicd)
-- [Monitoring & Observability](#monitoring--observability)
-- [Contribution Guide](#contribution-guide)
-- [Usage Examples](#usage-examples)
-- [Troubleshooting & FAQs](#troubleshooting--faqs)
-- [License](#license)
-- [Architecture Verification Checklist](#architecture-verification-checklist)
+## Project Overview
 
-## Architecture Overview
+This application provides a centralized platform for job seekers to organize their application process. Users can sign up, log in, and manage a list of job applications, tracking details such as the company name, position, and application status.
 
-![Architecture Diagram](./architecture.drawio)
+### Key Features:
+- **User Authentication**: Secure sign-up and sign-in with email/password and Google OAuth.
+- **Dashboard**: A central hub to view, add, and manage all job applications.
+- **State Management**: Reactive state management for a seamless user experience.
+- **Automated Deployments**: CI/CD pipeline for automated testing and deployment.
 
-The application follows a layered architecture pattern:
+## Tech Stack & Requirements
 
-- **Client Layer**: Modern web browsers with responsive Angular Material UI
-- **Frontend Layer**: Angular 18 SPA with TypeScript, RxJS, and Angular Material
-- **Authentication Layer**: Google OAuth 2.0 integration with JWT token management
-- **Backend Services**: RESTful API (https://localhost:7103) for business logic
-- **Data Layer**: Persistent storage for user profiles and job applications
-- **External Integrations**: Google OAuth services for authentication
-
-### Key Architectural Principles
-- **Modular Design**: Feature-based module organization
-- **Reactive Programming**: RxJS for async operations and state management
-- **Component-Based**: Reusable Angular components with Material Design
-- **Guard-Protected Routes**: Authentication and authorization controls
-- **Service-Oriented**: Centralized business logic in Angular services
-
-## Tech Stack
-
-### Frontend
 - **Framework**: Angular 18.2.0
-- **Language**: TypeScript 5.5.4
 - **UI Library**: Angular Material 18.2.0
-- **Styling**: SCSS with Azure Blue Material theme
+- **Language**: TypeScript 5.5.4
 - **State Management**: RxJS 7.8.0
-- **Authentication**: @abacritt/angularx-social-login 2.3.0
-- **JWT Handling**: @auth0/angular-jwt 5.2.0
+- **Authentication**: Google OAuth (`@abacritt/angularx-social-login`) & JWT (`@auth0/angular-jwt`)
+- **Testing**: Karma, Jasmine, and Cypress
+- **Node.js**: v20.x
+- **Package Manager**: npm
 
-### Development & Testing
-- **Build Tool**: Angular CLI 18.2.0
-- **Testing Framework**: Jasmine + Karma
-- **E2E Testing**: Cypress 13.13.3, Playwright 1.49.0
-- **Bundle Analysis**: source-map-explorer 2.5.3
+## Project Structure
 
-### DevOps & Deployment
-- **Containerization**: Docker with multi-stage builds
+```
+rzume_web/
+├── .github/workflows/      # CI/CD pipeline for Google Cloud Run
+├── src/app/
+│   ├── components/         # Reusable UI components (tables, dialogs)
+│   ├── core/               # Core logic: services, guards, interceptors, models
+│   ├── pages/              # Main application pages (auth, dashboard)
+│   └── environments/       # Environment-specific configuration
+├── scripts/                # Utility scripts (e.g., config creation)
+├── Dockerfile              # Multi-stage Dockerfile for building and serving the app
+├── angular.json            # Angular project configuration
+└── package.json            # Project dependencies and scripts
+```
+
+- **`src/app/core/services`**: Contains the business logic, including API communication, authentication, and state management.
+- **`src/app/pages`**: Holds the main views of the application, such as the login page and the main dashboard.
+- **`Dockerfile`**: Defines the containerization process for production deployment.
+- **`.github/workflows/deploy.yml`**: Automates testing and deployment to Google Cloud Run.
+
+## Setup & Installation Instructions
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <your-repository-url>
+    cd rzume_web
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configure your environment:**
+    Create a development environment file by copying the example:
+    ```bash
+    cp src/environments/environment.ts src/environments/environment.development.ts
+    ```
+    Then, update `src/environments/environment.development.ts` with your backend API URL and Google Client ID.
+
+4.  **Run the application locally:**
+    ```bash
+    npm start
+    ```
+    The application will be available at `http://localhost:4200`.
+
+## Available Scripts
+
+-   **`npm start`**: Starts the development server.
+-   **`npm run build`**: Builds the application for production.
+-   **`npm test`**: Runs unit tests using Karma and Jasmine.
+-   **`npm run test:ci`**: Runs unit tests in a headless browser for CI environments.
+-   **`npm run cy:open`**: Opens the Cypress E2E test runner.
+
+## Deployment Guide
+
+This project is configured for automated deployment to **Google Cloud Run** via GitHub Actions.
+
+### Automated Deployment
+
+The CI/CD pipeline, defined in `.github/workflows/deploy.yml`, handles the entire process:
+1.  **Trigger**: The workflow runs automatically on every push to the `main` or `master` branch.
+2.  **Test**: It installs dependencies and runs the unit test suite.
+3.  **Build**: It builds a Docker image of the application using the provided `Dockerfile`.
+4.  **Push**: The image is pushed to Google Artifact Registry.
+5.  **Deploy**: The new image is deployed to Google Cloud Run.
+
+### Manual Deployment
+
+To deploy manually, you can build and run the Docker container:
+
+1.  **Build the Docker image:**
+    ```bash
+    docker build -t rzume-web . \
+      --build-arg API_URL=<your_api_url> \
+      --build-arg GOOGLE_CLIENT_ID=<your_google_client_id>
+    ```
+
+2.  **Run the container:**
+    ```bash
+    docker run -p 8080:8080 rzume-web
+    ```
+
+## Features / Modules
+
+-   **Authentication**: A complete authentication module that includes sign-up, sign-in, password reset, and Google OAuth integration.
+-   **Dashboard**: The main view for authenticated users, displaying a list of job applications with functionalities for adding, editing, and deleting entries.
+-   **Profile Management**: A dedicated section for users to manage their profile information.
+-   **Shared Components**: A collection of reusable UI components, including a customizable table, dialogs, and search inputs to ensure a consistent user experience.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
 - **Web Server**: Nginx Alpine
 - **Development Server**: Angular Dev Server (port 4200)
 - **Production Port**: 3000 (Nginx)
