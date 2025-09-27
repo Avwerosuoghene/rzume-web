@@ -56,7 +56,7 @@
   <ng-template #profileSection let-menu="menu">
     <div class="profile_img_section">
       <button class="profile_pic" [matMenuTriggerFor]="menu" aria-label="User menu">
-        <img src="assets/images/default_pic.png" alt="profile" />
+        <img [src]="profileImage" alt="profile" />
       </button>
     </div>
   </ng-template>

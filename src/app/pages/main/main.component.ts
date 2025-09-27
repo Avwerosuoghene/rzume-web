@@ -29,7 +29,6 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Ensure proper initialization after view is ready
     setTimeout(() => {
       this.isInitialized = true;
       this.cdr.detectChanges();
@@ -61,7 +60,6 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
   closeSidebar() {
     this.ngZone.run(() => {
       if (!this.isInitialized) {
-        // If not initialized yet, wait and try again
         setTimeout(() => this.closeSidebar(), 50);
         return;
       }

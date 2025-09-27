@@ -65,7 +65,9 @@ export interface User {
 
   onBoardingStage: number,
 
-  emailConfirmed: boolean
+  emailConfirmed: boolean,
+
+  profilePictureUrl?: string
 }
 
 

@@ -35,3 +35,5 @@ export const INACTIVE_USER = 'User is not active';
 export const PASSWORD_RESET_SUCCESS = 'Password reset succesfully';
 
 export const PASSWORD_RESET_FAILED = 'Password reset failed';
+
+export const DEFAULT_PROFILE_IMAGE = 'assets/images/default_pic.png';
