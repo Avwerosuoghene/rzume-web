@@ -4,6 +4,7 @@
 * {
   box-sizing: border-box;
   margin: 0;
+  font-family: "Poppins", sans-serif;
 }
 
 form {
@@ -55,7 +56,7 @@ h3 {
 h4 {
   font-family: "Poppins", sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 
   &.light_text{
     color: $gray;

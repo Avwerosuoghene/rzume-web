@@ -1,0 +1,37 @@
+<div class="profile-photo-upload">
+  <div class="photo-section">
+    <div class="photo-info">
+      <h4>{{ labels.PROFILE_PHOTO }}</h4>
+      <button 
+        type="button" 
+        class="change-photo-btn"
+        (click)="triggerFileInput()"
+        [disabled]="isLoading"
+      >
+      <img src="assets/icons/camera-icon.png" alt="camera icon">
+        {{ labels.CHANGE_PHOTO }}
+      </button>
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+    </div>
+    
+    <div class="photo-preview" *ngIf="!isLoading">
+      <img 
+ 
+        [src]="displayPhotoUrl" 
+        [alt]="labels.PROFILE_PHOTO"
+        class="profile-image"
+      />
+      <div *ngIf="isLoading" class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+  
+  <input
+    id="profile-photo-input"
+    type="file"
+    [accept]="ACCEPTED_IMAGE_TYPES"
+    (change)="onFileSelected($event)"
+    hidden
+  />
+</div>

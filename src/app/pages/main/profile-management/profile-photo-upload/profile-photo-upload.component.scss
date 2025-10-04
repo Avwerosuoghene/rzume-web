@@ -1,0 +1,118 @@
+@import '../../../../../styles.scss';
+@import '../../../../styles/fonts.scss';
+
+.profile-photo-upload {
+  width: 100%;
+
+}
+
+.photo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.photo-info {
+  flex: 1;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    text-align: left;
+  }
+
+  h4 {
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin-bottom: 16px;
+  }
+}
+
+.change-photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: $white;
+  border: 1px solid $rzume-blue;
+  border-radius: 8px;
+  color: $rzume-blue;
+  font-size: $regular-font-size;
+  font-weight: $regular-font-weight;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  .icon {
+    font-size: 16px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: $rzume-blue-light;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.photo-preview {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+
+  @media (min-width: 599px) {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  max-width: 120px;
+  max-height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 120px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid $light-gray;
+  border-top-color: $rzume-blue;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 8px;
+}

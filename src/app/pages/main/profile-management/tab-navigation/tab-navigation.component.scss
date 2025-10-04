@@ -1,0 +1,56 @@
+@import '../../../../../styles.scss';
+@import '../../../../styles/fonts.scss';
+
+
+.tab-navigation {
+  width: 100%;
+  background-color: #f5f5f5;
+  display: flex;
+  @media (min-width: 768px) {
+
+  }
+}
+
+.tab-list {
+  display: flex;
+  border: 1px solid $light-gray;
+  border-radius: 8px;
+  overflow: hidden; 
+}
+
+.tab-button {
+  padding: 10px 16px;
+  border: none;
+  background-color: transparent; 
+  font-size: $regular-font-size;
+  font-weight: $regular-font-weight;
+  color: $gray;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: background-color 0.2s ease;
+
+  &:not(:last-child) {
+    border-right: 1px solid $light-gray;
+  }
+
+  &.active {
+    background-color: $white;
+    font-weight: $regular-font-weight;
+    color: $black;
+  }
+
+  &:hover:not(.active) {
+    background-color: #f9f9f9; 
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  @media (min-width: 768px) {
+    padding: 14px 24px;
+    font-size: $regular-font-size;
+  }
+}

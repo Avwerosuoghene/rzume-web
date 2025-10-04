@@ -7,4 +7,5 @@ export * from './info-dialog';
 export * from './job-add-dialog';
 export * from './job-status-change';
 export * from './password-strength-checker';
-
+export * from '../pages/main/profile-management/profile-photo-upload/profile-photo-upload.component';
+export * from '../pages/main/profile-management/tab-navigation/tab-navigation.component';

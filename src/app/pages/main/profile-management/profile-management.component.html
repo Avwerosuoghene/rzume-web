@@ -1,1 +1,28 @@
-<p>profile-management works!</p>
+<div class="profile-management">
+  <app-tab-navigation
+    [tabs]="tabConfigs"
+    [activeTabId]="activeTab"
+    (tabChange)="onTabChange($event)"
+  ></app-tab-navigation>
+
+
+  <div class="tab-content">
+    <div 
+      *ngIf="isTabActive(PROFILE_TABS.PROFILE)"
+      role="tabpanel"
+      [attr.id]="PROFILE_TABS.PROFILE + '-panel'"
+      class="tab-panel"
+    >
+      <app-profile-view></app-profile-view>
+    </div>
+
+    <div 
+      *ngIf="isTabActive(PROFILE_TABS.DOCUMENTS)"
+      role="tabpanel"
+      [attr.id]="PROFILE_TABS.DOCUMENTS + '-panel'"
+      class="tab-panel"
+    >
+      <app-documents-view></app-documents-view>
+    </div>
+  </div>
+</div>
