@@ -1,17 +1,61 @@
 
+// Font Weights
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
 
-$bold-font-size: 24px;
-$bold-font-medium: 18px;
-$regular-font-size: 14px;
-$small-font-size: 12px;
-$regular-font-weight: 400;
-$regular-font-medium: 600;
-$bold-font-weight: 700;
+// Font Sizes - Mobile First
+$font-size-xs: 10px;      // Extra small (tabs, badges)
+$font-size-sm: 12px;      // Small (captions, helper text)
+$font-size-base: 14px;    // Base (body text, buttons)
+$font-size-md: 16px;      // Medium (inputs, emphasis)
+$font-size-lg: 18px;      // Large (subheadings)
+$font-size-xl: 20px;      // Extra large (section titles)
+$font-size-2xl: 24px;     // 2X large (page titles)
+$font-size-3xl: 28px;     // 3X large (hero titles)
+$font-size-4xl: 32px;     // 4X large (display)
+$font-size-5xl: 36px;     // 5X large (display)
+$font-size-6xl: 48px;     // 6X large (hero display)
 
-.heading {
+// Legacy variables for backward compatibility
+$bold-font-size: $font-size-2xl;
+$bold-font-medium: $font-size-lg;
+$regular-font-size: $font-size-base;
+$small-font-size: $font-size-sm;
+$regular-font-weight: $font-weight-regular;
+$regular-font-medium: $font-weight-semibold;
+$bold-font-weight: $font-weight-bold;
+
+// Typography Mixins
+@mixin font-display {
   font-family: "Poppins", sans-serif;
-  font-size: $bold-font-size;
-  font-weight: $bold-font-weight;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
 }
 
+@mixin font-heading {
+  font-family: "Poppins", sans-serif;
+  font-weight: $font-weight-semibold;
+  line-height: 1.3;
+}
 
+@mixin font-body {
+  font-family: "Poppins", sans-serif;
+  font-weight: $font-weight-regular;
+  line-height: 1.5;
+}
+
+@mixin font-caption {
+  font-family: "Poppins", sans-serif;
+  font-weight: $font-weight-regular;
+  line-height: 1.4;
+}
+
+// Legacy heading class
+.heading {
+  @include font-display;
+  font-size: $font-size-2xl;
+}
