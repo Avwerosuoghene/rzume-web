@@ -4,11 +4,15 @@
   display: flex;
   align-items: center;
   border: 1px solid $light-gray;
-  padding: 10px 16px;
+  padding: 4px 16px;
   width: 100%;
   background-color: white;
   overflow: hidden; 
   position: relative;
+
+  @media (min-width: 950px) {
+    padding: 10px 16px;
+  }
 
   img {
     width: 18px;
