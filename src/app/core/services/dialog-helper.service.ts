@@ -2,9 +2,10 @@ import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { finalize } from "rxjs";
 import { JobAddDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
+import { ConfirmDeleteModalComponent } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
 import { JobApplicationService } from "./job-application.service";
 import { LoaderService } from "./loader.service";
-import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
@@ -107,23 +108,21 @@ export class DialogHelperService {
     selectedItems: JobApplicationItem[],
     onConfirm: () => void
   ): void {
-    const dialogData = this.buildDeleteDialogData(selectedItems);
+    const dialogData = {
+      title: DELETE_APP_TITLE,
+      message: this.buildDeleteMessage(selectedItems)
+    };
 
     this.openAndHandleDialog<void>(
-      InfoDialogComponent,
+      ConfirmDeleteModalComponent,
       dialogData,
       () => onConfirm(),
       { disableClose: false }
     );
   }
 
-  private buildDeleteDialogData(selectedItems: JobApplicationItem[]): InfoDialogData {
-    return {
-      infoMessage: this.buildDeleteMessage(selectedItems),
-      statusIcon: IconStat.success,
-    };
-  }
-
+  
+  
   openJobStatusDialog(item: JobApplicationItem, onSubmit: (updated: JobApplicationItem) => void): void {
     const dialogData: JobStatChangeDialogData = { jobItem: item };
 

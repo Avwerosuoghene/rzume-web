@@ -1,0 +1,11 @@
+<div class="modal-container">
+  <img src="/assets/icons/delete-icon-with-background.svg" alt="Delete" class="delete-icon" />
+  <div>
+    <h2 class="modal-title">{{ data.title }}</h2>
+    <p class="modal-message">{{ data.message }}</p>
+  </div>
+  <div class="button-group">
+    <button mat-stroked-button class="close-button" (click)="onClose()">Close</button>
+    <button mat-flat-button class="delete-button" (click)="onConfirm()">Delete</button>
+  </div>
+</div>
