@@ -1,12 +1,10 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { finalize } from "rxjs";
-import { JobAddDialogComponent, InfoDialogComponent, JobStatusChangeComponent } from "../../components";
-import { DialogCloseResponse, AddJobDialogData, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, CONFIRM_DELETE_MSG } from "../models";
-import { DialogCloseStatus } from "../models/enums/dialog.enums";
-import { JobApplicationItem, CreateApplicationPayload } from "../models/interface/job-application.models";
+import { JobAddDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
 import { JobApplicationService } from "./job-application.service";
 import { LoaderService } from "./loader.service";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
@@ -14,7 +12,7 @@ export class DialogHelperService {
     private dialog: MatDialog,
     private loaderService: LoaderService,
     private jobApplicationService: JobApplicationService
-  ) {}
+  ) { }
 
   private openAndHandleDialog<T>(
     component: any,
@@ -68,7 +66,25 @@ export class DialogHelperService {
     this.loaderService.showLoader();
     this.jobApplicationService.addApplication(payload)
       .pipe(finalize(() => this.loaderService.hideLoader()))
-      .subscribe({ next: () => onComplete?.(), error: () => onComplete?.() });
+      .subscribe({
+        next: () => {
+          this.openSuccessDialog(
+            ADD_APP_SUCCESS_TITLE,
+            ADD_APP_SUCCESS_MSG,
+            onComplete
+          );
+        },
+        error: () => onComplete?.()
+      });
+  }
+
+  private openSuccessDialog(title: string, message: string, onClosed?: () => void): void {
+    this.openAndHandleDialog(
+      SuccessModalComponent,
+      { title, message },
+      () => onClosed?.(),
+      { disableClose: true }
+    );
   }
 
   updateApplication(data: JobApplicationItem, onComplete?: () => void): void {
@@ -92,7 +108,7 @@ export class DialogHelperService {
     onConfirm: () => void
   ): void {
     const dialogData = this.buildDeleteDialogData(selectedItems);
-  
+
     this.openAndHandleDialog<void>(
       InfoDialogComponent,
       dialogData,

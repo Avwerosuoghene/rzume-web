@@ -1,0 +1,52 @@
+@import '../../styles/theme.scss';
+@import '../../styles/fonts.scss';
+@import '../../styles/general_styles.scss';
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  gap: 16px;
+
+  @media (min-width: 599px) {
+    padding: 40px;
+    gap: 20px;
+  }
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+
+  @media (min-width: 599px) {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.modal-title {
+  font-size: $bold-font-size;
+  font-weight: $bold-font-weight;
+  color: $black;
+}
+
+.modal-message {
+  font-size: $regular-font-size;
+  color: $gray;
+}
+
+.close-button {
+  @extend .rzume-button;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 200px;
+
+  @media (min-width: 599px) {
+    margin-top: 20px;
+  }
+}
+
+
