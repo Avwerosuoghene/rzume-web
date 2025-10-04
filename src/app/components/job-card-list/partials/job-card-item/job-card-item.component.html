@@ -1,7 +1,7 @@
-<div class="card-container">
-  <div class="card-header">
+<article class="card-container">
+  <header class="card-header">
     <div class="company-info">
-      <p class="company-name">{{ job.companyName }}</p>
+      <h4 class="company-name">{{ job.companyName }}</h4>
       <p class="job-role">{{ job.position }}</p>
     </div>
     <div class="action-icons">
@@ -23,8 +23,8 @@
         </button>
       </mat-menu>
     </div>
-  </div>
-  <div class="card-footer">
+  </header>
+  <footer class="card-footer">
     @if (job.jobLink) {
     <div class="url-section">
       
@@ -35,5 +35,5 @@
     </div>
     }
     <p class="date">{{ job.applicationDate | date: 'MMM dd yyyy' }}</p>
-  </div>
-</div>
+  </footer>
+</article>

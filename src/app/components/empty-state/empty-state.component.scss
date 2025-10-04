@@ -32,9 +32,6 @@
   }
 
   h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 500;
     color: rgba(0, 0, 0, 0.87);
   }
 
@@ -44,7 +41,7 @@
     line-height: 1.5;
   }
 
-  .action-button {
+  #action-button {
     margin-top: 1rem;
     @extend .rzume-button;
   }

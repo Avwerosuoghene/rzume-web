@@ -39,20 +39,11 @@
   justify-content: space-between;
 }
 
-.form-field {
-  label {
-    font-size: $regular-font-size;
-    font-weight: $regular-font-weight;
-    color: $black;
-  }
-}
 
 .form-input {
   width: 100%;
   padding: 12px 16px;
-  font-size: $regular-font-size;
   border: 1px solid $light-gray;
-  font-weight: $regular-font-weight;
   border-radius: 8px;
   transition: all 0.2s ease;
   background-color: transparent;
@@ -75,8 +66,6 @@
 
   @media (min-width: 768px) {
     padding: 14px 18px;
-    font-size: $regular-font-size;
-    font-weight: $regular-font-weight;
   }
 }
 
@@ -109,7 +98,7 @@
   }
 }
 
-.save-btn {
+#save-btn {
   @extend .rzume-button;
   width: 100%;
 

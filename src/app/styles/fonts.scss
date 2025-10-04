@@ -20,14 +20,6 @@ $font-size-4xl: 32px;     // 4X large (display)
 $font-size-5xl: 36px;     // 5X large (display)
 $font-size-6xl: 48px;     // 6X large (hero display)
 
-// Legacy variables for backward compatibility
-$bold-font-size: $font-size-2xl;
-$bold-font-medium: $font-size-lg;
-$regular-font-size: $font-size-base;
-$small-font-size: $font-size-sm;
-$regular-font-weight: $font-weight-regular;
-$regular-font-medium: $font-weight-semibold;
-$bold-font-weight: $font-weight-bold;
 
 // Typography Mixins
 @mixin font-display {

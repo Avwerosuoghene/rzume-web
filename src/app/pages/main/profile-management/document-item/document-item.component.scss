@@ -33,18 +33,11 @@
   gap: 4px;
 }
 
-.document-name {
-  font-size: $regular-font-size;
-  font-weight: $regular-font-medium;
-  color: $black;
-}
 
 .document-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: $small-font-size;
-  color: $gray;
 }
 
 .document-actions {

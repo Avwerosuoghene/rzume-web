@@ -22,8 +22,6 @@
   padding: 10px 16px;
   border: none;
   background-color: transparent; 
-  font-size: $regular-font-size;
-  font-weight: $regular-font-weight;
   color: $gray;
   cursor: pointer;
   white-space: nowrap;
@@ -36,7 +34,6 @@
 
   &.active {
     background-color: $white;
-    font-weight: $regular-font-weight;
     color: $black;
   }
 
@@ -51,6 +48,5 @@
 
   @media (min-width: 768px) {
     padding: 14px 24px;
-    font-size: $regular-font-size;
   }
 }

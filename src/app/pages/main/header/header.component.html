@@ -1,4 +1,4 @@
-<div class="header_container">
+<header class="header_container">
   @if (isMobile) {
     <!-- Mobile Header -->
     <div class="mobile-header">
@@ -30,7 +30,7 @@
 
         <div class="welcome_section">
           <p class="light_text">Welcome</p>
-          <h4>{{ userInfo?.userName }}</h4>
+          <h3>{{ userInfo?.userName }}</h3>
         </div>
 
         <ng-container *ngTemplateOutlet="profileSection; context: { menu: menu }"></ng-container>
@@ -45,7 +45,7 @@
       <hr class="header" />
 
       <div class="section_lower">
-        <p>{{ activeComponent | titlecase }}</p>
+        <h4>{{ activeComponent | titlecase }}</h4>
         <p class="light_text">{{ todaysDate | date: 'MMM dd yyyy' }}</p>
       </div>
     </div>
@@ -60,4 +60,4 @@
       </button>
     </div>
   </ng-template>
-</div>
+</header>

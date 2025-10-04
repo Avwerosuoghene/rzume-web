@@ -17,11 +17,7 @@
   }
   #info-dialog-msg {
     text-align: center;
-    font-size: $regular-font-size;
 
-    @media (min-width: 600px) {
-      font-size: $bold-font-medium;
-    }
   }
 
   .info-dialog-icon {
@@ -35,7 +31,7 @@
     @extend .success_fail_icon;
   }
 
-  .close-info-dialog {
+  #close-info-dialog {
     @extend .rzume-button;
     padding: 0 40px;
     color: #fff;

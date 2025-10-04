@@ -3,7 +3,7 @@
     <mat-icon [id]="infoIcon">{{infoIcon}}</mat-icon>
   </div>
   <p id="info-dialog-msg">{{infoMessage}}</p>
-  <button class="close-info-dialog" mat-stroked-button mat-dialog-close type="button" (click)="onConfirm()">
+  <button id="close-info-dialog" mat-stroked-button mat-dialog-close type="button" (click)="onConfirm()">
    {{infoIcon === 'warning'? 'Proceed': 'Done'}}
   </button>
 </div>

@@ -1,5 +1,6 @@
 @import "../../../../styles/fonts.scss";
 @import "../../../../styles/theme.scss";
+@import "../../../../styles/general_styles.scss";
 
 .file-uploader-container {
   border: none;
@@ -27,21 +28,9 @@
   display: none;
 }
 
-.browse-btn {
-  background-color: $rzume-blue;
-  color: $white;
-  border: none;
-  padding: 14px 16px;
-  border-radius: 8px;
-  font-size: $regular-font-size;
-  font-weight: $regular-font-medium;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+#browse-btn {
+  @extend .rzume-button;
   width: 100%;
-
-  &:hover {
-    background-color: darken($rzume-blue, 10%);
-  }
 }
 
 @media (min-width: 600px) {
@@ -69,8 +58,4 @@
 
   .separator { display: flex; }
 
-  .browse-btn {
-    width: auto;
-    padding: 12px 24px;
-  }
 }

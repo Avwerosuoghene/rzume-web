@@ -1,4 +1,4 @@
-<div class="empty-state-container">
+<section class="empty-state-container">
   <div class="empty-state-icon" *ngIf="icon">
     <mat-icon>{{icon}}</mat-icon>
   </div>
@@ -6,8 +6,8 @@
   <p class="empty-state-message" *ngIf="message">{{message}}</p>
   
   <ng-container *ngIf="showAction">
-    <button class="action-button" mat-flat-button type="button" (click)="actionButtonClicked()">
+    <button id="action-button" mat-flat-button type="button" (click)="actionButtonClicked()">
       {{actionText}}
     </button>
   </ng-container>
-</div>
+</section>

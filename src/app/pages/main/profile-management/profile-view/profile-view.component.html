@@ -13,7 +13,7 @@
       <div class="form-actions desktop">
         <button
           type="submit"
-          class="save-btn"
+          id="save-btn"
           [disabled]="isLoading || !isFormDirty"
         >
           <span *ngIf="!isLoading">{{ labels.SAVE_CHANGES }}</span>
@@ -30,7 +30,8 @@
       >
 
           <div class="form-field">
-            <label for="firstName">{{ labels.FIRST_NAME }}</label>
+            <label for="firstName">
+              {{ labels.FIRST_NAME }}</label>
             <input
               id="firstName"
               type="text"
@@ -73,7 +74,7 @@
         <button
           type="submit"
           mat-flat-button
-          class="save-btn"
+          id="save-btn"
           [disabled]="isLoading || !isFormDirty"
         >
           <span *ngIf="!isLoading">{{ labels.SAVE_CHANGES }}</span>

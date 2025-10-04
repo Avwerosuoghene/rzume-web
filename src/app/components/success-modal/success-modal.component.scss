@@ -28,17 +28,14 @@
 }
 
 .modal-title {
-  font-size: $bold-font-size;
-  font-weight: $bold-font-weight;
   color: $black;
 }
 
 .modal-message {
-  font-size: $regular-font-size;
   color: $gray;
 }
 
-.close-button {
+#close-button {
   @extend .rzume-button;
   margin-top: 10px;
   width: 100%;

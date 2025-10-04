@@ -12,7 +12,7 @@ import { DEFAULT_PROFILE_IMAGE } from '../../../../core/models';
 })
 export class ProfilePhotoUploadComponent {
   @Input() photoUrl?: string;
-  @Input() isLoading = false;
+  @Input() isLoading = true;
   @Output() photoSelected = new EventEmitter<File>();
   ACCEPTED_IMAGE_TYPES = ACCEPTED_IMAGE_TYPES;
   

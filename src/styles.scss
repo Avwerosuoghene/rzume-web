@@ -32,11 +32,25 @@ a {
 
 
 
+
 .minor-element_flex {
   display: flex;
   gap: 8px;
   align-items: center;
 }
+
+.light_text {
+  color: $gray;
+}
+
+.green_text {
+  color: $basic-green;
+}
+
+.bold {
+  font-weight: $font-weight-semibold;
+}
+
 
 // Typography System - Mobile First Approach
 
@@ -44,62 +58,43 @@ a {
 h1 {
   @include font-display;
   font-size: $font-size-2xl;
-  margin: 0 0 16px 0;
 
   @media (min-width: 599px) {
     font-size: $font-size-3xl;
-    margin: 0 0 20px 0;
   }
 
   @media (min-width: 950px) {
     font-size: $font-size-4xl;
-    margin: 0 0 24px 0;
   }
 
-  &.light_text {
-    color: $gray;
-  }
 }
 
 // H2 - Page titles
 h2 {
   @include font-heading;
   font-size: $font-size-xl;
-  margin: 0 0 12px 0;
 
   @media (min-width: 599px) {
     font-size: $font-size-2xl;
-    margin: 0 0 16px 0;
   }
 
   @media (min-width: 950px) {
     font-size: $font-size-3xl;
-    margin: 0 0 20px 0;
   }
 
-  &.light_text {
-    color: $gray;
-  }
 }
 
 // H3 - Section headings
 h3 {
   @include font-heading;
   font-size: $font-size-lg;
-  margin: 0 0 8px 0;
 
   @media (min-width: 599px) {
     font-size: $font-size-xl;
-    margin: 0 0 12px 0;
   }
 
   @media (min-width: 950px) {
     font-size: $font-size-2xl;
-    margin: 0 0 16px 0;
-  }
-
-  &.light_text {
-    color: $gray;
   }
 }
 
@@ -107,50 +102,31 @@ h3 {
 h4 {
   @include font-heading;
   font-size: $font-size-base;
-  margin: 0 0 8px 0;
 
   @media (min-width: 599px) {
     font-size: $font-size-md;
-    margin: 0 0 8px 0;
   }
 
   @media (min-width: 950px) {
     font-size: $font-size-lg;
-    margin: 0 0 12px 0;
   }
 
-  &.light_text {
-    color: $gray;
-  }
 }
 
-// P - Body text
-p {
+
+p, label, .form-input {
+  margin: 0;
   @include font-body;
   font-size: $font-size-sm;
-  margin: 0 0 8px 0;
 
   @media (min-width: 599px) {
     font-size: $font-size-base;
-    margin: 0 0 12px 0;
   }
 
   @media (min-width: 950px) {
     font-size: $font-size-base;
-    margin: 0 0 16px 0;
   }
 
-  &.green_text {
-    color: $basic-green;
-  }
-
-  &.light_text {
-    color: $gray;
-  }
-
-  &.bold {
-    font-weight: $font-weight-semibold;
-  }
 }
 
 // A - Links
@@ -168,27 +144,10 @@ a {
     font-size: $font-size-base;
   }
 
-  &.light_text {
-    color: $gray;
-  }
-
-  &.bold {
-    font-weight: $font-weight-semibold;
-  }
 }
 
 // Span elements inherit from parent but can have utility classes
-span {
-  &.green_text {
-    color: $basic-green;
-  }
-  &.light_text {
-    color: $gray;
-  }
-  &.bold {
-    font-weight: $font-weight-semibold;
-  }
-}
+
 
 html,
 body {

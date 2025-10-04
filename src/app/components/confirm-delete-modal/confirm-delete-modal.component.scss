@@ -28,13 +28,10 @@
 }
 
 .modal-title {
-  font-size: $bold-font-size;
-  font-weight: $bold-font-weight;
   color: $black;
 }
 
 .modal-message {
-  font-size: $regular-font-size;
   color: $gray;
 }
 
@@ -53,7 +50,6 @@
   flex: 1;
   padding: 12px 16px;
   border-radius: 8px;
-  font-weight: $regular-font-medium;
 }
 
 .close-button {

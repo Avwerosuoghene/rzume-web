@@ -9,7 +9,7 @@
         [disabled]="isLoading"
       >
       <img src="assets/icons/camera-icon.png" alt="camera icon">
-        {{ labels.CHANGE_PHOTO }}
+      <p>{{ labels.CHANGE_PHOTO }}</p>
       </button>
       <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
@@ -21,9 +21,6 @@
         [alt]="labels.PROFILE_PHOTO"
         class="profile-image"
       />
-      <div *ngIf="isLoading" class="loading-overlay">
-        <div class="spinner"></div>
-      </div>
     </div>
   </div>
   

@@ -18,12 +18,9 @@
 
   .company-info {
     .company-name {
-      font-size: $regular-font-size;
-      font-weight: $regular-font-weight;
       color: $black;
     }
     .job-role {
-      font-size: $small-font-size;
       color: $gray;
     }
   }
@@ -59,7 +56,6 @@
 
       .copy-icon {
         color: $gray;
-        font-size: $regular-font-size;
         width: 14px;
         height: 14px;
       }
@@ -68,7 +64,6 @@
   }
 
   .date {
-    font-size: $small-font-size;
     color: $gray;
     align-self: flex-end;
   }
