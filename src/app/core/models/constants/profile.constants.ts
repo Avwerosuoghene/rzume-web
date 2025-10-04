@@ -17,6 +17,7 @@ export const PROFILE_TAB_CONFIGS: ProfileTabConfig[] = [
 export const PROFILE_FORM_LABELS = {
   PROFILE_PHOTO: 'Profile photo',
   CHANGE_PHOTO: 'Change Photo',
+  CHANGE_PHOTO_DESCRIPTION: 'This image will be displayed on your profile',
   PERSONAL_INFO: 'Personal Information',
   PERSONAL_INFO_DESCRIPTION: 'Update your personal details here.',
   FIRST_NAME: 'First name',

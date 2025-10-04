@@ -30,7 +30,7 @@
 
         <div class="welcome_section">
           <p class="light_text">Welcome</p>
-          <h3>{{ userInfo?.userName }}</h3>
+          <h4>{{ userInfo?.userName }}</h4>
         </div>
 
         <ng-container *ngTemplateOutlet="profileSection; context: { menu: menu }"></ng-container>
@@ -45,7 +45,7 @@
       <hr class="header" />
 
       <div class="section_lower">
-        <h4>{{ activeComponent | titlecase }}</h4>
+        <p>{{ activeComponent | titlecase }}</p>
         <p class="light_text">{{ todaysDate | date: 'MMM dd yyyy' }}</p>
       </div>
     </div>
