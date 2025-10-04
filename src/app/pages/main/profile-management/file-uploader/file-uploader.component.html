@@ -1,0 +1,28 @@
+<div
+  class="file-uploader-container"
+  [class.dragging]="isDragging"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <input
+    type="file"
+    #fileInput
+    hidden
+    multiple
+    [accept]="allowedFileTypes.join(',')"
+    (change)="onFileSelected($event)"
+  />
+
+  <div class="uploader-content">
+    <img src="/assets/icons/upload-cloud.png" alt="Upload" class="upload-icon" />
+    <p class="main-text">
+      <a (click)="fileInput.click()">Click to upload</a> or drag and drop
+    </p>
+    <p class="sub-text">{{ fileRestrictionsText }}</p>
+    <div class="separator">OR</div>
+    <button type="button" class="browse-btn" (click)="fileInput.click()">
+      Browse Files
+    </button>
+  </div>
+</div>

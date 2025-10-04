@@ -1,60 +1,16 @@
-<div class="documents-view">
-  <!-- Empty State -->
-  <div *ngIf="!hasDocuments && !isLoading" class="empty-state">
-    <div class="empty-state-icon">📄</div>
-    <h4>{{ emptyStates.NO_DOCUMENTS.title }}</h4>
-    <p class="light_text">{{ emptyStates.NO_DOCUMENTS.message }}</p>
-    <button type="button" class="upload-btn" (click)="onUploadDocument()">
-      {{ emptyStates.NO_DOCUMENTS.actionText }}
-    </button>
+<div class="documents-view-container">
+  <div class="header">
+    <h4>Upload up to 2 resume files. Keep them current to make a strong impression.</h4>
   </div>
 
-  <!-- Documents List -->
-  <div *ngIf="hasDocuments" class="documents-container">
-    <div class="documents-header">
-      <h4>Your Documents</h4>
-      <button type="button" class="upload-btn" (click)="onUploadDocument()">
-        <span class="icon">📄</span>
-        Upload Document
-      </button>
-    </div>
+  <app-file-uploader (filesSelected)="onFilesSelected($event)"></app-file-uploader>
 
-    <div class="documents-grid">
-      <div *ngFor="let document of documents" class="document-card">
-        <div class="document-icon">
-          <span>📄</span>
-        </div>
-        <div class="document-info">
-          <h5 class="document-name">{{ document.name }}</h5>
-          <p class="document-meta light_text">
-            {{ formatFileSize(document.size) }} • {{ formatDate(document.uploadDate) }}
-          </p>
-        </div>
-        <div class="document-actions">
-          <button 
-            type="button" 
-            class="action-btn download"
-            (click)="onDownloadDocument(document)"
-            title="Download"
-          >
-            ⬇️
-          </button>
-          <button 
-            type="button" 
-            class="action-btn delete"
-            (click)="onDeleteDocument(document.id)"
-            title="Delete"
-          >
-            🗑️
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading-container">
-    <div class="spinner"></div>
-    <p class="light_text">Loading documents...</p>
+  <div class="documents-list">
+    <app-document-item
+      *ngFor="let doc of uploadedDocuments"
+      [document]="doc"
+      (delete)="onDeleteDocument($event)"
+      (download)="onDownloadDocument($event)"
+    ></app-document-item>
   </div>
 </div>

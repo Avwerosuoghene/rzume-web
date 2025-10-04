@@ -1,0 +1,95 @@
+@import "../../../../styles/fonts.scss";
+@import "../../../../styles/theme.scss";
+
+.file-uploader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  border: 2px dashed $light-gray;
+  border-radius: 12px;
+  background-color: $white;
+  text-align: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &.dragging {
+    background-color: $rzume-blue-light;
+    border-color: $rzume-blue;
+  }
+}
+
+.uploader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+}
+
+.main-text {
+  font-size: $regular-font-size;
+  color: $black;
+
+  a {
+    color: $rzume-blue;
+    font-weight: $regular-font-medium;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.sub-text {
+  font-size: $small-font-size;
+  color: $gray;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: $gray;
+  font-size: $small-font-size;
+  width: 100%;
+  margin: 8px 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid $light-gray;
+  }
+
+  &::before {
+    margin-right: 0.5em;
+  }
+
+  &::after {
+    margin-left: 0.5em;
+  }
+}
+
+.browse-btn {
+  background-color: $rzume-blue;
+  color: $white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: $regular-font-size;
+  font-weight: $regular-font-medium;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: darken($rzume-blue, 10%);
+  }
+}

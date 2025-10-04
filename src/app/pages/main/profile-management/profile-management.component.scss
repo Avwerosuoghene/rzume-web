@@ -6,13 +6,20 @@
   flex-direction: column;
   padding: 24px;
   gap: 20px;
-  height: calc(100vh - 86px);
+  height: calc(100vh - 80px); 
 
+  @media (min-width: 600px) {
+    height: calc(100vh - 120px); 
+  }
+
+  @media (min-width: 800px) {
+    height: calc(100vh - 134px); 
+  }
 }
 
 .tab-content {
   flex-grow: 1;
-  height: 0; /* Fix for flex-grow in some browsers */
+  height: 0;
 }
 
 .tab-panel {

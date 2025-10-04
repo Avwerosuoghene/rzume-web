@@ -1,0 +1,24 @@
+<div class="document-item-container">
+  <div class="document-info">
+    <img src="/assets/icons/pdf-icon.svg" alt="PDF" class="file-icon" />
+    <div class="details">
+      <p class="document-name">{{ document.name }}</p>
+      <p class="document-meta">
+        <span>{{ document.uploadDate | date: 'dd MMM, yyyy' }}</span>
+        <span>•</span>
+        <span>{{ document.uploadDate | date: 'h:mm a' }}</span>
+        <span>•</span>
+        <span>{{ formatSize(document.size) }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="document-actions">
+    <button type="button" class="icon-btn" (click)="onDelete()" aria-label="Delete document">
+      <img src="/assets/icons/delete-icon.svg" alt="Delete" />
+    </button>
+    <button type="button" class="icon-btn" (click)="onDownload()" aria-label="Download document">
+      <img src="/assets/icons/download-icon.svg" alt="Download" />
+    </button>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+
+export interface UploadedDocument {
+  id: string;
+  name: string;
+  size: number; // in bytes
+  uploadDate: Date;
+  fileUrl?: string; // Optional URL for downloading
+}
+
+@Component({
+  selector: 'app-document-item',
+  standalone: true,
+  imports: [CommonModule, DatePipe],
+  templateUrl: './document-item.component.html',
+  styleUrls: ['./document-item.component.scss']
+})
+export class DocumentItemComponent {
+  @Input() document!: UploadedDocument;
+  @Output() delete = new EventEmitter<string>();
+  @Output() download = new EventEmitter<string>();
+
+  onDelete(): void {
+    this.delete.emit(this.document.id);
+  }
+
+  onDownload(): void {
+    this.download.emit(this.document.id);
+  }
+
+  formatSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+}
