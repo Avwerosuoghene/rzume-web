@@ -22,6 +22,7 @@
         class="side_menu_item"
         [routerLink]="sideBarElement.route"
         routerLinkActive="active"
+        (click)="onClose()"
       >
         <img class="side_menu_itm_icon" [src]="sideBarElement.icon" alt="" />
         <p>{{ sideBarElement.name }}</p>

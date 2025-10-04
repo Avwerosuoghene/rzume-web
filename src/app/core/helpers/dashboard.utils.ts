@@ -71,7 +71,7 @@ export function getBaseRoutes(): SideBarElement[] {
     return [
         {
             name: 'Dashboard',
-            icon: 'assets/icons/dashboard-icon.png',
+            icon: 'assets/icons/dashboard-icon.svg',
             route: `/${RootRoutes.main}/${MainRoutes.dashboard}`
         }
     ];
@@ -83,7 +83,7 @@ export function getFeatureRoutes(configService: ConfigService): SideBarElement[]
     if (configService.featureFlags.enableProfileManagement) {
         routes.push({
             name: 'Profile',
-            icon: 'assets/icons/user-profile-icon.png',
+            icon: 'assets/icons/user-profile-icon.svg',
             route: `/${RootRoutes.main}/${MainRoutes.profileManagement}`
         });
     }

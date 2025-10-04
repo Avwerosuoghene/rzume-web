@@ -1,4 +1,5 @@
 @import "../../../styles/theme.scss";
+@import "../../../styles/fonts.scss";
 
 .sidebar_container {
   padding: 0;
@@ -71,10 +72,29 @@
       align-items: center;
       gap: 16px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
+      -webkit-tap-highlight-color: transparent; 
 
+      p {
+        color: $gray;
+        font-weight: $regular-font-medium;
+        transition: color 0.2s ease;
+      }
+
+      .side_menu_itm_icon {
+        transition: filter 0.2s ease;
+      }
 
       &.active {
         background-color: $light-blue;
+
+        p {
+          color: $rzume-blue;
+        }
+
+        .side_menu_itm_icon {
+          filter: invert(40%) sepia(84%) saturate(2325%) hue-rotate(205deg) brightness(100%) contrast(101%);
+        }
       }
     }
   }
