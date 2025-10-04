@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface UploadedDocument {
   id: string;
@@ -12,7 +15,7 @@ export interface UploadedDocument {
 @Component({
   selector: 'app-document-item',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, MatMenuModule, MatIconModule, MatButtonModule],
   templateUrl: './document-item.component.html',
   styleUrls: ['./document-item.component.scss']
 })

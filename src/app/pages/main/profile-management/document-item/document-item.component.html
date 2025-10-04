@@ -14,11 +14,31 @@
   </div>
 
   <div class="document-actions">
-    <button type="button" class="icon-btn" (click)="onDelete()" aria-label="Delete document">
-      <img src="/assets/icons/delete-icon.svg" alt="Delete" />
-    </button>
-    <button type="button" class="icon-btn" (click)="onDownload()" aria-label="Download document">
-      <img src="/assets/icons/download-icon.svg" alt="Download" />
-    </button>
+    <!-- Desktop view: inline buttons -->
+    <div class="desktop-actions">
+      <button type="button" class="icon-btn" (click)="onDelete()" aria-label="Delete document">
+        <img src="/assets/icons/delete-icon.svg" alt="Delete" />
+      </button>
+      <button type="button" class="icon-btn" (click)="onDownload()" aria-label="Download document">
+        <img src="/assets/icons/download-icon.svg" alt="Download" />
+      </button>
+    </div>
+
+    <!-- Mobile view: vertical menu -->
+    <div class="mobile-actions">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Document actions">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onDownload()">
+          <mat-icon>download</mat-icon>
+          <span>Download</span>
+        </button>
+        <button mat-menu-item (click)="onDelete()">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
   </div>
 </div>

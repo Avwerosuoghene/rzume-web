@@ -50,7 +50,23 @@
 .document-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+
+  .desktop-actions {
+    display: none; // Hidden by default
+    gap: 16px;
+
+    @media (min-width: 600px) {
+      display: flex; // Visible on desktop
+    }
+  }
+
+  .mobile-actions {
+    display: block; // Visible by default
+
+    @media (min-width: 600px) {
+      display: none; // Hidden on desktop
+    }
+  }
 }
 
 .icon-btn {
@@ -72,3 +88,5 @@
     background-color: rgba($black, 0.05);
   }
 }
+
+
