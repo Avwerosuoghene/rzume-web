@@ -7,7 +7,7 @@
 
   <div class="documents-list">
     <app-document-item
-      *ngFor="let doc of uploadedDocuments"
+      *ngFor="let doc of documents"
       [document]="doc"
       (delete)="onDeleteDocument($event)"
       (download)="onDownloadDocument($event)"

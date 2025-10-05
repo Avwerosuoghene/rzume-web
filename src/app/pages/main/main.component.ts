@@ -21,7 +21,11 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
   subscriptions = new Subscription();
   private isInitialized = false;
 
-  constructor(private uiState: UiStateService, private cdr: ChangeDetectorRef, private ngZone: NgZone) { }
+  constructor(
+    private uiState: UiStateService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) { }
 
   ngOnInit() {
     this.updateLayout();

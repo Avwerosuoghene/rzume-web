@@ -9,7 +9,8 @@ import { JobStatsComponent } from '../../../components/job-stats/job-stats.compo
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { JobApplicationStateService } from '../../../core/services/job-application-state.service';
 import { JobApplicationItem, JobApplicationFilter, DeleteApplicationsPayload, JobApplicationStatItemDto } from '../../../core/models/interface/job-application.models';
-import { ScreenManagerService, SearchStateService } from '../../../core/services';
+import { ScreenManagerService, SearchStateService, DocumentHelperService } from '../../../core/services';
+import { Resume } from '../../../core/models/interface/profile.models';
 import { JobCardListComponent } from "../../../components/job-card-list/job-card-list.component";
 import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrapper/empty-state-wrapper.component";
 import { buildPagination, mapApplicationToTableData, mapJobStats, normalizeFilter, resetPagination, updateFilterState, updatePagination } from '../../../core/helpers/dashboard.utils';
@@ -40,6 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   statHighLights: JobApplicationStatItemDto[] = [];
   data: JobApplicationItem[] = [];
   jobListColumns: Array<ColumnDefinition> = this.JOB_TABLE_COLUMNS;
+  resumes: Resume[] = [];
 
   totalPages = PAGINATION_DEFAULTS.totalPages;
   currentPage = PAGINATION_DEFAULTS.currentPage;
@@ -60,14 +62,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private jobApplicationService: JobApplicationService,
     private searchStateService: SearchStateService,
     private screenManager: ScreenManagerService,
-    private dialogHelperService: DialogHelperService
+    private dialogHelperService: DialogHelperService,
+    private documentHelper: DocumentHelperService
   ) {}
 
   ngOnInit(): void {
+    this.setUpSubscriptions();
+    this.documentHelper.fetchResumes();
+  }
+
+  setUpSubscriptions(){
     this.setupScreenManagerSubscription();
-    this.initiateJobStats();
     this.setupApplicationSubscription();
     this.setupSearchSubscription();
+    this.setupResumeSubscription();
+  }
+
+  private setupResumeSubscription(): void {
+    this.documentHelper.resumes$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(resumes => this.resumes = resumes);
   }
 
 

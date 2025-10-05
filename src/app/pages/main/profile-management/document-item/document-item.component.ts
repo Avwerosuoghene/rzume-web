@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { DocumentItem } from '../../../../core/models';
 
 export interface UploadedDocument {
   id: string;
@@ -20,7 +21,7 @@ export interface UploadedDocument {
   styleUrls: ['./document-item.component.scss']
 })
 export class DocumentItemComponent {
-  @Input() document!: UploadedDocument;
+  @Input() document!: DocumentItem;
   @Output() delete = new EventEmitter<string>();
   @Output() download = new EventEmitter<string>();
 

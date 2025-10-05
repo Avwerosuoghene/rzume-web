@@ -4,17 +4,16 @@
     <div class="details">
       <p >{{ document.name }}</p>
       <p class="document-meta light_text">
-        <span>{{ document.uploadDate | date: 'dd MMM, yyyy' }}</span>
+        <span>{{ document.uploadedAt | date: 'dd MMM, yyyy' }}</span>
         <span>•</span>
-        <span>{{ document.uploadDate | date: 'h:mm a' }}</span>
+        <span>{{ document.uploadedAt | date: 'h:mm a' }}</span>
         <span>•</span>
-        <span>{{ formatSize(document.size) }}</span>
+        <span *ngIf="document.size">{{ formatSize(document.size) }}</span>
       </p>
     </div>
   </div>
 
   <div class="document-actions">
-    <!-- Desktop view: inline buttons -->
     <div class="desktop-actions">
       <button type="button" class="icon-btn" (click)="onDelete()" aria-label="Delete document">
         <img src="/assets/icons/delete-icon.svg" alt="Delete" />

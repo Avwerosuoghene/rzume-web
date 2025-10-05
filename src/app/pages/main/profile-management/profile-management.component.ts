@@ -4,6 +4,9 @@ import { TabNavigationComponent } from './tab-navigation/tab-navigation.componen
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DocumentsViewComponent } from './documents-view/documents-view.component';
 import { PROFILE_TABS, PROFILE_TAB_CONFIGS, ProfileTabConfig } from '../../../core/models/constants/profile.constants';
+import { Resume } from '../../../core/models';
+import { DocumentHelperService } from '../../../core/services';
+import { Subject, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -21,11 +24,31 @@ import { PROFILE_TABS, PROFILE_TAB_CONFIGS, ProfileTabConfig } from '../../../co
 export class ProfileManagementComponent implements OnInit {
   readonly PROFILE_TABS = PROFILE_TABS;
   readonly tabConfigs: ProfileTabConfig[] = PROFILE_TAB_CONFIGS;
-  
+  resumes: Resume[] = [];
   activeTab: string = PROFILE_TABS.PROFILE;
+  private destroy$ = new Subject<void>();
+
+
+  constructor(private documentHelper: DocumentHelperService) { }
+
 
   ngOnInit(): void {
     this.initializeActiveTab();
+    this.setupResumeSubscription();
+    this.checkAndFetchResumes();
+  }
+
+  private setupResumeSubscription(): void {
+    this.documentHelper.resumes$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(resumes => this.resumes = resumes);
+  }
+
+  private checkAndFetchResumes(): void {
+    const currentResumes = this.documentHelper.getResumes();
+    if (currentResumes.length === 0) {
+      this.documentHelper.fetchResumes();
+    }
   }
 
 
@@ -34,10 +57,15 @@ export class ProfileManagementComponent implements OnInit {
   }
 
   onTabChange(tabId: string): void {
-    this.activeTab = tabId ;
+    this.activeTab = tabId;
   }
 
   isTabActive(tabId: PROFILE_TABS): boolean {
     return this.activeTab === tabId;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

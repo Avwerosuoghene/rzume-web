@@ -17,9 +17,16 @@ export interface UserProfile {
 export interface DocumentItem {
   id: string;
   name: string;
-  type: DocumentType;
-  size: number;
-  uploadDate: Date;
+  type?: DocumentType;
+  size?: number;
+  uploadedAt: Date;
+  url: string;
+}
+
+export interface Resume {
+  id: string;
+  name: string;
+  uploadedAt: Date;
   url: string;
 }
 

@@ -7,7 +7,8 @@ import {
   ProfilePhotoUploadResult,
   DocumentItem,
   UploadDocumentPayload,
-  DeleteDocumentPayload
+  DeleteDocumentPayload,
+  Resume
 } from '../models/interface/profile.models';
 
 @Injectable({
@@ -40,9 +41,9 @@ export class ProfileManagementService {
     );
   }
 
-  getDocuments(): Observable<APIResponse<DocumentItem[]>> {
+  getResumes(): Observable<APIResponse<Resume[]>> {
     return this.apiService.get<APIResponse<DocumentItem[]>>({
-      route: ApiRoutes.profileManagement.updatePicture,
+      route: ApiRoutes.profileManagement.resumes,
       withBearer: true,
       handleResponse: true
     });
