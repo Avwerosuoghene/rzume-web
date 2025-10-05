@@ -8,7 +8,8 @@ import {
   DocumentItem,
   UploadDocumentPayload,
   DeleteDocumentPayload,
-  Resume
+  Resume,
+  SubscriptionFeatures
 } from '../models/interface/profile.models';
 
 @Injectable({
@@ -44,6 +45,14 @@ export class ProfileManagementService {
   getResumes(): Observable<APIResponse<Resume[]>> {
     return this.apiService.get<APIResponse<Resume[]>>({
       route: ApiRoutes.profileManagement.resumes,
+      withBearer: true,
+      handleResponse: true
+    });
+  }
+
+  getSubscriptionFeatures(): Observable<APIResponse<SubscriptionFeatures>> {
+    return this.apiService.get<APIResponse<SubscriptionFeatures>>({
+      route: ApiRoutes.profileManagement.subscriptionFeatures,
       withBearer: true,
       handleResponse: true
     });

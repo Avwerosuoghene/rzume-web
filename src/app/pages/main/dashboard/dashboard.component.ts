@@ -68,6 +68,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setUpSubscriptions();
+    this.fetchResumes();
+    this.initiateJobStats();
+  }
+
+  fetchResumes(): void {
     this.documentHelper.fetchResumes();
   }
 

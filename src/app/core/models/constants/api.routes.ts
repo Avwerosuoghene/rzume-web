@@ -25,6 +25,7 @@ export class ApiRoutes {
     update: `${this.profileManagementRoute}/update`,
     resume: `${this.profileManagementRoute}/resume`,
     resumes: `${this.profileManagementRoute}/resumes`,
+    subscriptionFeatures: `${this.profileManagementRoute}/subscription-features`
   }
 
   static utility = {

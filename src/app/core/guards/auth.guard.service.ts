@@ -2,19 +2,21 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageUtil } from '../helpers/session-storage.util';
 import { AuthRoutes, RootRoutes } from '../models/enums/application.routes.enums';
-import { APIResponse, User, ErrorResponse, SessionStorageKeys, INACTIVE_USER } from '../models';
-import { AuthenticationService, StorageService } from '../services';
-
+import { APIResponse, ErrorResponse, INACTIVE_USER, SessionStorageKeys, User } from '../models';
+import { AuthenticationService, ProfileManagementService, StorageService } from '../services';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuardService {
-  private router = inject(Router);
-
   userToken: string | null = null;
 
-  constructor(private authService: AuthenticationService, private storageService: StorageService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private storageService: StorageService,
+    private profileService: ProfileManagementService,
+    private router: Router
+  ) { }
 
   async canActivate(): Promise<boolean> {
     const tokenIsActive = await this.getActiveToken();
@@ -29,6 +31,9 @@ export class AuthGuardService {
     }
     try {
       const isActive = await this.getActiveUser();
+      if (isActive) {
+        this.getSubscriptionFeatures();
+      }
       return isActive;
     } catch (error) {
       console.error(error);
@@ -53,6 +58,19 @@ private getActiveUser(): Promise<boolean> {
           reject(error);
         }
       });
+    });
+  }
+
+  private getSubscriptionFeatures(): void {
+    this.profileService.getSubscriptionFeatures().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.storageService.setSubscriptionFeatures(response.data);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to fetch subscription features:', error);
+      }
     });
   }
 }

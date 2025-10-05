@@ -47,3 +47,16 @@ export interface ProfilePhotoUploadResult {
   success: boolean;
   message?: string;
 }
+
+export interface SubscriptionFeatures
+{
+    planId: number;
+    planName: string;
+    features: PlanFeature[];
+}
+
+    export interface PlanFeature
+{
+    featureKey: string;
+    featureValue: string;
+}

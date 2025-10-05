@@ -24,7 +24,8 @@ export enum IconStat {
 export enum SessionStorageKeys {
   userMail = 'userMail',
   authToken = 'authToken',
-  userData = 'userData'
+  userData = 'userData',
+  subscriptionFeatures = 'subscriptionFeatures'
 }
 
 export enum EmptyStateIcon {
