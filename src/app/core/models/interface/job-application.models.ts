@@ -9,6 +9,7 @@ export interface JobApplicationItem {
   applicationDate?: Date;
   jobLink?: string;
   resume?: Resume;
+  resumeId?: string;
   notes?: string;
   status: string;
   selected?: boolean; 

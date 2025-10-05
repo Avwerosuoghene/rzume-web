@@ -27,6 +27,7 @@ export class JobAddDialogComponent implements OnInit {
   loaderIsActive: boolean = false;
   editMode: boolean = false;
   resumes: Resume[] = [];
+  selectedResume?: Resume;
   noResumesMessage = NO_RESUMES_AVAILABLE_MSG;
 
   constructor(
@@ -38,6 +39,7 @@ export class JobAddDialogComponent implements OnInit {
   ngOnInit(): void {
     this.loadResumes();
     this.initializeForm();
+    console.log(this.addJobDialogData)
     this.editMode = this.addJobDialogData.isEditing;
     if (this.editMode) this.prepopulateFormFields();
   }
@@ -84,10 +86,14 @@ cancelApplication() {
   prepopulateFormFields() {
     if (this.addJobDialogData.jobApplicationData) {
       const jobData = this.addJobDialogData.jobApplicationData;
+      
+      const resumeId = jobData.resumeId;
+      this.selectedResume = this.findResumeById(resumeId);
+
       this.applicationFormGroup.patchValue({
         companyName: jobData.companyName || '',
         position: jobData.position || '',
-        resumeId: jobData.resume?.id || '',
+        resumeId: resumeId,
         jobLink: jobData.jobLink || '',
         notes: jobData.notes || '',
         applicationDate: jobData.applicationDate ? new Date(jobData.applicationDate) : null, 
@@ -95,6 +101,12 @@ cancelApplication() {
       });
     }
   }
+
+  private findResumeById(resumeId?: string): Resume | undefined {
+    if (!resumeId) return undefined;
+    return DocumentHelper.findResumeById(this.resumes, resumeId);
+  }
+
 
   get hasResumes(): boolean {
     return this.resumes.length > 0;
