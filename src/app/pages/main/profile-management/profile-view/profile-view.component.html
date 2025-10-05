@@ -20,7 +20,6 @@
     <div class="right-section">
       <form
         [formGroup]="profileForm"
-        (ngSubmit)="onSubmit()"
         class="profile-form"
       >
 
@@ -91,7 +90,7 @@
 
   <ng-template #saveButton>
     <button
-      type="submit"
+      type="button"
       mat-flat-button
       id="save-btn"
       [disabled]="isLoading || !isFormDirty"
