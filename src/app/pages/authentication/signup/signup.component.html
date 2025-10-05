@@ -13,40 +13,46 @@
 
   <form [formGroup]="signupFormGroup" (ngSubmit)="submitSignupForm()">
     <div class="form-input-container">
-      <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input
-          matInput
-          placeholder="Enter your email"
-          type="email"
-          formControlName="email"
-          name="email"
-        />
-        <mat-icon matSuffix>person</mat-icon>
-        @if (getFormElement('email')?.hasError('required')) {
-        <mat-error> Email required </mat-error>
-        } @if (getFormElement('email')?.hasError('email')) {
-        <mat-error> Please enter a valid mail </mat-error>
-        }
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          placeholder="Enter your password"
-          [type]="passwordVisibility"
-          formControlName="password"
-          name="password"
-          (keyup)="validatePassword()"
-        />
-        <mat-icon matSuffix (click)="togglePasswordVisibility()">{{
-          passwordVisibility === "password" ? "visibility_off" : "visibility"
-        }}</mat-icon>
+      <div class="form-field">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <input
+            id="email"
+            class="form-input"
+            [class.error]="getFieldError('email')"
+            placeholder="Enter your email"
+            type="email"
+            formControlName="email"
+            name="email"
+          />
+          <mat-icon>person</mat-icon>
+        </div>
+        <span *ngIf="getFieldError('email')" class="error-message">
+          {{ getFieldError('email') }}
+        </span>
+      </div>
 
-        @if (getFormElement('password')?.hasError('required')) {
-        <mat-error> Password required </mat-error>
-        }
-      </mat-form-field>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <input
+            id="password"
+            class="form-input"
+            [class.error]="getFieldError('password')"
+            placeholder="Enter your password"
+            [type]="passwordVisibility"
+            formControlName="password"
+            name="password"
+            (keyup)="validatePassword()"
+          />
+          <mat-icon (click)="togglePasswordVisibility()">{{
+            passwordVisibility === "password" ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </div>
+        <span *ngIf="getFieldError('password')" class="error-message">
+          {{ getFieldError('password') }}
+        </span>
+      </div>
       <app-password-strength-checker></app-password-strength-checker>
       <div class="minor-element_flex">
         <mat-checkbox
@@ -72,32 +78,32 @@
           >
         </p>
       </div>
-      <div class="action_buttons">
-
-      </div>
+      <div class="action_buttons"></div>
       <div class="action_btns">
         <button
-        class="form-input-confirm-button"
-        mat-flat-button
-        [disabled]="isBtnDisabled"
-        type="submit"
-        id="signupBtn"
-      >
-        <div class="button-elements">
-          @if (loaderIsActive) {
-          <app-circular-loader></app-circular-loader>
-          }
+          class="form-input-confirm-button"
+          mat-flat-button
+          [disabled]="isBtnDisabled"
+          type="submit"
+          id="signupBtn"
+        >
+          <div class="button-elements">
+            @if (loaderIsActive) {
+            <app-circular-loader></app-circular-loader>
+            }
 
-          <p>Create an Account</p>
-        </div>
-      </button>
-      <p>Or</p>
-      <app-google-sign-in (tokenEmitter)="handleCredentialResponse($event)" (click)="triggerGoogleSignup()" [googleBtnText] ="GOOGLE_SIGNIN_BUTTON_TEXT"></app-google-sign-in>
-
+            <p>Create an Account</p>
+          </div>
+        </button>
+        <p>Or</p>
+        <app-google-sign-in
+          (tokenEmitter)="handleCredentialResponse($event)"
+          (click)="triggerGoogleSignup()"
+          [googleBtnText]="GOOGLE_SIGNIN_BUTTON_TEXT"
+        ></app-google-sign-in>
       </div>
     </div>
   </form>
-
 
   <div class="signup-signin_route desktop_only">
     <p>

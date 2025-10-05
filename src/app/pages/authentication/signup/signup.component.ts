@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
+import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormValidationUtil } from '../../../core/helpers';
+import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
+import { AuthenticationService, GoogleAuthService } from '../../../core/services';
+import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { PasswordStrengthCheckerComponent } from '../../../components';
-import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
-import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil } from '../../../core/helpers';
-import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
-import { AuthenticationService, GoogleAuthService } from '../../../core/services';
-import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 
 
 @Component({
@@ -137,6 +137,10 @@ export class SignupComponent implements OnInit, OnDestroy {
     return this.signupFormGroup.get(controlName);
   }
 
+  getFieldError(fieldName: string): string {
+    return FormValidationUtil.getFieldError(this.signupFormGroup, fieldName);
+  }
+
   handleSignupSuccess(response: APIResponse, userMail: string): void {
     this.toggleLoader(false);
     this.resetSignupForm();
@@ -207,5 +211,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   toggleLoader(isActive: boolean) {
     this.loaderIsActive = isActive;
   }
+
+  
 
 }

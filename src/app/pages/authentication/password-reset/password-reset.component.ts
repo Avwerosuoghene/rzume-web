@@ -1,15 +1,16 @@
-import { Component, inject, ViewChild } from '@angular/core';
-import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
+import { PasswordUtility, SessionStorageUtil, FormValidationUtil, PasswordStrengthResult } from '../../../core/helpers';
 import { APIResponse, AuthRoutes, ErrorResponse, IconStat, PASSWORD_RESET_FAILED, PASSWORD_RESET_SUCCESS, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, ToggledPassword } from '../../../core/models';
-import { PasswordStrengthResult, PasswordUtility } from '../../../core/helpers';
 import { AuthenticationService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
-import { finalize, Subject, takeUntil } from 'rxjs';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
+import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
+import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 
 @Component({
   selector: 'app-password-reset',
@@ -160,5 +161,7 @@ export class PasswordResetComponent {
     this.loaderIsActive = state;
   }
 
-
+  getFieldError(fieldName: string): string {
+    return FormValidationUtil.getFieldError(this.resetPassFormGroup, fieldName);
+  }
 }

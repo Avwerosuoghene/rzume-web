@@ -3,7 +3,7 @@ import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { MatDialog } from '@angular/material/dialog';
-import { PasswordUtility } from '../../../core/helpers/password.util';
+import { PasswordUtility, FormValidationUtil } from '../../../core/helpers';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
@@ -182,5 +182,9 @@ export class LoginComponent {
 
   toggleLoader(isActive: boolean) {
     this.loaderIsActive = isActive;
+  }
+
+  getFieldError(fieldName: string): string {
+    return FormValidationUtil.getFieldError(this.loginFormGroup, fieldName);
   }
 }

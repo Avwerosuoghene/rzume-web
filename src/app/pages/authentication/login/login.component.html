@@ -15,43 +15,45 @@
 
   <form [formGroup]="loginFormGroup" (ngSubmit)="submitLoginForm()">
     <div class="form-input-container">
-      <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input
-          matInput
-          placeholder="Enter your email"
-          type="email"
-          formControlName="email"
-          name="email"
-        />
-        <mat-icon matSuffix>person</mat-icon>
+      <div class="form-field">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <input
+            id="email"
+            class="form-input"
+            [class.error]="getFieldError('email')"
+            placeholder="Enter your email"
+            type="email"
+            formControlName="email"
+            name="email"
+          />
+          <mat-icon>person</mat-icon>
+        </div>
+        <span *ngIf="getFieldError('email')" class="error-message">
+          {{ getFieldError('email') }}
+        </span>
+      </div>
 
-        @if (getFormElement('email')?.hasError('required')) {
-
-        <mat-error> Email required </mat-error>
-
-        } @else if (getFormElement('email')?.hasError('email')) {
-
-        <mat-error> Please enter a valid mail </mat-error>
-        }
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          placeholder="Enter your password"
-          [type]="passwordVisibility"
-          formControlName="password"
-          name="password"
-        />
-        <mat-icon matSuffix (click)="togglePasswordVisibility()">{{
-          passwordVisibility === "password" ? "visibility_off" : "visibility"
-        }}</mat-icon>
-
-        @if (getFormElement('password')?.hasError('required')) {
-        <mat-error> Password required </mat-error>
-        }
-      </mat-form-field>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <input
+            id="password"
+            class="form-input"
+            [class.error]="getFieldError('password')"
+            placeholder="Enter your password"
+            [type]="passwordVisibility"
+            formControlName="password"
+            name="password"
+          />
+          <mat-icon (click)="togglePasswordVisibility()">{{
+            passwordVisibility === "password" ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </div>
+        <span *ngIf="getFieldError('password')" class="error-message">
+          {{ getFieldError('password') }}
+        </span>
+      </div>
 
       <div class="rememberCheck-forgotPass">
         <div class="minor-element_flex">

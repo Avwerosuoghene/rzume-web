@@ -1,17 +1,18 @@
 import { Component, inject, OnDestroy } from '@angular/core';
-import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
-import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
-import { CoreModules } from '../../../core/modules/core-modules';
-import { AngularMaterialModules } from '../../../core/modules/material-modules';
-import { RouterModules } from '../../../core/modules/router-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { IconStat } from '../../../core/models/enums/shared.enums';
-import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { finalize, Observable, startWith } from 'rxjs';
-import { AuthenticationService, TimerService } from '../../../core/services';
+import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
+import { IconStat } from '../../../core/models/enums/shared.enums';
 import { RequestPassResetPayload, APIResponse, InfoDialogData } from '../../../core/models';
+import { AuthenticationService, TimerService } from '../../../core/services';
+import { FormValidationUtil } from '../../../core/helpers';
+import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
+import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
+import { CoreModules } from '../../../core/modules/core-modules';
+import { AngularMaterialModules } from '../../../core/modules/material-modules';
+import { RouterModules } from '../../../core/modules/router-modules';
 
 @Component({
   selector: 'app-request-password-reset',
@@ -95,6 +96,10 @@ export class RequestPasswordResetComponent implements OnDestroy {
 
   get emailControl() {
     return this.passResetReqFormGroup.get('email');
+  }
+
+  getFieldError(fieldName: string): string {
+    return FormValidationUtil.getFieldError(this.passResetReqFormGroup, fieldName);
   }
 
 }
