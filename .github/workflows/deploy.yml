@@ -68,6 +68,7 @@ jobs:
             --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
             --build-arg APP_VERSION=${{ github.sha }} \
             --build-arg ENVIRONMENT=production \
+            --build-arg PROFILE_MANAGEMENT_FEATURE=${{ secrets.PROFILE_MANAGEMENT_FEATURE }} \
             -t ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             -t ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest .
 
