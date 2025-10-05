@@ -8,9 +8,9 @@ import { DocumentItem } from '../../../../core/models';
 export interface UploadedDocument {
   id: string;
   name: string;
-  size: number; // in bytes
+  size: number;
   uploadDate: Date;
-  fileUrl?: string; // Optional URL for downloading
+  fileUrl?: string;
 }
 
 @Component({

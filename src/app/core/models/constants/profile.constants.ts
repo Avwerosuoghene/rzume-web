@@ -81,6 +81,12 @@ export const DOCUMENT_VALIDATION = {
   ]
 } as const;
 
+export const DEFAULT_UPLOADER_MAX_FILE_SIZE = 2 * 1024 * 1024;
+export const DEFAULT_UPLOADER_ALLOWED_TYPES = [
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+];
+
 export const PROFILE_EMPTY_STATES = {
   NO_DOCUMENTS: {
     title: 'No documents uploaded',

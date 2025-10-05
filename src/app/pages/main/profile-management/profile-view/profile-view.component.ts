@@ -87,7 +87,6 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   getUserInfo() {
     this.storageService.user$.subscribe(user => {
       this.currentUser = user;
-      console.log(this.currentUser)
       if (!this.currentUser) return;
       this.populateForm(this.currentUser);
     });

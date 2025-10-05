@@ -106,10 +106,11 @@ export class DialogHelperService {
 
   openDeleteConfirmation(
     selectedItems: JobApplicationItem[],
-    onConfirm: () => void
+    onConfirm: () => void,
+    deleteTitle: string
   ): void {
     const dialogData = {
-      title: DELETE_APP_TITLE,
+      title: deleteTitle,
       message: this.buildDeleteMessage(selectedItems)
     };
 

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { DEFAULT_UPLOADER_ALLOWED_TYPES, DEFAULT_UPLOADER_MAX_FILE_SIZE } from '../../../../core/models/constants/profile.constants';
+import { DocumentHelper } from '../../../../core/helpers';
 
 @Component({
   selector: 'app-file-uploader',
@@ -10,8 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./file-uploader.component.scss']
 })
 export class FileUploaderComponent {
-  @Input() allowedFileTypes: string[] = ['application/pdf'];
-  @Input() maxFileSize: number = 500 * 1024; 
+  @Input() allowedFileTypes: string[] = DEFAULT_UPLOADER_ALLOWED_TYPES;
+  @Input() maxFileSize: number = DEFAULT_UPLOADER_MAX_FILE_SIZE;
   @Input() isUploading: boolean = false;
   @Output() filesSelected = new EventEmitter<File[]>();
 
@@ -61,8 +63,9 @@ export class FileUploaderComponent {
   }
 
   get fileRestrictionsText(): string {
-    const types = this.allowedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ');
-    const size = this.maxFileSize / 1024;
-    return `${types} only (max. ${size}kb)`;
+    const types = DocumentHelper.getReadableFileTypes(this.allowedFileTypes);
+    const sizeText = DocumentHelper.formatFileSize(this.maxFileSize);
+    
+    return `${types} only (max. ${sizeText})`;
   }
 }

@@ -24,7 +24,7 @@ import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.consta
 import { AngularMaterialModules } from '../../core/modules';
 import { EmptyStateWrapperComponent } from '../empty-state-wrapper/empty-state-wrapper.component';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
-import { ApplicationStatus, SCROLL_DEBOUNCE_TIME, SCROLL_THRESHOLD } from '../../core/models';
+import { ApplicationStatus, DELETE_APP_TITLE, SCROLL_DEBOUNCE_TIME, SCROLL_THRESHOLD } from '../../core/models';
 import { DialogHelperService } from '../../core/services/dialog-helper.service';
 
 @Component({
@@ -110,7 +110,7 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy, OnChanges
   handleJobApplicationDelete(item: JobApplicationItem){
     this.dialogHelper.openDeleteConfirmation([item], () => {
       this.jobApplicationsDelete.emit([item.id]);
-    });
+    }, DELETE_APP_TITLE);
   }
 
   handleJobStatusUpdate(item: JobApplicationItem) {

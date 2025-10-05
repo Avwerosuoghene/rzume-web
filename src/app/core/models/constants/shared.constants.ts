@@ -18,13 +18,14 @@ export const BODY_SCROLL_LOCK = 'hidden';
 export const BODY_SCROLL_DEFAULT = 'auto';
 
 export const COPY_SUCCESS_MESSAGE = 'Link copied to clipboard!';
+export const DOWNLOAD_SUCCESS_MESSAGE = 'Document downloaded successfully!';
+export const DOWNLOADING_DOCUMENT = 'Downloading document...';
 export const SNACKBAR_CLOSE_LABEL = 'Close';
 export const SNACKBAR_DURATION = 2000;
 
 export const SCROLL_DEBOUNCE_TIME = 200;
 export const SCROLL_THRESHOLD = 50;
 export const ITEMS_INCREMENT = 5;
-
 
 
 

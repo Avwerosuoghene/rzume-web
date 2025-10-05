@@ -1,11 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
-import { JobStatusChangeComponent } from '../job-status-change/job-status-change.component';
 import { AngularMaterialModules } from '../../core/modules';
-import { ApplicationStatus, CONFIRM_DELETE_MSG, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
+import { ApplicationStatus, CONFIRM_DELETE_MSG, DELETE_APP_TITLE, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableBodyComponent } from './table-body/table-body.component';
 import { TablePagintionComponent } from "./table-pagintion/table-pagintion.component";
@@ -74,7 +71,7 @@ export class CustomTableComponent {
   handleDelete(ids: string[]) {
     this.dialogHelper.openDeleteConfirmation(this.selectedItems, () => {
       this.jobApplicationsDelete.emit(ids);
-    });
+    }, DELETE_APP_TITLE );
   }
 
 

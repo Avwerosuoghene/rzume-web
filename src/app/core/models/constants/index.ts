@@ -8,4 +8,5 @@ export * from './dashboard.constants';
 export * from './dashboard.constants';
 export * from './dialog-data.constants';
 export * from './profile.constants';
+export * from './document.constants';
 

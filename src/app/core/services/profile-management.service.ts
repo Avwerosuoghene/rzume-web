@@ -72,9 +72,9 @@ export class ProfileManagementService {
     );
   }
 
-  deleteDocument(payload: DeleteDocumentPayload): Observable<APIResponse<boolean>> {
+  deleteResume(id: string): Observable<APIResponse<boolean>> {
     return this.apiService.delete<APIResponse<boolean>>(
-      ApiRoutes.profileManagement.updatePicture,
+      ApiRoutes.profileManagement.resumes + `/${id}`,
       true
     );
   }
