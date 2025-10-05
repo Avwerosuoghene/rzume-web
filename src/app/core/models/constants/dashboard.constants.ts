@@ -13,7 +13,7 @@ export const PAGINATION_DEFAULTS = {
 export const JOB_TABLE_COLUMNS = [
   { header: 'Company', field: 'companyName' },
   { header: 'Job Role', field: 'position' },
-  { header: 'Resume Link', field: 'resumeLink' },
+  { header: 'Resume', field: 'resume' },
   { header: 'Job Link', field: 'jobLink' },
   { header: 'Status', field: 'status' },
   { header: 'Date', field: 'applicationDate' },

@@ -10,3 +10,4 @@ export const DOCUMENT_UPLOAD_SUCCESS_TITLE = 'Document Uploaded';
 export const DOCUMENT_UPLOAD_SUCCESS_MSG = 'Your document has been successfully uploaded.';
 export const DOCUMENT_DELETE_SUCCESS_TITLE = 'Document Deleted';
 export const DOCUMENT_DELETE_SUCCESS_MSG = 'Your document has been successfully deleted.';
+export const NO_RESUMES_AVAILABLE_MSG = 'No resumes available. Please upload a resume first.';

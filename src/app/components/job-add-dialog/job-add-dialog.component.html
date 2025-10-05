@@ -38,13 +38,15 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>CV Link</mat-label>
-        <input
-          matInput
-          placeholder="Enter link to cv"
-          formControlName="resumeLink"
-          name="resumeLink"
-        />
+        <mat-label>Resume</mat-label>
+        <mat-select formControlName="resumeId" placeholder="Select a resume">
+          @if (!hasResumes) {
+            <mat-option disabled>{{ noResumesMessage }}</mat-option>
+          }
+          @for (resume of resumes; track resume.id) {
+            <mat-option [value]="resume.id">{{ resume.fileName }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline">

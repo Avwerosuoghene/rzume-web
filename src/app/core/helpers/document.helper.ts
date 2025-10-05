@@ -57,6 +57,15 @@ export class DocumentHelper {
     return '/assets/icons/pdf-icon.svg';
   }
 
+  static findResumeById(resumes: any[], resumeId: string): any | undefined {
+    return resumes.find(resume => resume.id === resumeId);
+  }
+
+  static getResumeFileName(resumes: any[], resumeId: string): string {
+    const resume = this.findResumeById(resumes, resumeId);
+    return resume?.fileName || '';
+  }
+
   static getCvUploadLimit(): number {
     try {
       const subscriptionFeaturesStr = sessionStorage.getItem(SessionStorageKeys.subscriptionFeatures);

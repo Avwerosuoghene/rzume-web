@@ -8,7 +8,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
-import { AddJobDialogData } from '../../core/models';
+import { AddJobDialogData, NO_RESUMES_AVAILABLE_MSG, Resume } from '../../core/models';
+import { DocumentHelperService } from '../../core/services/document-helper.service';
+import { DocumentHelper } from '../../core/helpers';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -24,15 +26,24 @@ export class JobAddDialogComponent implements OnInit {
   applicationStatusOptions: ApplicationStatusOption[] = APPLICATION_STATUS_OPTIONS;
   loaderIsActive: boolean = false;
   editMode: boolean = false;
+  resumes: Resume[] = [];
+  noResumesMessage = NO_RESUMES_AVAILABLE_MSG;
 
-  constructor(private dialogRef:  MatDialogRef<JobAddDialogComponent>,  @Inject(MAT_DIALOG_DATA) private addJobDialogData: AddJobDialogData){
-
-  }
+  constructor(
+    private dialogRef: MatDialogRef<JobAddDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) private addJobDialogData: AddJobDialogData,
+    private documentHelperService: DocumentHelperService
+  ) {}
 
   ngOnInit(): void {
+    this.loadResumes();
     this.initializeForm();
     this.editMode = this.addJobDialogData.isEditing;
     if (this.editMode) this.prepopulateFormFields();
+  }
+
+  loadResumes(): void {
+    this.resumes = this.documentHelperService.getResumes();
   }
 
 
@@ -54,7 +65,7 @@ export class JobAddDialogComponent implements OnInit {
           Validators.required
         ]
       }),
-      resumeLink: this.fb.control(''),
+      resumeId: this.fb.control(''),
       jobLink: this.fb.control(''),
       notes: this.fb.control(''),
       applicationDate:this.fb.control(''),
@@ -76,7 +87,7 @@ cancelApplication() {
       this.applicationFormGroup.patchValue({
         companyName: jobData.companyName || '',
         position: jobData.position || '',
-        resumeLink: jobData.resumeLink || '',
+        resumeId: jobData.resume?.id || '',
         jobLink: jobData.jobLink || '',
         notes: jobData.notes || '',
         applicationDate: jobData.applicationDate ? new Date(jobData.applicationDate) : null, 
@@ -85,10 +96,19 @@ cancelApplication() {
     }
   }
 
+  get hasResumes(): boolean {
+    return this.resumes.length > 0;
+  }
+
+  getResumeDisplayName(resumeId: string): string {
+    return DocumentHelper.getResumeFileName(this.resumes, resumeId);
+  }
+
 
 
   addApplication() {
     const formData = this.applicationFormGroup.value;
+    
     const submissionData = {
       status: DialogCloseStatus.Submitted,
       data: {

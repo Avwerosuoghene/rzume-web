@@ -1,4 +1,5 @@
 import { ApplicationStatus } from "../enums";
+import { Resume } from "./profile.models";
 
 export interface JobApplicationItem {
   id: string;
@@ -7,7 +8,7 @@ export interface JobApplicationItem {
   userId?: string;
   applicationDate?: Date;
   jobLink?: string;
-  resumeLink?: string;
+  resume?: Resume;
   notes?: string;
   status: string;
   selected?: boolean; 
@@ -27,7 +28,7 @@ export interface CreateApplicationPayload {
   position?: string;
   companyName?: string;
   jobLink?: string;
-  resumeLink?: string;
+  resumeId?: string;
   notes?: string;
   status: ApplicationStatus;
   applicationDate?: Date;

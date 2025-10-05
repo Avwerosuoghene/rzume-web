@@ -7,10 +7,11 @@ export function hasActiveFilters(filter: JobApplicationFilter): boolean {
     return !!filter?.searchQuery || Object.values(filter || {}).some(val => !!val);
 }
 
-export function mapApplicationToTableData(application: JobApplicationItem): JobApplicationItem {
+export function mapApplicationToTableData(application: JobApplicationItem): any {
     return {
         ...application,
-        applicationDate: application.applicationDate ? new Date(application.applicationDate) : undefined
+        applicationDate: application.applicationDate ? new Date(application.applicationDate) : undefined,
+        resume: application.resume?.fileName
     };
 }
 
