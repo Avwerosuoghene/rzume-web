@@ -109,5 +109,8 @@ export class OnboardComponent {
     this.loaderIsActive = isActive;
   }
 
+  getFieldError(fieldName: string): string {
+    return FormValidationUtil.getFieldError(this.onboardFormGroup, fieldName);
+  }
 
 }

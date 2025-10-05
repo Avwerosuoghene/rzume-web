@@ -25,15 +25,18 @@
 
       <div class="form-fields-container"> 
         <div class="form-field">
-          <label for="firstName">
-            {{ labels.FIRST_NAME }}</label>
-          <input
-            id="firstName"
-            type="text"
-            formControlName="firstName"
-            class="form-input"
-            [class.error]="getFieldError('firstName')"
-          />
+          <label for="firstName">{{ labels.FIRST_NAME }}</label>
+          <div class="input-wrapper">
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              class="form-input"
+              placeholder="Enter your first name"
+              [class.error]="getFieldError('firstName')"
+              appFloatingLabel
+            />
+          </div>
           <span *ngIf="getFieldError('firstName')" class="error-message">
             {{ getFieldError("firstName") }}
           </span>
@@ -41,13 +44,17 @@
 
         <div class="form-field">
           <label for="lastName">{{ labels.LAST_NAME }}</label>
-          <input
-            id="lastName"
-            type="text"
-            formControlName="lastName"
-            class="form-input"
-            [class.error]="getFieldError('lastName')"
-          />
+          <div class="input-wrapper">
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="form-input"
+              placeholder="Enter your last name"
+              [class.error]="getFieldError('lastName')"
+              appFloatingLabel
+            />
+          </div>
           <span *ngIf="getFieldError('lastName')" class="error-message">
             {{ getFieldError("lastName") }}
           </span>
@@ -57,13 +64,17 @@
       <div class="form-fields-container">
         <div class="form-field">
           <label for="userName">{{ labels.USER_NAME }}</label>
-          <input
-            id="userName"
-            type="text"
-            formControlName="userName"
-            class="form-input"
-            [class.error]="getFieldError('userName')"
-          />
+          <div class="input-wrapper">
+            <input
+              id="userName"
+              type="text"
+              formControlName="userName"
+              class="form-input"
+              placeholder="Enter your username"
+              [class.error]="getFieldError('userName')"
+              appFloatingLabel
+            />
+          </div>
           <span *ngIf="getFieldError('userName')" class="error-message">
             {{ getFieldError("userName") }}
           </span>
@@ -71,13 +82,17 @@
 
         <div class="form-field">
           <label for="email">{{ labels.EMAIL_ADDRESS }}</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            class="form-input"
-            readonly
-          />
+          <div class="input-wrapper">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              placeholder="Your email address"
+              readonly
+              appFloatingLabel
+            />
+          </div>
         </div>
       </div>
 

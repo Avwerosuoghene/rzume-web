@@ -1,37 +1,32 @@
 <div class="onboard-user-container">
-  <h3>What would you like us to call you</h3>
+  <h4>What would you like us to call you</h4>
 
   <form [formGroup]="onboardFormGroup" (ngSubmit)="submitOnboardForm()"  [@slideInOut]="slideInAnimationState" class="onboard-user-form_group">
     <div class="form-input-container">
+      <div class="form-field">
+        <label for="username">Username</label>
+        <div class="input-wrapper">
+          <input
+            id="username"
+            class="form-input"
+            [class.error]="getFieldError('username')"
+            placeholder="Enter your Username"
+            type="text"
+            formControlName="username"
+            name="username"
+            appFloatingLabel
+          />
+          <mat-icon>person</mat-icon>
+        </div>
+        <span *ngIf="getFieldError('username')" class="error-message">
+          {{ getFieldError('username') }}
+        </span>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input
-          matInput
-          placeholder="Enter your Username"
-          type="text"
-          formControlName="username"
-          name="username"
-          minlength="3"
-        />
-
-        <mat-error
-          *ngIf="onboardFormGroup.controls['username'].hasError('required')"
-        >
-          Please enter a username
-        </mat-error>
-        <mat-error
-        *ngIf="onboardFormGroup.controls['username'].hasError('minlength')"
-      >
-        Username must be atleast 3 characters long
-      </mat-error>
-      </mat-form-field>
       <button
         class="form-input-confirm-button"
         mat-flat-button
-        [disabled]="
-        isBtnDisabled()
-        "
+        [disabled]="isBtnDisabled()"
         type="submit"
         id="regUserNameBtn"
       >
@@ -41,7 +36,6 @@
           }
 
           <p>Continue</p>
-
         </div>
       </button>
     </div>

@@ -20,8 +20,10 @@ import {
 import { UpdateProfilePayload, ProfilePhotoUploadResult } from '../../../../core/models/interface/profile.models';
 import { User, APIResponse, SessionStorageKeys } from '../../../../core/models';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { StorageService } from '../../../../core/services';
 import { SessionStorageUtil } from '../../../../core/helpers/session-storage.util';
+import { FloatingLabelDirective } from '../../../../core/directives';
 
 @Component({
   selector: 'app-profile-view',
@@ -30,7 +32,9 @@ import { SessionStorageUtil } from '../../../../core/helpers/session-storage.uti
     CommonModule,
     ReactiveFormsModule,
     ProfilePhotoUploadComponent,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    FloatingLabelDirective
   ],
   templateUrl: './profile-view.component.html',
   styleUrl: './profile-view.component.scss'
