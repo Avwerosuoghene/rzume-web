@@ -28,6 +28,12 @@ export enum SessionStorageKeys {
   subscriptionFeatures = 'subscriptionFeatures'
 }
 
+export enum SubscriptionFeatureKeys {
+  CvUploadLimit = 'cv_upload_limit',
+  JobAppLimit = 'job_app_limit',
+  StorageMb = 'storage_mb'
+}
+
 export enum EmptyStateIcon {
   NoApplications = 'work_outline',
   NoResults = 'search_off',

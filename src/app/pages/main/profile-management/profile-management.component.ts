@@ -4,9 +4,10 @@ import { TabNavigationComponent } from './tab-navigation/tab-navigation.componen
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DocumentsViewComponent } from './documents-view/documents-view.component';
 import { PROFILE_TABS, PROFILE_TAB_CONFIGS, ProfileTabConfig } from '../../../core/models/constants/profile.constants';
-import { Resume } from '../../../core/models';
+import { Resume, DEFAULT_CV_UPLOAD_LIMIT } from '../../../core/models';
 import { DocumentHelperService } from '../../../core/services';
 import { Subject, takeUntil } from 'rxjs';
+import { DocumentHelper } from '../../../core/helpers';
 
 
 @Component({
@@ -26,16 +27,20 @@ export class ProfileManagementComponent implements OnInit {
   readonly tabConfigs: ProfileTabConfig[] = PROFILE_TAB_CONFIGS;
   resumes: Resume[] = [];
   activeTab: string = PROFILE_TABS.PROFILE;
+  cvUploadLimit: number = DEFAULT_CV_UPLOAD_LIMIT;
   private destroy$ = new Subject<void>();
 
 
-  constructor(private documentHelper: DocumentHelperService) { }
+  constructor(
+    private documentHelper: DocumentHelperService,
+  ) { }
 
 
   ngOnInit(): void {
     this.initializeActiveTab();
     this.setupResumeSubscription();
     this.checkAndFetchResumes();
+    this.setupCvUploadLimit();
   }
 
   private setupResumeSubscription(): void {
@@ -62,6 +67,10 @@ export class ProfileManagementComponent implements OnInit {
 
   isTabActive(tabId: PROFILE_TABS): boolean {
     return this.activeTab === tabId;
+  }
+
+  private setupCvUploadLimit(): void {
+    this.cvUploadLimit = DocumentHelper.getCvUploadLimit();
   }
 
   ngOnDestroy(): void {

@@ -21,7 +21,7 @@
     </p>
     <p class="sub-text">{{ fileRestrictionsText }}</p>
     <div class="separator">OR</div>
-    <button id="browse-btn" mat-flat-button (click)="fileInput.click()" [disabled]="isUploading">
+    <button id="browse-btn" mat-flat-button (click)="fileInput.click()" [disabled]="isUploading || isFileLimitReached">
       <div *ngIf="isUploading" class="loading-content">
         <div class="spinner"></div>
         <p>Uploading ...</p>

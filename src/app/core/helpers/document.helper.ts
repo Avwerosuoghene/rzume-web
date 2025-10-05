@@ -1,4 +1,5 @@
-import { MIME_TYPE_MAP } from "../models";
+import { MIME_TYPE_MAP, DEFAULT_CV_UPLOAD_LIMIT, SessionStorageKeys, SubscriptionFeatureKeys } from "../models";
+import { SubscriptionFeatures } from "../models/interface/profile.models";
 
 
 export class DocumentHelper {
@@ -54,5 +55,34 @@ export class DocumentHelper {
     }
     
     return '/assets/icons/pdf-icon.svg';
+  }
+
+  static getCvUploadLimit(): number {
+    try {
+      const subscriptionFeaturesStr = sessionStorage.getItem(SessionStorageKeys.subscriptionFeatures);
+      
+      if (!subscriptionFeaturesStr) {
+        return DEFAULT_CV_UPLOAD_LIMIT;
+      }
+
+      const subscriptionFeatures: SubscriptionFeatures = JSON.parse(subscriptionFeaturesStr);
+
+      if (!subscriptionFeatures || !subscriptionFeatures.features) {
+        return DEFAULT_CV_UPLOAD_LIMIT;
+      }
+
+      const cvLimitFeature = subscriptionFeatures.features.find(
+        feature => feature.featureKey === SubscriptionFeatureKeys.CvUploadLimit
+      );
+
+      if (!cvLimitFeature || !cvLimitFeature.featureValue) {
+        return DEFAULT_CV_UPLOAD_LIMIT;
+      }
+
+      const limit = parseInt(cvLimitFeature.featureValue, 10);
+      return isNaN(limit) ? DEFAULT_CV_UPLOAD_LIMIT : limit;
+    } catch (error) {
+      return DEFAULT_CV_UPLOAD_LIMIT;
+    }
   }
 }

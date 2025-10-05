@@ -136,6 +136,20 @@ export class DialogHelperService {
     );
   }
 
+  openInfoDialog(infoIcon: IconStat, infoMessage: string, onClosed?: () => void): void {
+    const dialogData: InfoDialogData = {
+      statusIcon: infoIcon,
+      infoMessage: infoMessage
+    };
+
+    this.openAndHandleDialog(
+      InfoDialogComponent,
+      dialogData,
+      () => onClosed?.(),
+      { disableClose: false }
+    );
+  }
+
   buildDeleteMessage(selectedItems: JobApplicationItem[]): string {
     return selectedItems.length > 1
       ? `Kindly confirm you want to delete ${selectedItems.length} applications`

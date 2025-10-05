@@ -1,3 +1,4 @@
+import { SubscriptionFeatures } from './profile.models';
 
 export interface AuthRequest {
   email: string,
@@ -67,7 +68,7 @@ export interface User {
 
   emailConfirmed: boolean,
 
-  profilePictureUrl?: string
+  profilePictureUrl?: string,
 }
 
 

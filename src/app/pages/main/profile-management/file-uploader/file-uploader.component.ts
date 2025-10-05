@@ -15,6 +15,7 @@ export class FileUploaderComponent {
   @Input() allowedFileTypes: string[] = DEFAULT_UPLOADER_ALLOWED_TYPES;
   @Input() maxFileSize: number = DEFAULT_UPLOADER_MAX_FILE_SIZE;
   @Input() isUploading: boolean = false;
+  @Input () isFileLimitReached: boolean = false;
   @Output() filesSelected = new EventEmitter<File[]>();
 
   isDragging = false;
