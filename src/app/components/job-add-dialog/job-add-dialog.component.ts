@@ -87,7 +87,7 @@ cancelApplication() {
     if (this.addJobDialogData.jobApplicationData) {
       const jobData = this.addJobDialogData.jobApplicationData;
       
-      const resumeId = jobData.resumeId;
+      const resumeId = jobData.resumeId || null;
       this.selectedResume = this.findResumeById(resumeId);
 
       this.applicationFormGroup.patchValue({
@@ -102,7 +102,7 @@ cancelApplication() {
     }
   }
 
-  private findResumeById(resumeId?: string): Resume | undefined {
+  private findResumeById(resumeId?: string | null): Resume | undefined {
     if (!resumeId) return undefined;
     return DocumentHelper.findResumeById(this.resumes, resumeId);
   }
@@ -125,6 +125,7 @@ cancelApplication() {
       status: DialogCloseStatus.Submitted,
       data: {
         ...formData,
+        resumeId: formData.resumeId || undefined,
         applicationDate: formData.applicationDate || undefined,
         ...(this.editMode && this.addJobDialogData.jobApplicationData?.id && {
           id: this.addJobDialogData.jobApplicationData.id
