@@ -14,10 +14,6 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog, private configService: ConfigService) { }
 
-  private readonly defaultHeaders = new HttpHeaders({
-    'Content-type': 'application/json'
-  });
-
   public get<T>(options: GetRequestOptions): Observable<T> {
 
     const { route, params, headers, withBearer, handleResponse } = options;
@@ -55,10 +51,10 @@ export class ApiService {
 
   }
 
-  public put<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders): Observable<T> {
+  public put<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): Observable<T> {
     let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
-    let headers = this.withBearer(this.mergeHeaders(reqHeaders));
+    let headers = this.withBearer(this.mergeHeaders(reqHeaders, useJsonContentType));
 
     return this.httpClient.put<T>(route, body, {
       headers
@@ -75,10 +71,10 @@ export class ApiService {
     }))
   }
 
-  public post<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false): Observable<T> {
+  public post<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false, useJsonContentType: boolean = true): Observable<T> {
     let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
-    let headers = this.mergeHeaders(reqHeaders);
+    let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
     if (withBearer) {
       headers = this.withBearer(headers);
     }
@@ -100,10 +96,10 @@ export class ApiService {
     }))
   }
 
-  public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: any): Observable<T> {
+  public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: any, useJsonContentType: boolean = true): Observable<T> {
     const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
-    const headers = this.withBearer(this.mergeHeaders(reqHeaders));
+    const headers = this.withBearer(this.mergeHeaders(reqHeaders, useJsonContentType));
     const options = {
       headers,
       body
@@ -150,13 +146,17 @@ export class ApiService {
     return token ? headers.set('Authorization', `Bearer ${token}`) : headers;
   }
 
-  private mergeHeaders(reqHeaders?: HttpHeaders): HttpHeaders {
-    let headers = this.defaultHeaders;
+  private mergeHeaders(reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): HttpHeaders {
+    let headers = useJsonContentType 
+      ? new HttpHeaders({ 'Content-Type': 'application/json' })
+      : new HttpHeaders();
+    
     if (reqHeaders) {
       reqHeaders.keys().forEach(key => {
         headers = headers.set(key, reqHeaders.get(key)!);
       });
     }
+    
     return headers;
   }
 }

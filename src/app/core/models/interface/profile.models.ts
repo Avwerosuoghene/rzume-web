@@ -34,7 +34,7 @@ export interface DeleteDocumentPayload {
 }
 
 export interface ProfilePhotoUploadResult {
-  url: string;
+  profilePictureUrl: string;
   success: boolean;
   message?: string;
 }

@@ -1,0 +1,7 @@
+export const ADD_APP_SUCCESS_TITLE = 'Application Added';
+export const ADD_APP_SUCCESS_MSG = 'Your new job application has been successfully added.';
+export const DELETE_APP_TITLE = 'Delete Application';
+export const PROFILE_PHOTO_SUCCESS_TITLE = 'Profile Photo Updated';
+export const PROFILE_PHOTO_SUCCESS_MSG = 'Your profile photo has been successfully updated.';
+export const PROFILE_UPDATE_SUCCESS_TITLE = 'Profile Updated';
+export const PROFILE_UPDATE_SUCCESS_MSG = 'Your profile has been successfully updated.';

@@ -28,18 +28,21 @@ export class ProfileManagementService {
 
   uploadProfilePhoto(file: File): Observable<APIResponse<ProfilePhotoUploadResult>> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('profilePicture', file);
     
     return this.apiService.post<APIResponse<ProfilePhotoUploadResult>>(
-      ApiRoutes.profileManagement.uploads,
+      ApiRoutes.profileManagement.updatePicture,
       formData,
-      true
+      true,
+      undefined,
+      true,
+      false 
     );
   }
 
   getDocuments(): Observable<APIResponse<DocumentItem[]>> {
     return this.apiService.get<APIResponse<DocumentItem[]>>({
-      route: `${ApiRoutes.profileManagement.uploads}/documents`,
+      route: ApiRoutes.profileManagement.updatePicture,
       withBearer: true,
       handleResponse: true
     });
@@ -52,7 +55,7 @@ export class ProfileManagementService {
     formData.append('name', payload.name);
     
     return this.apiService.post<APIResponse<DocumentItem>>(
-      `${ApiRoutes.profileManagement.uploads}/documents`,
+      ApiRoutes.profileManagement.updatePicture,
       formData,
       true
     );
@@ -60,7 +63,7 @@ export class ProfileManagementService {
 
   deleteDocument(payload: DeleteDocumentPayload): Observable<APIResponse<boolean>> {
     return this.apiService.delete<APIResponse<boolean>>(
-      `${ApiRoutes.profileManagement.uploads}/documents/${payload.documentId}`,
+      ApiRoutes.profileManagement.updatePicture,
       true
     );
   }

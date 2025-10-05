@@ -6,6 +6,6 @@ export * from './app.routes';
 export * from './application-status-options.constants';
 export * from './dashboard.constants';
 export * from './dashboard.constants';
-export * from './job-application-dialog-data';
+export * from './dialog-data.constants';
 export * from './profile.constants';
 

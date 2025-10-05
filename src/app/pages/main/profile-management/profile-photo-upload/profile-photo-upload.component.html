@@ -12,16 +12,19 @@
       <img src="assets/icons/camera-icon.png" alt="camera icon">
       <p>{{ labels.CHANGE_PHOTO }}</p>
       </button>
-      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+      <p *ngIf="errorMessage" class="warning">{{ errorMessage }}</p>
     </div>
     
-    <div class="photo-preview" *ngIf="!isLoading">
+    <div class="photo-preview" >
       <img 
  
         [src]="displayPhotoUrl" 
         [alt]="labels.PROFILE_PHOTO"
         class="profile-image"
       />
+      <div *ngIf="isLoading" class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
     </div>
   </div>
   

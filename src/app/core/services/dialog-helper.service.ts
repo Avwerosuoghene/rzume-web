@@ -79,7 +79,7 @@ export class DialogHelperService {
       });
   }
 
-  private openSuccessDialog(title: string, message: string, onClosed?: () => void): void {
+  openSuccessDialog(title: string, message: string, onClosed?: () => void): void {
     this.openAndHandleDialog(
       SuccessModalComponent,
       { title, message },

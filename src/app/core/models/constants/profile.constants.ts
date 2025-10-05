@@ -22,6 +22,7 @@ export const PROFILE_FORM_LABELS = {
   PERSONAL_INFO_DESCRIPTION: 'Update your personal details here.',
   FIRST_NAME: 'First name',
   LAST_NAME: 'Last name',
+  USER_NAME: 'Username',
   EMAIL_ADDRESS: 'Email address',
   SAVE_CHANGES: 'Save Changes'
 } as const;
@@ -31,6 +32,8 @@ export const PROFILE_VALIDATION = {
   FIRST_NAME_MAX_LENGTH: 50,
   LAST_NAME_MIN_LENGTH: 2,
   LAST_NAME_MAX_LENGTH: 50,
+  USER_NAME_MIN_LENGTH: 3,
+  USER_NAME_MAX_LENGTH: 30,
   EMAIL_PATTERN: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
   MAX_FILE_SIZE: 1 * 1024 * 1024, 
   ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
@@ -43,6 +46,9 @@ export const PROFILE_ERROR_MESSAGES = {
   LAST_NAME_REQUIRED: 'Last name is required',
   LAST_NAME_MIN_LENGTH: `Last name must be at least ${PROFILE_VALIDATION.LAST_NAME_MIN_LENGTH} characters`,
   LAST_NAME_MAX_LENGTH: `Last name cannot exceed ${PROFILE_VALIDATION.LAST_NAME_MAX_LENGTH} characters`,
+  USER_NAME_REQUIRED: 'Username is required',
+  USER_NAME_MIN_LENGTH: `Username must be at least ${PROFILE_VALIDATION.USER_NAME_MIN_LENGTH} characters`,
+  USER_NAME_MAX_LENGTH: `Username cannot exceed ${PROFILE_VALIDATION.USER_NAME_MAX_LENGTH} characters`,
   EMAIL_REQUIRED: 'Email address is required',
   EMAIL_INVALID: 'Please enter a valid email address',
   FILE_TOO_LARGE: 'File size must not exceed 1MB',

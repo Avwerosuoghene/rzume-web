@@ -21,7 +21,7 @@ export class ApiRoutes {
 
 
   static profileManagement = {
-    uploads: `${this.profileManagementRoute}/upload`,
+    updatePicture: `${this.profileManagementRoute}/update-picture`,
     update: `${this.profileManagementRoute}/update`,
   }
 
