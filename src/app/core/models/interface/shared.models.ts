@@ -2,6 +2,7 @@ import { HttpHeaders } from "@angular/common/http";
 import { DialogCloseStatus } from "../enums/dialog.enums";
 import { IconStat } from "../enums/shared.enums";
 import { User } from "./authentication.models";
+import { SubscriptionFeatures } from "./profile.models";
 
 export interface GetRequestParams {
   apiRoute: string,
@@ -31,6 +32,7 @@ export interface SessionStorageData {
   userMail: string;
   userData: User;
   authToken: string;
+  subscriptionFeatures: SubscriptionFeatures;
 }
 
 export interface FilterOption {

@@ -6,6 +6,10 @@ import { SideBarComponent } from './side-bar/side-bar.component';
 import { RouterModules } from '../../core/modules/router-modules';
 import { BODY_SCROLL_DEFAULT, BODY_SCROLL_LOCK, MOBILE_BREAKPOINT } from '../../core/models/constants/shared.constants';
 import { UiStateService } from '../../core/services/ui-state.service';
+import { ProfileManagementService } from '../../core/services/profile-management.service';
+import { LoaderService } from '../../core/services/loader.service';
+import { SessionStorageUtil } from '../../core/helpers/session-storage.util';
+import { SessionStorageKeys } from '../../core/models';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -24,12 +28,33 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private uiState: UiStateService,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private profileService: ProfileManagementService,
+    private loaderService: LoaderService
   ) { }
 
   ngOnInit() {
     this.updateLayout();
     this.initiateSubscriptions();
+    this.fetchSubscriptionFeatures();
+  }
+
+  private fetchSubscriptionFeatures(): void {
+    const existingFeatures = SessionStorageUtil.getItem(SessionStorageKeys.subscriptionFeatures);
+    
+    if (existingFeatures) {
+      return;
+    }
+
+    this.loaderService.showLoader();
+    this.profileService.getSubscriptionFeatures().subscribe({
+      next: (response) => {
+        this.loaderService.hideLoader();
+        if (response.success && response.data) {
+          SessionStorageUtil.setItem(SessionStorageKeys.subscriptionFeatures, response.data);
+        }
+      }
+    });
   }
 
   ngAfterViewInit() {

@@ -16,7 +16,6 @@
     padding: 55px 52px;
   }
 
-
   .auth-elements {
     position: relative;
     display: grid;
@@ -27,11 +26,9 @@
 
     @media (min-width: 601px) {
       grid-template-columns: 1fr 1fr;
-
     }
 
     .auth-left_element {
-
       display: none;
       @media (min-width: 601px) {
         display: block;
@@ -41,7 +38,6 @@
         width: 100%;
         height: 100%;
         border-radius: 30px;
-
       }
     }
 
@@ -50,14 +46,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 60px;
 
-
-
+      @media (min-width: 601px) {
+        gap: unset;
+      }
 
       img {
         opacity: 0;
         width: 80px;
-
 
         @media (min-width: 601px) {
           width: 144px;
@@ -65,13 +62,12 @@
       }
 
       .auth-route-elements {
-
         width: 100%;
 
+        @media (min-width: 601px) {
           flex-grow: 1;
-
+        }
       }
     }
-
   }
 }
