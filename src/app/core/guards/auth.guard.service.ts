@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStorageUtil } from '../helpers/session-storage.util';
 import { AuthRoutes, RootRoutes } from '../models/enums/application.routes.enums';
-import { APIResponse, ErrorResponse, INACTIVE_USER, SessionStorageKeys, User } from '../models';
-import { AuthenticationService, StorageService } from '../services';
+import { SessionStorageKeys } from '../models';
+import { UserService } from '../services';
 import { AuthHelperService } from '../services/auth-helper.service';
 
 @Injectable({
@@ -13,9 +13,8 @@ export class AuthGuardService {
   userToken: string | null = null;
 
   constructor(
-    private authService: AuthenticationService,
+    private userService: UserService,
     private authHelper: AuthHelperService,
-    private storageService: StorageService,
     private router: Router
   ) { }
 
@@ -31,31 +30,12 @@ export class AuthGuardService {
       return false;
     }
     try {
-      const isActive = await this.getActiveUser();
+      const isActive = await this.userService.getActiveUser(this.userToken);
       return isActive;
     } catch (error) {
       console.error(error);
       this.authHelper.logout();
       return false;
     }
-
-  }
-private getActiveUser(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.authService.getActiveUser(this.userToken!).subscribe({
-        next: (activeUserResponse: APIResponse<User>) => {
-          if (activeUserResponse.success && activeUserResponse.data) {
-            this.storageService.setUser(activeUserResponse.data);
-            resolve(true);
-          } else {
-            reject(new Error(INACTIVE_USER));
-          }
-        },
-        error: (error: ErrorResponse) => {
-          console.log(error);
-          reject(error);
-        }
-      });
-    });
   }
 }

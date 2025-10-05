@@ -5,6 +5,7 @@ import { Subject, takeUntil, finalize } from 'rxjs';
 import { ProfilePhotoUploadComponent } from '../profile-photo-upload/profile-photo-upload.component';
 import { ProfileManagementService } from '../../../../core/services/profile-management.service';
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
+import { UserService } from '../../../../core/services/user.service';
 import {
   PROFILE_FORM_LABELS,
   PROFILE_VALIDATION,
@@ -17,9 +18,10 @@ import {
   PROFILE_UPDATE_SUCCESS_MSG
 } from '../../../../core/models/constants/dialog-data.constants';
 import { UpdateProfilePayload, ProfilePhotoUploadResult } from '../../../../core/models/interface/profile.models';
-import { User, APIResponse } from '../../../../core/models';
+import { User, APIResponse, SessionStorageKeys } from '../../../../core/models';
 import { MatButtonModule } from '@angular/material/button';
 import { StorageService } from '../../../../core/services';
+import { SessionStorageUtil } from '../../../../core/helpers/session-storage.util';
 
 @Component({
   selector: 'app-profile-view',
@@ -47,7 +49,8 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private profileService: ProfileManagementService,
     private storageService: StorageService,
-    private dialogHelper: DialogHelperService
+    private dialogHelper: DialogHelperService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -117,9 +120,25 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   private handlePhotoUploadResponse(response: APIResponse<ProfilePhotoUploadResult>): void {
     if (!response.success || !response.data) return;
     if (!this.currentUser) return;
-    
+
     this.currentUser.profilePictureUrl = response.data.profilePictureUrl;
+    this.refreshUserData();
     this.updateUserAndShowSuccess(PROFILE_PHOTO_SUCCESS_TITLE, PROFILE_PHOTO_SUCCESS_MSG);
+  }
+
+  private refreshUserData(): void {
+    const token = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
+    if (!token) return;
+
+    this.userService.refreshActiveUser(token)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          if (user) {
+            this.currentUser = user;
+          }
+        }
+      });
   }
 
   onSubmit(): void {
@@ -153,13 +172,13 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
     this.currentUser.lastName = payload.lastName;
     this.currentUser.userName = payload.userName;
     this.profileForm.markAsPristine();
-    
+
     this.updateUserAndShowSuccess(PROFILE_UPDATE_SUCCESS_TITLE, PROFILE_UPDATE_SUCCESS_MSG);
   }
 
   private updateUserAndShowSuccess(title: string, message: string): void {
     if (!this.currentUser) return;
-    
+
     this.storageService.setUser(this.currentUser);
     this.dialogHelper.openSuccessDialog(title, message);
   }
