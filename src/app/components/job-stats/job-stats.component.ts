@@ -1,11 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { StatHighlight } from '../../core/models/interface/dashboard.models';
 import { CarouselComponent } from '../carousel/carousel.component';
 import { CarouselItem } from '../../core/models';
 import { UiStateService } from '../../core/services/ui-state.service';
-import { animateCountUp } from '../../core/helpers/animation.helper';
 import { Subscription } from 'rxjs';
+import { animateCountUp } from '../../core/helpers/animation.helper';
 
 @Component({
   selector: 'app-job-stats',
@@ -15,17 +14,32 @@ import { Subscription } from 'rxjs';
   styleUrl: './job-stats.component.scss'
 })
 export class JobStatsComponent implements OnInit, OnDestroy {
-    @Input() statHighLights: Array<StatHighlight & { displayValue?: number }> = [];
-  private cancelAnimation: (() => void) | null = null;
-
+  @Input() statHighLights: Array<StatHighlight & { displayValue?: number }> = [];
+  
   carouselItems: CarouselItem[] = [];
   isMobile = false;
+  
   private subscriptions = new Subscription();
+  private cancelAnimation: (() => void) | null = null;
 
   constructor(private uiState: UiStateService) { }
 
   ngOnInit(): void {
     this.initiateSubscriptions();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const change = changes['statHighLights'];
+    if (change?.currentValue) {
+      this.handleStatHighlightsChange(change.previousValue, change.currentValue);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    if (this.cancelAnimation) {
+      this.cancelAnimation();
+    }
   }
 
   initiateSubscriptions() {
@@ -36,22 +50,23 @@ export class JobStatsComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['statHighLights']?.currentValue) {
-      this.handleStatHighlightsChange();
-    }
-  }
-
-  handleStatHighlightsChange(): void {
+  handleStatHighlightsChange(
+    previousStats: Array<StatHighlight & { displayValue?: number }> | undefined,
+    currentStats: Array<StatHighlight & { displayValue?: number }>
+  ): void {
     if (this.cancelAnimation) {
       this.cancelAnimation();
     }
     this.buildCarouselItems();
-    this.statHighLights.forEach(stat => this.startAnimationForStat(stat));
+
+    currentStats.forEach(currentStat => {
+      const previousStat = previousStats?.find(p => p.description === currentStat.description);
+      const startValue = previousStat?.displayValue ?? 0;
+      this.startAnimationForStat(currentStat, startValue);
+    });
   }
 
-  startAnimationForStat(stat: StatHighlight & { displayValue?: number }): void {
-    const startValue = stat.displayValue ?? 0;
+  startAnimationForStat(stat: StatHighlight & { displayValue?: number }, startValue: number): void {
     this.cancelAnimation = animateCountUp(stat, startValue, 1000, () => {
       if (this.isMobile) {
         this.updateCarouselItem(stat);
@@ -75,11 +90,5 @@ export class JobStatsComponent implements OnInit, OnDestroy {
       item.title = stat.displayValue?.toString() ?? stat.value.toString();
     }
   }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-    if (this.cancelAnimation) {
-      this.cancelAnimation();
-    }
-  }
 }
+
