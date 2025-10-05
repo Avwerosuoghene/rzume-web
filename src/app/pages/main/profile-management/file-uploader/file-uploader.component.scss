@@ -31,6 +31,10 @@
 #browse-btn {
   @extend .rzume-button;
   width: 100%;
+
+  @media (min-width: 599px) {
+    width: auto;
+  }
 }
 
 @media (min-width: 600px) {

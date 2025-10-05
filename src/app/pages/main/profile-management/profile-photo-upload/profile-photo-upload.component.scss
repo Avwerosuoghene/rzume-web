@@ -23,6 +23,9 @@
   text-align: center;
 
   @media (min-width: 599px) {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     text-align: left;
   }
 
@@ -47,6 +50,11 @@
   color: $rzume-blue;
   cursor: pointer;
   transition: all 0.2s ease;
+  max-width: 200px;
+
+  @media (min-width: 599px) {
+    margin-top: 14px;
+  }
 
   .icon {
     font-size: 16px;
@@ -69,6 +77,11 @@
   flex-shrink: 0;
 
   @media (min-width: 599px) {
+    justify-self: flex-end;
+    align-self: flex-start;
+  }
+
+  @media (min-width: 950px) {
     width: 120px;
     height: 120px;
   }

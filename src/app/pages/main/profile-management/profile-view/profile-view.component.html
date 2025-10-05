@@ -5,20 +5,15 @@
     (photoSelected)="onPhotoSelected($event)"
   ></app-profile-photo-upload>
 
+  <hr class="section-divider" />
+
   <div class="personal-info-section">
     <div class="left-section">
       <h4>{{ labels.PERSONAL_INFO }}</h4>
       <p class="light_text">{{ labels.PERSONAL_INFO_DESCRIPTION }}</p>
 
       <div class="form-actions desktop">
-        <button
-          type="submit"
-          id="save-btn"
-          [disabled]="isLoading || !isFormDirty"
-        >
-          <span *ngIf="!isLoading">{{ labels.SAVE_CHANGES }}</span>
-          <span *ngIf="isLoading" class="loading-text">Saving...</span>
-        </button>
+        <ng-container *ngTemplateOutlet="saveButton"></ng-container>
       </div>
     </div>
 
@@ -29,34 +24,37 @@
         class="profile-form"
       >
 
-          <div class="form-field">
-            <label for="firstName">
-              {{ labels.FIRST_NAME }}</label>
-            <input
-              id="firstName"
-              type="text"
-              formControlName="firstName"
-              class="form-input"
-              [class.error]="getFieldError('firstName')"
-            />
-            <span *ngIf="getFieldError('firstName')" class="error-message">
-              {{ getFieldError("firstName") }}
-            </span>
-          </div>
+      <div class="name-fields"> 
+        <div class="form-field">
+          <label for="firstName">
+            {{ labels.FIRST_NAME }}</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            class="form-input"
+            [class.error]="getFieldError('firstName')"
+          />
+          <span *ngIf="getFieldError('firstName')" class="error-message">
+            {{ getFieldError("firstName") }}
+          </span>
+        </div>
 
-          <div class="form-field">
-            <label for="lastName">{{ labels.LAST_NAME }}</label>
-            <input
-              id="lastName"
-              type="text"
-              formControlName="lastName"
-              class="form-input"
-              [class.error]="getFieldError('lastName')"
-            />
-            <span *ngIf="getFieldError('lastName')" class="error-message">
-              {{ getFieldError("lastName") }}
-            </span>
-          </div>
+        <div class="form-field">
+          <label for="lastName">{{ labels.LAST_NAME }}</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            class="form-input"
+            [class.error]="getFieldError('lastName')"
+          />
+          <span *ngIf="getFieldError('lastName')" class="error-message">
+            {{ getFieldError("lastName") }}
+          </span>
+        </div>
+      </div>
+       
  
 
         <div class="form-field full-width">
@@ -71,17 +69,22 @@
         </div>
 
         <div class="form-actions mobile">
-        <button
-          type="submit"
-          mat-flat-button
-          id="save-btn"
-          [disabled]="isLoading || !isFormDirty"
-        >
-          <span *ngIf="!isLoading">{{ labels.SAVE_CHANGES }}</span>
-          <span *ngIf="isLoading" class="loading-text">Saving...</span>
-        </button>
-      </div>
+          <ng-container *ngTemplateOutlet="saveButton"></ng-container>
+        </div>
       </form>
     </div>
   </div>
+
+  <!-- Save Button Template -->
+  <ng-template #saveButton>
+    <button
+      type="submit"
+      mat-flat-button
+      id="save-btn"
+      [disabled]="isLoading || !isFormDirty"
+    >
+      <span *ngIf="!isLoading">{{ labels.SAVE_CHANGES }}</span>
+      <span *ngIf="isLoading" class="loading-text">Saving...</span>
+    </button>
+  </ng-template>
 </div>
