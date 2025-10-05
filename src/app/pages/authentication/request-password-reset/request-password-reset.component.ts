@@ -8,6 +8,7 @@ import { IconStat } from '../../../core/models/enums/shared.enums';
 import { RequestPassResetPayload, APIResponse, InfoDialogData } from '../../../core/models';
 import { AuthenticationService, TimerService } from '../../../core/services';
 import { FormValidationUtil } from '../../../core/helpers';
+import { FloatingLabelDirective } from '../../../core/directives';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { CoreModules } from '../../../core/modules/core-modules';
@@ -17,7 +18,7 @@ import { RouterModules } from '../../../core/modules/router-modules';
 @Component({
   selector: 'app-request-password-reset',
   standalone: true,
-  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules],
+  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules, FloatingLabelDirective],
   templateUrl: './request-password-reset.component.html',
   styleUrl: './request-password-reset.component.scss'
 })

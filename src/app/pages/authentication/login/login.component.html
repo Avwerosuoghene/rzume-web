@@ -26,6 +26,7 @@
             type="email"
             formControlName="email"
             name="email"
+            appFloatingLabel
           />
           <mat-icon>person</mat-icon>
         </div>
@@ -45,6 +46,7 @@
             [type]="passwordVisibility"
             formControlName="password"
             name="password"
+            appFloatingLabel
           />
           <mat-icon (click)="togglePasswordVisibility()">{{
             passwordVisibility === "password" ? "visibility_off" : "visibility"

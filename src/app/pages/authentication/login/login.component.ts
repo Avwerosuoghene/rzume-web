@@ -4,6 +4,7 @@ import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordUtility, FormValidationUtil } from '../../../core/helpers';
+import { FloatingLabelDirective } from '../../../core/directives';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
@@ -23,7 +24,7 @@ import { RoutingUtilService } from '../../../core/services/routing-util.service'
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSignInComponent],
+  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FloatingLabelDirective],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

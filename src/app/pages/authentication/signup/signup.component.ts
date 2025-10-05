@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
 import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormValidationUtil } from '../../../core/helpers';
+import { FloatingLabelDirective } from '../../../core/directives';
 import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
 import { AuthenticationService, GoogleAuthService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
@@ -17,7 +18,7 @@ import { PasswordStrengthCheckerComponent } from '../../../components';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSignInComponent],
+  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FloatingLabelDirective],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })

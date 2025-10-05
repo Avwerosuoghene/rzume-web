@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
 import { PasswordUtility, SessionStorageUtil, FormValidationUtil, PasswordStrengthResult } from '../../../core/helpers';
+import { FloatingLabelDirective } from '../../../core/directives';
 import { APIResponse, AuthRoutes, ErrorResponse, IconStat, PASSWORD_RESET_FAILED, PASSWORD_RESET_SUCCESS, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, ToggledPassword } from '../../../core/models';
 import { AuthenticationService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
@@ -15,7 +16,7 @@ import { PasswordStrengthCheckerComponent } from '../../../components/password-s
 @Component({
   selector: 'app-password-reset',
   standalone: true,
-  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules, PasswordStrengthCheckerComponent],
+  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules, PasswordStrengthCheckerComponent, FloatingLabelDirective],
   templateUrl: './password-reset.component.html',
   styleUrl: './password-reset.component.scss'
 })

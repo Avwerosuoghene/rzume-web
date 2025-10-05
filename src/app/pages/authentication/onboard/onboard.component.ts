@@ -8,14 +8,15 @@ import { AngularMaterialModules, CoreModules } from '../../../core/modules';
 import { SessionStorageKeys, APIResponse, RootRoutes, ErrorResponse, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes } from '../../../core/models';
 import { ProfileManagementService } from '../../../core/services';
 import { slideOutAnimation } from '../../../core/animations';
-import { SessionStorageUtil } from '../../../core/helpers';
+import { SessionStorageUtil, FormValidationUtil } from '../../../core/helpers';
+import { FloatingLabelDirective } from '../../../core/directives';
 import { UpdateProfilePayload } from '../../../core/models/interface/profile.models';
 import { finalize, pipe } from 'rxjs';
 
 @Component({
   selector: 'app-onboard',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, CircularLoaderComponent],
+  imports: [AngularMaterialModules, CoreModules, CircularLoaderComponent, FloatingLabelDirective],
   templateUrl: './onboard.component.html',
   styleUrl: './onboard.component.scss',
   animations: [slideOutAnimation]
