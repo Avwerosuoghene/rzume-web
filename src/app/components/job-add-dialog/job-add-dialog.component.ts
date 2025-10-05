@@ -58,7 +58,7 @@ export class JobAddDialogComponent implements OnInit {
       jobLink: this.fb.control(''),
       notes: this.fb.control(''),
       applicationDate:this.fb.control(''),
-      status:this.fb.control(ApplicationStatus.Wishlist),
+      status:this.fb.control(ApplicationStatus.Applied),
     });
   }
 
