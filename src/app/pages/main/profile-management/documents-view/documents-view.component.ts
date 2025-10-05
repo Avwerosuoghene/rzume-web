@@ -6,6 +6,7 @@ import { DocumentItemComponent } from '../document-item/document-item.component'
 import { DocumentHelperService } from '../../../../core/services/document-helper.service';
 import { ProfileManagementService } from '../../../../core/services/profile-management.service';
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
+import { LoaderService } from '../../../../core/services/loader.service';
 import { DocumentItem, Resume, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
 import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
 import { APIResponse, DOCUMENT_VALIDATION, DOWNLOADING_DOCUMENT, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION } from '../../../../core/models';
@@ -28,7 +29,8 @@ export class DocumentsViewComponent implements OnInit {
     private documentHelper: DocumentHelperService,
     private profileService: ProfileManagementService,
     private dialogHelper: DialogHelperService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private loaderService: LoaderService
   ) { }
 
   ngOnInit(): void {
@@ -83,7 +85,9 @@ export class DocumentsViewComponent implements OnInit {
   }
 
   private deleteDocument(id: string): void {
+    this.loaderService.showLoader();
     this.profileService.deleteResume(id)
+      .pipe(finalize(() => this.loaderService.hideLoader()))
       .subscribe({
         next: (response) => this.handleDeleteSuccess(response)
       });

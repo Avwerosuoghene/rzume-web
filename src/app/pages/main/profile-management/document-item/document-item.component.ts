@@ -4,6 +4,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DocumentItem } from '../../../../core/models';
+import { DocumentHelper } from '../../../../core/helpers';
 
 export interface UploadedDocument {
   id: string;
@@ -39,5 +40,9 @@ export class DocumentItemComponent {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  getDocumentIcon(): string {
+    return DocumentHelper.getDocumentIcon(this.document.fileType);
   }
 }

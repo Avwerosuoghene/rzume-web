@@ -7,6 +7,7 @@ export class DocumentHelper {
     const link = document.createElement('a');
     link.href = url;
     link.download = fileName;
+    link.target = '_blank';
     
     document.body.appendChild(link);
     link.click();
@@ -37,5 +38,21 @@ export class DocumentHelper {
     }
     
     return `${sizeKB}KB`;
+  }
+
+  static getDocumentIcon(fileType?: string): string {
+    const type = fileType?.toLowerCase() || '';
+    
+    if (type.includes('pdf') || type === 'application/pdf') {
+      return '/assets/icons/pdf-icon.svg';
+    }
+    
+    if (type.includes('word') || type.includes('document') || 
+        type === 'application/msword' || 
+        type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      return '/assets/icons/docs-icon.png';
+    }
+    
+    return '/assets/icons/pdf-icon.svg';
   }
 }

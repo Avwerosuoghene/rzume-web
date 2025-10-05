@@ -1,6 +1,6 @@
 <div class="document-item-container">
   <div class="document-info">
-    <img src="/assets/icons/pdf-icon.svg" alt="PDF" class="file-icon" />
+    <img [src]="getDocumentIcon()" [alt]="document.fileType || 'Document'" class="file-icon" />
     <div class="details">
       <p >{{ document.fileName }}</p>
       <p class="document-meta light_text">
