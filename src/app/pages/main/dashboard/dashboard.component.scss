@@ -16,6 +16,8 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 86px);
+  width: 100%;
+  max-width: 100%; 
   padding: 24px;
   gap: 16px;
   overflow: hidden;
@@ -64,6 +66,8 @@
     display: flex; 
     flex: 1;
     min-height: 0;
+    min-width: 0; // Critical for overflow
+    width: 100%;
   }
 
   .stat_highlight_container {

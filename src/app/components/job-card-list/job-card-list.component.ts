@@ -6,6 +6,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  OnInit,
   OnDestroy,
   SimpleChanges,
   OnChanges,
@@ -41,7 +42,7 @@ import { DialogHelperService } from '../../core/services/dialog-helper.service';
   templateUrl: './job-card-list.component.html',
   styleUrls: ['./job-card-list.component.scss']
 })
-export class JobCardListComponent implements AfterViewInit, OnDestroy, OnChanges {
+export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChanges {
   @Output() jobApplicationUpdate = new EventEmitter<JobApplicationItem>();
   @Output() jobStatusUpdate = new EventEmitter<{ item: JobApplicationItem }>();
   @Output() jobApplicationsDelete = new EventEmitter<string[]>();
@@ -59,7 +60,7 @@ export class JobCardListComponent implements AfterViewInit, OnDestroy, OnChanges
 
   private destroy$ = new Subject<void>();
 
-  readonly tabs = JOB_FILTER_OPTIONS.filter(option => option.value !== '');
+  readonly tabs = JOB_FILTER_OPTIONS;
   activeTab = this.tabs[0]?.value ?? '';
   currentFilter: JobApplicationFilter = {};
 

@@ -91,6 +91,9 @@
     grid-column: 1;
     background-color: $extra-light-gray;
     transition: filter 0.3s ease;
+    width: 100%;
+    min-width: 0; // Critical for overflow to work in grid
+    overflow: hidden;
 
     &.blur {
       filter: blur(2px);

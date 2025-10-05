@@ -5,8 +5,16 @@
   flex-direction: column;
   gap: 16px;
   height: 100%;
-  overflow: hidden;
   width: 100%;
+  min-width: 0; // Allow flex items to shrink below content size
+  overflow: hidden;
+
+  app-job-card-tabs {
+    display: block;
+    width: 100%;
+    min-width: 0; // Critical for overflow to work
+    flex-shrink: 0;
+  }
 
   app-empty-state-wrapper {
     flex: 1;

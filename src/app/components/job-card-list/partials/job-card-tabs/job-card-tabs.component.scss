@@ -2,29 +2,68 @@
 @import "../../../../styles/fonts.scss";
 
 
-.tabs-container {
-  display: flex;
+.tabs-wrapper {
   width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
   margin-bottom: 16px;
+  
+  // Smooth scrolling
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  // Hide scrollbar but keep functionality
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE and Edge
+  
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Opera
+  }
+}
+
+.tabs-container {
+  display: inline-flex; // Changed from flex to inline-flex
+  gap: 8px;
+  min-width: 100%; // Ensure it takes at least full width
 
   @media (min-width: 450px) {
-    gap: 20px;
+    gap: 12px;
+  }
+
+  @media (min-width: 768px) {
+    gap: 16px;
   }
 
   button {
-    flex: 1;
-    padding: 10px 0;
+    flex-shrink: 0; // Prevent compression
+    min-width: fit-content;
+    padding: 10px 16px;
     background-color: transparent;
     border: none;
     cursor: pointer;
     color: $gray;
     font-size: 10px;
     transition: all 0.2s ease-in-out;
+    white-space: nowrap; // Prevent text wrapping
+
+    @media (min-width: 450px) {
+      padding: 10px 20px;
+      font-size: 12px;
+    }
+
+    @media (min-width: 768px) {
+      font-size: 14px;
+    }
 
     &.active {
       color: $rzume-blue;
       font-weight: bold;
       background-color: rgba($rzume-blue, 0.1);
+      border-radius: 24px;
+    }
+
+    &:hover:not(.active) {
+      background-color: rgba($gray, 0.05);
       border-radius: 24px;
     }
   }
