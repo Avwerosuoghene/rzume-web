@@ -19,8 +19,18 @@
 }
 
 .tab-content {
-  flex-grow: 1;
-  height: 0;
+ @media (min-width: 599px) {
+      height: calc(100vh - 150px);
+      margin: 14px 0;
+    }
+
+    @media (min-width: 1200px) {
+      height: calc(100vh - 164px);
+      margin: 24px 0;
+    }
+
+  height: calc(100vh - 120px); 
+  overflow: hidden;
 }
 
 .tab-panel {
