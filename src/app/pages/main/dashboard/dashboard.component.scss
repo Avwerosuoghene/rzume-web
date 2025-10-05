@@ -1,6 +1,17 @@
 @import "../../../styles/theme.scss";
 @import "../../../styles/general_styles.scss";
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .dashboard_container {
   display: flex;
   flex-direction: column;
@@ -13,7 +24,13 @@
     padding: 24px;
   }
 
+    app-job-stats, app-job-list-toolbar, app-job-card-list, .empty_state_wrapper {
+    animation: fadeInUp 0.5s ease-in-out forwards;
+    opacity: 0; 
+  }
+
   app-job-stats {
+    animation-delay: 0.1s;
     flex-shrink: 0;
     max-height: 120px;
     overflow: hidden;
@@ -23,11 +40,13 @@
     }
   }
 
-  app-job-list-toolbar {
+    app-job-list-toolbar {
+    animation-delay: 0.2s;
     flex-shrink: 0;
   }
 
-  .empty_state_wrapper {
+    .empty_state_wrapper {
+    animation-delay: 0.3s;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -40,7 +59,8 @@
   }
 
 
-  app-job-card-list {
+    app-job-card-list {
+    animation-delay: 0.3s;
     display: flex; 
     flex: 1;
     min-height: 0;
