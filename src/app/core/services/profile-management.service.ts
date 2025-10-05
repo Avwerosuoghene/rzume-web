@@ -42,23 +42,24 @@ export class ProfileManagementService {
   }
 
   getResumes(): Observable<APIResponse<Resume[]>> {
-    return this.apiService.get<APIResponse<DocumentItem[]>>({
+    return this.apiService.get<APIResponse<Resume[]>>({
       route: ApiRoutes.profileManagement.resumes,
       withBearer: true,
       handleResponse: true
     });
   }
 
-  uploadDocument(payload: UploadDocumentPayload): Observable<APIResponse<DocumentItem>> {
+  uploadResume(payload: UploadDocumentPayload): Observable<APIResponse<DocumentItem>> {
     const formData = new FormData();
     formData.append('file', payload.file);
-    formData.append('type', payload.type);
-    formData.append('name', payload.name);
     
     return this.apiService.post<APIResponse<DocumentItem>>(
-      ApiRoutes.profileManagement.updatePicture,
+      ApiRoutes.profileManagement.resume,
       formData,
-      true
+      true,
+      undefined,
+      true, 
+      false
     );
   }
 

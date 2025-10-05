@@ -3,7 +3,7 @@
     <p class="light_text">Upload up to 2 resume files. Keep them current to make a strong impression.</p>
   </div>
 
-  <app-file-uploader (filesSelected)="onFilesSelected($event)"></app-file-uploader>
+  <app-file-uploader (filesSelected)="onFilesSelected($event)" [isUploading]="isUploading" [maxFileSize]="maxFileSize"></app-file-uploader>
 
   <div class="documents-list">
     <app-document-item

@@ -2,13 +2,13 @@
   <div class="document-info">
     <img src="/assets/icons/pdf-icon.svg" alt="PDF" class="file-icon" />
     <div class="details">
-      <p >{{ document.name }}</p>
+      <p >{{ document.fileName }}</p>
       <p class="document-meta light_text">
         <span>{{ document.uploadedAt | date: 'dd MMM, yyyy' }}</span>
         <span>•</span>
         <span>{{ document.uploadedAt | date: 'h:mm a' }}</span>
         <span>•</span>
-        <span *ngIf="document.size">{{ formatSize(document.size) }}</span>
+        <span *ngIf="document.fileSize">{{ formatSize(document.fileSize) }}</span>
       </p>
     </div>
   </div>

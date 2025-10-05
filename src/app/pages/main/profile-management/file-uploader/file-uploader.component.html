@@ -1,6 +1,6 @@
 <div
   class="file-uploader-container"
-  [class.dragging]="isDragging"
+  [class.dragging]="isDragging && !isUploading"
   (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)"
   (drop)="onDrop($event)"
@@ -21,8 +21,12 @@
     </p>
     <p class="sub-text">{{ fileRestrictionsText }}</p>
     <div class="separator">OR</div>
-    <button id="browse-btn" mat-flat-button (click)="fileInput.click()">
-        <p>Browse Files</p>
+    <button id="browse-btn" mat-flat-button (click)="fileInput.click()" [disabled]="isUploading">
+      <div *ngIf="isUploading" class="loading-content">
+        <div class="spinner"></div>
+        <p>Uploading ...</p>
+      </div>
+      <p *ngIf="!isUploading">Browse Files</p>
     </button>
   </div>
 </div>

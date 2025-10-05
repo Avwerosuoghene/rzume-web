@@ -16,24 +16,26 @@ export interface UserProfile {
 
 export interface DocumentItem {
   id: string;
-  name: string;
-  type?: DocumentType;
-  size?: number;
+  fileName: string;
+  fileSize?: number;
+  fileType?: string;
   uploadedAt: Date;
   url: string;
 }
 
 export interface Resume {
   id: string;
-  name: string;
+  fileName: string;
   uploadedAt: Date;
   url: string;
+  fileSize?: number;
+  fileType?: string;
 }
 
 export interface UploadDocumentPayload {
   file: File;
-  type: DocumentType;
-  name: string;
+  type?: DocumentType;
+  name?: string;
 }
 
 export interface DeleteDocumentPayload {

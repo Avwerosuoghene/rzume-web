@@ -11,7 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class FileUploaderComponent {
   @Input() allowedFileTypes: string[] = ['application/pdf'];
-  @Input() maxFileSize: number = 500 * 1024; // 500kb
+  @Input() maxFileSize: number = 500 * 1024; 
+  @Input() isUploading: boolean = false;
   @Output() filesSelected = new EventEmitter<File[]>();
 
   isDragging = false;

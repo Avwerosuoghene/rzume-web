@@ -5,3 +5,5 @@ export const PROFILE_PHOTO_SUCCESS_TITLE = 'Profile Photo Updated';
 export const PROFILE_PHOTO_SUCCESS_MSG = 'Your profile photo has been successfully updated.';
 export const PROFILE_UPDATE_SUCCESS_TITLE = 'Profile Updated';
 export const PROFILE_UPDATE_SUCCESS_MSG = 'Your profile has been successfully updated.';
+export const DOCUMENT_UPLOAD_SUCCESS_TITLE = 'Document Uploaded';
+export const DOCUMENT_UPLOAD_SUCCESS_MSG = 'Your document has been successfully uploaded.';

@@ -23,6 +23,7 @@ export class ApiRoutes {
   static profileManagement = {
     updatePicture: `${this.profileManagementRoute}/update-picture`,
     update: `${this.profileManagementRoute}/update`,
+    resume: `${this.profileManagementRoute}/resume`,
     resumes: `${this.profileManagementRoute}/resumes`,
   }
 
