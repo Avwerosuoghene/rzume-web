@@ -10,7 +10,7 @@ import { ApplicationStatusOption } from '../../core/models/types/dropdown-option
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
 import { AddJobDialogData, NO_RESUMES_AVAILABLE_MSG, Resume } from '../../core/models';
 import { DocumentHelperService } from '../../core/services/document-helper.service';
-import { DocumentHelper } from '../../core/helpers';
+import { DateHelper, DocumentHelper } from '../../core/helpers';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -126,7 +126,7 @@ cancelApplication() {
       data: {
         ...formData,
         resumeId: formData.resumeId || undefined,
-        applicationDate: formData.applicationDate || undefined,
+        applicationDate: DateHelper.formatDateSafely(formData.applicationDate),
         ...(this.editMode && this.addJobDialogData.jobApplicationData?.id && {
           id: this.addJobDialogData.jobApplicationData.id
         })
