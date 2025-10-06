@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from '../../../components/custom-table/custom-table.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
 import { ColumnDefinition } from '../../../core/models/interface/dashboard.models';
@@ -32,7 +32,8 @@ import { DialogHelperService } from '../../../core/services/dialog-helper.servic
     EmptyStateWrapperComponent
   ],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrl: './dashboard.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   readonly EMPTY_STATES = EMPTY_STATES;
@@ -63,7 +64,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private searchStateService: SearchStateService,
     private screenManager: ScreenManagerService,
     private dialogHelperService: DialogHelperService,
-    private documentHelper: DocumentHelperService
+    private documentHelper: DocumentHelperService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -178,6 +180,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private setIsLoading(isLoading: boolean): void {
     this.isLoading = isLoading;
+    this.cdr.markForCheck();
   }
 
   addNewApplicationEntry(): void {

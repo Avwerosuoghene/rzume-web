@@ -125,4 +125,8 @@ export class DocumentsViewComponent implements OnInit {
     const message = `You have reached your upload limit of ${this.uploadLimit} document${this.uploadLimit > 1 ? 's' : ''}. Please delete an existing document to upload a new one.`;
     this.dialogHelper.openInfoDialog(IconStat.warn, message);
   }
+
+  trackByDocId(index: number, doc: DocumentItem): string {
+    return doc.id;
+  }
 }

@@ -1,7 +1,7 @@
 <div class="tab-navigation">
   <div class="tab-list" role="tablist">
     <button
-      *ngFor="let tab of tabs"
+      *ngFor="let tab of tabs; trackBy: trackByTabId"
       type="button"
       role="tab"
       class="tab-button"

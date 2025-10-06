@@ -22,4 +22,8 @@ export class JobCardTabsComponent implements OnInit {
     this.activeTab = tab.value;
     this.tabChange.emit(tab.value);
   }
+
+  trackByValue(index: number, tab: FilterOption): string {
+    return tab.value;
+  }
 }

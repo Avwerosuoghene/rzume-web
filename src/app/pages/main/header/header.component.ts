@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { NavigationEnd, Router } from '@angular/router';
 import { BorderRadius, User } from '../../../core/models';
@@ -18,7 +18,8 @@ import { DEFAULT_PROFILE_IMAGE } from '../../../core/models/constants/authentica
   standalone: true,
   imports: [AngularMaterialModules, CoreModules, GlobalCircularLoaderComponent, CustomSearchInputComponent],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrl: './header.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   borderRadius = BorderRadius.extraLarge;
@@ -39,7 +40,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private authHelper: AuthHelperService,
     private utilityService: LoaderService,
     private searchStateService: SearchStateService,
-    private screenManager: ScreenManagerService
+    private screenManager: ScreenManagerService,
+    private cdr: ChangeDetectorRef
   ) { }
 
 
@@ -57,18 +59,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(isMobile => {
       this.isMobile = isMobile;
+      this.cdr.markForCheck();
     });
   }
 
   initiateLoader() {
-    this.utilityService.globalLoaderSubject.subscribe(loaderStatus => {
+    this.utilityService.globalLoaderSubject.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(loaderStatus => {
       this.loaderIsActive = loaderStatus;
-    })
+      this.cdr.markForCheck();
+    });
   }
 
   getUserInfo() {
-    this.storageService.user$.subscribe(user => {
+    this.storageService.user$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(user => {
       this.userInfo = user;
+      this.cdr.markForCheck();
     });
   }
 
@@ -97,13 +106,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   subscribeToRoute(): void {
-    this.router.events
-      .subscribe((event: any) => {
-        if (event instanceof NavigationEnd) {
-          this.getCurrentRoute();
-
-        }
-      });
+    this.router.events.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
+        this.getCurrentRoute();
+      }
+    });
   }
 
   toggleSidebar(): void {

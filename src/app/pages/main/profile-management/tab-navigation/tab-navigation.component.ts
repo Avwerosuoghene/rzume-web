@@ -24,4 +24,8 @@ export class TabNavigationComponent {
   isActive(tabId: string): boolean {
     return this.activeTabId === tabId;
   }
+
+  trackByTabId(index: number, tab: ProfileTabConfig): string {
+    return tab.id;
+  }
 }

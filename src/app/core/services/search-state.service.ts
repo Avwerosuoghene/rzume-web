@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { JobApplicationFilter } from '../models/interface/job-application.models';
 
 @Injectable({
@@ -9,8 +10,8 @@ export class SearchStateService {
   private searchTermSubject = new BehaviorSubject<string>('');
   private filterSubject = new BehaviorSubject<JobApplicationFilter>({});
 
-  searchTerm$ = this.searchTermSubject.asObservable();
-  filter$ = this.filterSubject.asObservable();
+  searchTerm$ = this.searchTermSubject.asObservable().pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  filter$ = this.filterSubject.asObservable().pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
   constructor() {}
 

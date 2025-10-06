@@ -15,7 +15,7 @@
 
   <div class="documents-list">
     <app-document-item
-      *ngFor="let doc of documents"
+      *ngFor="let doc of documents; trackBy: trackByDocId"
       [document]="doc"
       (delete)="onDeleteDocument($event)"
       (download)="onDownloadDocument($event)"

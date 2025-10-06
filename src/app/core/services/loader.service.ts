@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoaderService {
 
-  globalLoaderSubject = new Subject<boolean>();
+  private loaderSubject = new BehaviorSubject<boolean>(false);
+  public globalLoaderSubject: Observable<boolean> = this.loaderSubject.asObservable().pipe(
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
 
   showLoader() {
-    this.globalLoaderSubject.next(true);
+    this.loaderSubject.next(true);
   }
 
   hideLoader() {
-    this.globalLoaderSubject.next(false);
+    this.loaderSubject.next(false);
   }
 
   constructor() { }
