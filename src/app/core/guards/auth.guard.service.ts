@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { SessionStorageUtil } from '../helpers/session-storage.util';
 import { AuthRoutes, RootRoutes } from '../models/enums/application.routes.enums';
 import { SessionStorageKeys } from '../models';
-import { UserService } from '../services';
+import { LoaderService, UserService } from '../services';
 import { AuthHelperService } from '../services/auth-helper.service';
 
 @Injectable({
@@ -15,12 +15,15 @@ export class AuthGuardService {
   constructor(
     private userService: UserService,
     private authHelper: AuthHelperService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) { }
 
   async canActivate(): Promise<boolean> {
+    this.loaderService.showLoader();
     const tokenIsActive = await this.getActiveToken();
-    return true;
+    this.loaderService.hideLoader();
+    return tokenIsActive;
   }
 
   private async getActiveToken(): Promise<boolean> {
