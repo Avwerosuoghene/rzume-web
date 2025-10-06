@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularMaterialModules } from '../../core/modules';
 import { ApplicationStatus, CONFIRM_DELETE_MSG, DELETE_APP_TITLE, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
@@ -16,7 +16,8 @@ import { DialogHelperService } from '../../core/services/dialog-helper.service';
   standalone: true,
   imports: [FormsModule, CommonModule, AngularMaterialModules, TableHeaderComponent, TableBodyComponent, TablePagintionComponent],
   templateUrl: './custom-table.component.html',
-  styleUrls: ['./custom-table.component.scss']
+  styleUrls: ['./custom-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomTableComponent {
   @Input() data: JobApplicationItem[] = [];
@@ -35,9 +36,10 @@ export class CustomTableComponent {
   totalItems: number = 20;
   allItemsSelected: boolean = false;
 
-  constructor(private dialogHelper: DialogHelperService) {
-
-  }
+  constructor(
+    private dialogHelper: DialogHelperService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   onItemsPerPageChange(itemsPerPage: number): void {
     this.itemPerPageChanged.emit(itemsPerPage);
@@ -87,6 +89,7 @@ export class CustomTableComponent {
 
     this.isAllSelected();
     this.onSelectionChanged.emit(this.selectedItems);
+    this.cdr.markForCheck();
   }
 
   addSelectedItem(item: JobApplicationItem): void {
@@ -119,6 +122,7 @@ export class CustomTableComponent {
     }
 
     this.onSelectionChanged.emit(this.selectedItems);
+    this.cdr.markForCheck();
   }
 
   isAllSelected() {

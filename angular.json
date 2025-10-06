@@ -40,19 +40,33 @@
           },
           "configurations": {
             "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": {
+                  "inline": true
+                }
+              },
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2MB",
-                  "maximumError": "3MB"
+                  "maximumWarning": "500KB",
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4MB",
-                  "maximumError": "5MB"
+                  "maximumWarning": "6KB",
+                  "maximumError": "10KB"
                 }
-              ],
-              "outputHashing": "all"
+              ]
             },
             "development": {
               "optimization": false,
@@ -115,6 +129,11 @@
     }
   },
   "cli": {
-    "analytics": "da3d0e3c-7937-4390-a400-f1319117c8f5"
+    "analytics": "da3d0e3c-7937-4390-a400-f1319117c8f5",
+    "cache": {
+      "enabled": true,
+      "path": ".angular/cache",
+      "environment": "all"
+    }
   }
 }

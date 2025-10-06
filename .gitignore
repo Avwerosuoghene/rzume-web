@@ -39,13 +39,7 @@ testem.log
 
 # System files
 .DS_Store
-workspce-rule.md
 Thumbs.db
-node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 /system-architecture
 /src/assets/config
 

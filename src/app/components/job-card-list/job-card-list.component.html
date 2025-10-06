@@ -11,16 +11,32 @@
     [currentFilter]="currentFilter"
     (actionButtonClicked)="handleAddJobApplication()"
   >
-    <div class="card-list-container" #cardListContainer>
-      <app-job-card-item
-        *ngFor="let job of jobs"
-        [job]="job"
-        (edit)="jobApplicationUpdate.emit($event)"
-        (delete)="handleJobApplicationDelete($event)"
-        (statusChange)="handleJobStatusUpdate($event)"
-      >
-      </app-job-card-item>
-    </div>
+    @if (useVirtualScroll && jobs.length > 10) {
+      <cdk-virtual-scroll-viewport 
+        [itemSize]="itemSize" 
+        class="card-list-container virtual-scroll-viewport"
+        #cardListContainer>
+        <app-job-card-item
+          *cdkVirtualFor="let job of jobs; trackBy: trackByJobId"
+          [job]="job"
+          (edit)="jobApplicationUpdate.emit($event)"
+          (delete)="handleJobApplicationDelete($event)"
+          (statusChange)="handleJobStatusUpdate($event)"
+        >
+        </app-job-card-item>
+      </cdk-virtual-scroll-viewport>
+    } @else {
+      <div class="card-list-container" #cardListContainer>
+        <app-job-card-item
+          *ngFor="let job of jobs; trackBy: trackByJobId"
+          [job]="job"
+          (edit)="jobApplicationUpdate.emit($event)"
+          (delete)="handleJobApplicationDelete($event)"
+          (statusChange)="handleJobStatusUpdate($event)"
+        >
+        </app-job-card-item>
+      </div>
+    }
   </app-empty-state-wrapper>
 
   @if (!showEmptyState) {

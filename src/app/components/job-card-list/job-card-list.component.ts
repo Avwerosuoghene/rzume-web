@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -14,6 +16,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { JobCardTabsComponent } from './partials/job-card-tabs/job-card-tabs.component';
 import { JobCardItemComponent } from './partials/job-card-item/job-card-item.component';
@@ -37,10 +40,12 @@ import { DialogHelperService } from '../../core/services/dialog-helper.service';
     JobCardItemComponent,
     AngularMaterialModules,
     EmptyStateWrapperComponent,
-    CircularLoaderComponent
+    CircularLoaderComponent,
+    ScrollingModule
   ],
   templateUrl: './job-card-list.component.html',
-  styleUrls: ['./job-card-list.component.scss']
+  styleUrls: ['./job-card-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChanges {
   @Output() jobApplicationUpdate = new EventEmitter<JobApplicationItem>();
@@ -63,8 +68,13 @@ export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChange
   readonly tabs = JOB_FILTER_OPTIONS;
   activeTab = this.tabs[0]?.value ?? '';
   currentFilter: JobApplicationFilter = {};
+  readonly itemSize = 200; // Approximate height of job card in pixels
+  readonly useVirtualScroll = true; // Enable virtual scrolling for performance
 
-  constructor(private dialogHelper: DialogHelperService) { }
+  constructor(
+    private dialogHelper: DialogHelperService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngAfterViewInit(): void {
     this.setupScrollListener();
@@ -130,7 +140,11 @@ export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChange
     const hasActiveFilters = this.currentFilter && (this.currentFilter.searchQuery || this.currentFilter.status);
 
     this.showEmptyState = hasNoItems && !hasActiveFilters;
-    console.log(this.showEmptyState)
+    this.cdr.markForCheck();
+  }
+
+  trackByJobId(index: number, job: JobApplicationItem): string {
+    return job.id;
   }
 
 }
