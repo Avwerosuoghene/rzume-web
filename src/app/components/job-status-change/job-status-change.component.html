@@ -13,24 +13,10 @@
     id="job_status_form"
   >
     <div class="form-input-container">
-      <div class="form-field select-field">
-        <label for="status">Application Status</label>
-        <div class="input-wrapper">
-          <select
-            id="status"
-            class="form-input form-select"
-            [class.error]="getFieldError('status')"
-            formControlName="status"
-            appFloatingLabel>
-            @for (option of applicationStatusOptions; track option.value) {
-              <option [value]="option.value">{{ option.name }}</option>
-            }
-          </select>
-        </div>
-        <span *ngIf="getFieldError('status')" class="error-message">
-          {{ getFieldError('status') }}
-        </span>
-      </div>
+      <app-form-input 
+        [config]="statusConfig" 
+        [control]="jobStatusForm.get('status')">
+      </app-form-input>
 
       <button
         id="update_status_btn"

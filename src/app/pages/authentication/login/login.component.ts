@@ -3,8 +3,8 @@ import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { MatDialog } from '@angular/material/dialog';
-import { PasswordUtility, FormValidationUtil } from '../../../core/helpers';
-import { FloatingLabelDirective } from '../../../core/directives';
+import { PasswordUtility, FormInputConfigHelper } from '../../../core/helpers';
+import { FormFieldId, FormFieldLabel } from '../../../core/models/enums/form-input.enums';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
@@ -18,13 +18,14 @@ import { IconStat, SessionStorageKeys } from '../../../core/models/enums/shared.
 import { APIResponse, ErrorResponse, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT, InfoDialogData } from '../../../core/models';
 import { OnboardingStages } from '../../../core/models/enums/profile.enum';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
+import { FormInputComponent } from '../../../components/form-input/form-input.component';
 
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FloatingLabelDirective],
+  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FormInputComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -41,6 +42,16 @@ export class LoginComponent {
   signUpRoute = `/${RootRoutes.auth}/${AuthRoutes.signup}`
   forgotPassRoute = `/${RootRoutes.auth}/${AuthRoutes.forgotPass}`;
   GOOGLE_SIGNIN_BUTTON_TEXT = GOOGLE_SIGNIN_BUTTON_TEXT;
+
+  emailConfig = FormInputConfigHelper.email({
+    id: FormFieldId.EMAIL,
+    label: FormFieldLabel.EMAIL
+  });
+
+  passwordConfig = FormInputConfigHelper.password({
+    id: FormFieldId.PASSWORD,
+    label: FormFieldLabel.PASSWORD
+  });
 
 
   constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService, private routingUtilService: RoutingUtilService) { }
@@ -185,7 +196,4 @@ export class LoginComponent {
     this.loaderIsActive = isActive;
   }
 
-  getFieldError(fieldName: string): string {
-    return FormValidationUtil.getFieldError(this.loginFormGroup, fieldName);
-  }
 }

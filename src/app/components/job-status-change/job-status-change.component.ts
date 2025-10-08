@@ -9,8 +9,9 @@ import { CircularLoaderComponent } from '../circular-loader/circular-loader.comp
 import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
-import { FormValidationUtil } from '../../core/helpers';
-import { FloatingLabelDirective } from '../../core/directives';
+import { FormInputComponent } from '../form-input/form-input.component';
+import { FormInputType, FormInputSelectConfig, FormFieldId, FormFieldLabel } from '../../core/models';
+import { FormInputConfigHelper } from '../../core/helpers';
 
 @Component({
   selector: 'app-job-status-change',
@@ -20,7 +21,7 @@ import { FloatingLabelDirective } from '../../core/directives';
     CoreModules,
     CircularLoaderComponent,
     ReactiveFormsModule,
-    FloatingLabelDirective
+    FormInputComponent
   ],
   templateUrl: './job-status-change.component.html',
   styleUrls: ['./job-status-change.component.scss']
@@ -29,6 +30,16 @@ export class JobStatusChangeComponent implements OnInit {
   jobStatusForm: FormGroup;
   loaderIsActive: boolean = false;
   applicationStatusOptions: ApplicationStatusOption[] = APPLICATION_STATUS_OPTIONS;
+
+  statusConfig = FormInputConfigHelper.select({
+    id: FormFieldId.STATUS,
+    label: FormFieldLabel.APPLICATION_STATUS,
+    options: APPLICATION_STATUS_OPTIONS.map(option => ({
+      value: option.value,
+      label: option.name
+    })),
+    required: true
+  });
 
   constructor(
     private dialogRef: MatDialogRef<JobStatusChangeComponent>,
@@ -65,7 +76,4 @@ export class JobStatusChangeComponent implements OnInit {
     }
   }
 
-  getFieldError(fieldName: string): string {
-    return FormValidationUtil.getFieldError(this.jobStatusForm, fieldName);
-  }
 }

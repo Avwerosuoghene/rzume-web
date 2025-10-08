@@ -53,6 +53,10 @@ export class FloatingLabelDirective implements OnInit, AfterViewInit {
   }
 
   private selectHasValue(select: HTMLSelectElement): boolean {
+    if (this.selectHasPlaceholder(select)) {
+      return true;
+    }
+
     const value = select.value;
     
     if (this.isValidValue(value)) {
@@ -60,6 +64,16 @@ export class FloatingLabelDirective implements OnInit, AfterViewInit {
     }
 
     return this.hasSelectedOption(select);
+  }
+
+  private selectHasPlaceholder(select: HTMLSelectElement): boolean {
+    if (select.options.length === 0) {
+      return false;
+    }
+    
+    const firstOption = select.options[0];
+    return firstOption?.disabled && 
+           (!firstOption.value || firstOption.value === EmptyValue.EMPTY_STRING);
   }
 
   private inputHasValue(input: HTMLInputElement | HTMLTextAreaElement): boolean {

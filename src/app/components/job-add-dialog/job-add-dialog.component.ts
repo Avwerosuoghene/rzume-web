@@ -1,6 +1,6 @@
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ApplicationStatus} from '../../core/models/enums/shared.enums';
+import { ApplicationStatus } from '../../core/models/enums/shared.enums';
 import { CoreModules } from '../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
@@ -8,15 +8,16 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
-import { AddJobDialogData, NO_RESUMES_AVAILABLE_MSG, Resume } from '../../core/models';
+import { AddJobDialogData, FormFieldId, FormFieldLabel, NO_RESUMES_AVAILABLE_MSG, Resume } from '../../core/models';
 import { DocumentHelperService } from '../../core/services/document-helper.service';
-import { DateHelper, DocumentHelper, FormValidationUtil } from '../../core/helpers';
-import { FloatingLabelDirective } from '../../core/directives';
+import { DateHelper, DocumentHelper, FormInputConfigHelper } from '../../core/helpers';
+import { FormInputComponent } from '../form-input/form-input.component';
+import { FormInputType, FormInputConfig, FormInputSelectConfig, FormInputDateConfig, SelectOption } from '../../core/models';
 
 @Component({
   selector: 'app-job-add-dialog',
   standalone: true,
-  imports: [CircularLoaderComponent, AngularMaterialModules, CoreModules, FloatingLabelDirective],
+  imports: [CircularLoaderComponent, AngularMaterialModules, CoreModules, FormInputComponent],
   templateUrl: './job-add-dialog.component.html',
   styleUrl: './job-add-dialog.component.scss'
 })
@@ -31,11 +32,34 @@ export class JobAddDialogComponent implements OnInit {
   selectedResume?: Resume;
   noResumesMessage = NO_RESUMES_AVAILABLE_MSG;
 
+  companyConfig = FormInputConfigHelper.text({
+    id: FormFieldId.COMPANY_NAME,
+    label: FormFieldLabel.COMPANY,
+    required: true
+  });
+
+  roleConfig = FormInputConfigHelper.text({
+    id: FormFieldId.POSITION,
+    label: FormFieldLabel.JOB_ROLE,
+    required: true
+  });
+
+  jobLinkConfig = FormInputConfigHelper.url({
+    id: FormFieldId.JOB_LINK,
+    label: FormFieldLabel.JOB_URL
+  });
+
+  dateConfig = FormInputConfigHelper.date({
+    id: FormFieldId.APPLICATION_DATE,
+    label: FormFieldLabel.DATE,
+    max: this.maxDate
+  });
+
   constructor(
     private dialogRef: MatDialogRef<JobAddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) private addJobDialogData: AddJobDialogData,
     private documentHelperService: DocumentHelperService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadResumes();
@@ -71,23 +95,23 @@ export class JobAddDialogComponent implements OnInit {
       resumeId: this.fb.control(''),
       jobLink: this.fb.control(''),
       notes: this.fb.control(''),
-      applicationDate:this.fb.control(''),
-      status:this.fb.control(ApplicationStatus.Applied),
+      applicationDate: this.fb.control(''),
+      status: this.fb.control(ApplicationStatus.Applied),
     });
   }
 
 
-cancelApplication() {
-   const cancellationData = {
+  cancelApplication() {
+    const cancellationData = {
       status: DialogCloseStatus.Cancelled,
     };
-  this.dialogRef.close(cancellationData);
-}
+    this.dialogRef.close(cancellationData);
+  }
 
   prepopulateFormFields() {
     if (this.addJobDialogData.jobApplicationData) {
       const jobData = this.addJobDialogData.jobApplicationData;
-      
+
       const resumeId = jobData.resumeId || null;
       this.selectedResume = this.findResumeById(resumeId);
 
@@ -97,7 +121,7 @@ cancelApplication() {
         resumeId: resumeId,
         jobLink: jobData.jobLink || '',
         notes: jobData.notes || '',
-        applicationDate: jobData.applicationDate ? new Date(jobData.applicationDate) : null, 
+        applicationDate: jobData.applicationDate ? new Date(jobData.applicationDate) : null,
         status: jobData.status || ApplicationStatus.Wishlist
       });
     }
@@ -121,7 +145,7 @@ cancelApplication() {
 
   addApplication() {
     const formData = this.applicationFormGroup.value;
-    
+
     const submissionData = {
       status: DialogCloseStatus.Submitted,
       data: {
@@ -143,8 +167,26 @@ cancelApplication() {
     return this.applicationFormGroup.get('position');
   }
 
-  getFieldError(fieldName: string): string {
-    return FormValidationUtil.getFieldError(this.applicationFormGroup, fieldName);
+  get resumeConfig(): FormInputSelectConfig {
+    return FormInputConfigHelper.select({
+      id: FormFieldId.RESUME_ID,
+      label: FormFieldLabel.CV_USED,
+      options: this.resumes.map(resume => ({
+        value: resume.id,
+        label: resume.fileName
+      }))
+    });
+  }
+
+  get statusConfig(): FormInputSelectConfig {
+    return FormInputConfigHelper.select({
+      id: FormFieldId.STATUS,
+      label: FormFieldLabel.APPLICATION_STATUS,
+      options: this.applicationStatusOptions.map(option => ({
+        value: option.value,
+        label: option.name
+      }))
+    });
   }
 
 }

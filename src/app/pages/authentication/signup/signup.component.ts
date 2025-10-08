@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
-import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormValidationUtil } from '../../../core/helpers';
-import { FloatingLabelDirective } from '../../../core/directives';
+import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormInputConfigHelper } from '../../../core/helpers';
 import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
 import { AuthenticationService, GoogleAuthService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
@@ -13,12 +12,14 @@ import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { PasswordStrengthCheckerComponent } from '../../../components';
+import { FormInputComponent } from '../../../components/form-input/form-input.component';
+import { FormFieldId, FormFieldLabel } from '../../../core/models/enums/form-input.enums';
 
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FloatingLabelDirective],
+  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FormInputComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
@@ -38,6 +39,16 @@ export class SignupComponent implements OnInit, OnDestroy {
   GOOGLE_SIGNIN_BUTTON_TEXT = GOOGLE_SIGNIN_BUTTON_TEXT;
 
   router = inject(Router);
+
+  emailConfig = FormInputConfigHelper.email({
+    id: FormFieldId.EMAIL,
+    label: FormFieldLabel.EMAIL
+  });
+
+  passwordConfig = FormInputConfigHelper.password({
+    id: FormFieldId.PASSWORD,
+    label: FormFieldLabel.PASSWORD
+  });
 
   constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService, private dialog: MatDialog) {
 
@@ -138,9 +149,6 @@ export class SignupComponent implements OnInit, OnDestroy {
     return this.signupFormGroup.get(controlName);
   }
 
-  getFieldError(fieldName: string): string {
-    return FormValidationUtil.getFieldError(this.signupFormGroup, fieldName);
-  }
 
   handleSignupSuccess(response: APIResponse, userMail: string): void {
     this.toggleLoader(false);

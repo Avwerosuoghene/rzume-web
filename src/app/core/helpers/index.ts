@@ -5,3 +5,4 @@ export * from './application.util';
 export * from './document.helper';
 export * from './form-validation.util';
 export * from './date.helper';
+export * from './form-input-config.helper';

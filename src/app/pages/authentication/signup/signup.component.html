@@ -13,48 +13,18 @@
 
   <form [formGroup]="signupFormGroup" (ngSubmit)="submitSignupForm()">
     <div class="form-input-container">
-      <div class="form-field">
-        <label for="email">Email</label>
-        <div class="input-wrapper">
-          <input
-            id="email"
-            class="form-input"
-            [class.error]="getFieldError('email')"
-            placeholder="Enter your email"
-            type="email"
-            formControlName="email"
-            name="email"
-            appFloatingLabel
-          />
-          <mat-icon>person</mat-icon>
-        </div>
-        <span *ngIf="getFieldError('email')" class="error-message">
-          {{ getFieldError('email') }}
-        </span>
+      <app-form-input 
+        [config]="emailConfig" 
+        [control]="signupFormGroup.get('email')">
+      </app-form-input>
+
+      <div (keyup)="validatePassword()">
+        <app-form-input 
+          [config]="passwordConfig" 
+          [control]="signupFormGroup.get('password')">
+        </app-form-input>
       </div>
 
-      <div class="form-field">
-        <label for="password">Password</label>
-        <div class="input-wrapper">
-          <input
-            id="password"
-            class="form-input"
-            [class.error]="getFieldError('password')"
-            placeholder="Enter your password"
-            [type]="passwordVisibility"
-            formControlName="password"
-            name="password"
-            (keyup)="validatePassword()"
-            appFloatingLabel
-          />
-          <mat-icon (click)="togglePasswordVisibility()">{{
-            passwordVisibility === "password" ? "visibility_off" : "visibility"
-          }}</mat-icon>
-        </div>
-        <span *ngIf="getFieldError('password')" class="error-message">
-          {{ getFieldError('password') }}
-        </span>
-      </div>
       <app-password-strength-checker></app-password-strength-checker>
       <div class="minor-element_flex">
         <mat-checkbox

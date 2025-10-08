@@ -5,20 +5,21 @@ import { Router } from '@angular/router';
 import { finalize, Observable, startWith } from 'rxjs';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { IconStat } from '../../../core/models/enums/shared.enums';
-import { RequestPassResetPayload, APIResponse, InfoDialogData } from '../../../core/models';
+import { RequestPassResetPayload, APIResponse, InfoDialogData, FormFieldId, FormFieldLabel } from '../../../core/models';
 import { AuthenticationService, TimerService } from '../../../core/services';
-import { FormValidationUtil } from '../../../core/helpers';
-import { FloatingLabelDirective } from '../../../core/directives';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { RouterModules } from '../../../core/modules/router-modules';
+import { FormInputComponent } from '../../../components/form-input/form-input.component';
+import { FormInputType, FormInputConfig } from '../../../core/models';
+import { FormInputConfigHelper } from '../../../core/helpers';
 
 @Component({
   selector: 'app-request-password-reset',
   standalone: true,
-  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules, FloatingLabelDirective],
+  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules, FormInputComponent],
   templateUrl: './request-password-reset.component.html',
   styleUrl: './request-password-reset.component.scss'
 })
@@ -33,6 +34,11 @@ export class RequestPasswordResetComponent implements OnDestroy {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
+
+  emailConfig = FormInputConfigHelper.email({
+    id: FormFieldId.EMAIL,
+    label: FormFieldLabel.EMAIL
+  });
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -97,10 +103,6 @@ export class RequestPasswordResetComponent implements OnDestroy {
 
   get emailControl() {
     return this.passResetReqFormGroup.get('email');
-  }
-
-  getFieldError(fieldName: string): string {
-    return FormValidationUtil.getFieldError(this.passResetReqFormGroup, fieldName);
   }
 
 }

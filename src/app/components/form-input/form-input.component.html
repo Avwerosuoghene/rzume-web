@@ -57,12 +57,13 @@
         appFloatingLabel
       >
         @if (config.placeholder) {
-          <option value="" disabled selected>{{ config.placeholder }}</option>
+          <option value="" disabled [selected]="!value || value === ''">{{ config.placeholder }}</option>
         }
         @for (option of selectConfig.options; track option.value) {
           <option 
             [value]="option.value" 
-            [disabled]="option.disabled || false">
+            [disabled]="option.disabled || false"
+            [selected]="value === option.value">
             {{ option.label }}
           </option>
         }

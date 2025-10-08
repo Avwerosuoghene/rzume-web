@@ -5,18 +5,19 @@ import { Router } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { SessionStorageKeys, APIResponse, RootRoutes, ErrorResponse, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes } from '../../../core/models';
+import { SessionStorageKeys, APIResponse, RootRoutes, ErrorResponse, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes, FormFieldId, FormFieldLabel } from '../../../core/models';
 import { ProfileManagementService } from '../../../core/services';
 import { slideOutAnimation } from '../../../core/animations';
-import { SessionStorageUtil, FormValidationUtil } from '../../../core/helpers';
-import { FloatingLabelDirective } from '../../../core/directives';
+import { FormInputConfigHelper, FormValidationUtil, SessionStorageUtil } from '../../../core/helpers';
 import { UpdateProfilePayload } from '../../../core/models/interface/profile.models';
 import { finalize, pipe } from 'rxjs';
+import { FormInputComponent } from '../../../components/form-input/form-input.component';
+import { FormInputType, FormInputConfig } from '../../../core/models';
 
 @Component({
   selector: 'app-onboard',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, CircularLoaderComponent, FloatingLabelDirective],
+  imports: [AngularMaterialModules, CoreModules, CircularLoaderComponent, FormInputComponent],
   templateUrl: './onboard.component.html',
   styleUrl: './onboard.component.scss',
   animations: [slideOutAnimation]
@@ -28,6 +29,12 @@ export class OnboardComponent {
   loaderIsActive: boolean = false;
   router = inject(Router);
   slideInAnimationState = 'slide-out'
+
+  usernameConfig = FormInputConfigHelper.text({
+    id: FormFieldId.USERNAME,
+    label: FormFieldLabel.USERNAME,
+    required: true
+  });
 
 
   constructor(private profileMgmtService: ProfileManagementService, private dialog: MatDialog) {

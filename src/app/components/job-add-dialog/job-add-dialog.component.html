@@ -13,111 +13,36 @@
     id="add_job_form"
   >
     <div class="form-input-container">
-      <div class="form-field">
-        <label for="companyName">Company</label>
-        <div class="input-wrapper">
-          <input
-            id="companyName"
-            class="form-input"
-            [class.error]="getFieldError('companyName')"
-            placeholder="Enter company name"
-            type="text"
-            formControlName="companyName"
-            name="companyName"
-            appFloatingLabel
-          />
-        </div>
-        <span *ngIf="getFieldError('companyName')" class="error-message">
-          {{ getFieldError('companyName') }}
-        </span>
-      </div>
+      <app-form-input 
+        [config]="companyConfig" 
+        [control]="applicationFormGroup.get('companyName')">
+      </app-form-input>
 
-      <div class="form-field">
-        <label for="position">Job Role</label>
-        <div class="input-wrapper">
-          <input
-            id="position"
-            class="form-input"
-            [class.error]="getFieldError('position')"
-            placeholder="Enter job role"
-            type="text"
-            formControlName="position"
-            name="position"
-            appFloatingLabel
-          />
-        </div>
-        <span *ngIf="getFieldError('position')" class="error-message">
-          {{ getFieldError('position') }}
-        </span>
-      </div>
+      <app-form-input 
+        [config]="roleConfig" 
+        [control]="applicationFormGroup.get('position')">
+      </app-form-input>
 
-      <div class="form-field select-field">
-        <label for="resumeId">CV Used</label>
-        <div class="input-wrapper">
-          <select
-            id="resumeId"
-            class="form-input form-select"
-            formControlName="resumeId"
-            appFloatingLabel>
-            @if (!hasResumes) {
-              <option disabled>{{ noResumesMessage }}</option>
-            }
-            @for (resume of resumes; track resume.id) {
-              <option [value]="resume.id">{{ resume.fileName }}</option>
-            }
-          </select>
-        </div>
-      </div>
+      <app-form-input 
+        [config]="resumeConfig" 
+        [control]="applicationFormGroup.get('resumeId')">
+      </app-form-input>
 
-      <div class="form-field">
-        <label for="jobLink">Job URL</label>
-        <div class="input-wrapper">
-          <input
-            id="jobLink"
-            class="form-input"
-            placeholder="Enter link to job"
-            type="url"
-            formControlName="jobLink"
-            name="jobLink"
-            appFloatingLabel
-          />
-        </div>
-      </div>
+      <app-form-input 
+        [config]="jobLinkConfig" 
+        [control]="applicationFormGroup.get('jobLink')">
+      </app-form-input>
 
       <div class="application-status_date-container">
-        <div class="form-field date-field">
-          <label for="applicationDate">Date</label>
-          <div class="input-wrapper">
-            <input
-              id="applicationDate"
-              class="form-input"
-              [matDatepicker]="picker"
-              formControlName="applicationDate"
-              [max]="maxDate"
-              placeholder="Select date"
-              readonly
-              appFloatingLabel
-            />
-            <mat-datepicker-toggle matIconSuffix [for]="picker" class="date-toggle">
-            </mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </div>
-        </div>
+        <app-form-input 
+          [config]="dateConfig" 
+          [control]="applicationFormGroup.get('applicationDate')">
+        </app-form-input>
 
-        <div class="form-field select-field">
-          <label for="status">Application Status</label>
-          <div class="input-wrapper">
-            <select
-              id="status"
-              class="form-input form-select"
-              formControlName="status"
-              appFloatingLabel>
-              @for (statusOption of applicationStatusOptions; track statusOption.value) {
-                <option [value]="statusOption.value">{{ statusOption.name }}</option>
-              }
-            </select>
-          </div>
-        </div>
+        <app-form-input 
+          [config]="statusConfig" 
+          [control]="applicationFormGroup.get('status')">
+        </app-form-input>
       </div>
 
       <button

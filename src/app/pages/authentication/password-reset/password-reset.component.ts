@@ -4,19 +4,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
-import { PasswordUtility, SessionStorageUtil, FormValidationUtil, PasswordStrengthResult } from '../../../core/helpers';
-import { FloatingLabelDirective } from '../../../core/directives';
-import { APIResponse, AuthRoutes, ErrorResponse, IconStat, PASSWORD_RESET_FAILED, PASSWORD_RESET_SUCCESS, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, ToggledPassword } from '../../../core/models';
+import { PasswordUtility, SessionStorageUtil, PasswordStrengthResult, FormInputConfigHelper } from '../../../core/helpers';
+import { APIResponse, AuthRoutes, ErrorResponse, FormFieldId, FormFieldLabel, IconStat, PASSWORD_RESET_FAILED, PASSWORD_RESET_SUCCESS, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, ToggledPassword } from '../../../core/models';
 import { AuthenticationService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
+import { FormInputComponent } from '../../../components/form-input/form-input.component';
+import { FormInputType, FormInputConfig } from '../../../core/models';
 
 @Component({
   selector: 'app-password-reset',
   standalone: true,
-  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules, PasswordStrengthCheckerComponent, FloatingLabelDirective],
+  imports: [AngularMaterialModules, RouterModules, CircularLoaderComponent, CoreModules, PasswordStrengthCheckerComponent, FormInputComponent],
   templateUrl: './password-reset.component.html',
   styleUrl: './password-reset.component.scss'
 })
@@ -46,6 +47,16 @@ export class PasswordResetComponent {
   @ViewChild(PasswordStrengthCheckerComponent) passwordCheckerComp!: PasswordStrengthCheckerComponent;
 
   destroy$ = new Subject<void>();
+
+  passwordConfig = FormInputConfigHelper.password({
+    id: FormFieldId.PASSWORD,
+    label: FormFieldLabel.PASSWORD
+  });
+  
+  confirmPasswordConfig = FormInputConfigHelper.password({
+    id: FormFieldId.CONFIRM_PASSWORD,
+    label: FormFieldLabel.CONFIRM_PASSWORD
+  });
 
   constructor(private authenticationService: AuthenticationService, private routerService: RoutingUtilService) { }
 
@@ -162,7 +173,4 @@ export class PasswordResetComponent {
     this.loaderIsActive = state;
   }
 
-  getFieldError(fieldName: string): string {
-    return FormValidationUtil.getFieldError(this.resetPassFormGroup, fieldName);
-  }
 }

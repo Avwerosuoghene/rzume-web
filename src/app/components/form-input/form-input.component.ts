@@ -1,5 +1,5 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { Component, Input, forwardRef, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { FloatingLabelDirective } from '../../core/directives';
@@ -31,9 +31,10 @@ import { DEFAULT_ERROR_MESSAGES, FORM_INPUT_DEFAULTS } from '../../core/models/c
     }
   ]
 })
-export class FormInputComponent implements ControlValueAccessor, OnInit {
+export class FormInputComponent implements ControlValueAccessor, OnInit, AfterViewInit {
+  constructor(private cdr: ChangeDetectorRef) {}
   @Input() config!: FormInputConfig;
-  @Input() control?: FormControl;
+  @Input() control?: AbstractControl | null;
 
   value: any = '';
   disabled = false;
@@ -46,6 +47,35 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
 
   ngOnInit(): void {
     this.validateConfig();
+  }
+
+  ngAfterViewInit(): void {
+    this.setupControlValueSync();
+    this.cdr.detectChanges();
+  }
+
+  private setupControlValueSync(): void {
+    if (!this.control) return;
+    this.syncInitialValueFromControl();
+    this.subscribeToControlChanges();
+  }
+
+  private syncInitialValueFromControl(): void {
+    const initialValue = this.control?.value;
+    const hasInitialValue = initialValue !== null && initialValue !== undefined && initialValue !== '';
+    if (hasInitialValue) {
+      this.value = initialValue;
+      // Trigger change detection to update the DOM and floating label
+      setTimeout(() => this.cdr.detectChanges(), 0);
+    }
+  }
+
+  private subscribeToControlChanges(): void {
+    this.control?.valueChanges?.subscribe(value => {
+      if (value !== this.value) {
+        this.value = value;
+      }
+    });
   }
 
   get selectConfig(): FormInputSelectConfig {
@@ -120,6 +150,13 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
     }
     
     this.value = newValue;
+    
+    // Update parent control if it exists
+    if (this.control) {
+      this.control.setValue(newValue);
+      this.control.markAsDirty();
+    }
+    
     this.onChange(this.value);
     this.markAsTouched();
   }
