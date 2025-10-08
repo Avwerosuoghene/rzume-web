@@ -48,13 +48,6 @@
     gap: 48px;
   }
 
-  .form-input-container {
-    display: flex;
-    gap: 10px;
-    flex-direction: column;
-    width: 100%;
-  }
-
   .form-input-confirm-button {
     @extend .rzume-button;
 

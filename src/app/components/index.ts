@@ -2,6 +2,7 @@ export * from './circular-loader';
 export * from  './custom-search-input';
 export * from './custom-table';
 export * from './filter-dropdown';
+export * from './form-input/form-input.component';
 export * from './google-sign-in';
 export * from './info-dialog';
 export * from './job-add-dialog';

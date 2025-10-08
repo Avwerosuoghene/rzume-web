@@ -1,0 +1,100 @@
+<div class="form-field" [class.select-field]="isSelect" [class.date-field]="isDate">
+  <label [for]="config.id">{{ config.label }}</label>
+  
+  <div class="input-wrapper">
+    <!-- Text Input -->
+    @if (!isSelect && !isTextarea && !isDate) {
+      <input
+        [id]="config.id"
+        [type]="config.type"
+        [placeholder]="config.placeholder || ''"
+        [required]="config.required"
+        [disabled]="disabled || config.disabled"
+        [readonly]="config.readonly"
+        [attr.maxlength]="config.maxLength"
+        [attr.minlength]="config.minLength"
+        [attr.pattern]="config.pattern"
+        [value]="value"
+        (input)="onValueChange($event)"
+        (blur)="markAsTouched()"
+        class="form-input"
+        [class.error]="hasError"
+        appFloatingLabel
+      />
+    }
+
+    <!-- Textarea -->
+    @if (isTextarea) {
+      <textarea
+        [id]="config.id"
+        [placeholder]="config.placeholder || ''"
+        [required]="config.required"
+        [disabled]="disabled || config.disabled"
+        [readonly]="config.readonly"
+        [attr.maxlength]="config.maxLength"
+        [attr.minlength]="config.minLength"
+        [rows]="textareaRows"
+        [value]="value"
+        (input)="onValueChange($event)"
+        (blur)="markAsTouched()"
+        class="form-input"
+        [class.error]="hasError"
+        appFloatingLabel
+      ></textarea>
+    }
+
+    <!-- Select -->
+    @if (isSelect) {
+      <select
+        [id]="config.id"
+        [required]="config.required"
+        [disabled]="disabled || config.disabled"
+        [value]="value"
+        (change)="onValueChange($event)"
+        (blur)="markAsTouched()"
+        class="form-input form-select"
+        [class.error]="hasError"
+        appFloatingLabel
+      >
+        @if (config.placeholder) {
+          <option value="" disabled selected>{{ config.placeholder }}</option>
+        }
+        @for (option of selectConfig.options; track option.value) {
+          <option 
+            [value]="option.value" 
+            [disabled]="option.disabled || false">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+    }
+
+    <!-- Date Input with Material Datepicker -->
+    @if (isDate) {
+      <input
+        [id]="config.id"
+        [placeholder]="config.placeholder || 'Select date'"
+        [required]="config.required"
+        [disabled]="disabled || config.disabled"
+        [readonly]="true"
+        [matDatepicker]="picker"
+        [min]="dateConfig.min"
+        [max]="dateConfig.max"
+        [value]="value"
+        (dateChange)="onValueChange($event)"
+        (blur)="markAsTouched()"
+        class="form-input"
+        [class.error]="hasError"
+        appFloatingLabel
+      />
+      <mat-datepicker-toggle [for]="picker" class="date-toggle">
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    }
+  </div>
+
+  <!-- Error Message -->
+  @if (errorMessage) {
+    <span class="error-message">{{ errorMessage }}</span>
+  }
+</div>
