@@ -23,6 +23,17 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 15px;
+
+    .form-select {
+      appearance: none;
+      padding-right: 48px;
+      cursor: pointer;
+
+      &::-ms-expand {
+        display: none;
+      }
+    }
   }
   #update_status_btn {
     @extend .rzume-button;

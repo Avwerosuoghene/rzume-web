@@ -4,3 +4,4 @@ export * from './shared.enums';
 export * from './dialog.enums';
 export * from './password-strength.enum';
 export * from './profile.enum';
+export * from './floating-label.enums';

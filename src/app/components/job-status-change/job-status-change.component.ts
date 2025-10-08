@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { JobStatChangeDialogData } from '../../core/models/interface/dialog-models';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
@@ -9,6 +9,8 @@ import { CircularLoaderComponent } from '../circular-loader/circular-loader.comp
 import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
+import { FormValidationUtil } from '../../core/helpers';
+import { FloatingLabelDirective } from '../../core/directives';
 
 @Component({
   selector: 'app-job-status-change',
@@ -17,7 +19,8 @@ import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
     AngularMaterialModules,
     CoreModules,
     CircularLoaderComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FloatingLabelDirective
   ],
   templateUrl: './job-status-change.component.html',
   styleUrls: ['./job-status-change.component.scss']
@@ -32,7 +35,7 @@ export class JobStatusChangeComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private jobStatusData: JobStatChangeDialogData
   ) {
     this.jobStatusForm = new FormGroup({
-      status: new FormControl('')
+      status: new FormControl('', Validators.required)
     });
   }
 
@@ -60,5 +63,9 @@ export class JobStatusChangeComponent implements OnInit {
         }
       });
     }
+  }
+
+  getFieldError(fieldName: string): string {
+    return FormValidationUtil.getFieldError(this.jobStatusForm, fieldName);
   }
 }

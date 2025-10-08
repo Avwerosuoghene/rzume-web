@@ -10,12 +10,13 @@ import { ApplicationStatusOption } from '../../core/models/types/dropdown-option
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
 import { AddJobDialogData, NO_RESUMES_AVAILABLE_MSG, Resume } from '../../core/models';
 import { DocumentHelperService } from '../../core/services/document-helper.service';
-import { DateHelper, DocumentHelper } from '../../core/helpers';
+import { DateHelper, DocumentHelper, FormValidationUtil } from '../../core/helpers';
+import { FloatingLabelDirective } from '../../core/directives';
 
 @Component({
   selector: 'app-job-add-dialog',
   standalone: true,
-  imports: [CircularLoaderComponent,AngularMaterialModules, CoreModules ],
+  imports: [CircularLoaderComponent, AngularMaterialModules, CoreModules, FloatingLabelDirective],
   templateUrl: './job-add-dialog.component.html',
   styleUrl: './job-add-dialog.component.scss'
 })
@@ -140,6 +141,10 @@ cancelApplication() {
   }
   get jobRole() {
     return this.applicationFormGroup.get('position');
+  }
+
+  getFieldError(fieldName: string): string {
+    return FormValidationUtil.getFieldError(this.applicationFormGroup, fieldName);
   }
 
 }

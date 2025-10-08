@@ -1,10 +1,13 @@
-import { Directive, ElementRef, HostListener, Renderer2, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Renderer2, OnInit, AfterViewInit } from '@angular/core';
+import { CssClass, ElementTag, EmptyValue, TIMING } from '../models';
+
+
 
 @Directive({
   selector: '[appFloatingLabel]',
   standalone: true
 })
-export class FloatingLabelDirective implements OnInit {
+export class FloatingLabelDirective implements OnInit, AfterViewInit {
   private formField: HTMLElement | null = null;
 
   constructor(
@@ -13,32 +16,79 @@ export class FloatingLabelDirective implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formField = this.el.nativeElement.closest('.form-field');
-    
-    this.checkValue();
+    this.formField = this.el.nativeElement.closest(`.${CssClass.FORM_FIELD}`);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.checkValue(), TIMING.IMMEDIATE_CHECK);
+    setTimeout(() => this.checkValue(), TIMING.DELAYED_CHECK);
   }
 
   @HostListener('input')
   @HostListener('change')
-  onInputChange(): void {
+  @HostListener('focus')
+  @HostListener('click')
+  onValueChange(): void {
     this.checkValue();
   }
 
   @HostListener('blur')
   onBlur(): void {
-    this.checkValue();
+    setTimeout(() => this.checkValue(), TIMING.BLUR_DELAY);
   }
 
   private checkValue(): void {
     if (!this.formField) return;
 
-    const input = this.el.nativeElement as HTMLInputElement;
-    const hasValue = input.value && input.value.trim().length > 0;
+    const element = this.el.nativeElement;
+    const hasValue = this.elementHasValue(element);
+
+    this.updateLabelState(hasValue);
+  }
+
+  private elementHasValue(element: HTMLElement): boolean {
+    return element.tagName === ElementTag.SELECT
+      ? this.selectHasValue(element as HTMLSelectElement)
+      : this.inputHasValue(element as HTMLInputElement | HTMLTextAreaElement);
+  }
+
+  private selectHasValue(select: HTMLSelectElement): boolean {
+    const value = select.value;
+    
+    if (this.isValidValue(value)) {
+      return true;
+    }
+
+    return this.hasSelectedOption(select);
+  }
+
+  private inputHasValue(input: HTMLInputElement | HTMLTextAreaElement): boolean {
+    return !!(input.value && input.value.trim().length > 0);
+  }
+
+  private isValidValue(value: string): boolean {
+    return value !== EmptyValue.EMPTY_STRING 
+      && value !== null 
+      && value !== undefined 
+      && value !== EmptyValue.NULL_STRING;
+  }
+
+  private hasSelectedOption(select: HTMLSelectElement): boolean {
+    if (select.selectedIndex < 0) {
+      return false;
+    }
+
+    const selectedOption = select.options[select.selectedIndex];
+    return !!(selectedOption?.value && selectedOption.value !== EmptyValue.EMPTY_STRING);
+  }
+
+  private updateLabelState(hasValue: boolean): void {
+    if (!this.formField) return;
 
     if (hasValue) {
-      this.renderer.addClass(this.formField, 'has-value');
+      this.renderer.addClass(this.formField, CssClass.HAS_VALUE);
     } else {
-      this.renderer.removeClass(this.formField, 'has-value');
+      this.renderer.removeClass(this.formField, CssClass.HAS_VALUE);
     }
   }
 }

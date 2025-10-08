@@ -13,93 +13,111 @@
     id="add_job_form"
   >
     <div class="form-input-container">
-      <mat-form-field appearance="outline">
-        <mat-label>Company</mat-label>
-        <input
-          matInput
-          placeholder="Enter company name"
-          type="text"
-          formControlName="companyName"
-          name="companyName"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Role</mat-label>
-        <input
-          matInput
-          placeholder="Enter job role"
-          formControlName="position"
-          name="position"
-        />
+      <div class="form-field">
+        <label for="companyName">Company</label>
+        <div class="input-wrapper">
+          <input
+            id="companyName"
+            class="form-input"
+            [class.error]="getFieldError('companyName')"
+            placeholder="Enter company name"
+            type="text"
+            formControlName="companyName"
+            name="companyName"
+            appFloatingLabel
+          />
+        </div>
+        <span *ngIf="getFieldError('companyName')" class="error-message">
+          {{ getFieldError('companyName') }}
+        </span>
+      </div>
 
-        @if (jobRole?.hasError('required')) {
-        <mat-error> Job role required </mat-error>
-        }
-      </mat-form-field>
+      <div class="form-field">
+        <label for="position">Job Role</label>
+        <div class="input-wrapper">
+          <input
+            id="position"
+            class="form-input"
+            [class.error]="getFieldError('position')"
+            placeholder="Enter job role"
+            type="text"
+            formControlName="position"
+            name="position"
+            appFloatingLabel
+          />
+        </div>
+        <span *ngIf="getFieldError('position')" class="error-message">
+          {{ getFieldError('position') }}
+        </span>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Resume</mat-label>
-        <mat-select formControlName="resumeId" placeholder="Select a resume" [(value)]="selectedResume">
-          @if (!hasResumes) {
-            <mat-option disabled>{{ noResumesMessage }}</mat-option>
-          }
-          @if (selectedResume && !hasResumes) {
-            <mat-option [value]="selectedResume.id">{{ selectedResume.fileName }}</mat-option>
-          }
-          @for (resume of resumes; track resume.id) {
-            <mat-option [value]="resume.id">{{ resume.fileName }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <div class="form-field select-field">
+        <label for="resumeId">CV Used</label>
+        <div class="input-wrapper">
+          <select
+            id="resumeId"
+            class="form-input form-select"
+            formControlName="resumeId"
+            appFloatingLabel>
+            @if (!hasResumes) {
+              <option disabled>{{ noResumesMessage }}</option>
+            }
+            @for (resume of resumes; track resume.id) {
+              <option [value]="resume.id">{{ resume.fileName }}</option>
+            }
+          </select>
+        </div>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Job Link</mat-label>
-        <input
-          matInput
-          placeholder="Enter link to job"
-          formControlName="jobLink"
-          name="jobLink"
-        />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="notes-field">
-        <mat-label>Notes</mat-label>
-        <textarea
-          matInput
-          placeholder="Add any additional notes"
-          formControlName="notes"
-          name="notes"
-          rows="3"
-        ></textarea>
-      </mat-form-field>
+      <div class="form-field">
+        <label for="jobLink">Job URL</label>
+        <div class="input-wrapper">
+          <input
+            id="jobLink"
+            class="form-input"
+            placeholder="Enter link to job"
+            type="url"
+            formControlName="jobLink"
+            name="jobLink"
+            appFloatingLabel
+          />
+        </div>
+      </div>
 
       <div class="application-status_date-container">
-        <mat-form-field appearance="outline">
-          <mat-label>Date Applied</mat-label>
-          <input
-            matInput
-            [matDatepicker]="picker"
-            formControlName="applicationDate"
-            [max]="maxDate"
-          />
+        <div class="form-field date-field">
+          <label for="applicationDate">Date</label>
+          <div class="input-wrapper">
+            <input
+              id="applicationDate"
+              class="form-input"
+              [matDatepicker]="picker"
+              formControlName="applicationDate"
+              [max]="maxDate"
+              placeholder="Select date"
+              readonly
+              appFloatingLabel
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="picker" class="date-toggle">
+            </mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </div>
+        </div>
 
-          <mat-datepicker-toggle matIconSuffix [for]="picker">
-            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-          </mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Choose an option</mat-label>
-          <mat-select formControlName="status">
-            @for (statusOption of applicationStatusOptions; track
-            statusOption.value) {
-            <mat-option [value]="statusOption.value">{{
-              statusOption.name
-            }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <div class="form-field select-field">
+          <label for="status">Application Status</label>
+          <div class="input-wrapper">
+            <select
+              id="status"
+              class="form-input form-select"
+              formControlName="status"
+              appFloatingLabel>
+              @for (statusOption of applicationStatusOptions; track statusOption.value) {
+                <option [value]="statusOption.value">{{ statusOption.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
       </div>
 
       <button
