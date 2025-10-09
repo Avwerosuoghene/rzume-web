@@ -45,6 +45,11 @@
         </app-form-input>
       </div>
 
+      <app-form-input 
+        [config]="notesConfig" 
+        [control]="applicationFormGroup.get('notes')">
+      </app-form-input>
+
       <button
         id="add_job_btn"
         mat-flat-button

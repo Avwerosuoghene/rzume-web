@@ -205,13 +205,15 @@ h4 {
   }
 
   // Hide placeholder by default
-  input::placeholder {
+  input::placeholder,
+  textarea::placeholder {
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
   // Show placeholder when focused
-  &:focus-within input::placeholder {
+  &:focus-within input::placeholder,
+  &:focus-within textarea::placeholder {
     opacity: 1;
   }
 }

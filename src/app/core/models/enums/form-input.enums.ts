@@ -27,6 +27,7 @@ export enum FormFieldId {
   RESUME_ID = 'resumeId',
   STATUS = 'status',
   APPLICATION_DATE = 'applicationDate',
+  NOTES = 'notes',
   REMEMBER_ME = 'rememberMe',
   TERMS_CHECKED = 'termsChecked'
 }
@@ -41,5 +42,6 @@ export enum FormFieldLabel {
   JOB_URL = 'Job URL',
   CV_USED = 'CV Used',
   APPLICATION_STATUS = 'Application Status',
-  DATE = 'Date'
+  DATE = 'Date',
+  NOTES = 'Notes'
 }

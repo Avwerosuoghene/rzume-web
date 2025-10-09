@@ -55,6 +55,12 @@ export class JobAddDialogComponent implements OnInit {
     max: this.maxDate
   });
 
+  notesConfig = FormInputConfigHelper.textarea({
+    id: FormFieldId.NOTES,
+    label: FormFieldLabel.NOTES,
+    rows: 4
+  });
+
   constructor(
     private dialogRef: MatDialogRef<JobAddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) private addJobDialogData: AddJobDialogData,
