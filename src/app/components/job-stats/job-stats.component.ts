@@ -4,7 +4,6 @@ import { CarouselComponent } from '../carousel/carousel.component';
 import { CarouselItem } from '../../core/models';
 import { UiStateService } from '../../core/services/ui-state.service';
 import { Subscription } from 'rxjs';
-import { animateCountUp } from '../../core/helpers/animation.helper';
 
 @Component({
   selector: 'app-job-stats',
@@ -20,7 +19,6 @@ export class JobStatsComponent implements OnInit, OnDestroy {
   isMobile = false;
   
   private subscriptions = new Subscription();
-  private cancelAnimation: (() => void) | null = null;
 
   constructor(private uiState: UiStateService) { }
 
@@ -31,15 +29,12 @@ export class JobStatsComponent implements OnInit, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     const change = changes['statHighLights'];
     if (change?.currentValue) {
-      this.handleStatHighlightsChange(change.previousValue, change.currentValue);
+      this.handleStatHighlightsChange(change.currentValue);
     }
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-    if (this.cancelAnimation) {
-      this.cancelAnimation();
-    }
   }
 
   initiateSubscriptions() {
@@ -51,25 +46,14 @@ export class JobStatsComponent implements OnInit, OnDestroy {
   }
 
   handleStatHighlightsChange(
-    previousStats: Array<StatHighlight & { displayValue?: number }> | undefined,
     currentStats: Array<StatHighlight & { displayValue?: number }>
   ): void {
-    if (this.cancelAnimation) {
-      this.cancelAnimation();
-    }
     this.buildCarouselItems();
 
     currentStats.forEach(currentStat => {
-      const previousStat = previousStats?.find(p => p.description === currentStat.description);
-      const startValue = previousStat?.displayValue ?? 0;
-      this.startAnimationForStat(currentStat, startValue);
-    });
-  }
-
-  startAnimationForStat(stat: StatHighlight & { displayValue?: number }, startValue: number): void {
-    this.cancelAnimation = animateCountUp(stat, startValue, 1000, () => {
+      currentStat.displayValue = currentStat.value;
       if (this.isMobile) {
-        this.updateCarouselItem(stat);
+        this.updateCarouselItem(currentStat);
       }
     });
   }
