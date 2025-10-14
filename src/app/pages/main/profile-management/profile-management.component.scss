@@ -6,31 +6,37 @@
   flex-direction: column;
   padding: 10px 24px 24px;;
   gap: 20px;
-  height: calc(100vh - 90px); 
+  height: calc(100vh - 90px);
+  height: calc(var(--vh, 1vh) * 100 - 90px);
   overflow: hidden;
 
   @media (min-width: 600px) {
-    height: calc(100vh - 120px); 
+    height: calc(100vh - 120px);
+    height: calc(var(--vh, 1vh) * 100 - 120px);
   }
 
   @media (min-width: 800px) {
-    height: calc(100vh - 134px); 
+    height: calc(100vh - 134px);
+    height: calc(var(--vh, 1vh) * 100 - 134px);
   }
 }
 
 .tab-content {
- @media (min-width: 599px) {
-      height: calc(100vh - 150px);
-      margin: 14px 0;
-    }
-
-    @media (min-width: 1200px) {
-      height: calc(100vh - 164px);
-      margin: 24px 0;
-    }
-
-  height: calc(100vh - 120px); 
+  height: calc(100vh - 120px);
+  height: calc(var(--vh, 1vh) * 100 - 120px);
   overflow: hidden;
+
+  @media (min-width: 600px) {
+    height: calc(100vh - 150px);
+    height: calc(var(--vh, 1vh) * 100 - 150px);
+    margin: 14px 0;
+  }
+
+  @media (min-width: 1200px) {
+    height: calc(100vh - 164px);
+    height: calc(var(--vh, 1vh) * 100 - 164px);
+    margin: 24px 0;
+  }
 }
 
 .tab-panel {

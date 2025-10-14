@@ -25,5 +25,4 @@ export class AuthenticationComponent {
       this.animationState = 'open';
     }, 0);
   }
-
 }

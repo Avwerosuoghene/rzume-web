@@ -18,6 +18,7 @@
 .main-container {
   width: 100vw;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 60px auto;
@@ -49,6 +50,7 @@
       transform: none;
       grid-row: span 2;
       height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
     }
 
     @media (min-width: 950px) {

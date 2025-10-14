@@ -66,7 +66,7 @@ h1 {
   @include font-display;
   font-size: $font-size-2xl;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     font-size: $font-size-3xl;
   }
 
@@ -80,7 +80,7 @@ h2 {
   @include font-heading;
   font-size: $font-size-xl;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     font-size: $font-size-2xl;
   }
 
@@ -94,7 +94,7 @@ h3 {
   @include font-heading;
   font-size: $font-size-lg;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     font-size: $font-size-xl;
   }
 
@@ -108,7 +108,7 @@ h4 {
   @include font-heading;
   font-size: $font-size-base;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     font-size: $font-size-md;
   }
 
@@ -139,7 +139,7 @@ h4 {
     font-size: $font-size-sm;
     line-height: 1;
 
-    @media (min-width: 599px) {
+    @media (min-width: 600px) {
       font-size: $font-size-base;
     }
 
@@ -373,7 +373,7 @@ label,
   @include font-body;
   font-size: $font-size-sm;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     font-size: $font-size-base;
   }
 
@@ -389,7 +389,7 @@ a {
   color: rgba(62, 127, 255, 1);
   cursor: pointer;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     font-size: $font-size-base;
   }
 
@@ -413,7 +413,7 @@ body {
 .desktop_only {
   display: none;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     display: block;
   }
 }
@@ -421,7 +421,7 @@ body {
 .mobile_only {
   display: block;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     display: none;
   }
 }

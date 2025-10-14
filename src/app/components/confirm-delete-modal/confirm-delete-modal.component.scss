@@ -11,7 +11,7 @@
   text-align: center;
   gap: 16px;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     max-width: 500px;
     width: 80vw;
     padding: 40px;
@@ -23,7 +23,7 @@
   width: 60px;
   height: 60px;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     width: 80px;
     height: 80px;
   }
@@ -43,7 +43,7 @@
   width: 100%;
   margin-top: 10px;
 
-  @media (min-width: 599px) {
+  @media (min-width: 600px) {
     margin-top: 20px;
   }
 }
