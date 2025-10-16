@@ -2,7 +2,7 @@ import { Route } from "@angular/router";
 import { AuthRoutes } from "../enums/application.routes.enums";
 
 export const authenticationRoutes: Array<Route> = [
-  {path:'', redirectTo:AuthRoutes.signup,  pathMatch: "full" },
+  {path:'', redirectTo:AuthRoutes.signin,  pathMatch: "full" },
   {
     path: AuthRoutes.signup,
     loadComponent: () => import("../../../pages/authentication/signup/signup.component")
