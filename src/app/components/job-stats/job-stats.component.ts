@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { StatHighlight } from '../../core/models/interface/dashboard.models';
 import { CarouselComponent } from '../carousel/carousel.component';
 import { CarouselItem } from '../../core/models';
@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './job-stats.component.html',
   styleUrl: './job-stats.component.scss'
 })
-export class JobStatsComponent implements OnInit, OnDestroy {
+export class JobStatsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() statHighLights: Array<StatHighlight & { displayValue?: number }> = [];
   
   carouselItems: CarouselItem[] = [];

@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentPage = PAGINATION_DEFAULTS.currentPage;
   itemsPerPage = PAGINATION_DEFAULTS.itemsPerPage;
   totalItems = PAGINATION_DEFAULTS.totalItems;
-  
+
 
   selectedItems: Array<JobApplicationItem> = [];
   showEmptyState = true;
@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dialogHelperService: DialogHelperService,
     private documentHelper: DocumentHelperService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.setUpSubscriptions();
@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.documentHelper.fetchResumes();
   }
 
-  setUpSubscriptions(){
+  setUpSubscriptions() {
     this.setupScreenManagerSubscription();
     this.setupApplicationSubscription();
     this.setupSearchSubscription();
@@ -135,8 +135,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   reloadDashboardData(): void {
-    this.initiateJobStats();
     this.loadUserAppliedJobs();
+    this.initiateJobStats();
   }
 
   loadUserAppliedJobs(): void {
@@ -165,6 +165,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         if (response.success && response.data) {
           this.statHighLights = mapJobStats(response.data);
+          this.cdr.markForCheck();
         }
       });
   }
