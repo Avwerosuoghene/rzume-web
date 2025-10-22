@@ -43,7 +43,7 @@
   }
 
   .add_job_btn {
-    @extend .rzume-button;
+    @extend .rzume-button-primary;
     display: flex;
 
     .button_elements {

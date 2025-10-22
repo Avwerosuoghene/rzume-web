@@ -1,9 +1,11 @@
 @import "./theme.scss";
 
-.rzume-button {
+.rzume-button-base {
   border-radius: 8px;
   height: 48px;
-  background-color: $rzume-blue;
+  border: none;
+  cursor: pointer;
+  display: flex;
 
   .button-elements {
     display: flex;
@@ -13,18 +15,30 @@
 
   &:disabled {
     background-color: $light-gray;
+    color: $gray;
+    cursor: not-allowed;
   }
 }
 
-.rzume-button-outline {
-  border-radius: 8px;
-  height: 48px;
+.rzume-button-primary {
+  @extend .rzume-button-base;
+  background-color: $rzume-blue;
+  color: $white;
+}
 
-  .button-elements {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.rzume-button-secondary {
+  @extend .rzume-button-base;
+  background-color: $white;
+  color: $rzume-blue;
+
+}
+
+.rzume-button-outline {
+  @extend .rzume-button-base;
+  background-color: transparent;
+  border: 1px solid $rzume-blue;
+  color: $rzume-blue;
+
 }
 
 .auth-container {
@@ -49,7 +63,7 @@
   }
 
   .form-input-confirm-button {
-    @extend .rzume-button;
+    @extend .rzume-button-primary;
 
     margin-top: 48px;
   }
@@ -73,9 +87,9 @@
       color: $basic-green;
     }
 
-    &#close, &#warning  {
+    &#close,
+    &#warning {
       color: $warning;
     }
-
   }
 }
