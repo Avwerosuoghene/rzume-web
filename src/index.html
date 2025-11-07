@@ -1,41 +1,124 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>RzumeWeb</title>
-  
-  <!-- Preconnect to external resources -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://accounts.google.com">
-  <link rel="preconnect" href="https://apis.google.com">
-  
-  <!-- DNS prefetch for additional domains -->
-  <link rel="dns-prefetch" href="https://accounts.google.com">
-  
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  
-  <!-- Optimized async font loading -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  </noscript>
-  
-  <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  </noscript>
-  
-  <!-- Google API scripts -->
-  <!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
-  <script src="https://apis.google.com/js/api:client.js"></script>
-  
-  <meta name="google-signin-client_id" content="443013799790-9i8k2cqh0d16tf6qv4s2k5cfl2rdfgou.apps.googleusercontent.com">
+  <head>
+    <meta charset="utf-8" />
+    <title>RzumeWeb</title>
 
-</head>
-<body >
-  <app-root></app-root>
-</body>
+    <base href="/" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/assets/icons/rzume_browser_logo.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/assets/icons/rzume_browser_logo.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/assets/icons/rzume_browser_logo.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/assets/icons/rzume_browser_logo.png"
+    />
+    <link rel="manifest" href="/assets/manifest.json" />
+
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="language" content="English" />
+    <meta name="geo.region" content="NG" />
+    <meta name="geo.country" content="Nigeria" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="general" />
+
+    <title>
+      Rzume – Stay Organized & Never Lose Track of a Job Application
+    </title>
+    <meta
+      name="description"
+      content="A simple tool to track job applications, manage resumes, and stay organized. Get reminders, insights, and stress-free job search management with Rzume."
+    />
+    <meta
+      name="keywords"
+      content="job application tracker, resume management, job search organization, career tools, job hunting, application management, job search app, career management, interview tracker"
+    />
+    <meta name="author" content="Vantapod Limited" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Rzume",
+        "description": "A simple tool to track job applications, manage resumes, and stay organized. Get reminders, insights, and stress-free job search management.",
+        "url": "https://app.rzume.site",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web Browser",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Vantapod Limited",
+          "url": "https://app.rzume.site"
+        }
+      }
+    </script>
+
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://accounts.google.com" />
+    <link rel="preconnect" href="https://apis.google.com" />
+
+    <!-- DNS prefetch for additional domains -->
+    <link rel="dns-prefetch" href="https://accounts.google.com" />
+
+    <!-- Optimized async font loading -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- Google API scripts -->
+    <!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
+    <script src="https://apis.google.com/js/api:client.js"></script>
+
+    <meta
+      name="google-signin-client_id"
+      content="443013799790-9i8k2cqh0d16tf6qv4s2k5cfl2rdfgou.apps.googleusercontent.com"
+    />
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
 </html>
