@@ -7,6 +7,10 @@ export const FORM_INPUT_DEFAULTS = {
   ROWS_MAX: 10
 } as const;
 
+export const FORM_PLACEHOLDERS = {
+  RESUME_SELECT: 'Select a resume (optional)'
+} as const;
+
 export const INPUT_TYPE_ICONS: Record<FormInputType, string> = {
   [FormInputType.TEXT]: 'text_fields',
   [FormInputType.EMAIL]: 'email',

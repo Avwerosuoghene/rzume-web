@@ -8,11 +8,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
+import { FORM_PLACEHOLDERS } from '../../core/models/constants/form-input.constants';
 import { AddJobDialogData, FormFieldId, FormFieldLabel, NO_RESUMES_AVAILABLE_MSG, Resume } from '../../core/models';
 import { DocumentHelperService } from '../../core/services/document-helper.service';
 import { DateHelper, DocumentHelper, FormInputConfigHelper } from '../../core/helpers';
 import { FormInputComponent } from '../form-input/form-input.component';
-import { FormInputType, FormInputConfig, FormInputSelectConfig, FormInputDateConfig, SelectOption } from '../../core/models';
+import {  FormInputSelectConfig } from '../../core/models';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -70,7 +71,6 @@ export class JobAddDialogComponent implements OnInit {
   ngOnInit(): void {
     this.loadResumes();
     this.initializeForm();
-    console.log(this.addJobDialogData)
     this.editMode = this.addJobDialogData.isEditing;
     if (this.editMode) this.prepopulateFormFields();
   }
@@ -98,7 +98,7 @@ export class JobAddDialogComponent implements OnInit {
           Validators.required
         ]
       }),
-      resumeId: this.fb.control(''),
+      resumeId: this.fb.control(null),
       jobLink: this.fb.control(''),
       notes: this.fb.control(''),
       applicationDate: this.fb.control(''),
@@ -177,6 +177,7 @@ export class JobAddDialogComponent implements OnInit {
     return FormInputConfigHelper.select({
       id: FormFieldId.RESUME_ID,
       label: FormFieldLabel.CV_USED,
+      placeholder: FORM_PLACEHOLDERS.RESUME_SELECT,
       options: this.resumes.map(resume => ({
         value: resume.id,
         label: resume.fileName
