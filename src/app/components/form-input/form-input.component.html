@@ -6,7 +6,7 @@
     @if (!isSelect && !isTextarea && !isDate) {
       <input
         [id]="config.id"
-        [type]="config.type"
+        [type]="currentInputType"
         [placeholder]="config.placeholder || ''"
         [required]="config.required"
         [disabled]="disabled || config.disabled"
@@ -19,8 +19,21 @@
         (blur)="markAsTouched()"
         class="form-input"
         [class.error]="hasError"
+        [class.with-toggle]="showPasswordToggle"
         appFloatingLabel
       />
+      
+      @if (showPasswordToggle) {
+        <button
+          type="button"
+          class="password-toggle-btn"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="passwordVisible ? 'Hide password' : 'Show password'"
+          tabindex="-1"
+        >
+          <mat-icon>{{ passwordVisibilityIcon }}</mat-icon>
+        </button>
+      }
     }
 
     <!-- Textarea -->

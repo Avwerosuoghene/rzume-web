@@ -10,7 +10,7 @@ import {
   FormInputDateConfig 
 } from '../../core/models/interface/form-input.interface';
 import { FormInputType } from '../../core/models/enums/form-input.enums';
-import { DEFAULT_ERROR_MESSAGES, FORM_INPUT_DEFAULTS } from '../../core/models/constants/form-input.constants';
+import { DEFAULT_ERROR_MESSAGES, FORM_INPUT_DEFAULTS, PASSWORD_VISIBILITY_ICONS, PASSWORD_INPUT_TYPES } from '../../core/models/constants/form-input.constants';
 
 @Component({
   selector: 'app-form-input',
@@ -39,8 +39,11 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
   value: any = '';
   disabled = false;
   touched = false;
+  passwordVisible = false;
 
   readonly FormInputType = FormInputType;
+  readonly PASSWORD_VISIBILITY_ICONS = PASSWORD_VISIBILITY_ICONS;
+  readonly PASSWORD_INPUT_TYPES = PASSWORD_INPUT_TYPES;
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
@@ -100,6 +103,25 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
 
   get textareaRows(): number {
     return this.config.rows || FORM_INPUT_DEFAULTS.ROWS_DEFAULT;
+  }
+
+  get isPasswordField(): boolean {
+    return this.config.type === FormInputType.PASSWORD;
+  }
+
+  get showPasswordToggle(): boolean {
+    return this.isPasswordField && this.config.showPasswordToggle === true;
+  }
+
+  get currentInputType(): string {
+    if (!this.isPasswordField) {
+      return this.config.type;
+    }
+    return this.passwordVisible ? PASSWORD_INPUT_TYPES.TEXT : PASSWORD_INPUT_TYPES.PASSWORD;
+  }
+
+  get passwordVisibilityIcon(): string {
+    return this.passwordVisible ? PASSWORD_VISIBILITY_ICONS.VISIBLE : PASSWORD_VISIBILITY_ICONS.HIDDEN;
   }
 
   get errorMessage(): string {
@@ -166,6 +188,10 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
       this.onTouched();
       this.touched = true;
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
   }
 
   private validateConfig(): void {

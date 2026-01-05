@@ -14,6 +14,7 @@ export interface FormInputConfig {
   minLength?: number;
   pattern?: string;
   errorMessages?: Record<string, string>;
+  showPasswordToggle?: boolean; 
 }
 
 export interface SelectOption {

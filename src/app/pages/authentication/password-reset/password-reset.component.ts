@@ -50,12 +50,14 @@ export class PasswordResetComponent {
 
   passwordConfig = FormInputConfigHelper.password({
     id: FormFieldId.PASSWORD,
-    label: FormFieldLabel.PASSWORD
+    label: FormFieldLabel.PASSWORD,
+    showPasswordToggle: true
   });
   
   confirmPasswordConfig = FormInputConfigHelper.password({
     id: FormFieldId.CONFIRM_PASSWORD,
-    label: FormFieldLabel.CONFIRM_PASSWORD
+    label: FormFieldLabel.CONFIRM_PASSWORD,
+    showPasswordToggle: true
   });
 
   constructor(private authenticationService: AuthenticationService, private routerService: RoutingUtilService) { }

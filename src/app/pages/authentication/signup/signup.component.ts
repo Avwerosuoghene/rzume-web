@@ -47,7 +47,8 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   passwordConfig = FormInputConfigHelper.password({
     id: FormFieldId.PASSWORD,
-    label: FormFieldLabel.PASSWORD
+    label: FormFieldLabel.PASSWORD,
+    showPasswordToggle: true
   });
 
   constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService, private dialog: MatDialog) {

@@ -32,3 +32,13 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   min: 'Value is too low',
   max: 'Value is too high'
 };
+
+export const PASSWORD_VISIBILITY_ICONS = {
+  VISIBLE: 'visibility',
+  HIDDEN: 'visibility_off'
+} as const;
+
+export const PASSWORD_INPUT_TYPES = {
+  PASSWORD: 'password',
+  TEXT: 'text'
+} as const;

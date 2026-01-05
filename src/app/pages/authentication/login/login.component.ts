@@ -50,7 +50,8 @@ export class LoginComponent {
 
   passwordConfig = FormInputConfigHelper.password({
     id: FormFieldId.PASSWORD,
-    label: FormFieldLabel.PASSWORD
+    label: FormFieldLabel.PASSWORD,
+    showPasswordToggle: true
   });
 
 

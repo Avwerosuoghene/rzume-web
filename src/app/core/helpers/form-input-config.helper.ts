@@ -17,6 +17,7 @@ interface BaseConfigOptions {
   minLength?: number;
   pattern?: string;
   rows?: number;
+  showPasswordToggle?: boolean;
 }
 
 export class FormInputConfigHelper {
@@ -38,7 +39,8 @@ export class FormInputConfigHelper {
       maxLength: options.maxLength,
       minLength: options.minLength,
       pattern: options.pattern,
-      rows: options.rows
+      rows: options.rows,
+      showPasswordToggle: options.showPasswordToggle
     };
   }
 
