@@ -23,10 +23,12 @@
         [control]="applicationFormGroup.get('position')">
       </app-form-input>
 
-      <app-form-input 
-        [config]="resumeConfig" 
-        [control]="applicationFormGroup.get('resumeId')">
-      </app-form-input>
+      <div (change)="onResumeSelectionChange($event)">
+        <app-form-input 
+          [config]="resumeConfig" 
+          [control]="applicationFormGroup.get('resumeId')">
+        </app-form-input>
+      </div>
 
       <app-form-input 
         [config]="jobLinkConfig" 

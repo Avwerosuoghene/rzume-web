@@ -89,9 +89,13 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
-              "buildTarget": "rzume_web:build:production"
+              "buildTarget": "rzume_web:build:production",
+              "proxyConfig": "proxy.conf.json"
             },
             "development": {
               "buildTarget": "rzume_web:build:development"

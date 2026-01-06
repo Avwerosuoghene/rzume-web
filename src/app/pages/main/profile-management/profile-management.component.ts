@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { TabNavigationComponent } from './tab-navigation/tab-navigation.component';
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DocumentsViewComponent } from './documents-view/documents-view.component';
@@ -33,6 +34,7 @@ export class ProfileManagementComponent implements OnInit {
 
   constructor(
     private documentHelper: DocumentHelperService,
+    private route: ActivatedRoute
   ) { }
 
 
@@ -58,7 +60,16 @@ export class ProfileManagementComponent implements OnInit {
 
 
   private initializeActiveTab(): void {
-    this.activeTab = PROFILE_TABS.PROFILE;
+    const tabFromQuery = this.route.snapshot.queryParams['tab'];
+    if (tabFromQuery && this.isValidTab(tabFromQuery)) {
+      this.activeTab = tabFromQuery;
+    } else {
+      this.activeTab = PROFILE_TABS.PROFILE;
+    }
+  }
+
+  private isValidTab(tab: string): boolean {
+    return Object.values(PROFILE_TABS).includes(tab as PROFILE_TABS);
   }
 
   onTabChange(tabId: string): void {

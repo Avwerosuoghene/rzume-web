@@ -1,5 +1,6 @@
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApplicationStatus } from '../../core/models/enums/shared.enums';
 import { CoreModules } from '../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
@@ -14,6 +15,8 @@ import { DocumentHelperService } from '../../core/services/document-helper.servi
 import { DateHelper, DocumentHelper, FormInputConfigHelper } from '../../core/helpers';
 import { FormInputComponent } from '../form-input/form-input.component';
 import {  FormInputSelectConfig } from '../../core/models';
+import { MainRoutes, RootRoutes } from '../../core/models/enums/application.routes.enums';
+import { PROFILE_TABS } from '../../core/models/constants/profile.constants';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -65,7 +68,8 @@ export class JobAddDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<JobAddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) private addJobDialogData: AddJobDialogData,
-    private documentHelperService: DocumentHelperService
+    private documentHelperService: DocumentHelperService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -139,10 +143,6 @@ export class JobAddDialogComponent implements OnInit {
   }
 
 
-  get hasResumes(): boolean {
-    return this.resumes.length > 0;
-  }
-
   getResumeDisplayName(resumeId: string): string {
     return DocumentHelper.getResumeFileName(this.resumes, resumeId);
   }
@@ -174,14 +174,23 @@ export class JobAddDialogComponent implements OnInit {
   }
 
   get resumeConfig(): FormInputSelectConfig {
+    const resumeOptions = this.resumes.map(resume => ({
+      value: resume.id,
+      label: resume.fileName
+    }));
+
+    if (!this.hasResumes) {
+      resumeOptions.push({
+        value: 'upload-resume',
+        label: '+ Upload Resume'
+      });
+    }
+
     return FormInputConfigHelper.select({
       id: FormFieldId.RESUME_ID,
       label: FormFieldLabel.CV_USED,
       placeholder: FORM_PLACEHOLDERS.RESUME_SELECT,
-      options: this.resumes.map(resume => ({
-        value: resume.id,
-        label: resume.fileName
-      }))
+      options: resumeOptions
     });
   }
 
@@ -194,6 +203,26 @@ export class JobAddDialogComponent implements OnInit {
         label: option.name
       }))
     });
+  }
+
+  get hasResumes(): boolean {
+    return this.resumes.length > 0;
+  }
+
+  onResumeSelectionChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValue = selectElement.value;
+
+    if (selectedValue === 'upload-resume') {
+      this.navigateToDocuments();
+    }
+  }
+
+  private navigateToDocuments(): void {
+    const profileRoute = `/${RootRoutes.main}/${MainRoutes.profileManagement}`;
+    const queryParams = { tab: PROFILE_TABS.DOCUMENTS };
+    this.router.navigate([profileRoute], { queryParams });
+    this.dialogRef.close({ status: DialogCloseStatus.Cancelled });
   }
 
 }
