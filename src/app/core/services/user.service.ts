@@ -15,9 +15,9 @@ export class UserService {
     private storageService: StorageService
   ) { }
 
-  getActiveUser(token: string): Promise<boolean> {
+  getActiveUser(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.authService.getActiveUser(token).subscribe({
+      this.authService.getActiveUser().subscribe({
         next: (activeUserResponse: APIResponse<User>) => {
           if (activeUserResponse.success && activeUserResponse.data) {
             this.storageService.setUser(activeUserResponse.data);
@@ -33,8 +33,8 @@ export class UserService {
     });
   }
 
-  refreshActiveUser(token: string): Observable<User | null> {
-    return this.authService.getActiveUser(token).pipe(
+  refreshActiveUser(): Observable<User | null> {
+    return this.authService.getActiveUser().pipe(
       map((response: APIResponse<User>) => {
         if (response.success && response.data) {
           this.storageService.setUser(response.data);

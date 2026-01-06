@@ -154,7 +154,9 @@ export class LoginComponent {
       return;
     }
 
-    this.saveAuthToken(signinData.token!);
+    if (signinData.token) {
+      this.saveAuthToken(signinData.token);
+    }
 
     if (this.shouldRedirectToOnboard(signinData.user.onBoardingStage)) {
       this.routingUtilService.navigateToAuth(AuthRoutes.onboard);

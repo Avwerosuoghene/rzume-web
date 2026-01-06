@@ -1,5 +1,4 @@
 export * from './api.service';
-export * from './auth-initializer.service';
 export * from './authentication.service';
 export * from './profile-management.service';
 export * from './storage.service';
@@ -10,5 +9,4 @@ export * from './loader.service';
 export * from './search-state.service';
 export * from './screen-manager.service';
 export * from './document-helper.service';
-export * from './token-validation.service';
 export * from './user.service';

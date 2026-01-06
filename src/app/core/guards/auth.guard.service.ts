@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthRoutes, RootRoutes } from '../models/enums/application.routes.enums';
-import { LoaderService, TokenValidationService } from '../services';
+import { LoaderService, UserService } from '../services';
 import { AuthHelperService } from '../services/auth-helper.service';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { AuthHelperService } from '../services/auth-helper.service';
 export class AuthGuardService {
 
   constructor(
-    private tokenValidationService: TokenValidationService,
+    private userService: UserService,
     private authHelper: AuthHelperService,
     private router: Router,
     private loaderService: LoaderService
@@ -24,19 +24,13 @@ export class AuthGuardService {
   }
 
   private async getActiveToken(): Promise<boolean> {
-    const { token, isValid } = await this.tokenValidationService.getAndValidateToken();
-    
-    if (!token) {
+    try {
+      const isValid = await this.userService.getActiveUser();
+      return isValid;
+    } catch (error) {
       await this.navigateToSignIn();
       return false;
     }
-    
-    if (!isValid) {
-      this.authHelper.logout();
-      return false;
-    }
-    
-    return true;
   }
 
   private async navigateToSignIn(): Promise<void> {

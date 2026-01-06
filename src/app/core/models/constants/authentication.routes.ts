@@ -1,15 +1,18 @@
 import { Route } from "@angular/router";
 import { AuthRoutes } from "../enums/application.routes.enums";
+import { LoginRedirectGuard } from "../../guards/login-redirect.guard";
 
 export const authenticationRoutes: Array<Route> = [
   {path:'', redirectTo:AuthRoutes.signin,  pathMatch: "full" },
   {
     path: AuthRoutes.signup,
+    canActivate: [LoginRedirectGuard],
     loadComponent: () => import("../../../pages/authentication/signup/signup.component")
       .then(m => m.SignupComponent)
   },
   {
     path: AuthRoutes.signin,
+    canActivate: [LoginRedirectGuard],
     loadComponent: () => import("../../../pages/authentication/login/login.component")
       .then(m => m.LoginComponent)
   },

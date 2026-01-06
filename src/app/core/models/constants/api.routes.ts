@@ -6,6 +6,7 @@ export class ApiRoutes {
   static auth = {
     register: `${this.authRoute}/register`,
     login: `${this.authRoute}/signin`,
+    logout: `${this.authRoute}/signout`,
     generateEmailToken: `${this.authRoute}/resend-confirmation-email`,
     validateToken: `${this.authRoute}/confirm-email`,
     googleSigin: `${this.authRoute}/google-signin`,

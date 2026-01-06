@@ -51,7 +51,9 @@ export class EmailConfirmationComponent {
           this.emailValidationHeader = EMAIL_VALIDATED_HEADER;
           this.emailValidMsg = message;
           this.emailValidationBtnTxt = BTN_CONTINUE;
-          SessionStorageUtil.setItem(SessionStorageKeys.authToken, data?.token!);
+          if (data?.token) {
+            SessionStorageUtil.setItem(SessionStorageKeys.authToken, data.token);
+          }
           return;
         }
 

@@ -134,7 +134,7 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
     const token = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
     if (!token) return;
 
-    this.userService.refreshActiveUser(token)
+    this.userService.refreshActiveUser()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (user) => {

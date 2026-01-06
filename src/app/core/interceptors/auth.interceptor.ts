@@ -8,23 +8,29 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthHelperService } from '../services/auth-helper.service';
+import { SessionStorageUtil } from '../helpers';
+import { SessionStorageKeys } from '../models';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(
-     private authHelper: AuthHelperService
-    ) { }
+    constructor() { }
 
     intercept(
         request: HttpRequest<unknown>,
         next: HttpHandler
     ): Observable<HttpEvent<unknown>> {
+        const token = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
+        
+        if (token && !request.headers.has('Authorization')) {
+            request = request.clone({
+                setHeaders: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
+
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
-                if (error.status === 401) {
-                    this.authHelper.logout();
-                }
                 return throwError(() => error);
             })
         );

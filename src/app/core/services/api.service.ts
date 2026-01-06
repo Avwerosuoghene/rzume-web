@@ -28,12 +28,8 @@ export class ApiService {
 
     let requestHeaders = this.mergeHeaders(headers);
 
-    if (withBearer) {
-      requestHeaders = this.withBearer(requestHeaders);
-    }
-
     return this.httpClient.get<T>(requestRoute, {
-      headers: requestHeaders, params: requestParams
+      headers: requestHeaders, params: requestParams, withCredentials: true
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
@@ -54,10 +50,10 @@ export class ApiService {
   public put<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): Observable<T> {
     let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
-    let headers = this.withBearer(this.mergeHeaders(reqHeaders, useJsonContentType));
+    let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.put<T>(route, body, {
-      headers
+      headers, withCredentials: true
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
@@ -75,12 +71,9 @@ export class ApiService {
     let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
     let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
-    if (withBearer) {
-      headers = this.withBearer(headers);
-    }
 
     return this.httpClient.post<T>(route, body, {
-      headers
+      headers, withCredentials: true
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
@@ -99,10 +92,11 @@ export class ApiService {
   public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: any, useJsonContentType: boolean = true): Observable<T> {
     const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
-    const headers = this.withBearer(this.mergeHeaders(reqHeaders, useJsonContentType));
+    const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
     const options = {
       headers,
-      body
+      body,
+      withCredentials: true
     };
 
     return this.httpClient.delete<T>(route, options).pipe(

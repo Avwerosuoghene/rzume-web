@@ -31,19 +31,19 @@ export class AuthenticationService {
     )
   }
 
+  logout() {
+    return this.apiService.post<APIResponse<boolean>>(
+      ApiRoutes.auth.logout, {}, false
+    )
+  }
 
-  getActiveUser(userToken: string) {
+  getActiveUser() {
     const apiRoute = ApiRoutes.auth.getActiveUser;
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${userToken}`,
-    });
 
     const getReqOptions: GetRequestOptions = {
       route: apiRoute,
-      withBearer: true,
-      handleResponse: true,
-      headers
+      withBearer: false,
+      handleResponse: false
     }
     return this.apiService.get<APIResponse<User>>(getReqOptions);
   }
