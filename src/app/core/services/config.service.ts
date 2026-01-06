@@ -8,16 +8,35 @@ import { firstValueFrom } from 'rxjs';
 export class ConfigService {
 
   private config: any;
+  private configLoadPromise: Promise<void> | null = null;
 
   constructor(private http: HttpClient) { }
 
   async loadConfig() {
-    try {
-          const config = await firstValueFrom(this.http.get('/assets/config/config.json'));
-          this.config = config;
+    if (this.configLoadPromise) {
+      return this.configLoadPromise;
+    }
+
+    this.configLoadPromise = (async () => {
+      try {
+        const config = await firstValueFrom(this.http.get('/assets/config/config.json'));
+        this.config = config;
       } catch (err) {
-          console.error(err);
+        console.error(err);
       }
+    })();
+
+    return this.configLoadPromise;
+  }
+
+  async waitForConfig(): Promise<void> {
+    if (this.configLoadPromise) {
+      await this.configLoadPromise;
+    }
+  }
+
+  isConfigLoaded(): boolean {
+    return !!this.config;
   }
 
   get apiUrls() {

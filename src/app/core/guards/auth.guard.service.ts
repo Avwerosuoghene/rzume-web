@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { SessionStorageUtil } from '../helpers/session-storage.util';
 import { AuthRoutes, RootRoutes } from '../models/enums/application.routes.enums';
-import { SessionStorageKeys } from '../models';
-import { LoaderService, UserService } from '../services';
+import { LoaderService, TokenValidationService } from '../services';
 import { AuthHelperService } from '../services/auth-helper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuardService {
-  userToken: string | null = null;
 
   constructor(
-    private userService: UserService,
+    private tokenValidationService: TokenValidationService,
     private authHelper: AuthHelperService,
     private router: Router,
     private loaderService: LoaderService
@@ -27,18 +24,23 @@ export class AuthGuardService {
   }
 
   private async getActiveToken(): Promise<boolean> {
-    this.userToken = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
-    if (!this.userToken) {
-      await this.router.navigate([`/${RootRoutes.auth}/${AuthRoutes.signin}`]);
+    const { token, isValid } = await this.tokenValidationService.getAndValidateToken();
+    
+    if (!token) {
+      await this.navigateToSignIn();
       return false;
     }
-    try {
-      const isActive = await this.userService.getActiveUser(this.userToken);
-      return isActive;
-    } catch (error) {
-      console.error(error);
+    
+    if (!isValid) {
       this.authHelper.logout();
       return false;
     }
+    
+    return true;
+  }
+
+  private async navigateToSignIn(): Promise<void> {
+    const signInRoute = `/${RootRoutes.auth}/${AuthRoutes.signin}`;
+    await this.router.navigate([signInRoute]);
   }
 }

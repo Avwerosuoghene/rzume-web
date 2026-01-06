@@ -120,7 +120,8 @@ export class LoginComponent {
 
     const userMail: string = this.getFormElement('email')?.value;
     const password: string = this.getFormElement('password')?.value;
-    const loginPayload: AuthRequest = this.generateLoginPayload(userMail, password);
+    const rememberMe: boolean = this.getFormElement('rememberMe')?.value;
+    const loginPayload: AuthRequest = this.generateLoginPayload(userMail, password, rememberMe);
     this.authService.login(loginPayload).subscribe({
       next: (response: APIResponse<SigninResponse>) => this.handleSignInSuccess(response, userMail),
       error: (error: ErrorResponse) => this.handleSignInError(error)
@@ -184,8 +185,8 @@ export class LoginComponent {
     this.toggleLoader(false);
   }
 
-  generateLoginPayload(userMail: string, password: string): AuthRequest {
-    return { email: userMail, password: password };
+  generateLoginPayload(userMail: string, password: string, persistSession: boolean): AuthRequest {
+    return { email: userMail, password: password, persistSession };
   }
 
   navigateOut(navigationRoute: string) {

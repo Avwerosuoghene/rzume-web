@@ -2,7 +2,8 @@ import { SubscriptionFeatures } from './profile.models';
 
 export interface AuthRequest {
   email: string,
-  password: string
+  password: string,
+  persistSession?: boolean
 }
 
 export interface GenerateEmailToken {
