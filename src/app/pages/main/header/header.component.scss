@@ -123,3 +123,37 @@ hr.header {
   }
 }
 
+::ng-deep .mat-mdc-menu-panel {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+  margin-top: 8px;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 8px 0;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  min-height: 44px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $extra-light-gray;
+  }
+
+  mat-icon {
+    color: $gray;
+    margin-right: 0;
+  }
+
+  span {
+    color: $black;
+    font-size: 14px;
+  }
+}
+

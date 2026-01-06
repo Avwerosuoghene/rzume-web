@@ -12,6 +12,7 @@ import { ScreenManagerService, SearchStateService } from '../../../core/services
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DEFAULT_PROFILE_IMAGE } from '../../../core/models/constants/authentication.constants';
+import { MainRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 
 @Component({
   selector: 'app-header',
@@ -85,11 +86,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.userInfo?.profilePictureUrl?.trim() || DEFAULT_PROFILE_IMAGE;
   }
 
-  logout() {
+  navigateToProfile(): void {
+    const profileRoute = `/${RootRoutes.main}/${MainRoutes.profileManagement}`;
+    this.router.navigate([profileRoute]);
+  }
+
+  logout(): void {
     this.authHelper.logout();
   }
 
-  clearBrowserStorage() {
+  clearBrowserStorage(): void {
     sessionStorage.clear();
     localStorage.clear();
   }
