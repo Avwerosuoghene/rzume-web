@@ -53,7 +53,7 @@ export class ApiService {
     let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.put<T>(route, body, {
-      headers, withCredentials: true
+      headers: headers, withCredentials: true
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
@@ -141,16 +141,16 @@ export class ApiService {
   }
 
   private mergeHeaders(reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): HttpHeaders {
-    let headers = useJsonContentType 
+    let headers = useJsonContentType
       ? new HttpHeaders({ 'Content-Type': 'application/json' })
       : new HttpHeaders();
-    
+
     if (reqHeaders) {
       reqHeaders.keys().forEach(key => {
         headers = headers.set(key, reqHeaders.get(key)!);
       });
     }
-    
+
     return headers;
   }
 }
