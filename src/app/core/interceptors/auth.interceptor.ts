@@ -8,8 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { SessionStorageUtil } from '../helpers';
-import { SessionStorageKeys } from '../models';
+import { TokenStorageUtil } from '../helpers/token-storage.util';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -19,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
         request: HttpRequest<unknown>,
         next: HttpHandler
     ): Observable<HttpEvent<unknown>> {
-        const token = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
+        const token = TokenStorageUtil.getToken();
         
         if (token && !request.headers.has('Authorization')) {
             request = request.clone({

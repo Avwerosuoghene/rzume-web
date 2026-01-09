@@ -31,10 +31,9 @@ export interface SignupResponse {
 }
 
 export interface SigninResponse {
-  user?: User,
-  token?: string,
-  message: string,
-  emailConfirmed: boolean
+  user: User,
+  token: string,
+  persistSession: boolean
 }
 
 

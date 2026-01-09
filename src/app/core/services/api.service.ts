@@ -4,8 +4,7 @@ import { ConfigService } from './config.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, catchError, throwError } from 'rxjs';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
-import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestOptions, GetRequestParams, IconStat, InfoDialogData, SessionStorageKeys } from '../models';
-import { SessionStorageUtil } from '../helpers';
+import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestOptions, IconStat, InfoDialogData } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +28,7 @@ export class ApiService {
     let requestHeaders = this.mergeHeaders(headers);
 
     return this.httpClient.get<T>(requestRoute, {
-      headers: requestHeaders, params: requestParams, withCredentials: true
+      headers: requestHeaders, params: requestParams
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
@@ -53,7 +52,7 @@ export class ApiService {
     let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.put<T>(route, body, {
-      headers: headers, withCredentials: true
+      headers: headers
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
@@ -73,7 +72,7 @@ export class ApiService {
     let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.post<T>(route, body, {
-      headers, withCredentials: true
+      headers
     }).pipe(catchError((error) => {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
@@ -95,8 +94,7 @@ export class ApiService {
     const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
     const options = {
       headers,
-      body,
-      withCredentials: true
+      body
     };
 
     return this.httpClient.delete<T>(route, options).pipe(
@@ -135,10 +133,6 @@ export class ApiService {
     return throwError(() => errorResponse);
   }
 
-  private withBearer(headers: HttpHeaders): HttpHeaders {
-    const token = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
-    return token ? headers.set('Authorization', `Bearer ${token}`) : headers;
-  }
 
   private mergeHeaders(reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): HttpHeaders {
     let headers = useJsonContentType

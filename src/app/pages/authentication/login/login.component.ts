@@ -11,6 +11,7 @@ import { AuthenticationService } from '../../../core/services/authentication.ser
 import { Router } from '@angular/router';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
+import { TokenStorageUtil } from '../../../core/helpers/token-storage.util';
 import { GoogleAuthService } from '../../../core/services/google-auth.service';
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
@@ -154,9 +155,8 @@ export class LoginComponent {
       return;
     }
 
-    if (signinData.token) {
-      this.saveAuthToken(signinData.token);
-    }
+    // Store token based on persistSession flag
+    TokenStorageUtil.setToken(signinData.token, signinData.persistSession);
 
     if (this.shouldRedirectToOnboard(signinData.user.onBoardingStage)) {
       this.routingUtilService.navigateToAuth(AuthRoutes.onboard);
@@ -164,10 +164,6 @@ export class LoginComponent {
     }
 
     this.routingUtilService.navigateToMain();
-  }
-
-  saveAuthToken(token: string): void {
-    SessionStorageUtil.setItem(SessionStorageKeys.authToken, token);
   }
 
 

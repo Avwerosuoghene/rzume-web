@@ -4,6 +4,7 @@ import { finalize } from 'rxjs/operators';
 import { AuthRoutes, RootRoutes } from '../models';
 import { AuthenticationService } from './authentication.service';
 import { LoaderService } from './loader.service';
+import { TokenStorageUtil } from '../helpers/token-storage.util';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,7 @@ export class AuthHelperService {
   ) {}
 
   private clearBrowserStorage() {
-    sessionStorage.clear();
-    localStorage.clear();
+    TokenStorageUtil.removeToken();
   }
 
   logout(): void {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { SessionStorageUtil } from '../helpers';
-import { APIResponse, ErrorResponse, GoogleSignInPayload, RootRoutes, SessionStorageKeys, SigninResponse } from '../models';
+import { TokenStorageUtil } from '../helpers/token-storage.util';
+import { APIResponse, ErrorResponse, GoogleSignInPayload, RootRoutes, SigninResponse } from '../models';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable({
@@ -54,7 +54,7 @@ export class GoogleAuthService {
 
   handleGoogleAuthResponse(success: boolean, token?: string): void {
     if (token) {
-      SessionStorageUtil.setItem(SessionStorageKeys.authToken, token);
+      TokenStorageUtil.setToken(token, false);
     }
 
     if (success) {
