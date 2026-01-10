@@ -1,65 +1,90 @@
 <header class="header_container">
   @if (isMobile) {
-    <!-- Mobile Header -->
-    <div class="mobile-header">
-      <div class="mobile-header-content">
-        <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
-          <mat-icon>menu</mat-icon>
-        </button>
+  <!-- Mobile Header -->
+  <div class="mobile-header">
+    <div class="mobile-header-content">
+      <button
+        class="menu-toggle"
+        (click)="toggleSidebar()"
+        aria-label="Toggle sidebar"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
 
-        <div class="search-section">
-          <app-custom-search-input (searchChange)="onSearchChange($event)" [borderRadius]="borderRadius"></app-custom-search-input>
-        </div>
-
-        <ng-container *ngTemplateOutlet="profileSection; context: { menu: mobileMenu }"></ng-container>
-        <mat-menu #mobileMenu="matMenu">
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Logout</span>
-          </button>
-        </mat-menu>
+      <div class="search-section">
+        <app-custom-search-input
+          (searchChange)="onSearchChange($event)"
+          [borderRadius]="borderRadius"
+        ></app-custom-search-input>
       </div>
+
+      <ng-container
+        *ngTemplateOutlet="profileSection; context: { menu: mobileMenu }"
+      ></ng-container>
+      <mat-menu #mobileMenu="matMenu">
+        <button mat-menu-item (click)="navigateToProfile()">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
     </div>
+  </div>
   } @else {
-    <!-- Desktop Header -->
-    <div class="desktop-header">
-      <div class="section_upper">
-        <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
-          <mat-icon>menu</mat-icon>
+  <!-- Desktop Header -->
+  <div class="desktop-header">
+    <div class="section_upper">
+      <button
+        class="menu-toggle"
+        (click)="toggleSidebar()"
+        aria-label="Toggle sidebar"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <div class="welcome_section">
+        <p class="light_text">Welcome</p>
+        <h4>{{ userInfo?.userName }}</h4>
+      </div>
+
+      <ng-container
+        *ngTemplateOutlet="profileSection; context: { menu: menu }"
+      ></ng-container>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="navigateToProfile()">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
         </button>
-
-        <div class="welcome_section">
-          <p class="light_text">Welcome</p>
-          <h4>{{ userInfo?.userName }}</h4>
-        </div>
-
-        <ng-container *ngTemplateOutlet="profileSection; context: { menu: menu }"></ng-container>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="navigateToProfile()">
-            <mat-icon>person</mat-icon>
-            <span>Profile</span>
-          </button>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Logout</span>
-          </button>
-        </mat-menu>
-      </div>
-
-      <hr class="header" />
-
-      <div class="section_lower">
-        <p>{{ activeComponent | titlecase }}</p>
-        <p class="light_text">{{ todaysDate | date: 'MMM dd yyyy' }}</p>
-      </div>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
     </div>
+
+    <hr class="header" />
+
+    <div class="section_lower">
+      <p>{{ activeComponent | titlecase }}</p>
+      <p class="light_text">{{ todaysDate | date : "MMM dd yyyy" }}</p>
+    </div>
+  </div>
   }
 
-  <app-global-circular-loader [isLoading]="loaderIsActive"></app-global-circular-loader>
+  <app-global-circular-loader
+    [isLoading]="loaderIsActive"
+  ></app-global-circular-loader>
 
   <ng-template #profileSection let-menu="menu">
     <div class="profile_img_section">
-      <button class="profile_pic" [matMenuTriggerFor]="menu" aria-label="User menu">
+      <button
+        class="profile_pic"
+        [matMenuTriggerFor]="menu"
+        aria-label="User menu"
+      >
         <img [src]="profileImage" alt="profile" />
       </button>
     </div>

@@ -105,10 +105,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const currentUrl = this.router.url;
     if (!currentUrl) return;
 
-    const urlSplit = currentUrl.split('/');
+    const urlWithoutParams = currentUrl.split('?')[0].split('#')[0];
+    const urlSplit = urlWithoutParams.split('/');
+    
+    if (urlSplit.length < 3 || !urlSplit[2]) return;
+    
     const activeElement = urlSplit[2].split('-');
-
     this.activeComponent = activeElement.join(' ');
+    this.cdr.markForCheck();
   }
 
   subscribeToRoute(): void {
