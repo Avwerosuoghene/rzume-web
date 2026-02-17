@@ -16,6 +16,8 @@ import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrap
 import { buildPagination, mapApplicationToTableData, mapJobStats, normalizeFilter, resetPagination, updateFilterState, updatePagination } from '../../../core/helpers/dashboard.utils';
 import { ITEMS_INCREMENT } from '../../../core/models';
 import { DialogHelperService } from '../../../core/services/dialog-helper.service';
+import { AnalyticsService } from '../../../core/services/analytics/analytics.service';
+import { AnalyticsEvent } from '../../../core/models/analytics-events.enum';
 
 
 
@@ -65,10 +67,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private screenManager: ScreenManagerService,
     private dialogHelperService: DialogHelperService,
     private documentHelper: DocumentHelperService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private analyticsService: AnalyticsService
   ) { }
 
   ngOnInit(): void {
+    this.analyticsService.track(AnalyticsEvent.DASHBOARD_VIEWED);
     this.setUpSubscriptions();
     this.fetchResumes();
     this.initiateJobStats();
@@ -148,13 +152,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
       pageSize: this.itemsPerPage
     }).pipe(
       finalize(() => this.setIsLoading(false))
-    ).subscribe(response => {
-      if (response.success && response.data) {
-        this.updateComponentState(response.data.items, {
-          totalCount: response.data.totalCount,
-          totalPages: response.data.totalPages,
-          currentPage: response.data.pageNumber,
-          pageSize: response.data.pageSize
+    ).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.updateComponentState(response.data.items, {
+            totalCount: response.data.totalCount,
+            totalPages: response.data.totalPages,
+            currentPage: response.data.pageNumber,
+            pageSize: response.data.pageSize
+          });
+        }
+      },
+      error: (error) => {
+        this.analyticsService.track(AnalyticsEvent.DASHBOARD_LOAD_FAILED, {
+          error_message: error.message || 'Unknown error',
+          page: this.currentPage,
+          pageSize: this.itemsPerPage
         });
       }
     });

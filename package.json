@@ -31,6 +31,7 @@
     "@types/google-one-tap": "^1.2.6",
     "google-auth-library": "^9.13.0",
     "jwt-decode": "^4.0.0",
+    "mixpanel-browser": "^2.74.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
@@ -41,6 +42,7 @@
     "@angular/compiler-cli": "^18.2.0",
     "@playwright/test": "^1.49.0",
     "@types/jasmine": "~5.1.0",
+    "@types/mixpanel-browser": "^2.60.0",
     "@types/node": "^22.9.3",
     "cypress": "^13.13.3",
     "jasmine-core": "~5.2.0",

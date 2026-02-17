@@ -9,6 +9,8 @@ import { Resume, DEFAULT_CV_UPLOAD_LIMIT } from '../../../core/models';
 import { DocumentHelperService } from '../../../core/services';
 import { Subject, takeUntil } from 'rxjs';
 import { DocumentHelper } from '../../../core/helpers';
+import { AnalyticsService } from '../../../core/services/analytics/analytics.service';
+import { AnalyticsEvent } from '../../../core/models/analytics-events.enum';
 
 
 @Component({
@@ -34,11 +36,13 @@ export class ProfileManagementComponent implements OnInit {
 
   constructor(
     private documentHelper: DocumentHelperService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private analyticsService: AnalyticsService
   ) { }
 
 
   ngOnInit(): void {
+    this.analyticsService.track(AnalyticsEvent.PROFILE_MANAGEMENT_ACCESSED);
     this.initializeActiveTab();
     this.setupResumeSubscription();
     this.checkAndFetchResumes();

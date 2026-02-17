@@ -52,4 +52,18 @@ export class ConfigService {
     }
     return this.config.featureFlags;
   }
+
+  get mixpanelToken(): string {
+    if (!this.config) {
+      throw new Error('Config not loaded');
+    }
+    return this.config.analytics?.mixpanelToken || '';
+  }
+
+  get isAnalyticsEnabled(): boolean {
+    if (!this.config) {
+      return false;
+    }
+    return this.config.analytics?.enabled === true;
+  }
 }

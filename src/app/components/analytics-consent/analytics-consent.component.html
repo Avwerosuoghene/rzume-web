@@ -1,0 +1,19 @@
+<div class="consent-banner" *ngIf="showBanner">
+  <mat-card class="consent-card">
+    <mat-card-content>
+      <h3>Cookie & Analytics Consent</h3>
+      <p>
+        We use analytics to improve your experience. Your data helps us understand how you use our platform 
+        and make it better. You can change your preferences anytime in settings.
+      </p>
+      <div class="consent-actions">
+        <button mat-raised-button color="primary" (click)="acceptAnalytics()">
+          Accept
+        </button>
+        <button mat-button (click)="declineAnalytics()">
+          Decline
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

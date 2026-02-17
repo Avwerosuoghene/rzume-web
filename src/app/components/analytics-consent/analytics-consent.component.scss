@@ -1,0 +1,56 @@
+.consent-banner {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 400px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.consent-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.consent-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.consent-card p {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666;
+}
+
+.consent-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 599px) {
+  .consent-banner {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  .consent-card {
+    border-radius: 0;
+  }
+}

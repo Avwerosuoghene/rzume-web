@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { APIResponse, ApiRoutes } from '../models';
 import { 
@@ -11,13 +12,18 @@ import {
   Resume,
   SubscriptionFeatures
 } from '../models/interface/profile.models';
+import { AnalyticsService } from './analytics/analytics.service';
+import { AnalyticsEvent } from '../models/analytics-events.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileManagementService {
 
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private analyticsService: AnalyticsService
+  ) { }
 
 
   update(payload: UpdateProfilePayload): Observable<APIResponse<boolean>> {
@@ -25,6 +31,21 @@ export class ProfileManagementService {
       ApiRoutes.profileManagement.update, 
       payload, 
       true
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          this.analyticsService.track(AnalyticsEvent.PROFILE_UPDATED, {
+            fields_updated: Object.keys(payload)
+          });
+        }
+      }),
+      catchError(error => {
+        this.analyticsService.track(AnalyticsEvent.PROFILE_UPDATE_FAILED, {
+          error_message: error.message || 'Unknown error',
+          fields_attempted: Object.keys(payload)
+        });
+        return throwError(() => error);
+      })
     );
   }
 
@@ -39,6 +60,23 @@ export class ProfileManagementService {
       undefined,
       true,
       false 
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          this.analyticsService.track(AnalyticsEvent.PROFILE_PHOTO_UPLOADED, {
+            file_size: file.size,
+            file_type: file.type
+          });
+        }
+      }),
+      catchError(error => {
+        this.analyticsService.track(AnalyticsEvent.PROFILE_PHOTO_UPLOAD_FAILED, {
+          error_message: error.message || 'Unknown error',
+          file_size: file.size,
+          file_type: file.type
+        });
+        return throwError(() => error);
+      })
     );
   }
 

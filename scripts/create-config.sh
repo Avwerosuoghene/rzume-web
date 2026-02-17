@@ -7,8 +7,10 @@ cat > src/assets/config/config.json << EOF
     "backend": "${API_URL}",
     "googleAuth": "${GOOGLE_CLIENT_ID}"
   },
+  "mixpanelToken": "${MIXPANEL_TOKEN}",
   "featureFlags": {
-    "enableProfileManagement": "${PROFILE_MANAGEMENT_FEATURE}"
+    "enableProfileManagement": "${PROFILE_MANAGEMENT_FEATURE}",
+    "analyticsEnabled": "${ANALYTICS_ENABLED:-true}"
   }
 }
 EOF

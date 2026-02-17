@@ -10,3 +10,11 @@ export * from './search-state.service';
 export * from './screen-manager.service';
 export * from './document-helper.service';
 export * from './user.service';
+
+// Analytics
+export * from './analytics/analytics.service';
+export * from './analytics/mixpanel.service';
+export * from './analytics-tracking.service';
+export * from './analytics-user-context.service';
+export * from './analytics-auth-helper.service';
+export * from './global-error-handler.service';

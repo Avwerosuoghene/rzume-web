@@ -12,7 +12,7 @@ import { GlobalCircularLoaderComponent } from './components/global-circular-load
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-
-  constructor(public loaderService: LoaderService) {}
-
+  constructor(
+    public loaderService: LoaderService
+  ) {}
 }

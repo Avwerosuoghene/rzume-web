@@ -69,6 +69,8 @@ jobs:
             --build-arg APP_VERSION=${{ github.sha }} \
             --build-arg ENVIRONMENT=production \
             --build-arg PROFILE_MANAGEMENT_FEATURE=${{ secrets.PROFILE_MANAGEMENT_FEATURE }} \
+            --build-arg MIXPANEL_TOKEN=${{ secrets.MIXPANEL_TOKEN }} \
+            --build-arg ANALYTICS_ENABLED=true \
             -t ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             -t ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest .
 

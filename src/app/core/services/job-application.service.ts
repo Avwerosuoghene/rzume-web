@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { APIResponse, ApiRoutes, ApiUrlParam, GetRequestOptions, PaginatedItem } from '../models';
 import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem, JobApplicationStats } from '../models/interface/job-application.models';
-import { tap } from 'rxjs';
+import { tap, catchError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { JobApplicationStateService } from './job-application-state.service';
+import { AnalyticsService } from './analytics/analytics.service';
+import { AnalyticsEvent } from '../models/analytics-events.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +16,35 @@ export class JobApplicationService {
   private currentPageSize = 5;
   private currentFilter: JobApplicationFilter = {};
 
-  constructor(private apiService: ApiService, private state: JobApplicationStateService) { }
+  constructor(
+    private apiService: ApiService, 
+    private state: JobApplicationStateService,
+    private analyticsService: AnalyticsService
+  ) { }
 
   addApplication(payload: CreateApplicationPayload) {
     return this.apiService.post<APIResponse<boolean>>(
       ApiRoutes.jobApplication.base, payload, true, undefined, true
     ).pipe(
-      tap(response => this.handleAddApplicationResponse(response))
+      tap(response => {
+        this.handleAddApplicationResponse(response);
+        if (response.success) {
+          this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_CREATED, {
+            company: payload.companyName,
+            position: payload.position,
+            status: payload.status
+          });
+          this.analyticsService.incrementUserProperty('total_applications', 1);
+        }
+      }),
+      catchError(error => {
+        this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_CREATE_FAILED, {
+          error_message: error.message || 'Unknown error',
+          company: payload.companyName,
+          position: payload.position
+        });
+        return throwError(() => error);
+      })
     );
   }
 
@@ -47,18 +72,77 @@ export class JobApplicationService {
   updateStatus(payload: JobApplicationItem, applicationId: string) {
     return this.apiService.put<APIResponse<boolean>>(
       `${ApiRoutes.jobApplication.base}/${applicationId}`, payload, true
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_STATUS_CHANGED, {
+            application_id: applicationId,
+            new_status: payload.status
+          });
+        }
+      }),
+      catchError(error => {
+        this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_STATUS_CHANGE_FAILED, {
+          error_message: error.message || 'Unknown error',
+          application_id: applicationId,
+          attempted_status: payload.status
+        });
+        return throwError(() => error);
+      })
     );
   }
 
   updateJobApplication(payload: JobApplicationItem) {
     return this.apiService.put<APIResponse<boolean>>(
       `${ApiRoutes.jobApplication.base}/${payload.id}`, payload, true
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_UPDATED, {
+            application_id: payload.id
+          });
+        }
+      }),
+      catchError(error => {
+        this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_UPDATE_FAILED, {
+          error_message: error.message || 'Unknown error',
+          application_id: payload.id
+        });
+        return throwError(() => error);
+      })
     );
   }
 
   deleteApplication(deleteApplicationsPayload: DeleteApplicationsPayload) {
     return this.apiService.delete<APIResponse<boolean>>(
       ApiRoutes.jobApplication.base, true, undefined, deleteApplicationsPayload
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          const count = deleteApplicationsPayload.ids?.length || 0;
+          if (count > 1) {
+            this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_BULK_DELETED, {
+              count: count
+            });
+          } else {
+            this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_DELETED);
+          }
+        }
+      }),
+      catchError(error => {
+        const count = deleteApplicationsPayload.ids?.length || 0;
+        if (count > 1) {
+          this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_BULK_DELETE_FAILED, {
+            error_message: error.message || 'Unknown error',
+            count: count
+          });
+        } else {
+          this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_DELETE_FAILED, {
+            error_message: error.message || 'Unknown error'
+          });
+        }
+        return throwError(() => error);
+      })
     );
   }
 
@@ -81,7 +165,16 @@ export class JobApplicationService {
     };
 
     return this.apiService.get<APIResponse<PaginatedItem<JobApplicationItem>>>(options)
-      .pipe(tap(response => this.handleGetApplicationResponse(response)));
+      .pipe(
+        tap(response => this.handleGetApplicationResponse(response)),
+        catchError(error => {
+          this.analyticsService.track(AnalyticsEvent.JOB_SEARCH_FAILED, {
+            error_message: error.message || 'Unknown error',
+            filter: currentFilter
+          });
+          return throwError(() => error);
+        })
+      );
   }
 
   getStats() {
@@ -99,6 +192,19 @@ export class JobApplicationService {
 
   private updateFilterAndPagination(filter?: JobApplicationFilter): void {
     if (!filter) return;
+
+    if (filter.searchQuery && filter.searchQuery !== this.currentFilter.searchQuery) {
+      this.analyticsService.track(AnalyticsEvent.JOB_SEARCH_INITIATED, {
+        search_term: filter.searchQuery
+      });
+    }
+
+    if (filter.status && filter.status !== this.currentFilter.status) {
+      this.analyticsService.track(AnalyticsEvent.JOB_FILTER_APPLIED, {
+        filter_type: 'status',
+        filter_value: filter.status
+      });
+    }
 
     this.currentFilter = { ...this.currentFilter, ...filter };
     if (filter.page) this.currentPage = filter.page;
