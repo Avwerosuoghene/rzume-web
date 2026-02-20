@@ -38,10 +38,10 @@ export class MixpanelService extends AnalyticsService {
       localStorage.setItem(this.OPT_OUT_KEY, 'false');
 
       mixpanel.init(token, {
-        debug: false,
+        debug: true,
         track_pageview: false,
         persistence: 'localStorage',
-        ignore_dnt: false
+        ignore_dnt: true
       });
 
       this.initialized = true;
