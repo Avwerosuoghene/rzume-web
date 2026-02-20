@@ -38,14 +38,13 @@ export class MixpanelService extends AnalyticsService {
       localStorage.setItem(this.OPT_OUT_KEY, 'false');
 
       mixpanel.init(token, {
-        debug: true,
+        debug: false,
         track_pageview: false,
         persistence: 'localStorage',
         ignore_dnt: true
       });
 
       this.initialized = true;
-      console.log('Mixpanel initialized successfully - Analytics enabled by default');
     } catch (error) {
       console.error('Failed to initialize Mixpanel:', error);
     }
@@ -73,7 +72,7 @@ export class MixpanelService extends AnalyticsService {
     }
   }
 
-  track(event: AnalyticsEvent, properties?: EventProperties): void {
+  track(event: AnalyticsEvent | string, properties?: EventProperties): void {
     if (!this.initialized) {
       return;
     }
@@ -92,13 +91,33 @@ export class MixpanelService extends AnalyticsService {
   }
 
   trackPageView(pageName: string, properties?: EventProperties): void {
+    const eventName = this.mapPageToEvent(pageName);
+
     // Enrich with user context automatically
     const enrichedProperties = this.userContextService.enrichEventProperties({
       page_name: pageName,
       ...properties
     });
-    
-    this.track(AnalyticsEvent.PAGE_VIEWED, enrichedProperties);
+
+    this.track(eventName, enrichedProperties);
+  }
+
+  private mapPageToEvent(pageName: string): string {
+    const mapping: Record<string, string> = {
+      'home': AnalyticsEvent.HOME_PAGE_LOADED,
+      'login': AnalyticsEvent.LOGIN_PAGE_LOADED,
+      'signup': AnalyticsEvent.SIGNUP_PAGE_LOADED,
+      'register': AnalyticsEvent.SIGNUP_PAGE_LOADED,
+      'onboard': AnalyticsEvent.ONBOARD_PAGE_LOADED,
+      'dashboard': AnalyticsEvent.DASHBOARD_PAGE_LOADED,
+      'profile-management': AnalyticsEvent.PROFILE_PAGE_LOADED,
+      'profile': AnalyticsEvent.PROFILE_PAGE_LOADED,
+      'reset-password': AnalyticsEvent.RESET_PASSWORD_PAGE_LOADED,
+      'email-confirmation': AnalyticsEvent.EMAIL_CONFIRMATION_PAGE_LOADED,
+      'request-pass-reset': AnalyticsEvent.FORGOT_PASSWORD_PAGE_LOADED
+    };
+
+    return mapping[pageName] || `${pageName}_page_loaded`;
   }
 
   setUserProperties(properties: Partial<AnalyticsUser>): void {
@@ -161,14 +180,11 @@ export class MixpanelService extends AnalyticsService {
   }
 
   optIn(): void {
-    // Analytics is always enabled by default
     localStorage.setItem(this.OPT_OUT_KEY, 'false');
-    console.log('Mixpanel: Analytics enabled (default behavior)');
   }
 
   optOut(): void {
     // Opt-out functionality disabled - analytics always enabled
-    console.log('Mixpanel: Opt-out disabled - analytics always enabled');
   }
 
   hasOptedOut(): boolean {

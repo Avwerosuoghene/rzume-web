@@ -31,10 +31,18 @@ export enum AnalyticsEvent {
   JOB_FILTER_APPLIED = 'job_filter_applied',
 
   // Navigation Events
-  PAGE_VIEWED = 'page_viewed',
-  DASHBOARD_VIEWED = 'dashboard_viewed',
+  PAGE_VIEWED = 'page_viewed', // Generic fallback
+  HOME_PAGE_LOADED = 'home_page_loaded',
+  LOGIN_PAGE_LOADED = 'login_page_loaded',
+  SIGNUP_PAGE_LOADED = 'signup_page_loaded',
+  ONBOARD_PAGE_LOADED = 'onboard_page_loaded',
+  DASHBOARD_PAGE_LOADED = 'dashboard_page_loaded',
+  PROFILE_PAGE_LOADED = 'profile_page_loaded',
+  RESET_PASSWORD_PAGE_LOADED = 'reset_password_page_loaded',
+  EMAIL_CONFIRMATION_PAGE_LOADED = 'email_confirmation_page_loaded',
+  FORGOT_PASSWORD_PAGE_LOADED = 'forgot_password_page_loaded',
+
   DASHBOARD_LOAD_FAILED = 'dashboard_load_failed',
-  PROFILE_MANAGEMENT_ACCESSED = 'profile_management_accessed',
 
   // Profile Management Events
   PROFILE_UPDATED = 'profile_updated',

@@ -42,7 +42,7 @@ export class ProfileManagementComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.analyticsService.track(AnalyticsEvent.PROFILE_MANAGEMENT_ACCESSED);
+    this.analyticsService.track(AnalyticsEvent.PROFILE_PAGE_LOADED);
     this.initializeActiveTab();
     this.setupResumeSubscription();
     this.checkAndFetchResumes();

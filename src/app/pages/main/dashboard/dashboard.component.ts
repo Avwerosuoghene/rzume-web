@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.analyticsService.track(AnalyticsEvent.DASHBOARD_VIEWED);
+    this.analyticsService.track(AnalyticsEvent.DASHBOARD_PAGE_LOADED);
     this.setUpSubscriptions();
     this.fetchResumes();
     this.initiateJobStats();
