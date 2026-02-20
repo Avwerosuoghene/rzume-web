@@ -9,6 +9,8 @@ ARG PROFILE_MANAGEMENT_FEATURE
 ARG MIXPANEL_TOKEN
 ARG ANALYTICS_ENABLED
 
+RUN apk add --no-cache python3 make g++ gcc bash dos2unix
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
@@ -17,8 +19,7 @@ COPY . .
 # Create production config from environment variables
 RUN mkdir -p src/assets/config
 COPY scripts/create-config.sh ./create-config.sh
-RUN apk add --no-cache bash dos2unix \
-  && dos2unix /app/create-config.sh \
+RUN dos2unix /app/create-config.sh \
   && chmod +x /app/create-config.sh \
   && /app/create-config.sh
 
