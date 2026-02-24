@@ -13,6 +13,8 @@ import { ConfigService } from './core/services/config.service';
 import { SelectivePreloadStrategy } from './core/strategies/selective-preload.strategy';
 import { AnalyticsService } from './core/services/analytics/analytics.service';
 import { MixpanelService } from './core/services/analytics/mixpanel.service';
+import { GoogleTagService } from './core/services/analytics/google-tag.service';
+import { CompositeAnalyticsService } from './core/services/analytics/composite-analytics.service';
 import { GlobalErrorHandler } from './core/services/global-error-handler.service';
 import { AnalyticsTrackingService } from './core/services/analytics-tracking.service';
 
@@ -37,66 +39,66 @@ function initializeAnalyticsTracking(analyticsTrackingService: AnalyticsTracking
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routes, withPreloading(SelectivePreloadStrategy)), 
-    provideAnimationsAsync(), 
-    provideHttpClient(withInterceptorsFromDi()), 
-    provideClientHydration(), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes, withPreloading(SelectivePreloadStrategy)),
+    provideAnimationsAsync(),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideClientHydration(),
     provideNativeDateAdapter(),
-  {
-    provide: 'SocialAuthServiceConfig',
-    useFactory: (configService: ConfigService) => {
-      return {
-        autoLogin: false,
-        providers: [
-          {
-            id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(configService.apiUrls.googleAuth, {})
-          },
-        ],
-        onError: (err) => {
-          console.error(err);
-        }
-      } as SocialAuthServiceConfig;
+    {
+      provide: 'SocialAuthServiceConfig',
+      useFactory: (configService: ConfigService) => {
+        return {
+          autoLogin: false,
+          providers: [
+            {
+              id: GoogleLoginProvider.PROVIDER_ID,
+              provider: new GoogleLoginProvider(configService.apiUrls.googleAuth, {})
+            },
+          ],
+          onError: (err) => {
+            console.error(err);
+          }
+        } as SocialAuthServiceConfig;
+      },
+      deps: [ConfigService]
     },
-    deps: [ConfigService]
-  },
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  },
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AnalyticsInterceptor,
-    multi: true,
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: (configService: ConfigService) => () => configService.loadConfig(),
-    deps: [ConfigService],
-    multi: true
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: initializeAnalytics,
-    deps: [AnalyticsService, ConfigService],
-    multi: true
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: initializeAnalyticsTracking,
-    deps: [AnalyticsTrackingService, AnalyticsService],
-    multi: true
-  },
-  {
-    provide: AnalyticsService,
-    useClass: MixpanelService
-  },
-  {
-    provide: ErrorHandler,
-    useClass: GlobalErrorHandler
-  }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AnalyticsInterceptor,
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (configService: ConfigService) => () => configService.loadConfig(),
+      deps: [ConfigService],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAnalytics,
+      deps: [AnalyticsService, ConfigService],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAnalyticsTracking,
+      deps: [AnalyticsTrackingService, AnalyticsService],
+      multi: true
+    },
+    {
+      provide: AnalyticsService,
+      useClass: CompositeAnalyticsService
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
+    }
 
   ]
 };

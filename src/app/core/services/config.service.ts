@@ -60,6 +60,13 @@ export class ConfigService {
     return this.config.analytics?.mixpanelToken || '';
   }
 
+  get googleTagId(): string {
+    if (!this.config) {
+      throw new Error('Config not loaded');
+    }
+    return this.config.analytics?.googleTagId || '';
+  }
+
   get isAnalyticsEnabled(): boolean {
     if (!this.config) {
       return false;
