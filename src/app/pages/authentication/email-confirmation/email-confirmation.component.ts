@@ -5,9 +5,10 @@ import { CircularLoaderComponent } from '../../../components/circular-loader/cir
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
+import { TokenStorageUtil } from '../../../core/helpers/token-storage.util';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, InfoDialogData, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, ValidateUserResponse } from '../../../core/models';
+import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, InfoDialogData, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, SigninResponse, ValidateUserResponse } from '../../../core/models';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -45,14 +46,14 @@ export class EmailConfirmationComponent {
     this.emailValidMsg = EMAIL_VALIDATING_MSG;
 
     this.authService.validateToken(tokenValue, email).subscribe({
-      next: ({ success, message, data }: APIResponse<ValidateUserResponse>) => {
+      next: ({ success, message, data }: APIResponse<SigninResponse>) => {
         this.loaderIsActive = false;
         if (success) {
           this.emailValidationHeader = EMAIL_VALIDATED_HEADER;
           this.emailValidMsg = message;
           this.emailValidationBtnTxt = BTN_CONTINUE;
           if (data?.token) {
-            SessionStorageUtil.setItem(SessionStorageKeys.authToken, data.token);
+            TokenStorageUtil.setToken(data.token, data?.persistSession); 
           }
           return;
         }

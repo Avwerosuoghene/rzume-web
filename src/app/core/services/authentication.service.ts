@@ -157,7 +157,7 @@ export class AuthenticationService {
       withBearer: false,
       handleResponse: true
     }
-    return this.apiService.get<APIResponse<ValidateUserResponse>>(getReqOptions).pipe(
+    return this.apiService.get<APIResponse<SigninResponse>>(getReqOptions).pipe(
       tap(response => {
         if (response.success) {
           this.analyticsAuthHelper.handleAuthSuccess(

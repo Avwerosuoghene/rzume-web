@@ -155,7 +155,6 @@ export class LoginComponent {
       return;
     }
 
-    // Store token based on persistSession flag
     TokenStorageUtil.setToken(signinData.token, signinData.persistSession);
 
     if (this.shouldRedirectToOnboard(signinData.user.onBoardingStage)) {
