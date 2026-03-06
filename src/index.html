@@ -117,8 +117,19 @@
       name="google-signin-client_id"
       content="443013799790-9i8k2cqh0d16tf6qv4s2k5cfl2rdfgou.apps.googleusercontent.com"
     />
+    
+    <!-- Critical splash screen CSS - preloaded for faster rendering -->
+    <link rel="preload" href="splash-screen.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="splash-screen.css"></noscript>
   </head>
   <body>
-    <app-root></app-root>
+    <app-root>
+      <div id="app-splash-screen">
+        <div class="splash-loader">
+          <div class="spinner"></div>
+          <p>Loading Rzume...</p>
+        </div>
+      </div>
+    </app-root>
   </body>
 </html>
