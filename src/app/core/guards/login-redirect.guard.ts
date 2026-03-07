@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MainRoutes, RootRoutes } from '../models/enums/application.routes.enums';
 import { UserService } from '../services/user.service';
+import { TokenStorageUtil } from '../helpers/token-storage.util';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,10 @@ export class LoginRedirectGuard {
   ) { }
 
   async canActivate(): Promise<boolean> {
+    if (!TokenStorageUtil.hasToken()) {
+      return true;
+    }
+
     try {
       const isAuthenticated = await this.userService.getActiveUser();
       

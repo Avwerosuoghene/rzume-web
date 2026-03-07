@@ -6,6 +6,7 @@ import { AuthHelperService } from '../services/auth-helper.service';
 import { TokenStorageUtil } from '../helpers/token-storage.util';
 import { CompositeAnalyticsService } from '../services/analytics/composite-analytics.service';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
+import { TokenValidationCacheService } from '../services/token-validation-cache.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class AuthGuardService {
     private authHelper: AuthHelperService,
     private router: Router,
     private loaderService: LoaderService,
-    private analytics: CompositeAnalyticsService
+    private analytics: CompositeAnalyticsService,
+    private cacheService: TokenValidationCacheService
   ) { }
 
   async canActivate(): Promise<boolean> {
@@ -32,10 +34,28 @@ export class AuthGuardService {
       return false;
     }
 
-    // Token exists, validate with server
+    const cachedResult = this.cacheService.isCachedValid();
+    
+    if (cachedResult !== null) {
+      this.analytics.track(AnalyticsEvent.AUTH_GUARD_VALIDATION_SUCCESS, {
+        source: 'cache',
+        timestamp: new Date().toISOString()
+      });
+      
+      // Refresh user data in background for security (non-blocking)
+      this.refreshUserDataInBackground();
+      
+      return cachedResult;
+    }
+
+    // Cache miss - validate with server
     try {
       this.loaderService.showLoader();
       const tokenIsActive = await this.getActiveToken();
+      
+      // Cache the result for future navigations
+      this.cacheService.setCacheResult(tokenIsActive);
+      
       return tokenIsActive;
     } catch (error) {
       const isTimeout = error instanceof Error && error.message.includes('timeout');
@@ -47,6 +67,8 @@ export class AuthGuardService {
           timestamp: new Date().toISOString()
         }
       );
+      
+      this.cacheService.clearCache();
       
       await this.navigateToSignIn();
       return false;
@@ -65,6 +87,7 @@ export class AuthGuardService {
       
       if (isValid) {
         this.analytics.track(AnalyticsEvent.AUTH_GUARD_VALIDATION_SUCCESS, {
+          source: 'server',
           timestamp: new Date().toISOString()
         });
         return true;
@@ -78,6 +101,23 @@ export class AuthGuardService {
     } catch (error) {
       throw error;
     }
+  }
+
+
+  private refreshUserDataInBackground(): void {
+    if (!TokenStorageUtil.hasToken()) {
+      this.cacheService.clearCache();
+      return;
+    }
+
+    this.userService.getActiveUser()
+      .then(() => {
+        // User data refreshed successfully
+      })
+      .catch(() => {
+        // If background refresh fails, clear cache to force full validation next time
+        this.cacheService.clearCache();
+      });
   }
 
   private createTimeout(): Promise<boolean> {

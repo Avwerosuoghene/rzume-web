@@ -5,6 +5,7 @@ import { AuthRoutes, RootRoutes } from '../models';
 import { AuthenticationService } from './authentication.service';
 import { LoaderService } from './loader.service';
 import { TokenStorageUtil } from '../helpers/token-storage.util';
+import { TokenValidationCacheService } from './token-validation-cache.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,13 @@ export class AuthHelperService {
   constructor(
     private router: Router,
     private authService: AuthenticationService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private cacheService: TokenValidationCacheService
   ) {}
 
   private clearBrowserStorage() {
     TokenStorageUtil.removeToken();
+    this.cacheService.clearCache();
   }
 
   logout(): void {

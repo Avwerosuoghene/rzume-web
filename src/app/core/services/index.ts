@@ -10,6 +10,7 @@ export * from './search-state.service';
 export * from './screen-manager.service';
 export * from './document-helper.service';
 export * from './user.service';
+export * from './token-validation-cache.service';
 
 // Analytics
 export * from './analytics/analytics.service';

@@ -7,14 +7,16 @@ import { AuthHelperService } from '../services/auth-helper.service';
 import { TokenStorageUtil } from '../helpers/token-storage.util';
 import { CompositeAnalyticsService } from '../services/analytics/composite-analytics.service';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
+import { TokenValidationCacheService } from '../services/token-validation-cache.service';
 
-describe('AuthGuardService - Phase 2', () => {
+describe('AuthGuardService - Phase 2 & 3', () => {
   let guard: AuthGuardService;
   let userService: jasmine.SpyObj<UserService>;
   let loaderService: jasmine.SpyObj<LoaderService>;
   let router: jasmine.SpyObj<Router>;
   let authHelper: jasmine.SpyObj<AuthHelperService>;
   let analytics: jasmine.SpyObj<CompositeAnalyticsService>;
+  let cacheService: jasmine.SpyObj<TokenValidationCacheService>;
 
   beforeEach(() => {
     const userServiceSpy = jasmine.createSpyObj('UserService', ['getActiveUser']);
@@ -22,6 +24,7 @@ describe('AuthGuardService - Phase 2', () => {
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const authHelperSpy = jasmine.createSpyObj('AuthHelperService', ['logout']);
     const analyticsSpy = jasmine.createSpyObj('CompositeAnalyticsService', ['track', 'identify', 'reset']);
+    const cacheServiceSpy = jasmine.createSpyObj('TokenValidationCacheService', ['isCachedValid', 'setCacheResult', 'clearCache']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -30,7 +33,8 @@ describe('AuthGuardService - Phase 2', () => {
         { provide: LoaderService, useValue: loaderServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: AuthHelperService, useValue: authHelperSpy },
-        { provide: CompositeAnalyticsService, useValue: analyticsSpy }
+        { provide: CompositeAnalyticsService, useValue: analyticsSpy },
+        { provide: TokenValidationCacheService, useValue: cacheServiceSpy }
       ]
     });
 
@@ -40,6 +44,7 @@ describe('AuthGuardService - Phase 2', () => {
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     authHelper = TestBed.inject(AuthHelperService) as jasmine.SpyObj<AuthHelperService>;
     analytics = TestBed.inject(CompositeAnalyticsService) as jasmine.SpyObj<CompositeAnalyticsService>;
+    cacheService = TestBed.inject(TokenValidationCacheService) as jasmine.SpyObj<TokenValidationCacheService>;
   });
 
   afterEach(() => {
@@ -214,6 +219,7 @@ describe('AuthGuardService - Phase 2', () => {
   describe('Integration scenarios', () => {
     it('should handle successful authentication flow', async () => {
       spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+      cacheService.isCachedValid.and.returnValue(null);
       userService.getActiveUser.and.returnValue(Promise.resolve(true));
 
       const result = await guard.canActivate();
@@ -226,12 +232,119 @@ describe('AuthGuardService - Phase 2', () => {
 
     it('should handle invalid token flow', async () => {
       spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+      cacheService.isCachedValid.and.returnValue(null);
       userService.getActiveUser.and.returnValue(Promise.resolve(false));
 
       const result = await guard.canActivate();
 
       expect(result).toBe(false);
       expect(loaderService.hideLoader).toHaveBeenCalled();
+    });
+  });
+
+  describe('Phase 3: Cache Integration', () => {
+    describe('AC3.2: Cache hit - instant navigation', () => {
+      it('should use cached result and skip server call', async () => {
+        spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+        cacheService.isCachedValid.and.returnValue(true);
+
+        const result = await guard.canActivate();
+
+        expect(result).toBe(true);
+        expect(cacheService.isCachedValid).toHaveBeenCalled();
+        expect(loaderService.showLoader).not.toHaveBeenCalled();
+        expect(userService.getActiveUser).toHaveBeenCalled(); // Background refresh
+        expect(analytics.track).toHaveBeenCalledWith(
+          AnalyticsEvent.AUTH_GUARD_VALIDATION_SUCCESS,
+          jasmine.objectContaining({
+            source: 'cache'
+          })
+        );
+      });
+
+      it('should return false from cache without server call', async () => {
+        spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+        cacheService.isCachedValid.and.returnValue(false);
+
+        const result = await guard.canActivate();
+
+        expect(result).toBe(false);
+        expect(loaderService.showLoader).not.toHaveBeenCalled();
+        expect(userService.getActiveUser).toHaveBeenCalled(); // Background refresh
+      });
+    });
+
+    describe('AC3.8: Cache miss - server validation', () => {
+      it('should call server and cache result on cache miss', async () => {
+        spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+        cacheService.isCachedValid.and.returnValue(null);
+        userService.getActiveUser.and.returnValue(Promise.resolve(true));
+
+        const result = await guard.canActivate();
+
+        expect(result).toBe(true);
+        expect(loaderService.showLoader).toHaveBeenCalled();
+        expect(userService.getActiveUser).toHaveBeenCalled();
+        expect(cacheService.setCacheResult).toHaveBeenCalledWith(true);
+        expect(analytics.track).toHaveBeenCalledWith(
+          AnalyticsEvent.AUTH_GUARD_VALIDATION_SUCCESS,
+          jasmine.objectContaining({
+            source: 'server'
+          })
+        );
+      });
+
+      it('should cache false result on validation failure', async () => {
+        spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+        cacheService.isCachedValid.and.returnValue(null);
+        userService.getActiveUser.and.returnValue(Promise.resolve(false));
+
+        await guard.canActivate();
+
+        expect(cacheService.setCacheResult).toHaveBeenCalledWith(false);
+      });
+    });
+
+    describe('Cache clearing on errors', () => {
+      it('should clear cache on validation error', async () => {
+        spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+        cacheService.isCachedValid.and.returnValue(null);
+        userService.getActiveUser.and.returnValue(Promise.reject('Server error'));
+
+        await guard.canActivate();
+
+        expect(cacheService.clearCache).toHaveBeenCalled();
+      });
+
+      it('should clear cache on timeout', async () => {
+        spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+        cacheService.isCachedValid.and.returnValue(null);
+        userService.getActiveUser.and.returnValue(new Promise(() => {}));
+
+        jasmine.clock().install();
+        
+        const promise = guard.canActivate();
+        jasmine.clock().tick(11000);
+        
+        await promise;
+        
+        expect(cacheService.clearCache).toHaveBeenCalled();
+        
+        jasmine.clock().uninstall();
+      });
+    });
+
+    describe('Background refresh for security', () => {
+      it('should refresh user data in background when using cache', async () => {
+        spyOn(TokenStorageUtil, 'hasToken').and.returnValue(true);
+        cacheService.isCachedValid.and.returnValue(true);
+        userService.getActiveUser.and.returnValue(Promise.resolve(true));
+
+        await guard.canActivate();
+
+        // Should call getActiveUser for background refresh
+        expect(userService.getActiveUser).toHaveBeenCalled();
+      });
     });
   });
 });
