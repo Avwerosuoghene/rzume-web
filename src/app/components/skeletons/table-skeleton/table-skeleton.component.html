@@ -1,0 +1,37 @@
+<div class="table-outer-container">
+  <div class="table-container">
+    <div class="skeleton-table">
+      <!-- Header Row -->
+      <div class="skeleton-row skeleton-header">
+        <div class="skeleton skeleton-checkbox"></div>
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <div class="skeleton skeleton-header-cell"></div>
+        }
+        <div class="skeleton skeleton-actions"></div>
+      </div>
+      
+      <!-- Data Rows -->
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="skeleton-row">
+          <div class="skeleton skeleton-checkbox"></div>
+          <div class="skeleton skeleton-cell"></div>
+          <div class="skeleton skeleton-cell"></div>
+          <div class="skeleton skeleton-cell"></div>
+          <div class="skeleton skeleton-cell"></div>
+          <div class="skeleton skeleton-cell skeleton-status"></div>
+          <div class="skeleton skeleton-actions"></div>
+        </div>
+      }
+    </div>
+  </div>
+  
+  <!-- Pagination Skeleton -->
+  <div class="skeleton-pagination">
+    <div class="skeleton skeleton-pagination-info"></div>
+    <div class="skeleton skeleton-pagination-controls">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="skeleton skeleton-page-btn"></div>
+      }
+    </div>
+  </div>
+</div>

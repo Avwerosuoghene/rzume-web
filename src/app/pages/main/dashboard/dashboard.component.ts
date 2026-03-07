@@ -18,6 +18,7 @@ import { ITEMS_INCREMENT } from '../../../core/models';
 import { DialogHelperService } from '../../../core/services/dialog-helper.service';
 import { AnalyticsService } from '../../../core/services/analytics/analytics.service';
 import { AnalyticsEvent } from '../../../core/models/analytics-events.enum';
+import { JobStatsSkeletonComponent, TableSkeletonComponent, CardSkeletonComponent } from '../../../components/skeletons';
 
 
 
@@ -31,7 +32,10 @@ import { AnalyticsEvent } from '../../../core/models/analytics-events.enum';
     CustomTableComponent,
     JobStatsComponent,
     JobCardListComponent,
-    EmptyStateWrapperComponent
+    EmptyStateWrapperComponent,
+    JobStatsSkeletonComponent,
+    TableSkeletonComponent,
+    CardSkeletonComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -55,6 +59,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   selectedItems: Array<JobApplicationItem> = [];
   showEmptyState = true;
   isLoading = false;
+  isLoadingStats = false;
+  isLoadingJobs = false;
   isMobile = false;
 
   currentFilter: JobApplicationFilter = {};
@@ -144,14 +150,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   loadUserAppliedJobs(): void {
-    this.setIsLoading(true);
+    this.setIsLoadingJobs(true);
 
     this.jobApplicationService.getApplications({
       ...this.currentFilter,
       page: this.currentPage,
       pageSize: this.itemsPerPage
     }).pipe(
-      finalize(() => this.setIsLoading(false))
+      finalize(() => this.setIsLoadingJobs(false))
     ).subscribe({
       next: (response) => {
         if (response.success && response.data) {
@@ -174,7 +180,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private initiateJobStats(): void {
+    this.setIsLoadingStats(true);
     this.jobApplicationService.getStats()
+      .pipe(finalize(() => this.setIsLoadingStats(false)))
       .subscribe(response => {
         if (response.success && response.data) {
           this.statHighLights = mapJobStats(response.data);
@@ -194,6 +202,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private setIsLoading(isLoading: boolean): void {
     this.isLoading = isLoading;
+    this.cdr.markForCheck();
+  }
+
+  private setIsLoadingStats(isLoading: boolean): void {
+    this.isLoadingStats = isLoading;
+    this.cdr.markForCheck();
+  }
+
+  private setIsLoadingJobs(isLoading: boolean): void {
+    this.isLoadingJobs = isLoading;
     this.cdr.markForCheck();
   }
 

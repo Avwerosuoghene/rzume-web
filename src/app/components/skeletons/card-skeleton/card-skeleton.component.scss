@@ -1,0 +1,147 @@
+.job-card-list-container {
+  width: 100%;
+}
+
+.tabs-wrapper {
+  margin-bottom: 24px;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.card-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.skeleton-card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.company-info {
+  flex: 1;
+}
+
+.action-icons {
+  flex-shrink: 0;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.url-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.add-job-btn-skeleton {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s infinite;
+  border-radius: 4px;
+}
+
+/* Tab skeletons */
+.skeleton-tab {
+  width: 80px;
+  height: 32px;
+  border-radius: 16px;
+}
+
+/* Card skeletons */
+.skeleton-company-name {
+  width: 120px;
+  height: 18px;
+  margin-bottom: 6px;
+}
+
+.skeleton-job-role {
+  width: 160px;
+  height: 14px;
+}
+
+.skeleton-menu-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.skeleton-url {
+  flex: 1;
+  height: 12px;
+  min-width: 100px;
+}
+
+.skeleton-copy-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.skeleton-date {
+  width: 80px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.skeleton-btn {
+  width: 120px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 598px) {
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .url-section {
+    width: 100%;
+  }
+  
+  .skeleton-url {
+    min-width: 150px;
+  }
+}

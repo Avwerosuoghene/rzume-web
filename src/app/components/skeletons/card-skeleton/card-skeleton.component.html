@@ -1,0 +1,39 @@
+<div class="job-card-list-container">
+  <!-- Tabs Skeleton -->
+  <div class="tabs-wrapper">
+    <div class="tabs-container">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton skeleton-tab"></div>
+      }
+    </div>
+  </div>
+
+  <!-- Cards Skeleton -->
+  <div class="card-list-container">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <article class="card-container skeleton-card">
+        <header class="card-header">
+          <div class="company-info">
+            <div class="skeleton skeleton-company-name"></div>
+            <div class="skeleton skeleton-job-role"></div>
+          </div>
+          <div class="action-icons">
+            <div class="skeleton skeleton-menu-btn"></div>
+          </div>
+        </header>
+        <footer class="card-footer">
+          <div class="url-section">
+            <div class="skeleton skeleton-url"></div>
+            <div class="skeleton skeleton-copy-btn"></div>
+          </div>
+          <div class="skeleton skeleton-date"></div>
+        </footer>
+      </article>
+    }
+  </div>
+
+  <!-- Add Job Button Skeleton -->
+  <div class="add-job-btn-skeleton">
+    <div class="skeleton skeleton-btn"></div>
+  </div>
+</div>
