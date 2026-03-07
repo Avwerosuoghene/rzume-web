@@ -4,6 +4,10 @@
 .signup-container {
   @extend .auth-container;
 
+  .password-field-wrapper {
+    position: relative;
+  }
+
   .action_btns {
     width: 100%;
     display: flex;
