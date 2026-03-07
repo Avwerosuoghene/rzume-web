@@ -1,11 +1,14 @@
-/* Static splash screen styles - loaded immediately before Angular bootstraps */
+/* Full-screen splash screen with Rzume logo */
 #app-splash-screen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #ffffff;
+  /* Subtle dot grid pattern background */
+  background-color: #f8f9fa;
+  background-image: radial-gradient(circle, #e0e0e0 1px, transparent 1px);
+  background-size: 20px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,41 +17,68 @@
 
 .splash-loader {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  animation: fadeIn 0.8s ease-out;
 }
 
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 4px solid #f3f4f6;
-  border-top: 4px solid #2563EB;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
+/* Rzume logo */
+.splash-loader img {
+  width: 180px;
+  height: auto;
+  animation: fadeInOut 2s ease-in-out infinite;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
+/* Loading text */
 .splash-loader p {
-  color: #6B7280;
+  color: #6b7280;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   margin: 0;
   letter-spacing: 0.5px;
 }
 
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .spinner {
-    width: 50px;
-    height: 50px;
-    border-width: 3px;
+  .splash-loader img {
+    width: 150px;
   }
-  
+
   .splash-loader p {
-    font-size: 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .splash-loader img {
+    width: 130px;
+  }
+
+  .splash-loader p {
+    font-size: 12px;
   }
 }
