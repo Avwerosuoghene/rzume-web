@@ -14,6 +14,13 @@ export enum AnalyticsEvent {
   AUTH_PASSWORD_RESET_FAILED = 'auth_password_reset_failed',
   AUTH_EMAIL_VERIFICATION_INITIATED = 'auth_email_verification_initiated',
   AUTH_EMAIL_VERIFICATION_COMPLETED = 'auth_email_verification_completed',
+  
+  // Auth Guard Events
+  AUTH_GUARD_NO_TOKEN = 'auth_guard_no_token',
+  AUTH_GUARD_VALIDATION_SUCCESS = 'auth_guard_validation_success',
+  AUTH_GUARD_VALIDATION_FAILED = 'auth_guard_validation_failed',
+  AUTH_GUARD_VALIDATION_TIMEOUT = 'auth_guard_validation_timeout',
+  AUTH_GUARD_VALIDATION_ERROR = 'auth_guard_validation_error',
 
   // Job Application Events
   JOB_APPLICATION_CREATED = 'job_application_created',

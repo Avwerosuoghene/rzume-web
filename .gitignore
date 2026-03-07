@@ -42,4 +42,7 @@ testem.log
 Thumbs.db
 /system-architecture
 /src/assets/config
+/docs
+/agents
+/implementations
 
