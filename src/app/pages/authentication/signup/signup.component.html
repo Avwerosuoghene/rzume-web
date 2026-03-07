@@ -18,14 +18,16 @@
         [control]="signupFormGroup.get('email')">
       </app-form-input>
 
-      <div (keyup)="validatePassword()">
+      <div class="password-field-wrapper" (keyup)="validatePassword()">
         <app-form-input 
           [config]="passwordConfig" 
-          [control]="signupFormGroup.get('password')">
+          [control]="signupFormGroup.get('password')"
+          (focus)="onPasswordFocus()"
+          (blur)="onPasswordBlur()">
         </app-form-input>
+        
+        <app-password-strength-checker></app-password-strength-checker>
       </div>
-
-      <app-password-strength-checker></app-password-strength-checker>
       <div class="minor-element_flex">
         <mat-checkbox
           id="termsCheckbox"

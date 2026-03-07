@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
@@ -35,6 +35,8 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
   constructor(private cdr: ChangeDetectorRef) {}
   @Input() config!: FormInputConfig;
   @Input() control?: AbstractControl | null;
+  @Output() focus = new EventEmitter<void>();
+  @Output() blur = new EventEmitter<void>();
 
   value: any = '';
   disabled = false;
@@ -192,6 +194,14 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
 
   togglePasswordVisibility(): void {
     this.passwordVisible = !this.passwordVisible;
+  }
+
+  onFocus(): void {
+    this.focus.emit();
+  }
+
+  onBlur(): void {
+    this.blur.emit();
   }
 
   private validateConfig(): void {

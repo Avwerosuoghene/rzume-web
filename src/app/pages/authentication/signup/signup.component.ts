@@ -86,6 +86,16 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.passwordInput$.next();
   }
 
+  onPasswordFocus(): void {
+    this.passwordCheckerComp?.show();
+  }
+
+  onPasswordBlur(): void {
+    setTimeout(() => {
+      this.passwordCheckerComp?.hide();
+    }, 200);
+  }
+
   togglePasswordVisibility(): void {
     this.passwordVisibility = PasswordUtility.toggleVisibility(this.passwordVisibility);
   }
