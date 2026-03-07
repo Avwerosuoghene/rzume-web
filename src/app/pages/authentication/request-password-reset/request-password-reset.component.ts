@@ -14,7 +14,7 @@ import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { FormInputComponent } from '../../../components/form-input/form-input.component';
 import { FormInputType, FormInputConfig } from '../../../core/models';
-import { FormInputConfigHelper } from '../../../core/helpers';
+import { FormInputConfigHelper, FormValidationUtil } from '../../../core/helpers';
 
 @Component({
   selector: 'app-request-password-reset',
@@ -55,7 +55,7 @@ export class RequestPasswordResetComponent implements OnDestroy {
 
   initializeForm(): void {
     this.passResetReqFormGroup = this.fb.group({
-      email: this.fb.control('', [Validators.required, Validators.email])
+      email: this.fb.control('', [Validators.required, Validators.email, FormValidationUtil.noSpacesValidator])
     });
   }
 
@@ -70,7 +70,10 @@ export class RequestPasswordResetComponent implements OnDestroy {
   }
 
   submitForm(): void {
-    if (this.passResetReqFormGroup.invalid) return;
+    if (this.passResetReqFormGroup.invalid) {
+      FormValidationUtil.markFormGroupTouched(this.passResetReqFormGroup);
+      return;
+    }
 
     const email = this.passResetReqFormGroup.get('email')!.value;
     const payload: RequestPassResetPayload = { email };

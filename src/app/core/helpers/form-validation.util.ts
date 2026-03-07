@@ -2,6 +2,14 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 
 export class FormValidationUtil {
 
+  static noSpacesValidator(control: AbstractControl): { [key: string]: any } | null {
+    const value = control.value;
+    if (value && value.includes(' ')) {
+      return { noSpaces: true };
+    }
+    return null;
+  }
+
   static getFieldError(
     formGroup: FormGroup,
     fieldName: string,
@@ -72,6 +80,11 @@ export class FormValidationUtil {
     // Custom validator errors
     if (errors['invalidFormat']) {
       return `${fieldLabel} format is invalid`;
+    }
+
+    // No spaces validator error
+    if (errors['noSpaces']) {
+      return `${fieldLabel} cannot contain spaces`;
     }
 
     return '';

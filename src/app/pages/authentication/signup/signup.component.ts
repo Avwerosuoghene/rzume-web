@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
-import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormInputConfigHelper } from '../../../core/helpers';
+import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormInputConfigHelper, FormValidationUtil } from '../../../core/helpers';
 import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
 import { AuthenticationService, GoogleAuthService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
@@ -118,7 +118,8 @@ export class SignupComponent implements OnInit, OnDestroy {
       email: this.fb.control('', {
         validators: [
           Validators.required,
-          Validators.email
+          Validators.email,
+          FormValidationUtil.noSpacesValidator
         ]
       }),
       password: this.fb.control('', {
@@ -142,7 +143,10 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   submitSignupForm(): void {
-    if (this.signupFormGroup.invalid) return;
+    if (this.signupFormGroup.invalid) {
+      FormValidationUtil.markFormGroupTouched(this.signupFormGroup);
+      return;
+    }
 
     this.toggleLoader(true);
 

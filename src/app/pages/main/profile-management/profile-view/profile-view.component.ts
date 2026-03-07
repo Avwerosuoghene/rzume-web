@@ -23,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { StorageService } from '../../../../core/services';
 import { SessionStorageUtil } from '../../../../core/helpers/session-storage.util';
+import { FormValidationUtil } from '../../../../core/helpers/form-validation.util';
 import { FloatingLabelDirective } from '../../../../core/directives';
 
 @Component({
@@ -82,7 +83,8 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
       userName: ['', [
         Validators.required,
         Validators.minLength(PROFILE_VALIDATION.USER_NAME_MIN_LENGTH),
-        Validators.maxLength(PROFILE_VALIDATION.USER_NAME_MAX_LENGTH)
+        Validators.maxLength(PROFILE_VALIDATION.USER_NAME_MAX_LENGTH),
+        FormValidationUtil.noSpacesValidator
       ]],
       email: [{ value: '', disabled: true }, [
         Validators.required,

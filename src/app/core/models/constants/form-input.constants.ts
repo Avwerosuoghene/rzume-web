@@ -30,7 +30,8 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   maxlength: 'Input is too long',
   pattern: 'Invalid format',
   min: 'Value is too low',
-  max: 'Value is too high'
+  max: 'Value is too high',
+  noSpaces: 'Cannot contain spaces'
 };
 
 export const PASSWORD_VISIBILITY_ICONS = {

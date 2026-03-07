@@ -58,7 +58,7 @@ export class OnboardComponent {
   initializeOnBoardForm(): void {
     this.onboardFormGroup = this.fb.group({
       username: this.fb.control('', {
-        validators: [Validators.required]
+        validators: [Validators.required, FormValidationUtil.noSpacesValidator]
       })
     })
   }
@@ -69,7 +69,10 @@ export class OnboardComponent {
   }
 
   submitOnboardForm(): void {
-    if (this.onboardFormGroup.invalid) return;
+    if (this.onboardFormGroup.invalid) {
+      FormValidationUtil.markFormGroupTouched(this.onboardFormGroup);
+      return;
+    }
 
     const updateProfilePayload = {
       userName: this.onboardFormGroup.get('username')?.value ?? ''

@@ -189,6 +189,7 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
     if (!this.touched) {
       this.onTouched();
       this.touched = true;
+      this.control?.markAsTouched();
     }
   }
 

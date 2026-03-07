@@ -3,7 +3,7 @@ import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CoreModules } from '../../../core/modules/core-modules';
 import { MatDialog } from '@angular/material/dialog';
-import { PasswordUtility, FormInputConfigHelper } from '../../../core/helpers';
+import { PasswordUtility, FormInputConfigHelper, FormValidationUtil } from '../../../core/helpers';
 import { FormFieldId, FormFieldLabel } from '../../../core/models/enums/form-input.enums';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
@@ -96,7 +96,8 @@ export class LoginComponent {
       email: this.fb.control('', {
         validators: [
           Validators.required,
-          Validators.email
+          Validators.email,
+          FormValidationUtil.noSpacesValidator
         ]
       }),
       password: this.fb.control('', {
@@ -115,6 +116,7 @@ export class LoginComponent {
 
   submitLoginForm() {
     if (this.loginFormGroup.invalid) {
+      FormValidationUtil.markFormGroupTouched(this.loginFormGroup);
       return;
     }
     this.toggleLoader(true);
