@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MainRoutes, RootRoutes } from '../models/enums/application.routes.enums';
 import { UserService } from '../services/user.service';
 import { TokenStorageUtil } from '../helpers/token-storage.util';
+import { LoaderService } from '../services/loader.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class LoginRedirectGuard {
 
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) { }
 
   async canActivate(): Promise<boolean> {
@@ -20,6 +22,7 @@ export class LoginRedirectGuard {
     }
 
     try {
+      this.loaderService.showLoader();
       const isAuthenticated = await this.userService.getActiveUser();
       
       if (isAuthenticated) {
@@ -30,6 +33,8 @@ export class LoginRedirectGuard {
       return true;
     } catch (error) {
       return true;
+    } finally {
+      this.loaderService.hideLoader();
     }
   }
 
