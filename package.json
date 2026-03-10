@@ -12,7 +12,9 @@
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
     "cy:open": "cypress open",
     "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks",
-    "optimize-images": "chmod +x ./scripts/optimize-images.sh && ./scripts/optimize-images.sh"
+    "optimize-images": "chmod +x ./scripts/optimize-images.sh && ./scripts/optimize-images.sh",
+    "prepare": "husky install",
+    "update-docs": "node scripts/update-docs.js"
   },
   "private": true,
   "dependencies": {
@@ -45,6 +47,7 @@
     "@types/mixpanel-browser": "^2.60.0",
     "@types/node": "^22.9.3",
     "cypress": "^13.13.3",
+    "husky": "^8.0.3",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.2.0",

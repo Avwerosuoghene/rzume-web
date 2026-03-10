@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run documentation updater
+echo "📝 Running documentation updater..."
+npm run update-docs
+
+# Run linting (if configured)
+# npm run lint
+
+# Run tests (optional - uncomment if you want tests to run on every commit)
+# npm run test:ci

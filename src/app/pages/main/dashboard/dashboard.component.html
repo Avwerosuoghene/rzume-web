@@ -25,18 +25,19 @@
       </app-job-card-list>
     }
   } @else {
+    @if (!showEmptyState) {
+      <app-job-list-toolbar
+        class="job-list-toolbar"
+        (filterChange)="handleFilterChange($event)"
+        (searchChange)="handleSearchChange($event)"
+        (jobApplicationAddition)="addNewApplicationEntry()"
+      >
+      </app-job-list-toolbar>
+    }
+    
     @if (isLoadingJobs) {
       <app-table-skeleton></app-table-skeleton>
     } @else {
-      @if (!showEmptyState) {
-        <app-job-list-toolbar
-          class="job-list-toolbar"
-          (filterChange)="handleFilterChange($event)"
-          (searchChange)="handleSearchChange($event)"
-          (jobApplicationAddition)="addNewApplicationEntry()"
-        >
-        </app-job-list-toolbar>
-      }
       <app-empty-state-wrapper
         [data]="data"
         [currentFilter]="currentFilter"
