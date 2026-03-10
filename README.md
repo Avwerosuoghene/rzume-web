@@ -74,6 +74,8 @@ rzume_web/
     The application will be available at `http://localhost:4200`.
 
 ## Available Scripts
+-   **`npm run prepare`**: Initializes Husky git hooks
+-   **`npm run update-docs`**: Updates project documentation based on git changes
 
 -   **`npm start`**: Starts the development server.
 -   **`npm run build`**: Builds the application for production.
