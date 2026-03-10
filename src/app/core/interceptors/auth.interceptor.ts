@@ -6,13 +6,14 @@ import {
     HttpInterceptor,
     HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TokenStorageUtil } from '../helpers/token-storage.util';
+import { AuthHelperService } from '../services/auth-helper.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor() { }
+    constructor(private authHelper: AuthHelperService) { }
 
     intercept(
         request: HttpRequest<unknown>,
@@ -30,6 +31,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
+                if (error.status === 401) {
+                    this.authHelper.logout();
+                    return EMPTY;
+                }
+                
                 return throwError(() => error);
             })
         );
