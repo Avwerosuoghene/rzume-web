@@ -7,6 +7,7 @@ import { PasswordUtility, FormInputConfigHelper, FormValidationUtil } from '../.
 import { FormFieldId, FormFieldLabel } from '../../../core/models/enums/form-input.enums';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
+import { AuthMobileContentComponent } from '../../../components/auth-mobile-content/auth-mobile-content.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { Router } from '@angular/router';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
@@ -26,7 +27,7 @@ import { FormInputComponent } from '../../../components/form-input/form-input.co
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FormInputComponent],
+  imports: [AngularMaterialModules, CoreModules, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FormInputComponent, AuthMobileContentComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

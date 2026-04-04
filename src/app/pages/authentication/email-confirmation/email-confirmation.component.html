@@ -1,17 +1,28 @@
 <div class="email-comfirm-container">
-  <h3>{{ emailValidationHeader }}</h3>
-  <p>{{ emailValidMsg }}</p>
-  <button
-    [disabled]="loaderIsActive"
-    mat-flat-button
-    id="email-validation-btn"
-    (click)="performValidationBtnAction()"
-  >
-    <div class="button-elements">
-      @if (loaderIsActive) {
-      <app-circular-loader></app-circular-loader>
-      }
-      <p>{{ emailValidationBtnTxt }}</p>
-    </div>
-  </button>
+  <!-- Mobile Logo -->
+  <div class="auth-mobile-logo-secondary">
+    <img
+      src="assets/icons/rzume_logo.jpg"
+      alt="Rzume Logo"
+      class="auth-logo-simple"
+    />
+  </div>
+
+  <div class="email-content">
+    <h3>{{ emailValidationHeader }}</h3>
+    <p>{{ emailValidMsg }}</p>
+    <button
+      [disabled]="loaderIsActive"
+      mat-flat-button
+      id="email-validation-btn"
+      (click)="performValidationBtnAction()"
+    >
+      <div class="button-elements">
+        @if (loaderIsActive) {
+          <app-circular-loader></app-circular-loader>
+        }
+        <p>{{ emailValidationBtnTxt }}</p>
+      </div>
+    </button>
+  </div>
 </div>

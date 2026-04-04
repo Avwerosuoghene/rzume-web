@@ -1,4 +1,5 @@
 @import "./theme.scss";
+@import "./fonts.scss";
 
 .rzume-button-base {
   border-radius: 8px;
@@ -56,16 +57,59 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+
+    h3, h4 {
+      font-size: $font-size-xl;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 599px) {
+      align-items: center;
+      text-align: center;
+    }
   }
 
   @media (min-width: 600px) {
     gap: 48px;
   }
 
+  @media (max-width: 599px) {
+    gap: 0;
+    justify-content: flex-start;
+    padding-top: 20px;
+  }
+
   .form-input-confirm-button {
     @extend .rzume-button-primary;
 
     margin-top: 48px;
+
+    @media (max-width: 599px) {
+      margin-top: 32px;
+    }
+  }
+
+  // Center the mobile-only bottom links
+  .mobile_only {
+    @media (max-width: 599px) {
+      text-align: center;
+      margin-top: 16px;
+    }
+  }
+
+  // Remove gap in action buttons for mobile
+  .action_btns {
+    @media (max-width: 599px) {
+      gap: 0;
+    }
+  }
+
+  // Add proper spacing for non-auth pages
+  &.non-auth-layout {
+    @media (max-width: 599px) {
+      gap: 24px;
+      padding-top: 0;
+    }
   }
 }
 

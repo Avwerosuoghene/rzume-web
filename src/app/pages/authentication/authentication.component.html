@@ -9,16 +9,18 @@
       </div>
     </div>
 
-    <div class="auth-right_element">
-      <img
-        src="assets/icons/rzume_logo_text.png"
-        alt="rzume logo"
-        [@fadeInOut]="animationState"
-      />
+    <div class="auth-right_element" [class.non-auth-layout]="!showAuthHeader()">
+  <!-- Desktop content -->
+  <img
+    src="assets/icons/rzume_logo_text.png"
+    alt="rzume logo"
+    class="auth-logo_desktop"
+    [@fadeInOut]="animationState"
+  />
 
-      <div class="auth-route-elements">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
+  <div class="auth-route-elements">
+    <router-outlet></router-outlet>
+  </div>
+</div>
   </div>
 </section>

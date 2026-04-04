@@ -1,43 +1,59 @@
 <div class="onboard-user-container">
-  <h4>What would you like us to call you</h4>
+  <!-- Mobile Logo -->
+  <div class="auth-mobile-logo-secondary">
+    <img
+      src="assets/icons/rzume_logo.jpg"
+      alt="Rzume Logo"
+      class="auth-logo-simple"
+    />
+  </div>
 
-  <form [formGroup]="onboardFormGroup" (ngSubmit)="submitOnboardForm()"  [@slideInOut]="slideInAnimationState" class="onboard-user-form_group">
-    <div class="form-input-container">
-      <div class="form-field">
-        <label for="username">Username</label>
-        <div class="input-wrapper">
-          <input
-            id="username"
-            class="form-input"
-            [class.error]="getFieldError('username')"
-            placeholder="Enter your Username"
-            type="text"
-            formControlName="username"
-            name="username"
-            appFloatingLabel
-          />
-          <mat-icon>person</mat-icon>
+  <div>
+    <h4 class="onboard-title">What would you like us to call you</h4>
+
+    <form
+      [formGroup]="onboardFormGroup"
+      (ngSubmit)="submitOnboardForm()"
+      [@slideInOut]="slideInAnimationState"
+      class="onboard-user-form_group"
+    >
+      <div class="form-input-container">
+        <div class="form-field">
+          <label for="username">Username</label>
+          <div class="input-wrapper">
+            <input
+              id="username"
+              class="form-input"
+              [class.error]="getFieldError('username')"
+              placeholder="Enter your Username"
+              type="text"
+              formControlName="username"
+              name="username"
+              appFloatingLabel
+            />
+            <mat-icon>person</mat-icon>
+          </div>
+          <span *ngIf="getFieldError('username')" class="error-message">
+            {{ getFieldError("username") }}
+          </span>
         </div>
-        <span *ngIf="getFieldError('username')" class="error-message">
-          {{ getFieldError('username') }}
-        </span>
+
+        <button
+          class="form-input-confirm-button"
+          mat-flat-button
+          [disabled]="isBtnDisabled()"
+          type="submit"
+          id="regUserNameBtn"
+        >
+          <div class="button-elements">
+            @if (loaderIsActive) {
+              <app-circular-loader></app-circular-loader>
+            }
+
+            <p>Continue</p>
+          </div>
+        </button>
       </div>
-
-      <button
-        class="form-input-confirm-button"
-        mat-flat-button
-        [disabled]="isBtnDisabled()"
-        type="submit"
-        id="regUserNameBtn"
-      >
-        <div class="button-elements">
-          @if (loaderIsActive) {
-            <app-circular-loader></app-circular-loader>
-          }
-
-          <p>Continue</p>
-        </div>
-      </button>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

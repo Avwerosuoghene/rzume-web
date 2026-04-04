@@ -1,15 +1,10 @@
 <div class="login-container">
-  <div class="auth-top_view_elements">
-    <h3>Log In</h3>
-    <div class="login-signin_route mobile_only">
-      <p>
-        Don't have an account?
-        <span>
-          <a id="#sign_in_anchor" [routerLink]="signUpRoute"
-            >Create Account</a
-          ></span
-        >
-      </p>
+  <!-- Mobile Content -->
+  <app-auth-mobile-content></app-auth-mobile-content>
+
+  <div>
+    <div class="auth-top_view_elements">
+      <h3>Log In</h3>
     </div>
   </div>
 
@@ -59,6 +54,16 @@
       <app-google-sign-in (tokenEmitter)="handleCredentialResponse($event)" (click)="triggerGoogleSignin()" [googleBtnText] ="GOOGLE_SIGNIN_BUTTON_TEXT"  ></app-google-sign-in>
       </div>
 
+      <div class="login-signin_route mobile_only">
+        <p>
+          Don't have an account?
+          <span>
+            <a id="#sign_in_anchor" [routerLink]="signUpRoute"
+              >Create Account</a
+            ></span
+          >
+        </p>
+      </div>
 
     </div>
   </form>

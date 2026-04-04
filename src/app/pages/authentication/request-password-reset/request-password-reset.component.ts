@@ -13,7 +13,6 @@ import { CoreModules } from '../../../core/modules/core-modules';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
 import { RouterModules } from '../../../core/modules/router-modules';
 import { FormInputComponent } from '../../../components/form-input/form-input.component';
-import { FormInputType, FormInputConfig } from '../../../core/models';
 import { FormInputConfigHelper, FormValidationUtil } from '../../../core/helpers';
 
 @Component({

@@ -13,13 +13,14 @@ import { CircularLoaderComponent } from '../../../components/circular-loader/cir
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { PasswordStrengthCheckerComponent } from '../../../components';
 import { FormInputComponent } from '../../../components/form-input/form-input.component';
+import { AuthMobileContentComponent } from '../../../components/auth-mobile-content/auth-mobile-content.component';
 import { FormFieldId, FormFieldLabel } from '../../../core/models/enums/form-input.enums';
 
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FormInputComponent],
+  imports: [AngularMaterialModules, CoreModules, PasswordStrengthCheckerComponent, RouterModules, CircularLoaderComponent, GoogleSignInComponent, FormInputComponent, AuthMobileContentComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })

@@ -4,6 +4,12 @@
 .signup-container {
   @extend .auth-container;
 
+  @media (max-width: 599px) {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0 20px 20px 20px;
+  }
+
   .password-field-wrapper {
     position: relative;
   }

@@ -1,14 +1,9 @@
 <div class="signup-container">
+  <!-- Mobile Content -->
+  <app-auth-mobile-content></app-auth-mobile-content>
+
   <div class="auth-top_view_elements">
     <h3>Create account</h3>
-    <div class="signup-signin_route mobile_only">
-      <p>
-        Already have an account?
-        <span>
-          <a id="sign-in_anch" [routerLink]="signInRoute">Sign In</a></span
-        >
-      </p>
-    </div>
   </div>
 
   <form [formGroup]="signupFormGroup" (ngSubmit)="submitSignupForm()">
@@ -36,7 +31,7 @@
         ></mat-checkbox>
 
         <p>
-          I’ve read and agree with
+          I've read and agree with
           <span>
             <a
               id="terms-service-anchor"
@@ -75,6 +70,15 @@
           (click)="triggerGoogleSignup()"
           [googleBtnText]="GOOGLE_SIGNIN_BUTTON_TEXT"
         ></app-google-sign-in>
+      </div>
+
+      <div class="signup-signin_route mobile_only">
+        <p>
+          Already have an account?
+          <span>
+            <a id="sign-in_anch" [routerLink]="signInRoute">Sign In</a></span
+          >
+        </p>
       </div>
     </div>
   </form>
