@@ -62,7 +62,12 @@ export enum AnalyticsEvent {
   API_CALL_FAILED = 'api_call_failed',
 
   // Error Events
-  ERROR_OCCURRED = 'error_occurred'
+  ERROR_OCCURRED = 'error_occurred',
+
+  // LinkedIn Conversion Events
+  LINKEDIN_CONVERSION_SIGNUP = 'linkedin_conversion_signup',
+  LINKEDIN_CONVERSION_PURCHASE = 'linkedin_conversion_purchase',
+  LINKEDIN_CONVERSION_CUSTOM = 'linkedin_conversion_custom'
 }
 
 export enum SignupMethod {

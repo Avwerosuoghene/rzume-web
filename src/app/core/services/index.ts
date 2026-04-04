@@ -18,4 +18,5 @@ export * from './analytics/mixpanel.service';
 export * from './analytics-tracking.service';
 export * from './analytics-user-context.service';
 export * from './analytics-auth-helper.service';
+export * from './linkedin-tracking.service';
 export * from './global-error-handler.service';

@@ -13,6 +13,7 @@ cat > src/assets/config/config.json << EOF
   "analytics": {
     "mixpanelToken": "${MIXPANEL_TOKEN}",
     "googleTagId": "${GOOGLE_TAG_ID}",
+    "linkedInPartnerId": "${LINKEDIN_PARTNER_ID}",
     "enabled": ${ANALYTICS_ENABLED:-true}
   }
 }

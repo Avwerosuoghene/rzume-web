@@ -73,4 +73,11 @@ export class ConfigService {
     }
     return this.config.analytics?.enabled === true;
   }
+
+  get linkedInPartnerId(): string {
+    if (!this.config) {
+      return '';
+    }
+    return this.config.analytics?.linkedInPartnerId || '';
+  }
 }
