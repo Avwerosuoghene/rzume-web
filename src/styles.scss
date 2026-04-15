@@ -19,6 +19,13 @@ form {
   width: 100%;
 }
 
+.policy-dialog-panel .mat-dialog-container {
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 80vh;
+}
+
 .mat-button,
 .mat-raised-button,
 .mat-icon-button,

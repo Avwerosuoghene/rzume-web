@@ -3,9 +3,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { finalize } from "rxjs";
 import { JobAddDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
 import { ConfirmDeleteModalComponent } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
+import { PolicyDialogComponent } from '../../components/policy-dialog/policy-dialog.component';
 import { JobApplicationService } from "./job-application.service";
 import { LoaderService } from "./loader.service";
-import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
@@ -148,6 +149,22 @@ export class DialogHelperService {
       () => onClosed?.(),
       { disableClose: false }
     );
+  }
+
+  openPolicyDialog(title: string, content: string): void {
+    const dialogData: PolicyDialogData = { title, content };
+
+    const dialogConfig = {
+      data: dialogData,
+      backdropClass: 'blurred',
+      disableClose: false,
+      panelClass: 'policy-dialog-panel',
+      maxWidth: '90vw',
+      maxHeight: '80vh',
+      width: '600px'
+    };
+
+    this.dialog.open(PolicyDialogComponent, dialogConfig);
   }
 
   buildDeleteMessage(selectedItems: JobApplicationItem[]): string {

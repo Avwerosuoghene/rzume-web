@@ -1,0 +1,19 @@
+<div class="policy-dialog-container">
+  <div class="policy-dialog-header">
+    <h2 class="policy-dialog-title">{{ data.title }}</h2>
+
+  </div>
+  
+  <div class="policy-dialog-content">
+    <div class="policy-content-text" [innerHTML]="processedContent"></div>
+  </div>
+  
+  <div class="policy-dialog-actions">
+    <button 
+      mat-flat-button 
+      class="confirm-button" 
+      (click)="onClose()">
+      I Understand
+    </button>
+  </div>
+</div>

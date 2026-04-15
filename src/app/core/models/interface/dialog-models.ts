@@ -15,4 +15,9 @@ export interface JobStatChangeDialogData {
   jobItem: JobApplicationItem
 }
 
+export interface PolicyDialogData {
+  title: string;
+  content: string;
+}
+
 

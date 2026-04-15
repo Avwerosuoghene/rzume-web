@@ -6,7 +6,7 @@ import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
 import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormInputConfigHelper, FormValidationUtil } from '../../../core/helpers';
 import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
-import { AuthenticationService, GoogleAuthService } from '../../../core/services';
+import { AuthenticationService, GoogleAuthService, DialogHelperService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
@@ -15,6 +15,7 @@ import { PasswordStrengthCheckerComponent } from '../../../components';
 import { FormInputComponent } from '../../../components/form-input/form-input.component';
 import { AuthMobileContentComponent } from '../../../components/auth-mobile-content/auth-mobile-content.component';
 import { FormFieldId, FormFieldLabel } from '../../../core/models/enums/form-input.enums';
+import { PRIVACY_POLICY_CONTENT, TERMS_OF_SERVICE_CONTENT, PRIVACY_POLICY_TITLE, TERMS_OF_SERVICE_TITLE } from '../../../core/models/constants/policy-content.constants';
 
 
 @Component({
@@ -52,7 +53,12 @@ export class SignupComponent implements OnInit, OnDestroy {
     showPasswordToggle: true
   });
 
-  constructor(private authService: AuthenticationService, private googleAuthService: GoogleAuthService, private dialog: MatDialog) {
+  constructor(
+    private authService: AuthenticationService, 
+    private googleAuthService: GoogleAuthService, 
+    private dialog: MatDialog,
+    private dialogHelper: DialogHelperService
+  ) {
 
   }
 
@@ -137,10 +143,11 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   openTermsAndConditionsDialog(): void {
-
+    this.dialogHelper.openPolicyDialog(TERMS_OF_SERVICE_TITLE, TERMS_OF_SERVICE_CONTENT);
   }
 
   openPrivacyDialog(): void {
+    this.dialogHelper.openPolicyDialog(PRIVACY_POLICY_TITLE, PRIVACY_POLICY_CONTENT);
   }
 
   submitSignupForm(): void {
