@@ -14,14 +14,15 @@ This directory contains comprehensive Windsurf AI configuration for the Rzume We
 │   ├── service-patterns.md          # Service development (glob: *.service.ts)
 │   ├── testing-standards.md         # Testing patterns (glob: *.spec.ts)
 │   └── styling-standards.md         # SCSS standards (glob: *.scss)
-├── skills/                     # Reusable workflows
+├── workflows/                  # Reusable workflows
 │   ├── create-component.md          # Component generation workflow
 │   ├── create-service.md            # Service generation workflow
 │   ├── add-feature.md               # Complete feature workflow
 │   ├── web-architect.md             # Enterprise architecture & planning
 │   ├── tester.md                    # Comprehensive testing workflow
 │   ├── code-reviewer.md             # Security & quality code review
-│   └── doc-updater.md               # Documentation & changelog automation
+│   ├── doc-updater.md               # Documentation & changelog automation
+│   └── article-generator.md         # Technical article generation from commits
 └── README.md                   # This file
 ```
 
@@ -68,7 +69,7 @@ Directory-scoped guidance that automatically applies when working in specific fo
 - **`/src/app/core/services/AGENTS.md`**: Service development guidelines
 - **`/src/app/core/models/AGENTS.md`**: Models and types guidelines
 
-## 🛠️ Skills (Workflows)
+## 🛠️ Workflows
 
 Reusable workflows for common tasks:
 
@@ -166,6 +167,20 @@ Automated documentation maintenance with git integration:
 - **Conventional Commits**: Parses commit messages for categorization
 - **Quality Validation**: Ensures documentation completeness and accuracy
 - Includes ready-to-use scripts for automation
+
+### Article Generator
+```
+@article-generator
+```
+Technical content creation from git commits and implementations:
+- **Commit Analysis**: Analyzes git commits to identify article-worthy implementations
+- **Topic Suggestion**: Proposes 3-5 article topics based on code changes
+- **Online Research**: Researches topics for technical accuracy and validity
+- **Article Generation**: Creates comprehensive technical articles matching project writing style
+- **Style Matching**: Maintains consistency with existing articles in `/articles` directory
+- **Code Examples**: Includes working code examples with before/after comparisons
+- **Quality Assurance**: Verifies technical accuracy and readability
+- Supports tutorial, concept explanation, and comparison article formats
 
 ## 🚀 How to Use
 
