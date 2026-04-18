@@ -1,0 +1,12 @@
+<button 
+  class="feedback-button" 
+  (click)="openFeedbackDialog()"
+  aria-label="Provide feedback">
+  <img 
+    src="/assets/icons/chat-icon.svg" 
+    alt="Feedback" 
+    class="feedback-icon">
+  @if ((isMobile$ | async) === false) {
+    <span class="feedback-text">Hey you!!! Click here to drop us a feedback</span>
+  }
+</button>

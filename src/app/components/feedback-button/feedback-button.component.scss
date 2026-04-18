@@ -1,0 +1,60 @@
+@import '../../../app/styles/theme.scss';
+@import '../../../app/styles/fonts.scss';
+
+.feedback-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  background-color: $rzume-blue;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 16px;
+  
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    background-color: darken($rzume-blue, 5%);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  @media (max-width: 599px) {
+    padding: 14px;
+    border-radius: 50%;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+.feedback-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.feedback-text {
+  @include font-body;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $white;
+  white-space: nowrap;
+  
+  @media (min-width: 600px) {
+    font-size: $font-size-base;
+  }
+
+}

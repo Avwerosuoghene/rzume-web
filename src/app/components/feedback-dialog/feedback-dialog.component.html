@@ -1,0 +1,76 @@
+<div class="feedback-dialog">
+  <button 
+    mat-icon-button 
+    class="close-button" 
+    (click)="onClose()"
+    aria-label="Close feedback dialog">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="feedback-icon-container">
+    <img 
+      src="/assets/icons/feedback-dialog-icon.svg" 
+      alt="Feedback" 
+      class="feedback-icon">
+  </div>
+
+  <h2 class="feedback-title">{{ title }}</h2>
+  <p class="feedback-subtitle">{{ subtitle }}</p>
+
+  <div class="star-rating-container">
+    <div class="stars">
+      @for (star of getStarArray(); track star) {
+        <button
+          type="button"
+          class="star-button"
+          (click)="onStarClick(star)"
+          (mouseenter)="onStarHover(star)"
+          (mouseleave)="onStarLeave()"
+          [attr.aria-label]="'Rate ' + star + ' stars'">
+          <img
+            [src]="isStarFilled(star) ? '/assets/icons/star-filled.svg' : '/assets/icons/star-unfilled.svg'"
+            [alt]="isStarFilled(star) ? 'Filled star' : 'Empty star'"
+            class="star-icon">
+        </button>
+      }
+    </div>
+    
+    <div class="rating-labels">
+      <span class="rating-label">POOR</span>
+      <span class="rating-label">AMAZING</span>
+    </div>
+  </div>
+
+  <div class="comments-section">
+    <label class="comments-label">{{ commentsLabel }}</label>
+    <textarea
+      class="comments-textarea"
+      [(ngModel)]="comments"
+      [placeholder]="commentsPlaceholder"
+      [maxlength]="maxLength"
+      rows="4"></textarea>
+  </div>
+
+  @if (error) {
+    <div class="error-message">{{ error }}</div>
+  }
+
+  <button
+    mat-flat-button
+    class="submit-button"
+    [disabled]="isSubmitDisabled"
+    (click)="submitFeedback()">
+    @if (isSubmitting) {
+      <app-circular-loader></app-circular-loader>
+    } @else {
+      <span>{{ submitButton }}</span>
+    }
+  </button>
+
+  <button
+    type="button"
+    class="later-button"
+    (click)="onMaybeLater()">
+    {{ laterButton }}
+  </button>
+</div>

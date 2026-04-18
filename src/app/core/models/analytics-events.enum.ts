@@ -67,7 +67,13 @@ export enum AnalyticsEvent {
   // LinkedIn Conversion Events
   LINKEDIN_CONVERSION_SIGNUP = 'linkedin_conversion_signup',
   LINKEDIN_CONVERSION_PURCHASE = 'linkedin_conversion_purchase',
-  LINKEDIN_CONVERSION_CUSTOM = 'linkedin_conversion_custom'
+  LINKEDIN_CONVERSION_CUSTOM = 'linkedin_conversion_custom',
+
+  // Feedback Events
+  FEEDBACK_BUTTON_CLICKED = 'feedback_button_clicked',
+  FEEDBACK_SUBMISSION_SUCCESS = 'feedback_submission_success',
+  FEEDBACK_SUBMISSION_FAILED = 'feedback_submission_failed',
+  FEEDBACK_DISMISSED = 'feedback_dismissed'
 }
 
 export enum SignupMethod {

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, finalize } from 'rxjs/operators';
 import { ApiService } from './api.service';
+import { DialogHelperService } from './dialog-helper.service';
+import { LoaderService } from './loader.service';
 import { APIResponse, ApiRoutes } from '../models';
 import { 
   UpdateProfilePayload, 
@@ -12,6 +14,8 @@ import {
   Resume,
   SubscriptionFeatures
 } from '../models/interface/profile.models';
+import { FeedbackSubmission } from '../models/interface/feedback.interface';
+import { FEEDBACK_SUCCESS_TITLE, FEEDBACK_SUCCESS_MESSAGE } from '../models/constants/feedback.constants';
 import { AnalyticsService } from './analytics/analytics.service';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
 
@@ -22,7 +26,9 @@ export class ProfileManagementService {
 
   constructor(
     private apiService: ApiService,
-    private analyticsService: AnalyticsService
+    private analyticsService: AnalyticsService,
+    private dialogHelper: DialogHelperService,
+    private loaderService: LoaderService
   ) { }
 
 
@@ -115,5 +121,47 @@ export class ProfileManagementService {
       ApiRoutes.profileManagement.resumes + `/${id}`,
       true
     );
+  }
+
+  /**
+   * Submit user feedback to the backend
+   * Follows the same pattern as job application submission
+   * @param payload - Complete feedback submission payload
+   */
+  submitFeedback(payload: FeedbackSubmission): void {
+    this.loaderService.showLoader();
+    
+    this.apiService.post<APIResponse<boolean>>(
+      ApiRoutes.profileManagement.feedback,
+      payload,
+      true
+    ).pipe(
+      finalize(() => this.loaderService.hideLoader())
+    ).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.analyticsService.track(AnalyticsEvent.FEEDBACK_SUBMISSION_SUCCESS, {
+            rating: payload.rating,
+            has_comments: !!payload.message,
+            comments_length: payload.message?.length || 0,
+            page_url: payload.pageUrl
+          });
+
+          this.dialogHelper.openSuccessDialog(
+            FEEDBACK_SUCCESS_TITLE,
+            FEEDBACK_SUCCESS_MESSAGE
+          );
+        }
+      },
+      error: (error) => {
+        this.analyticsService.track(AnalyticsEvent.FEEDBACK_SUBMISSION_FAILED, {
+          rating: payload.rating,
+          has_comments: !!payload.message,
+          comments_length: payload.message?.length || 0,
+          page_url: payload.pageUrl,
+          error: error.message || 'Failed to submit feedback'
+        });
+      }
+    });
   }
 }

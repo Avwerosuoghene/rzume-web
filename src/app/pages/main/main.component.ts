@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
+import { FeedbackButtonComponent } from '../../components/feedback-button/feedback-button.component';
 import { RouterModules } from '../../core/modules/router-modules';
 import { BODY_SCROLL_DEFAULT, BODY_SCROLL_LOCK, MOBILE_BREAKPOINT } from '../../core/models/constants/shared.constants';
 import { UiStateService } from '../../core/services/ui-state.service';
@@ -15,7 +16,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, SideBarComponent, RouterModules],
+  imports: [CommonModule, RouterModule, HeaderComponent, SideBarComponent, FeedbackButtonComponent, RouterModules],
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
