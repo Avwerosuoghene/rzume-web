@@ -1692,6 +1692,35 @@ Create a shared data table component with:
 
 ---
 
+## Security Fixer Checkpoint
+
+Before submitting for quality gate review, verify security posture:
+
+1. **If any dependencies were added or updated**, run a security audit:
+   ```bash
+   npm run security:audit
+   ```
+
+2. **If vulnerabilities are found**, run the automated fix:
+   ```bash
+   npm run security:fix
+   ```
+
+3. **If the automated fix cannot resolve all issues**, invoke the Security Fixer Agent:
+   ```
+   @security-fixer Please verify security posture after Angular implementation changes.
+
+   **Dependencies Changed:**
+   - [list any added/updated packages]
+
+   **Implementation Context:**
+   - [brief description of what was implemented]
+
+   Please analyze and fix any vulnerabilities introduced.
+   ```
+
+4. Ensure no new critical or high vulnerabilities exist before proceeding.
+
 ## Quality Gate Checkpoint
 
 Before finalizing implementation, submit for quality gate review:

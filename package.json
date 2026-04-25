@@ -21,7 +21,9 @@
     "type-check": "tsc --noEmit",
     "lint": "ng lint",
     "security:audit": "npm audit --audit-level=high",
-    "security:scan": "chmod +x ./scripts/security-scan.sh && ./scripts/security-scan.sh"
+    "security:scan": "chmod +x ./scripts/security-scan.sh && ./scripts/security-scan.sh",
+    "security:fix": "chmod +x ./scripts/security-fix.sh && ./scripts/security-fix.sh",
+    "security:audit-prod": "npm audit --omit=dev"
   },
   "private": true,
   "dependencies": {
@@ -72,5 +74,22 @@
     "sharp-cli": "^4.2.0",
     "source-map-explorer": "^2.5.3",
     "typescript": "~5.5.4"
+  },
+  "overrides": {
+    "cross-spawn": ">=7.0.6",
+    "tar": ">=7.5.13",
+    "postcss": ">=8.5.10",
+    "rollup": ">=4.60.2",
+    "serialize-javascript": ">=7.0.5",
+    "picomatch": ">=4.0.4",
+    "webpack": ">=5.106.2",
+    "webpack-dev-server": ">=5.2.3",
+    "vite": ">=5.4.21",
+    "@babel/runtime": ">=7.29.2",
+    "esbuild": ">=0.25.12",
+    "http-proxy-middleware": ">=3.0.5",
+    "ajv": ">=8.18.0",
+    "tmp": ">=0.2.5",
+    "uuid": ">=11.1.0"
   }
 }

@@ -136,6 +136,14 @@ describe('ComponentNameComponent', () => {
 - [ ] Exported in index.ts
 - [ ] Follows naming conventions
 
+## Security Fixer Checkpoint
+
+If the component required adding any new npm packages:
+
+1. **Run security audit**: `npm run security:audit`
+2. **If vulnerabilities found**, run: `npm run security:fix`
+3. **If issues remain**, invoke: `@security-fixer Please verify security after adding [package] for [component name]`
+
 ## Quality Gate Checkpoint
 
 Before finalizing component, request quality gate review:
@@ -150,6 +158,12 @@ Before finalizing component, request quality gate review:
 **Features Implemented:**
 - [Feature 1]
 - [Feature 2]
+
+**Dependencies Added:**
+- [Any new npm packages, or "None"]
+
+**Security Check:**
+- npm audit: [PASSED/FIXED via security-fixer]
 
 **Testing:**
 - Unit tests: [coverage %]

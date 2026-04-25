@@ -347,11 +347,24 @@ npm audit
 # Check for outdated packages
 npm outdated
 
-# Update dependencies
-npm update
+# Automated security fix (safe, non-breaking)
+npm run security:fix
 
-# Fix vulnerabilities
-npm audit fix
+# Production-only audit (skip devDependencies)
+npm run security:audit-prod
+```
+
+**Security Fixer Agent Delegation**:
+If the code review discovers dependency vulnerabilities, delegate to the Security Fixer Agent:
+```
+@security-fixer Code review has identified dependency vulnerabilities.
+
+**Audit Summary:**
+[paste npm audit summary]
+
+**Context**: Code review for [feature/PR description]
+
+Please analyze and apply safe fixes following the remediation strategy.
 ```
 
 **Security Issues to Report**:

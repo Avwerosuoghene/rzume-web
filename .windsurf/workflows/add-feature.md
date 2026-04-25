@@ -224,6 +224,38 @@ export class JobSearchComponent implements OnInit, OnDestroy {
 }
 ```
 
+## Security Fixer Checkpoint
+
+Before submitting for quality gate review, ensure security posture is clean:
+
+### If New Dependencies Were Added
+1. **Run security audit**:
+   ```bash
+   npm run security:audit
+   ```
+
+2. **If vulnerabilities are found**, invoke the Security Fixer Agent:
+   ```
+   @security-fixer Please verify security posture after the following changes:
+
+   **Changes Made:**
+   - Added dependency: [package@version]
+   - Updated dependency: [package from version to version]
+
+   **Files Modified:**
+   - package.json
+   - [other files]
+
+   Please run a security audit and fix any new vulnerabilities introduced.
+   ```
+
+3. **Or run the automated fix script**:
+   ```bash
+   npm run security:fix
+   ```
+
+4. **Verify no new vulnerabilities remain** before proceeding to quality gate.
+
 ## Quality Gate Checkpoint
 
 Before considering this feature complete, request a quality gate review:

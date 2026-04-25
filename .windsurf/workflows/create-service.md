@@ -163,6 +163,14 @@ describe('DataService', () => {
 - [ ] Exported in services/index.ts
 - [ ] JSDoc comments added
 
+## Security Fixer Checkpoint
+
+If the service required adding any new npm packages:
+
+1. **Run security audit**: `npm run security:audit`
+2. **If vulnerabilities found**, run: `npm run security:fix`
+3. **If issues remain**, invoke: `@security-fixer Please verify security after adding [package] for [service name]`
+
 ## Quality Gate Checkpoint
 
 Before finalizing service, request quality gate review:
@@ -177,6 +185,12 @@ Before finalizing service, request quality gate review:
 **Features Implemented:**
 - [Feature 1]
 - [Feature 2]
+
+**Dependencies Added:**
+- [Any new npm packages, or "None"]
+
+**Security Check:**
+- npm audit: [PASSED/FIXED via security-fixer]
 
 **Testing:**
 - Unit tests: [coverage %]

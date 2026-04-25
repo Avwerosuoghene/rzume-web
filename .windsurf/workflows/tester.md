@@ -1311,6 +1311,14 @@ it('should call API', () => {
 
 ---
 
+## Security Fixer Checkpoint
+
+If testing required adding new test dependencies (e.g., mocking libraries, test utilities):
+
+1. **Run security audit**: `npm run security:audit`
+2. **If vulnerabilities found**, run: `npm run security:fix`
+3. **If issues remain**, invoke: `@security-fixer Please verify security after adding test dependencies`
+
 ## Quality Gate Checkpoint
 
 After completing test implementation, submit for quality gate review:

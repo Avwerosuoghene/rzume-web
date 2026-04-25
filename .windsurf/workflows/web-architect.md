@@ -725,11 +725,36 @@ Identified risks and mitigation strategies
 - [ ] Dependencies identified
 - [ ] Risks assessed
 
+### Security Validation
+- [ ] New dependencies security-audited (`npm run security:audit`)
+- [ ] No critical/high production vulnerabilities
+- [ ] Security Fixer Agent invoked if vulnerabilities found (`/security-fixer`)
+
 ### Documentation
 - [ ] ADRs created
 - [ ] Implementation guide written
 - [ ] API documentation complete
 - [ ] Component documentation ready
+
+## Security Fixer Agent Integration
+
+When the architectural design introduces new npm dependencies:
+
+1. **During design phase**: Document all proposed dependencies and their security posture
+2. **After implementation**: Run `npm run security:fix` to ensure no vulnerabilities were introduced
+3. **If vulnerabilities are found**: Invoke the Security Fixer Agent:
+   ```
+   @security-fixer The web architect has proposed/added new dependencies for [feature].
+
+   **New Dependencies:**
+   - [package@version] — [purpose]
+
+   **Architecture Context:**
+   - [brief description of the feature]
+
+   Please verify these dependencies are secure and fix any vulnerabilities.
+   ```
+4. **Alternative packages**: If a dependency has unfixable vulnerabilities, the architect should identify secure alternatives
 
 ---
 

@@ -217,6 +217,43 @@ Before considering this task complete, request a quality gate review:
 5. Get final approval
 ```
 
+## Security Fixer Agent Integration
+
+When the quality gate detects security vulnerabilities during automated validation, **delegate remediation to the Security Fixer Agent** (`/security-fixer`):
+
+### Automatic Delegation
+If `npm run security:audit` or `npm run security:scan` reports vulnerabilities:
+
+1. **Run the security fix script first**:
+```bash
+npm run security:fix
+```
+
+2. **If vulnerabilities remain**, invoke the Security Fixer Agent:
+```
+@security-fixer The quality gate has detected security vulnerabilities.
+
+**Audit Summary:**
+[paste npm audit summary output]
+
+**Priority**: [P0 if critical, P1 if high, P2 if moderate]
+**Context**: [quality gate validation for feature/implementation]
+
+Please analyze and fix these vulnerabilities following the remediation strategy.
+```
+
+3. **After the Security Fixer completes**, re-run the quality gate automated checks to verify:
+```bash
+npm run quality-gate:automated
+```
+
+### Security Fix Verification
+The quality gate will only APPROVE a solution if:
+- No critical vulnerabilities exist in production dependencies
+- No high vulnerabilities exist in production dependencies
+- All new dependencies have been scanned
+- The Security Fixer Agent has addressed or documented all findings
+
 ## Automated Testing Scripts
 
 ### Full Quality Gate Check
@@ -235,8 +272,14 @@ npm run type-check
 # Security audit
 npm run security:audit
 
+# Security audit (production only)
+npm run security:audit-prod
+
 # Vulnerability scan
 npm run security:scan
+
+# Automated security fix
+npm run security:fix
 
 # Unit tests with coverage
 npm run test:coverage
