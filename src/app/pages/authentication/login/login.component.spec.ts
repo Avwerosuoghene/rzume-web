@@ -200,6 +200,7 @@ describe('LoginComponent', () => {
         token: 'mock-token',
         message: 'Login successful',
         emailConfirmed: true,
+        persistSession: true,
         user: {
           id: '1',
           email: 'test@example.com',

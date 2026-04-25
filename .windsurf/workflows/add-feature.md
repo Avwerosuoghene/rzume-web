@@ -224,6 +224,45 @@ export class JobSearchComponent implements OnInit, OnDestroy {
 }
 ```
 
+## Quality Gate Checkpoint
+
+Before considering this feature complete, request a quality gate review:
+
+### Prepare for Quality Gate
+1. **Document all changes made**
+   - List all files created/modified
+   - Describe implementation approach
+   - Note any architectural decisions
+
+2. **Run local validation**
+   ```bash
+   npm run quality-gate:automated
+   ```
+
+3. **Request quality gate review**
+   ```
+   @quality-gate Please review my implementation of [feature name]
+   
+   **Changes Made:**
+   - Models: [list files]
+   - Services: [list files]
+   - Components: [list files]
+   - Routes: [list changes]
+   
+   **Testing Done:**
+   - Unit tests: [coverage %]
+   - E2E tests: [scenarios covered]
+   - Manual testing: [devices/browsers tested]
+   
+   **Potential Concerns:**
+   - [Any concerns or edge cases you're unsure about]
+   ```
+
+4. **Address feedback**
+   - Implement required changes from quality gate
+   - Resubmit if rejected
+   - Get final approval before merge
+
 ## Checklist
 
 - [ ] Requirements understood
@@ -235,4 +274,6 @@ export class JobSearchComponent implements OnInit, OnDestroy {
 - [ ] Tests written
 - [ ] Manual testing completed
 - [ ] Documentation updated
+- [ ] **Quality gate review requested**
+- [ ] **Quality gate approved**
 - [ ] Code review passed

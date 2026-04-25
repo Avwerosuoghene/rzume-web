@@ -135,3 +135,30 @@ describe('ComponentNameComponent', () => {
 - [ ] Unit tests created
 - [ ] Exported in index.ts
 - [ ] Follows naming conventions
+
+## Quality Gate Checkpoint
+
+Before finalizing component, request quality gate review:
+
+```
+@quality-gate Please review my component implementation
+
+**Component**: [ComponentName]
+**Type**: [Page/Presentation]
+**Location**: [File path]
+
+**Features Implemented:**
+- [Feature 1]
+- [Feature 2]
+
+**Testing:**
+- Unit tests: [coverage %]
+- Test scenarios: [list]
+
+**Concerns:**
+- [Any concerns or questions]
+```
+
+**Next Steps:**
+- Address quality gate feedback
+- Get approval before integration

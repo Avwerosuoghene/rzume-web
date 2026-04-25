@@ -162,3 +162,31 @@ describe('DataService', () => {
 - [ ] Unit tests created
 - [ ] Exported in services/index.ts
 - [ ] JSDoc comments added
+
+## Quality Gate Checkpoint
+
+Before finalizing service, request quality gate review:
+
+```
+@quality-gate Please review my service implementation
+
+**Service**: [ServiceName]
+**Type**: [State/API/Utility/Auth]
+**Location**: [File path]
+
+**Features Implemented:**
+- [Feature 1]
+- [Feature 2]
+
+**Testing:**
+- Unit tests: [coverage %]
+- Test scenarios: [list]
+- Error handling: [scenarios covered]
+
+**Concerns:**
+- [Any concerns or questions]
+```
+
+**Next Steps:**
+- Address quality gate feedback
+- Get approval before integration

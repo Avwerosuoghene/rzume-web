@@ -194,7 +194,7 @@ describe('JobCardListComponent', () => {
 
       component.handleJobApplicationDelete(mockJob);
 
-      expect(mockDialogHelper.openDeleteConfirmation).toHaveBeenCalledWith([mockJob], jasmine.any(Function));
+      expect(mockDialogHelper.openDeleteConfirmation).toHaveBeenCalledWith([mockJob], jasmine.any(Function), jasmine.any(String));
       expect(component.jobApplicationsDelete.emit).toHaveBeenCalledWith([mockJob.id]);
     });
   });

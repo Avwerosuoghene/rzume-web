@@ -301,15 +301,15 @@ describe('LinkedInTrackingService', () => {
 
   describe('Error Handling', () => {
     it('should handle window undefined gracefully', async () => {
-      const originalWindow = global.window;
-      (global as any).window = undefined;
+      const originalWindow = (globalThis as any).window;
+      (globalThis as any).window = undefined;
 
       await service.trackSignup();
 
       // Should not throw error
       expect(true).toBe(true);
 
-      (global as any).window = originalWindow;
+      (globalThis as any).window = originalWindow;
     });
 
     it('should handle lintrk function errors', async () => {

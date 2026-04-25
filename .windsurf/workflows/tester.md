@@ -1311,4 +1311,53 @@ it('should call API', () => {
 
 ---
 
+## Quality Gate Checkpoint
+
+After completing test implementation, submit for quality gate review:
+
+### Pre-Submission Validation
+1. **Run all tests**
+   ```bash
+   npm run test:coverage
+   npm run e2e
+   ```
+
+2. **Verify coverage**
+   ```bash
+   # Check coverage report
+   open coverage/rzume-web/index.html
+   ```
+
+3. **Request quality gate review**
+   ```
+   @quality-gate Please review my test implementation
+   
+   **Testing Scope**: [What was tested]
+   
+   **Coverage Achieved:**
+   - Overall: [%]
+   - Components: [%]
+   - Services: [%]
+   - Critical paths: [%]
+   
+   **Tests Written:**
+   - Unit tests: [count]
+   - Integration tests: [count]
+   - E2E tests: [count]
+   
+   **Edge Cases Covered:**
+   - [Edge case 1]
+   - [Edge case 2]
+   
+   **Concerns:**
+   - [Any testing gaps or concerns]
+   ```
+
+4. **Address feedback**
+   - Add missing tests
+   - Improve test quality
+   - Get approval before finalizing
+
+---
+
 **This skill ensures comprehensive, maintainable, and high-quality test coverage for Angular applications following project standards and industry best practices.**
