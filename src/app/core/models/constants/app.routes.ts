@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { RootRoutes } from '../enums/application.routes.enums';
+import { AuthGuardService } from '../../guards/auth.guard.service';
 
 export const routes: Routes = [
   { path: '', redirectTo: `${RootRoutes.auth}`, pathMatch: "full" },
@@ -16,7 +17,7 @@ export const routes: Routes = [
       .then(m => m.MainComponent),
     loadChildren: () => import('../../../pages/main/main-routes')
       .then(m => m.mainSectionRoutes),
-    canActivate: [() => import('../../guards/auth.guard.service').then(m => m.AuthGuardService)],
+    canActivate: [AuthGuardService],
     data: { preload: true } // Preload main routes after login
   },
   {

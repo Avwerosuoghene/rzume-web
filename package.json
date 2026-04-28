@@ -84,7 +84,6 @@
     "picomatch": ">=4.0.4",
     "webpack": ">=5.106.2",
     "webpack-dev-server": ">=5.2.3",
-    "vite": ">=5.4.21",
     "@babel/runtime": ">=7.29.2",
     "esbuild": ">=0.25.12",
     "http-proxy-middleware": ">=3.0.5",
