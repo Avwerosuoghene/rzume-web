@@ -11,7 +11,6 @@ export function mapApplicationToTableData(application: JobApplicationItem): any 
     return {
         ...application,
         applicationDate: application.applicationDate ? new Date(application.applicationDate) : undefined,
-        resume: application.resume?.fileName
     };
 }
 

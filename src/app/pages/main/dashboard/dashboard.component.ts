@@ -224,6 +224,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dialogHelperService.openEditApplicationDialog(jobData, () => this.reloadDashboardData());
   }
 
+  viewJobApplication(jobData: JobApplicationItem): void {
+    this.dialogHelperService.openViewJobDialog(jobData);
+  }
+
   handleStatusUpdate(updateData: { item: JobApplicationItem }): void {
     this.dialogHelperService.updateApplication(updateData.item, () => this.reloadDashboardData());
   }

@@ -8,6 +8,7 @@ export * from './form-input/form-input.component';
 export * from './google-sign-in';
 export * from './info-dialog';
 export * from './job-add-dialog';
+export * from './job-view-dialog';
 export * from './job-status-change';
 export * from './password-strength-checker';
 export * from './policy-dialog';

@@ -20,6 +20,7 @@
           *cdkVirtualFor="let job of jobs; trackBy: trackByJobId"
           [job]="job"
           (edit)="jobApplicationUpdate.emit($event)"
+          (view)="handleJobApplicationView($event)"
           (delete)="handleJobApplicationDelete($event)"
           (statusChange)="handleJobStatusUpdate($event)"
         >
@@ -31,6 +32,7 @@
           *ngFor="let job of jobs; trackBy: trackByJobId"
           [job]="job"
           (edit)="jobApplicationUpdate.emit($event)"
+          (view)="handleJobApplicationView($event)"
           (delete)="handleJobApplicationDelete($event)"
           (statusChange)="handleJobStatusUpdate($event)"
         >

@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { finalize } from "rxjs";
-import { JobAddDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
+import { JobAddDialogComponent, JobViewDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
 import { ConfirmDeleteModalComponent } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
 import { PolicyDialogComponent } from '../../components/policy-dialog/policy-dialog.component';
 import { JobApplicationService } from "./job-application.service";
 import { LoaderService } from "./loader.service";
-import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
@@ -62,6 +62,19 @@ export class DialogHelperService {
       },
       { panelClass: 'add-job-dialog-panel' }
     );
+  }
+
+  openViewJobDialog(jobData: JobApplicationItem): void {
+    const dialogData: ViewJobDialogData = { jobApplication: jobData };
+
+    const dialogConfig = {
+      data: dialogData,
+      backdropClass: 'blurred',
+      disableClose: false,
+      panelClass: 'view-job-dialog-panel'
+    };
+
+    this.dialog.open(JobViewDialogComponent, dialogConfig);
   }
 
   private createApplication(payload: CreateApplicationPayload, onComplete?: () => void): void {

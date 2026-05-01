@@ -27,6 +27,8 @@ export const SCROLL_DEBOUNCE_TIME = 200;
 export const SCROLL_THRESHOLD = 50;
 export const ITEMS_INCREMENT = 5;
 
+export const DEFAULT_LANDING_PAGE_URL = 'https://rzume.site/about';
+
 
 
 

@@ -9,6 +9,13 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: $rzume-blue-light;
+    border-color: $rzume-blue;
+  }
 
   .card-header, .card-footer {
     display: flex;

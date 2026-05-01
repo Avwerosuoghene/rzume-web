@@ -49,6 +49,7 @@ import { DialogHelperService } from '../../core/services/dialog-helper.service';
 })
 export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChanges {
   @Output() jobApplicationUpdate = new EventEmitter<JobApplicationItem>();
+  @Output() jobApplicationView = new EventEmitter<JobApplicationItem>();
   @Output() jobStatusUpdate = new EventEmitter<{ item: JobApplicationItem }>();
   @Output() jobApplicationsDelete = new EventEmitter<string[]>();
   @Output() jobApplicationAddition = new EventEmitter<void>();
@@ -116,6 +117,10 @@ export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChange
 
   handleAddJobApplication(): void {
     this.jobApplicationAddition.emit();
+  }
+
+  handleJobApplicationView(item: JobApplicationItem): void {
+    this.jobApplicationView.emit(item);
   }
 
   handleJobApplicationDelete(item: JobApplicationItem){

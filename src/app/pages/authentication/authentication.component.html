@@ -11,12 +11,14 @@
 
     <div class="auth-right_element" [class.non-auth-layout]="!showAuthHeader()">
   <!-- Desktop content -->
-  <img
-    src="assets/icons/rzume_logo_text.png"
-    alt="rzume logo"
-    class="auth-logo_desktop"
-    [@fadeInOut]="animationState"
-  />
+  <a [href]="landingPageUrl" target="_blank" rel="noopener noreferrer" class="auth-logo-link">
+    <img
+      src="assets/icons/rzume_logo_text.png"
+      alt="rzume logo"
+      class="auth-logo_desktop"
+      [@fadeInOut]="animationState"
+    />
+  </a>
 
   <div class="auth-route-elements">
     <router-outlet></router-outlet>

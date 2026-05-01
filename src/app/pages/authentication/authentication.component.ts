@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {  ActivatedRoute } from '@angular/router';
 import { RouterModules } from '../../core/modules/router-modules';
 import { fadeInOutAnimation } from '../../core/animations/fade-in-out-animation';
 import { FadeInOut } from '../../core/models/types';
 import { AuthRoutes } from '../../core/models/enums/application.routes.enums';
 import { CommonModule } from '@angular/common';
+import { ConfigService } from '../../core/services/config.service';
 
 @Component({
   selector: 'app-authentication',
@@ -14,12 +15,16 @@ import { CommonModule } from '@angular/common';
   styleUrl: './authentication.component.scss',
   animations: [fadeInOutAnimation]
 })
-export class AuthenticationComponent {
+export class AuthenticationComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
+  private configService = inject(ConfigService);
 
   animationState: FadeInOut = 'close';
+  landingPageUrl: string = '';
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.configService.loadConfig();
+    this.landingPageUrl = this.configService.landingPageUrl;
     this.runOnInitAnimations();
   }
 

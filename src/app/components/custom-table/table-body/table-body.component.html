@@ -1,10 +1,11 @@
 <tbody class="table-body">
   @for (item of data; track $index) {
-  <tr>
+  <tr (click)="onRowClick(item)">
     <td class="centered">
       <input
         type="checkbox"
         (change)="triggerCheckboxChange(item, $event)"
+        (click)="$event.stopPropagation()"
         [(ngModel)]="item.selected"
         class="custom-checkbox"
       />
@@ -45,7 +46,7 @@
         } @else if (col.field === 'applicationDate') {
         {{ item[col.field]  | date:'MM/dd/yyyy' }}
         } @else {
-        {{ (item[col.field] || "Not Provided") | truncate: 15 }}
+        {{ (col.field === 'resume' ? item[col.field]?.fileName : item[col.field]) || "Not Provided" | truncate: 15 }}
         }
       </p>
     </div>
@@ -57,12 +58,13 @@
     <button
       mat-icon-button
       [matMenuTriggerFor]="menu"
+      (click)="$event.stopPropagation()"
       aria-label="more options"
     >
       <mat-icon>more_horiz</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <ng-container *ngIf="!selectedItems?.length">
+      <ng-container *ngIf="!selectedItems.length">
         <button mat-menu-item (click)="triggerApplicationEdit(item)">
           <mat-icon>edit</mat-icon>
           <span>Edit</span>

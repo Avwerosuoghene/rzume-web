@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { DEFAULT_LANDING_PAGE_URL } from '../models/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -79,5 +80,12 @@ export class ConfigService {
       return '';
     }
     return this.config.analytics?.linkedInPartnerId || '';
+  }
+
+  get landingPageUrl(): string {
+    if (!this.config) {
+      return DEFAULT_LANDING_PAGE_URL;
+    }
+    return this.config.landingPageUrl || DEFAULT_LANDING_PAGE_URL;
   }
 }

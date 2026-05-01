@@ -34,6 +34,12 @@
     justify-content: center;
     align-items: center;
     flex: 0 0 auto;
+
+    a {
+      display: inline-block;
+      text-decoration: none;
+      cursor: pointer;
+    }
   }
 
   .auth-mobile_text_section {

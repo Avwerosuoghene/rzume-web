@@ -20,4 +20,8 @@ export interface PolicyDialogData {
   content: string;
 }
 
+export interface ViewJobDialogData {
+  jobApplication: JobApplicationItem;
+}
+
 

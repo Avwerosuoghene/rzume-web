@@ -24,9 +24,14 @@ export class JobCardItemComponent {
   @Output() edit = new EventEmitter<JobApplicationItem>();
   @Output() delete = new EventEmitter<JobApplicationItem>();
   @Output() statusChange = new EventEmitter<JobApplicationItem>();
+  @Output() view = new EventEmitter<JobApplicationItem>();
 
   triggerApplicationEdit(item: JobApplicationItem): void {
     this.edit.emit(item);
+  }
+
+  triggerView(item: JobApplicationItem): void {
+    this.view.emit(item);
   }
 
   triggerDelete(item: JobApplicationItem): void {

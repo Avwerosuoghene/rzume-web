@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules';
 import { ApplicationUtil, ViewUtilities } from '../../../core/helpers';
 import { CommonModule } from '@angular/common';
@@ -20,9 +20,10 @@ export class TableBodyComponent  {
   @Input() columns: ColumnDefinition[] = [];
   @Input() selectedItems: JobApplicationItem[] = [];
   @Output() checkBoxChanged = new EventEmitter<any>();
-  @Output() edit = new EventEmitter<JobApplicationItem>(); 
+  @Output() edit = new EventEmitter<JobApplicationItem>();
   @Output() delete = new EventEmitter<string[]>();
   @Output() statusChange = new EventEmitter<{item: JobApplicationItem}>();
+  @Output() rowClick = new EventEmitter<JobApplicationItem>();
 
   triggerCheckboxChange(item: JobApplicationItem, event: any): void {
     this.checkBoxChanged.emit({item, event});
@@ -42,6 +43,10 @@ export class TableBodyComponent  {
 
   triggerStatusChange(item: JobApplicationItem): void {
     this.statusChange.emit({ item });
+  }
+
+  onRowClick(item: JobApplicationItem): void {
+    this.rowClick.emit(item);
   }
 
   getLongWidthItems(item: string) {

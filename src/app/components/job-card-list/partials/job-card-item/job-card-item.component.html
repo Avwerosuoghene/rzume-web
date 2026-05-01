@@ -1,11 +1,11 @@
-<article class="card-container">
+<article class="card-container" (click)="triggerView(job)">
   <header class="card-header">
     <div class="company-info">
       <h4 class="company-name">{{ job.companyName }}</h4>
       <p class="job-role">{{ job.position }}</p>
     </div>
     <div class="action-icons">
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="more options">
+      <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()" aria-label="more options">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
@@ -27,9 +27,9 @@
   <footer class="card-footer">
     @if (job.jobLink) {
     <div class="url-section">
-      
-      <a [href]="job.jobLink" target="_blank">{{ job.jobLink }}</a>
-      <button mat-icon-button class="copy-icon-button" (click)="copyLink(job.jobLink)">
+
+      <a [href]="job.jobLink" target="_blank" (click)="$event.stopPropagation()">{{ job.jobLink }}</a>
+      <button mat-icon-button class="copy-icon-button" (click)="copyLink(job.jobLink); $event.stopPropagation()">
         <mat-icon class="copy-icon">content_copy</mat-icon>
       </button>
     </div>

@@ -433,7 +433,8 @@ body {
 }
 
 @media (max-width: 599px) {
-  .add-job-dialog-panel {
+  .add-job-dialog-panel,
+  .view-job-dialog-panel {
     width: 100vw;
     height: 100vh;
     max-width: 100vw !important;

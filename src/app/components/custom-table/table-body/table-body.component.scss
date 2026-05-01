@@ -11,6 +11,16 @@ tbody {
 
 tr {
   width: 100%;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $rzume-blue-light;
+
+    td {
+      border-bottom-color: $rzume-blue;
+    }
+  }
 }
 
 td {

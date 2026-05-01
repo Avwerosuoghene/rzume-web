@@ -1,0 +1,112 @@
+<div class="view_job_container">
+  <!-- Header Container with Bottom Border -->
+  <div class="job-view-header-container">
+    <div class="job-view-header">
+      <div class="job-view-header-content">
+        <h2 class="job-view-company-name">{{ jobApplication.companyName }}</h2>
+        <div class="job-view-status-badge">{{ jobApplication.status | uppercase }}</div>
+      </div>
+      <h2 class="job-view-header-title">Application Details</h2>
+      <button mat-icon-button (click)="closeDialog()" class="job-view-close-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <hr class="job-view-intro-divider">
+    <p class="job-view-application-date">Applied on {{ jobApplication.applicationDate | date: 'MMMM d, yyyy' }}</p>
+    <div class="job-view-intro">
+      <h2 class="job-view-intro-company">{{ jobApplication.companyName }}</h2>
+      <p class="job-view-intro-date">Applied on {{ jobApplication.applicationDate | date: 'MMMM d, yyyy' }}</p>
+      <div class="job-view-intro-badge">{{ jobApplication.status | uppercase }}</div>
+    </div>
+  </div>
+
+  <hr class="job-view-divider">
+
+  <div class="job-view-content">
+    <!-- Company Information Section -->
+    <div class="job-view-section">
+      <h3 class="job-view-section-header">COMPANY INFORMATION</h3>
+      
+      @if (jobApplication.jobLink) {
+        <div class="job-view-info-row">
+          <div class="job-view-icon-container">
+            <img src="/assets/icons/globe-icon.svg" alt="Globe" class="job-view-icon" />
+          </div>
+          <div class="job-view-info-content">
+            <label class="job-view-info-label">Job Link</label>
+            <a [href]="jobApplication.jobLink" target="_blank" class="job-view-info-value job-view-link">
+              Click here to view
+            </a>
+          </div>
+        </div>
+      }
+      
+      <div class="job-view-info-row">
+        <div class="job-view-icon-container">
+          <img src="/assets/icons/building-icon.svg" alt="Building" class="job-view-icon" />
+        </div>
+        <div class="job-view-info-content">
+          <label class="job-view-info-label">Job Role</label>
+          <p class="job-view-info-value">{{ jobApplication.position }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Internal Notes Section (Conditional) -->
+    @if (jobApplication.notes) {
+      <hr class="job-view-section-divider">
+      <div class="job-view-section">
+        <h3 class="job-view-section-header">INTERNAL NOTES</h3>
+        <div class="job-view-notes-box">
+          <div class="job-view-notes-scroll">
+            <p class="job-view-notes-content">{{ jobApplication.notes }}</p>
+          </div>
+        </div>
+
+      </div>
+    }
+
+    <!-- Document Used Section (Conditional) -->
+    @if (jobApplication.resume || jobApplication.resumeId) {
+      <hr class="job-view-section-divider">
+      <div class="job-view-section">
+        <h3 class="job-view-section-header">DOCUMENT USED</h3>
+        
+        <div class="job-view-document-card">
+          <div class="job-view-document-icon-container">
+            <img src="/assets/icons/uploaded-document.svg" alt="Document" class="job-view-document-icon" />
+          </div>
+          <div class="job-view-document-info">
+            <p class="job-view-document-name">{{ jobApplication.resume?.fileName || 'Resume.pdf' }}</p>
+            <p class="job-view-document-meta">
+              {{ jobApplication.resume?.fileType || 'CV/Resume' }}
+              @if (jobApplication.resume?.fileSize) {
+                <span> • {{ formatFileSize(jobApplication.resume?.fileSize!) }}</span>
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <hr class="job-view-section-divider">
+    <!-- Action Buttons -->
+    <div class="job-view-action-buttons">
+      <button 
+        mat-flat-button
+        class="rzume-button-outline job-view-close-button"
+        type="button"
+        (click)="closeDialog()">
+        Close
+      </button>
+      
+      <button 
+        mat-flat-button
+        class="rzume-button-primary job-view-edit-button"
+        type="button"
+        (click)="editJobApplication()">
+        Edit Application
+      </button>
+    </div>
+  </div>
+</div>

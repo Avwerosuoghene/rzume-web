@@ -31,6 +31,7 @@ export class CustomTableComponent {
   @Output() jobApplicationUpdate: EventEmitter<JobApplicationItem> = new EventEmitter<JobApplicationItem>();
   @Output() jobStatusUpdate: EventEmitter<{ item: JobApplicationItem }> = new EventEmitter<{ item: JobApplicationItem }>();
   @Output() jobApplicationsDelete: EventEmitter<string[]> = new EventEmitter<string[]>();
+  @Output() rowClick: EventEmitter<JobApplicationItem> = new EventEmitter<JobApplicationItem>();
 
   selectedItems: Array<JobApplicationItem> = [];
   totalItems: number = 20;
@@ -104,6 +105,10 @@ export class CustomTableComponent {
 
   editJobApplication(application: JobApplicationItem) {
     this.jobApplicationUpdate.emit(application);
+  }
+
+  onRowClick(item: JobApplicationItem): void {
+    this.rowClick.emit(item);
   }
 
   onPageChange(page: number): void {

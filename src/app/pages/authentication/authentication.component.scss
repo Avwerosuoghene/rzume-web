@@ -98,6 +98,12 @@
         }
       }
 
+      .auth-logo-link {
+        display: inline-block;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
       .auth-logo_desktop {
         opacity: 0;
         width: 80px;
