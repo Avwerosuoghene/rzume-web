@@ -25,9 +25,13 @@ This skill generates a complete Angular component following project standards.
    
 3. **Create Template File**
    - Use modern control flow (`@if`, `@for`, `@switch`)
-   - Add semantic HTML structure
-   - Include accessibility attributes
+   - **Use semantic HTML elements** (`<section>`, `<article>`, `<nav>`, `<header>`, `<footer>`, `<ul>/<li>`, `<button>`, etc.)
+   - Use `<ng-container>` when a structural wrapper produces no meaningful DOM node
+   - Use `<ng-template>` for reusable template fragments
+   - Include ARIA attributes: `aria-label`, `aria-labelledby`, `aria-live`, `alt`
+   - Icon-only buttons must have `aria-label`; icons use `aria-hidden="true"`
    - Add data-testid attributes for testing
+   - **Never** use `<div (click)>` — always `<button>` for actions, `<a>` for navigation
 
 4. **Create Styles File**
    - Use component-scoped SCSS
@@ -75,15 +79,33 @@ export class ComponentNameComponent implements OnDestroy {
 
 ### Component Template
 ```html
-<div class="component-container">
+<!-- Page section: use <section> with a heading for named regions -->
+<section class="component-container" aria-labelledby="component-heading">
+  <h2 id="component-heading" class="visually-hidden">Component Section</h2>
+
   @if (isLoading) {
-    <app-loader />
+    <p class="loading-message" aria-live="polite">Loading...</p>
   } @else {
-    <div class="content">
-      <!-- Component content -->
-    </div>
+    <ng-container>
+      <!-- Component content — use semantic child elements -->
+      <article class="content">
+        <!-- Self-contained content goes here -->
+      </article>
+    </ng-container>
   }
-</div>
+</section>
+
+<!--
+  Element selection guide:
+  - Page regions   : <main>, <header>, <footer>, <nav>, <aside>
+  - Content groups : <section> (with heading), <article> (self-contained)
+  - Lists          : <ul>/<ol> + <li> (never <div> lists)
+  - Text           : <p>, <h1>-<h6>, <time>, <address>
+  - Interactive    : <button type="button"> for actions, <a> for navigation
+  - No DOM node    : <ng-container> for structural directives
+  - Reusable tpl   : <ng-template #ref>
+  - Last resort    : <div>/<span> only for purely presentational wrappers
+-->
 ```
 
 ### Component Styles
@@ -130,9 +152,15 @@ describe('ComponentNameComponent', () => {
 - [ ] Component uses standalone architecture
 - [ ] OnPush change detection enabled
 - [ ] Proper OnDestroy implementation
-- [ ] Modern control flow in template
+- [ ] Modern control flow in template (`@if`, `@for`, `@switch`)
+- [ ] **Semantic HTML elements used** (no `<div>` for semantic content)
+- [ ] **`<ng-container>` used** instead of wrapper `<div>` for structural directives
+- [ ] **No `<div (click)>`** — `<button>` for actions, `<a>` for navigation
+- [ ] **Icon-only buttons have `aria-label`**; icons use `aria-hidden="true"`
+- [ ] **Form inputs linked to `<label>`** via `for`/`id` or `aria-labelledby`
+- [ ] **Lists use `<ul>`/`<ol>` + `<li>`** (not `<div>` items)
 - [ ] Mobile-first responsive styles
-- [ ] Unit tests created
+- [ ] Unit tests created (including semantic/ARIA assertions)
 - [ ] Exported in index.ts
 - [ ] Follows naming conventions
 

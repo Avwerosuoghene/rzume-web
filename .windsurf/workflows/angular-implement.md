@@ -405,9 +405,12 @@ src/
     // Add discovered UI library imports
   ],
   template: `
-    <div class="[feature-name]-container">
+    <section class="[feature-name]-container" aria-labelledby="[feature-name]-heading">
+      <h2 id="[feature-name]-heading" class="visually-hidden">[Feature Name]</h2>
       <!-- Template structure based on project patterns -->
-    </div>
+      <!-- Use semantic elements: section, article, ul/li, button, nav, header, footer -->
+      <!-- Use ng-container for structural directives without adding DOM nodes -->
+    </section>
   `,
   styleUrls: ['./[feature-name].component.scss'], // Adjust based on styling approach
   changeDetection: ChangeDetectionStrategy.OnPush // Based on project patterns
@@ -580,7 +583,7 @@ export class GoodComponent {
 
 **Anti-Pattern 3: Using ngClass/ngStyle Instead of Direct Bindings**
 ```typescript
-// ❌ WRONG: Using directives for simple bindings
+// ❌ WRONG: Using directives for simple bindings (also using non-semantic div)
 @Component({
   template: `
     <div [ngClass]="{admin: isAdmin, dense: density === 'high'}">
@@ -588,11 +591,13 @@ export class GoodComponent {
   `
 })
 
-// ✅ CORRECT: Use direct class and style bindings (better performance)
+// ✅ CORRECT: Use direct class and style bindings on semantic elements
 @Component({
   template: `
-    <div [class.admin]="isAdmin" [class.dense]="density === 'high'">
-    <div [style.color]="textColor" [style.background-color]="backgroundColor">
+    <article [class.admin]="isAdmin" [class.dense]="density === 'high'">
+      <section [style.color]="textColor" [style.background-color]="backgroundColor">
+      </section>
+    </article>
   `
 })
 ```
@@ -766,11 +771,15 @@ export class BadComponent implements OnDestroy {
   }
 }
 
-// ✅ CORRECT: Use AsyncPipe in templates
+// ✅ CORRECT: Use AsyncPipe in templates with semantic list elements
 @Component({
   template: `
-    <div *ngFor="let item of data$ | async">{{ item }}</div>
-    <div *ngFor="let item of moreData$ | async">{{ item }}</div>
+    <ul>
+      <li *ngFor="let item of data$ | async">{{ item }}</li>
+    </ul>
+    <ul>
+      <li *ngFor="let item of moreData$ | async">{{ item }}</li>
+    </ul>
   `
 })
 export class GoodComponent {
@@ -836,9 +845,13 @@ export class BadComponent {
   }
 }
 
-// ✅ CORRECT: Use operators and AsyncPipe
+// ✅ CORRECT: Use operators and AsyncPipe with semantic list
 @Component({
-  template: `<div *ngFor="let user of activeUsers$ | async">{{ user.name }}</div>` 
+  template: `
+    <ul aria-label="Active users">
+      <li *ngFor="let user of activeUsers$ | async">{{ user.name }}</li>
+    </ul>
+  `
 })
 export class GoodComponent {
   activeUsers$ = this.userService.getUsers().pipe(
@@ -854,9 +867,9 @@ export class GoodComponent {
 // ❌ WRONG: Functions called in templates (runs on every change detection)
 @Component({
   template: `
-    <div>{{ calculateExpensiveValue() }}</div>
-    <div>{{ formatDate(date) }}</div>
-    <div>{{ getFullName(user) }}</div>
+    <p>{{ calculateExpensiveValue() }}</p>
+    <time>{{ formatDate(date) }}</time>
+    <p>{{ getFullName(user) }}</p>
   `
 })
 export class BadComponent {
@@ -871,12 +884,12 @@ export class BadComponent {
   }
 }
 
-// ✅ CORRECT: Use signals with computed (Angular 16+)
+// ✅ CORRECT: Use signals with computed (Angular 16+) and semantic elements
 @Component({
   template: `
-    <div>{{ expensiveValue() }}</div>
-    <div>{{ formattedDate() }}</div>
-    <div>{{ fullName() }}</div>
+    <p>{{ expensiveValue() }}</p>
+    <time>{{ formattedDate() }}</time>
+    <p>{{ fullName() }}</p>
   `
 })
 export class GoodComponent {
@@ -889,10 +902,10 @@ export class GoodComponent {
   fullName = computed(() => `${this.user().firstName} ${this.user().lastName}`);
 }
 
-// ✅ ALTERNATIVE: Use pipes for transformations
+// ✅ ALTERNATIVE: Use pipes for transformations with semantic elements
 @Component({
   template: `
-    <div>{{ date | customDatePipe }}</div>
+    <time>{{ date | customDatePipe }}</time>
   `
 })
 export class PipeComponent {
@@ -906,7 +919,9 @@ export class PipeComponent {
 @Component({
   selector: 'app-user-list',
   template: `
-    <div *ngFor="let user of users">{{ user.name }}</div>
+    <ul>
+      <li *ngFor="let user of users">{{ user.name }}</li>
+    </ul>
   `
   // Default change detection strategy
 })
@@ -914,11 +929,13 @@ export class BadComponent {
   @Input() users: User[];
 }
 
-// ✅ CORRECT: Use OnPush for better performance
+// ✅ CORRECT: Use OnPush for better performance with semantic list
 @Component({
   selector: 'app-user-list',
   template: `
-    <div *ngFor="let user of users">{{ user.name }}</div>
+    <ul aria-label="User list">
+      <li *ngFor="let user of users">{{ user.name }}</li>
+    </ul>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -1253,11 +1270,13 @@ export class OldComponent {
 
 **Best Practice 1: Always Use AsyncPipe in Templates**
 ```typescript
-// ✅ CORRECT: AsyncPipe handles subscriptions
+// ✅ CORRECT: AsyncPipe handles subscriptions with semantic elements
 @Component({
   template: `
-    <div *ngFor="let user of users$ | async">{{ user.name }}</div>
-    <div *ngIf="loading$ | async">Loading...</div>
+    <ul aria-label="Users">
+      <li *ngFor="let user of users$ | async">{{ user.name }}</li>
+    </ul>
+    <p *ngIf="loading$ | async" aria-live="polite">Loading...</p>
   `
 })
 export class GoodComponent {

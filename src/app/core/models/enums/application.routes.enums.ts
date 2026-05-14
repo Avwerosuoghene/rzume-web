@@ -15,5 +15,7 @@ export enum AuthRoutes {
 
 export enum MainRoutes {
   dashboard = 'dashboard',
-  profileManagement = 'profile-management'
+  profileManagement = 'profile-management',
+  roles = 'roles',
+  jobs = 'jobs'
 }

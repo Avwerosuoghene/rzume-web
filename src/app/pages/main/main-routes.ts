@@ -9,6 +9,16 @@ export const mainSectionRoutes: Array<Route> = [
       .then(m => m.DashboardComponent)
   },
   {
+    path: MainRoutes.roles,
+    loadComponent: () => import("./roles/roles.component")
+      .then(m => m.RolesComponent)
+  },
+  {
+    path: MainRoutes.jobs,
+    loadComponent: () => import("./jobs/jobs.component")
+      .then(m => m.JobsComponent)
+  },
+  {
     path: MainRoutes.profileManagement,
     loadComponent: () => import("./profile-management/profile-management.component")
       .then(m => m.ProfileManagementComponent)

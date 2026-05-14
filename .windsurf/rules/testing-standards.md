@@ -294,6 +294,79 @@ Cypress.Commands.add('login', () => {
 - ✅ Mock external dependencies
 - ✅ Test edge cases and error scenarios
 
+### Semantic HTML & Accessibility Testing
+
+#### Verify semantic elements are used
+```typescript
+it('should use semantic list element for job items', () => {
+  fixture.detectChanges();
+  const list = fixture.nativeElement.querySelector('ul, ol');
+  expect(list).toBeTruthy('Expected a <ul> or <ol> element, not a <div> list');
+});
+
+it('should NOT use div as a button', () => {
+  fixture.detectChanges();
+  const divButtons = fixture.nativeElement.querySelectorAll('div[click], div[(click)]');
+  expect(divButtons.length).toBe(0, 'Found <div> elements used as buttons');
+});
+
+it('should render action buttons with <button> element', () => {
+  fixture.detectChanges();
+  const buttons = fixture.nativeElement.querySelectorAll('button');
+  expect(buttons.length).toBeGreaterThan(0);
+});
+```
+
+#### Verify ARIA attributes
+```typescript
+it('should have aria-label on icon-only buttons', () => {
+  fixture.detectChanges();
+  const buttons = fixture.nativeElement.querySelectorAll('button');
+  buttons.forEach((btn: HTMLButtonElement) => {
+    const hasText = btn.textContent?.trim();
+    const hasAriaLabel = btn.hasAttribute('aria-label') || btn.hasAttribute('aria-labelledby');
+    if (!hasText) {
+      expect(hasAriaLabel).toBeTrue(`Icon-only button missing aria-label: ${btn.outerHTML}`);
+    }
+  });
+});
+
+it('should link form inputs to labels', () => {
+  fixture.detectChanges();
+  const inputs = fixture.nativeElement.querySelectorAll('input:not([type="hidden"])');
+  inputs.forEach((input: HTMLInputElement) => {
+    const id = input.id;
+    const ariaLabel = input.getAttribute('aria-label');
+    const ariaLabelledBy = input.getAttribute('aria-labelledby');
+    const hasLabel = id ? !!fixture.nativeElement.querySelector(`label[for="${id}"]`) : false;
+    expect(hasLabel || ariaLabel || ariaLabelledBy)
+      .toBeTrue(`Input missing label: ${input.outerHTML}`);
+  });
+});
+
+it('should have accessible live region for dynamic content', () => {
+  fixture.detectChanges();
+  component.isLoading = true;
+  fixture.detectChanges();
+  const liveRegion = fixture.nativeElement.querySelector('[aria-live]');
+  // Only required if component has dynamic status messages
+  // expect(liveRegion).toBeTruthy();
+});
+```
+
+#### Cypress accessibility assertions
+```typescript
+it('should have no critical accessibility violations', () => {
+  cy.get('main').should('exist');
+  cy.get('h1, h2').should('exist');
+  cy.get('button').each(($btn) => {
+    const text = $btn.text().trim();
+    const ariaLabel = $btn.attr('aria-label');
+    expect(text || ariaLabel).toBeTruthy();
+  });
+});
+```
+
 ### Coverage Requirements
 - Minimum 80% code coverage
 - 100% coverage for critical paths

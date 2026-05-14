@@ -122,21 +122,32 @@ export class CustomInputComponent implements ControlValueAccessor {
 
 ### Modern Control Flow (Required)
 ```html
-<!-- Conditional rendering -->
-@if (isLoading) {
-  <app-loader />
-} @else if (hasError) {
-  <app-error [message]="errorMessage" />
-} @else {
-  <app-content [data]="data" />
-}
+<!-- Conditional rendering — use ng-container to avoid extra DOM nodes -->
+<section class="component-container" aria-labelledby="section-heading">
+  <h2 id="section-heading" class="visually-hidden">Section Title</h2>
+  @if (isLoading) {
+    <app-loader />
+  } @else if (hasError) {
+    <app-error [message]="errorMessage" />
+  } @else {
+    <ng-container>
+      <app-content [data]="data" />
+    </ng-container>
+  }
+</section>
 
-<!-- List rendering with trackBy -->
-@for (item of items; track item.id) {
-  <app-item-card [item]="item" />
-} @empty {
-  <app-empty-state message="No items found" />
-}
+<!-- List rendering — always use ol/ul + li for lists of items -->
+<ul class="item-list" aria-label="Job applications">
+  @for (item of items; track item.id) {
+    <li class="item-list__entry">
+      <app-item-card [item]="item" />
+    </li>
+  } @empty {
+    <li class="item-list__empty">
+      <app-empty-state message="No items found" />
+    </li>
+  }
+</ul>
 
 <!-- Switch statements -->
 @switch (status) {
@@ -152,36 +163,118 @@ export class CustomInputComponent implements ControlValueAccessor {
 }
 ```
 
+### Angular Structural Elements
+```html
+<!-- Use ng-container when you need a structural directive with no DOM output -->
+@if (isAdmin) {
+  <ng-container>
+    <app-admin-panel />
+    <app-admin-tools />
+  </ng-container>
+}
+
+<!-- Use ng-template for reusable template fragments -->
+<ng-template #loadingTpl>
+  <p class="loading-message" aria-live="polite">Loading...</p>
+</ng-template>
+
+<!-- Reference ng-template via ngTemplateOutlet -->
+<ng-container *ngTemplateOutlet="loadingTpl" />
+```
+
 ### Class and Style Bindings
 ```html
-<!-- Class bindings (NOT ngClass) -->
-<div 
+<!-- Class bindings on semantic elements (NOT ngClass) -->
+<article
   [class.active]="isActive"
   [class.disabled]="isDisabled"
   [class.error]="hasError">
-</div>
+</article>
 
-<!-- Style bindings (NOT ngStyle) -->
-<div 
+<!-- Style bindings on semantic elements (NOT ngStyle) -->
+<section
   [style.width.px]="width"
   [style.background-color]="bgColor">
-</div>
+</section>
+
+<!-- Use ng-container when the binding wrapper should produce no DOM node -->
+<ng-container [class.active]="isActive">
+  <app-child />
+</ng-container>
 ```
 
 ### Event Handling
 ```html
-<!-- Simple events -->
-<button (click)="onSave()">Save</button>
+<!-- Always use <button> for actions, never <div (click)> -->
+<button type="button" (click)="onSave()">Save</button>
+<button type="submit" (click)="onSubmit()" aria-label="Submit form">Submit</button>
 
-<!-- Events with parameters -->
-<app-item 
-  *ngFor="let item of items"
-  (edit)="onEdit(item)"
-  (delete)="onDelete(item.id)">
-</app-item>
+<!-- Use <a> for navigation, <button> for in-page actions -->
+<a [routerLink]="['/dashboard']">Go to Dashboard</a>
+
+<!-- Icon-only buttons must have aria-label -->
+<button type="button" (click)="onDelete(item.id)" aria-label="Delete application">
+  <mat-icon>delete</mat-icon>
+</button>
 
 <!-- Template reference variables -->
-<input #searchInput (keyup)="onSearch(searchInput.value)">
+<label for="search-input">Search</label>
+<input id="search-input" #searchInput (keyup)="onSearch(searchInput.value)" />
+```
+
+## Semantic HTML Anti-Patterns
+
+### Prohibited Patterns
+```html
+<!-- ❌ WRONG: div used as a button -->
+<div (click)="onAction()">Click me</div>
+
+<!-- ✅ CORRECT -->
+<button type="button" (click)="onAction()">Click me</button>
+
+<!-- ❌ WRONG: div used as a list -->
+<div class="list">
+  <div class="item">Item 1</div>
+  <div class="item">Item 2</div>
+</div>
+
+<!-- ✅ CORRECT -->
+<ul class="list">
+  <li class="item">Item 1</li>
+  <li class="item">Item 2</li>
+</ul>
+
+<!-- ❌ WRONG: extra div wrapper for structural directive -->
+<div *ngIf="isVisible">
+  <app-child />
+</div>
+
+<!-- ✅ CORRECT: ng-container adds no DOM node -->
+@if (isVisible) {
+  <ng-container>
+    <app-child />
+  </ng-container>
+}
+
+<!-- ❌ WRONG: generic div for page section -->
+<div class="header">...</div>
+<div class="main-content">...</div>
+<div class="sidebar">...</div>
+
+<!-- ✅ CORRECT -->
+<header>...</header>
+<main>...</main>
+<aside>...</aside>
+
+<!-- ❌ WRONG: icon button without accessible name -->
+<button (click)="onEdit()">
+  <mat-icon>edit</mat-icon>
+</button>
+
+<!-- ✅ CORRECT -->
+<button type="button" (click)="onEdit()" aria-label="Edit application">
+  <mat-icon aria-hidden="true">edit</mat-icon>
+</button>
 ```
 
 ## SCSS Patterns

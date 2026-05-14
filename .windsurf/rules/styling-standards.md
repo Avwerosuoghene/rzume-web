@@ -205,14 +205,17 @@ Use `:host` for component-level styles
 ```
 
 ### BEM Methodology (Optional but Recommended)
+Apply BEM class names to **semantic HTML elements** — not generic `<div>` containers.
+
 ```scss
-.card {
-  // Block
+// article, section, li etc. are preferred block-level elements
+article.card {
+  // Block on a semantic element
   background: $background-white;
   border-radius: 8px;
   
   &__header {
-    // Element
+    // Element — maps to <header> inside the card
     padding: $spacing-md;
     border-bottom: 1px solid $border-color;
   }
@@ -227,6 +230,18 @@ Use `:host` for component-level styles
     border: 2px solid $primary-green;
   }
 }
+```
+
+```html
+<!-- Matching semantic HTML for the BEM example above -->
+<article class="card card--highlighted">
+  <header class="card__header">
+    <h3>Card Title</h3>
+  </header>
+  <section class="card__body">
+    <p>Card content</p>
+  </section>
+</article>
 ```
 
 ### Nesting Guidelines
@@ -460,3 +475,5 @@ Use `:host` for component-level styles
 - ❌ Duplicate code (use mixins)
 - ❌ Deep nesting (max 3 levels)
 - ❌ Global styles that affect components
+- ❌ Writing `.header`, `.footer`, `.nav` styles on `<div>` elements — use semantic `<header>`, `<footer>`, `<nav>` instead
+- ❌ Styling `div.list` or `div.list-item` when `<ul>`/`<li>` are appropriate

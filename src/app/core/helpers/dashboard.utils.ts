@@ -73,6 +73,16 @@ export function getBaseRoutes(): SideBarElement[] {
             name: 'Dashboard',
             icon: 'assets/icons/dashboard-icon.svg',
             route: `/${RootRoutes.main}/${MainRoutes.dashboard}`
+        },
+        {
+            name: 'Roles',
+            icon: 'assets/icons/roles-icon.svg',
+            route: `/${RootRoutes.main}/${MainRoutes.roles}`
+        },
+        {
+            name: 'Jobs',
+            icon: 'assets/icons/jobs-icon.svg',
+            route: `/${RootRoutes.main}/${MainRoutes.jobs}`
         }
     ];
 }

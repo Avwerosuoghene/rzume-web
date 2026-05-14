@@ -528,7 +528,7 @@ What other options were evaluated?
 - Input/output specifications
 - Usage examples
 - Styling guidelines
-- Accessibility considerations
+- Accessibility considerations (semantic elements, ARIA, keyboard navigation)
 - Known limitations
 
 **Deliverable**: Component Documentation
@@ -566,6 +566,10 @@ Ensure the design adheres to:
 - ✅ Service-based state management
 - ✅ Mobile-first responsive design
 - ✅ 80%+ test coverage requirement
+- ✅ **Semantic HTML elements** — no `<div>` for semantic content
+- ✅ **`<ng-container>`** for structural directives without DOM nodes
+- ✅ **`<button>`** for actions, **`<a>`** for navigation (never `<div (click)>`)
+- ✅ **ARIA attributes** on all interactive elements
 
 #### Manual Review Checklist
 - [ ] Follows layered architecture pattern
@@ -579,7 +583,13 @@ Ensure the design adheres to:
 - [ ] Documents architectural decisions
 - [ ] Considers performance implications
 - [ ] Addresses security concerns
-- [ ] Supports accessibility requirements
+- [ ] **Semantic HTML**: page regions use `<main>`, `<header>`, `<footer>`, `<nav>`, `<aside>`
+- [ ] **No div-as-button**: actions use `<button>`, navigation uses `<a>`
+- [ ] **No div lists**: `<ul>`/`<ol>` + `<li>` for lists of items
+- [ ] **`<ng-container>`** used for structural wrappers with no semantic meaning
+- [ ] **ARIA**: all interactive elements named, icon-only buttons have `aria-label`
+- [ ] **Form accessibility**: inputs linked to `<label>` elements
+- [ ] Supports full keyboard navigation
 
 ## Output Format
 

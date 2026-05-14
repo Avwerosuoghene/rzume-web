@@ -208,10 +208,22 @@ npm run quality-gate:automated
 - [ ] No keyboard traps
 
 ### Semantic HTML
-- [ ] Proper heading hierarchy
-- [ ] Semantic elements used
-- [ ] Form labels present
-- [ ] Alt text for images
+- [ ] Proper heading hierarchy (`<h1>` → `<h2>` → `<h3>`, no skipping)
+- [ ] Page regions use semantic elements: `<main>`, `<header>`, `<footer>`, `<nav>`, `<aside>`
+- [ ] Content groups use `<section>` (with heading) or `<article>` (self-contained)
+- [ ] Lists use `<ul>`/`<ol>` + `<li>` — no `<div>`-based lists
+- [ ] **No `<div (click)>`** — actions use `<button>`, navigation uses `<a>`
+- [ ] Structural directives that add no DOM semantics use `<ng-container>`, not `<div>`
+- [ ] `<div>`/`<span>` only used as a last resort for purely presentational wrappers
+- [ ] Form labels present and linked to inputs via `for`/`id` or `aria-labelledby`
+- [ ] Alt text for images; decorative images have `alt=""`
+
+### ARIA & Interactive Elements
+- [ ] All interactive elements have accessible names (visible text, `aria-label`, or `aria-labelledby`)
+- [ ] Icon-only buttons have `aria-label`; icons have `aria-hidden="true"`
+- [ ] Dynamic content regions use `aria-live="polite"` (or `"assertive"` for urgent updates)
+- [ ] `role` attribute only used when no native HTML element serves the purpose
+- [ ] No `role="button"` on `<div>` — use `<button>` instead
 
 **Accessibility Score**: ⭐⭐⭐⭐⭐ (1-5 stars)
 

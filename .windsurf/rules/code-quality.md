@@ -21,6 +21,11 @@ description: Code quality standards, anti-patterns to avoid, and best practices
 - ❌ No business logic in templates
 - ❌ No NgModules (use standalone components)
 - ❌ No `@HostBinding`/`@HostListener` decorators (use `host` object)
+- ❌ No `<div (click)="...">` — always use `<button>` for actions
+- ❌ No `<div>` or `<span>` when a semantic element exists (`<section>`, `<article>`, `<ul>`, `<nav>`, `<header>`, `<main>`, etc.)
+- ❌ No bare `<div>` wrappers for structural directives — use `<ng-container>` instead
+- ❌ No icon-only buttons without `aria-label`
+- ❌ No form inputs without an associated `<label>`
 
 ### Component Design
 - ❌ No components over 300 lines
@@ -55,11 +60,16 @@ description: Code quality standards, anti-patterns to avoid, and best practices
 - ✅ Optimize images and assets
 
 ### Accessibility
-- ✅ ARIA labels where needed
+- ✅ Semantic HTML elements over generic `<div>`/`<span>` at all times
+- ✅ All interactive elements have accessible names (visible text, `aria-label`, or `aria-labelledby`)
+- ✅ Icon-only buttons include `aria-label`; icons are `aria-hidden="true"`
+- ✅ Dynamic content regions use `aria-live="polite"` (or `"assertive"` for critical updates)
+- ✅ Form controls linked to `<label>` via `for`/`id` or `aria-labelledby`
+- ✅ Use `role` only when no native HTML element serves the purpose
+- ✅ All `<img>` elements have `alt` text; decorative images use `alt=""`
 - ✅ Keyboard navigation support
-- ✅ Semantic HTML elements
-- ✅ Color contrast compliance
-- ✅ Focus management
+- ✅ Color contrast compliance (WCAG AA)
+- ✅ Focus management for modals and dynamic content
 
 ### Security
 - ✅ Sanitize user inputs
@@ -86,7 +96,12 @@ description: Code quality standards, anti-patterns to avoid, and best practices
 - [ ] Follows naming conventions
 - [ ] No magic numbers/strings
 - [ ] Proper error handling
-- [ ] Accessibility considered
+- [ ] Uses semantic HTML elements (no `<div>` for semantic content)
+- [ ] No `<div (click)>` — uses `<button>` for actions, `<a>` for navigation
+- [ ] `<ng-container>` used instead of wrapper `<div>` for structural directives
+- [ ] All interactive elements have accessible names
+- [ ] Icon-only buttons have `aria-label`
+- [ ] Form inputs linked to `<label>` elements
 
 ### Service Checklist
 - [ ] Single responsibility

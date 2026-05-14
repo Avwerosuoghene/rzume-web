@@ -804,14 +804,14 @@ getPage(pageNumber: number) {
 
 // ❌ BAD: Function calls in template
 @Component({
-  template: `<div>{{ calculateTotal() }}</div>`
+  template: `<p>{{ calculateTotal() }}</p>`
 })
 
-// ❌ BAD: No trackBy function
+// ❌ BAD: No trackBy function AND non-semantic wrapper
 @Component({
   template: `
     @for (item of items) {
-      <div>{{ item.name }}</div>
+      <li>{{ item.name }}</li>
     }
   `
 })
@@ -821,9 +821,9 @@ getPage(pageNumber: number) {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-// ✅ GOOD: Computed property instead of function
+// ✅ GOOD: Computed property + semantic element
 @Component({
-  template: `<div>{{ total }}</div>`
+  template: `<p>{{ total }}</p>`
 })
 export class Component {
   get total() {
@@ -831,12 +831,14 @@ export class Component {
   }
 }
 
-// ✅ GOOD: TrackBy function
+// ✅ GOOD: TrackBy function + semantic list element
 @Component({
   template: `
-    @for (item of items; track trackById($index, item)) {
-      <div>{{ item.name }}</div>
-    }
+    <ul aria-label="Items">
+      @for (item of items; track trackById($index, item)) {
+        <li>{{ item.name }}</li>
+      }
+    </ul>
   `
 })
 export class Component {
@@ -852,6 +854,66 @@ export class Component {
 - Missing trackBy functions
 - Unnecessary re-renders
 - No lazy loading
+- `<div>` or `<span>` used where semantic elements exist
+- `<div (click)>` instead of `<button>` or `<a>`
+- Missing `aria-label` on icon-only buttons
+- `<ng-container>` not used to avoid unnecessary DOM wrapper nodes
+
+#### 4.3 Semantic HTML & Accessibility Review
+
+**What to Check**:
+- [ ] No `<div (click)>` or `<span (click)>` — use `<button>` or `<a>`
+- [ ] No `<div>` lists — use `<ul>`/`<ol>` + `<li>`
+- [ ] No `<div class="header/footer/nav">` — use `<header>`, `<footer>`, `<nav>`
+- [ ] `<ng-container>` used for structural directives without DOM nodes
+- [ ] All interactive elements have accessible names
+- [ ] Icon-only buttons have `aria-label`; icons have `aria-hidden="true"`
+- [ ] Form inputs linked to `<label>` via `for`/`id` or `aria-labelledby`
+- [ ] Dynamic regions use `aria-live`
+- [ ] Images have `alt` text (decorative images use `alt=""`)
+
+**Code Patterns to Flag**:
+```html
+<!-- ❌ BAD: div as button -->
+<div (click)="onEdit()">Edit</div>
+
+<!-- ✅ GOOD: semantic button -->
+<button type="button" (click)="onEdit()">Edit</button>
+
+<!-- ❌ BAD: icon button without label -->
+<button (click)="onDelete()">
+  <mat-icon>delete</mat-icon>
+</button>
+
+<!-- ✅ GOOD: accessible icon button -->
+<button type="button" (click)="onDelete()" aria-label="Delete item">
+  <mat-icon aria-hidden="true">delete</mat-icon>
+</button>
+
+<!-- ❌ BAD: div list -->
+<div class="list">
+  <div class="item" *ngFor="let i of items">{{ i.name }}</div>
+</div>
+
+<!-- ✅ GOOD: semantic list -->
+<ul aria-label="Items">
+  @for (item of items; track item.id) {
+    <li>{{ item.name }}</li>
+  }
+</ul>
+
+<!-- ❌ BAD: redundant DOM wrapper -->
+<div *ngIf="isVisible">
+  <app-child />
+</div>
+
+<!-- ✅ GOOD: no DOM impact -->
+@if (isVisible) {
+  <ng-container>
+    <app-child />
+  </ng-container>
+}
+```
 
 #### 4.2 Memory Leaks
 
