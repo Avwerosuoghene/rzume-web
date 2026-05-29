@@ -8,7 +8,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  OnInit,
+  AfterViewChecked,
   OnDestroy,
   SimpleChanges,
   OnChanges,
@@ -49,7 +49,7 @@ import { DialogHelperService } from '../../core/services/dialog-helper.service';
   styleUrls: ['./job-card-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChanges {
+export class JobCardListComponent implements AfterViewInit, AfterViewChecked, OnDestroy, OnChanges {
   @Output() jobApplicationUpdate = new EventEmitter<JobApplicationItem>();
   @Output() jobApplicationView = new EventEmitter<JobApplicationItem>();
   @Output() jobStatusUpdate = new EventEmitter<{ item: JobApplicationItem }>();
@@ -67,6 +67,7 @@ export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChange
   @ViewChild('cardListContainer') private cardListContainer?: ElementRef<HTMLElement>;
 
   private destroy$ = new Subject<void>();
+  private scrollListenerAttached = false;
 
   readonly tabs = JOB_FILTER_OPTIONS;
   activeTab = this.tabs[0]?.value ?? '';
@@ -83,6 +84,12 @@ export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChange
     this.setupScrollListener();
   }
 
+  ngAfterViewChecked(): void {
+    if (!this.scrollListenerAttached && this.cardListContainer && !this.isLoading) {
+      this.setupScrollListener();
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['jobs'] || changes['currentFilter']) {
       this.updateDisplayState();
@@ -90,8 +97,9 @@ export class JobCardListComponent implements  AfterViewInit, OnDestroy, OnChange
   }
 
   setupScrollListener(): void {
-    if (!this.cardListContainer) return;
+    if (!this.cardListContainer || this.scrollListenerAttached) return;
 
+    this.scrollListenerAttached = true;
     fromEvent<Event>(this.cardListContainer.nativeElement, 'scroll')
       .pipe(debounceTime(SCROLL_DEBOUNCE_TIME), takeUntil(this.destroy$))
       .subscribe(event => this.handleScroll(event));

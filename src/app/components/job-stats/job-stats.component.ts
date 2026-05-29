@@ -41,6 +41,9 @@ export class JobStatsComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.add(
       this.uiState.isMobile$.subscribe(isMobile => {
         this.isMobile = isMobile;
+        if (this.statHighLights.length > 0) {
+          this.buildCarouselItems();
+        }
       })
     );
   }
@@ -59,13 +62,11 @@ export class JobStatsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   buildCarouselItems(): void {
-    if (this.carouselItems.length !== this.statHighLights.length) {
-      this.carouselItems = this.statHighLights.map((stat, index) => ({
-        id: index,
-        title: '0',
-        description: stat.description
-      }));
-    }
+    this.carouselItems = this.statHighLights.map((stat, index) => ({
+      id: index,
+      title: stat.displayValue?.toString() ?? stat.value.toString(),
+      description: stat.description
+    }));
   }
 
   updateCarouselItem(stat: StatHighlight & { displayValue?: number }): void {
