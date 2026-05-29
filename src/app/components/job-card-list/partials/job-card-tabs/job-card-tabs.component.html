@@ -1,8 +1,9 @@
 <div class="tabs-wrapper">
   <div class="tabs-container">
-    <button 
+    <button
       *ngFor="let tab of tabs; trackBy: trackByValue"
-      [ngClass]="{'active': tab.value === activeTab}"
+      [class.active]="tab.value === activeTab"
+      [disabled]="disabled"
       (click)="selectTab(tab)">
       {{ tab.label }}
     </button>

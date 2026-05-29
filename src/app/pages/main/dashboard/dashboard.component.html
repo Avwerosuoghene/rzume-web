@@ -8,23 +8,19 @@
 
   <!-- Job List with Skeleton -->
   @if (isMobile) {
-    @if (isLoadingJobs) {
-      <app-card-skeleton></app-card-skeleton>
-    } @else {
-      <app-job-card-list
-        [jobs]="data"
-        [isLoading]="false"
-        [totalItems]="totalItems"
-        (jobApplicationUpdate)="updateJobApplication($event)"
-        (jobApplicationView)="viewJobApplication($event)"
-        (jobStatusUpdate)="handleStatusUpdate($event)"
-        (jobApplicationsDelete)="handleDeleteApplications($event)"
-        (jobApplicationAddition)="addNewApplicationEntry()"
-        (filterChange)="handleFilterChange($event)"
-        (loadMore)="handleLoadMore()"
-      >
-      </app-job-card-list>
-    }
+    <app-job-card-list
+      [jobs]="data"
+      [isLoading]="isLoadingJobs"
+      [totalItems]="totalItems"
+      (jobApplicationUpdate)="updateJobApplication($event)"
+      (jobApplicationView)="viewJobApplication($event)"
+      (jobStatusUpdate)="handleStatusUpdate($event)"
+      (jobApplicationsDelete)="handleDeleteApplications($event)"
+      (jobApplicationAddition)="addNewApplicationEntry()"
+      (filterChange)="handleFilterChange($event)"
+      (loadMore)="handleLoadMore()"
+    >
+    </app-job-card-list>
   } @else {
     @if (!showEmptyState) {
       <app-job-list-toolbar

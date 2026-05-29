@@ -12,13 +12,17 @@ import { CommonModule } from '@angular/common';
 export class JobCardTabsComponent implements OnInit {
   @Input() tabs: FilterOption[] = [];
   @Input() activeTab: string = '';
+  @Input() disabled = false;
   @Output() tabChange = new EventEmitter<string>();
 
   ngOnInit(): void {
-    this.selectTab(this.tabs[0]);
+    if (!this.activeTab && this.tabs.length > 0) {
+      this.activeTab = this.tabs[0].value;
+    }
   }
 
   selectTab(tab: FilterOption) {
+    if (this.disabled) return;
     this.activeTab = tab.value;
     this.tabChange.emit(tab.value);
   }

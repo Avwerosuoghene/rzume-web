@@ -28,6 +28,7 @@ import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.consta
 import { AngularMaterialModules } from '../../core/modules';
 import { EmptyStateWrapperComponent } from '../empty-state-wrapper/empty-state-wrapper.component';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
+import { CardSkeletonComponent } from '../skeletons';
 import { ApplicationStatus, DELETE_APP_TITLE, SCROLL_DEBOUNCE_TIME, SCROLL_THRESHOLD } from '../../core/models';
 import { DialogHelperService } from '../../core/services/dialog-helper.service';
 
@@ -41,6 +42,7 @@ import { DialogHelperService } from '../../core/services/dialog-helper.service';
     AngularMaterialModules,
     EmptyStateWrapperComponent,
     CircularLoaderComponent,
+    CardSkeletonComponent,
     ScrollingModule
   ],
   templateUrl: './job-card-list.component.html',

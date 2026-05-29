@@ -2,10 +2,14 @@
   <app-job-card-tabs
     [tabs]="tabs"
     [activeTab]="activeTab"
+    [disabled]="isLoading"
     (tabChange)="handleTabChange($event)"
   >
   </app-job-card-tabs>
 
+  @if (isLoading) {
+    <app-card-skeleton></app-card-skeleton>
+  } @else {
   <app-empty-state-wrapper
     [data]="jobs"
     [currentFilter]="currentFilter"
@@ -40,6 +44,7 @@
       </div>
     }
   </app-empty-state-wrapper>
+  }
 
   @if (!showEmptyState) {
 
