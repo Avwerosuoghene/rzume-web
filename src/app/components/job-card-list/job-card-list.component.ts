@@ -94,6 +94,12 @@ export class JobCardListComponent implements AfterViewInit, AfterViewChecked, On
     if (changes['jobs'] || changes['currentFilter']) {
       this.updateDisplayState();
     }
+    // Reset scroll listener flag when loading starts so it re-attaches after loading
+    const isLoadingKey = 'isLoading' as const;
+    const isLoadingChange = changes[isLoadingKey];
+    if (isLoadingChange && !isLoadingChange.previousValue && isLoadingChange.currentValue) {
+      this.scrollListenerAttached = false;
+    }
   }
 
   setupScrollListener(): void {
