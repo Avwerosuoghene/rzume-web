@@ -24,4 +24,9 @@ export interface ViewJobDialogData {
   jobApplication: JobApplicationItem;
 }
 
+export interface AddRoleDialogData {
+  isEditing?: boolean;
+  roleData?: any;
+}
+
 

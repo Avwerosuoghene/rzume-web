@@ -57,6 +57,14 @@ export enum AnalyticsEvent {
   PROFILE_PHOTO_UPLOADED = 'profile_photo_uploaded',
   PROFILE_PHOTO_UPLOAD_FAILED = 'profile_photo_upload_failed',
 
+  // Role Events
+  ROLE_CREATED = 'role_created',
+  ROLE_CREATE_FAILED = 'role_create_failed',
+  ROLE_UPDATED = 'role_updated',
+  ROLE_UPDATE_FAILED = 'role_update_failed',
+  ROLE_DELETED = 'role_deleted',
+  ROLE_DELETE_FAILED = 'role_delete_failed',
+
   // API Events
   API_CALL_SUCCESS = 'api_call_success',
   API_CALL_FAILED = 'api_call_failed',

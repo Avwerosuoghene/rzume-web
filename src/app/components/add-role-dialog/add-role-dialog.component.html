@@ -1,0 +1,97 @@
+<h2 mat-dialog-title class="dialog-title">{{ dialogTitle }}</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="roleForm" class="role-form">
+    <!-- Job Role Input -->
+    <div class="form-field">
+      <app-form-input
+        [config]="jobRoleConfig"
+        [formControl]="jobRoleControl"
+      ></app-form-input>
+    </div>
+
+    <!-- Industry Select -->
+    <div class="form-field">
+      <app-form-input
+        [config]="industryConfig"
+        [formControl]="industryControl"
+      ></app-form-input>
+    </div>
+
+    <!-- File Upload Section -->
+    <div class="file-upload-section">
+      <label class="section-label">Documents</label>
+
+      <div
+        class="file-drop-zone"
+        [class.dragging]="isDragging"
+        [class.disabled]="!canAddMoreFiles"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+        <input
+          type="file"
+          #fileInput
+          hidden
+          multiple
+          [accept]="'application/pdf'"
+          (change)="onFileSelected($event)"
+        />
+
+        <div class="upload-content">
+          <div class="upload-icon">
+            <mat-icon>cloud_upload</mat-icon>
+          </div>
+          <p class="upload-text">
+            <a (click)="canAddMoreFiles && fileInput.click()">Click to choose file(s)</a> and drop here.
+          </p>
+          <p class="file-restrictions">{{ fileRestrictionsText }}</p>
+          <p class="max-documents">{{ maxDocumentsText }}</p>
+        </div>
+      </div>
+
+      <!-- Selected Files List -->
+      @if (selectedFiles.length > 0) {
+        <div class="selected-files">
+          <p class="files-count">{{ selectedFiles.length }} / {{ maxDocuments }} documents</p>
+          <ul class="files-list">
+            @for (file of selectedFiles; track $index) {
+              <li class="file-item">
+                <div class="file-info">
+                  <mat-icon class="file-icon">insert_drive_file</mat-icon>
+                  <span class="file-name">{{ file.name }}</span>
+                  <span class="file-size">({{ formatFileSize(file.size) }})</span>
+                </div>
+                <button
+                  type="button"
+                  mat-icon-button
+                  class="remove-file-btn"
+                  (click)="removeFile($index)"
+                  aria-label="Remove file"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button
+    mat-flat-button
+    class="submit-btn"
+    [disabled]="isSubmitDisabled"
+    (click)="onSubmit()"
+  >
+    @if (isLoading) {
+      <span class="loading-text">Adding...</span>
+    } @else {
+      Add Job Role
+    }
+  </button>
+</mat-dialog-actions>
