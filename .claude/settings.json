@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npm run test:ci)",
+      "Bash(npm run test:coverage)",
+      "Bash(npm run type-check)",
+      "Bash(npm run build)",
+      "Bash(npm run build:prod)",
+      "Bash(npm run quality-gate:full)",
+      "Bash(npm run quality-gate:automated)",
+      "Bash(npm run security:audit)",
+      "Bash(npm run security:audit-prod)",
+      "Bash(npm run security:fix)",
+      "Bash(npm run analyze-bundle)",
+      "Bash(npm run update-docs)",
+      "Bash(npm audit)",
+      "Bash(npm audit fix)",
+      "Bash(npm audit --json*)",
+      "Bash(npm ls*)",
+      "Bash(npm outdated)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(ng lint)",
+      "Bash(ng test*)",
+      "Bash(ng build*)"
+    ]
+  }
+}
