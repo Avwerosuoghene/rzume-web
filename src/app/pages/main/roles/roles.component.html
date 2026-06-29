@@ -1,3 +1,24 @@
 <section class="roles_container">
-  <h2>Roles Management Coming Soon</h2>
+
+  <div class="role-limit-bar">
+    <p class="role-limit-text">
+      <span class="role-limit-label">Role limit:</span> {{ roleCount }} / {{ roleLimit }} roles created
+    </p>
+    <button class="add-role-btn" type="button">
+      <span class="add-icon">+</span> Add New Role
+    </button>
+  </div>
+
+  <div class="active-roles-section">
+    <div class="active-roles-header">
+      <h3 class="active-roles-title">Active roles</h3>
+      <p class="active-roles-subtitle">You are only allowed maximum of two ({{ roleLimit }}) roles at this stage.</p>
+    </div>
+
+    <div class="empty-state-card">
+      <img src="assets/icons/folder-icon.svg" alt="" class="empty-state-icon" />
+      <p class="empty-state-text">No roles added yet. Click "Add new role" to start.</p>
+    </div>
+  </div>
+
 </section>

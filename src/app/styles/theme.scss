@@ -1,3 +1,35 @@
+// Spacing scale (4px base unit)
+$spacing-1:  4px;
+$spacing-2:  8px;
+$spacing-3:  12px;
+$spacing-4:  16px;
+$spacing-5:  20px;
+$spacing-6:  24px;
+$spacing-8:  32px;
+$spacing-10: 40px;
+$spacing-12: 48px;
+$spacing-16: 64px;
+
+// Border radius
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-full: 50%;
+
+// Breakpoints
+$breakpoint-sm: 600px;
+$breakpoint-md: 800px;
+$breakpoint-lg: 950px;
+
+// Layout — header heights matching main.component.scss grid rows
+$header-height-mobile:  60px;
+$header-height-tablet:  120px;
+$header-height-desktop: 134px;
+
+// Opacity
+$opacity-muted: 0.5;
+
+// Colors
 $black: rgba(28, 28, 30, 1);
 $rzume-blue: rgba(62, 127, 255, 1);
 $rzume-blue-light: rgba(62, 127, 255, 0.1);
