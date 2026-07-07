@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { AnalyticsService } from '../../../core/services/analytics/analytics.service';
 import { AnalyticsEvent } from '../../../core/models/analytics-events.enum';
-import { ROLE_LIMIT } from '../../../core/models/constants/role.constants';
+import { RoleHelper } from '../../../core/helpers/role.helper';
 
 @Component({
   selector: 'app-roles',
@@ -13,9 +13,9 @@ import { ROLE_LIMIT } from '../../../core/models/constants/role.constants';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RolesComponent implements OnInit {
-  private analyticsService = inject(AnalyticsService);
+  private readonly analyticsService = inject(AnalyticsService);
 
-  readonly roleLimit = ROLE_LIMIT;
+  readonly roleLimit = RoleHelper.getRoleLimit();
   readonly roleCount = 0;
 
   ngOnInit(): void {

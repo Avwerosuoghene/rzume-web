@@ -1,4 +1,5 @@
 export * from './password.util';
+export * from './role.helper';
 export * from './view.util';
 export * from './session-storage.util';
 export * from './application.util';
