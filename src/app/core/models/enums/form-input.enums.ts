@@ -31,7 +31,8 @@ export enum FormFieldId {
   APPLICATION_DATE = 'applicationDate',
   NOTES = 'notes',
   REMEMBER_ME = 'rememberMe',
-  TERMS_CHECKED = 'termsChecked'
+  TERMS_CHECKED = 'termsChecked',
+  DOCUMENT_ID = 'documentId'
 }
 
 export enum FormFieldLabel {
@@ -46,5 +47,6 @@ export enum FormFieldLabel {
   CV_USED = 'CV Used',
   APPLICATION_STATUS = 'Application Status',
   DATE = 'Date',
-  NOTES = 'Notes'
+  NOTES = 'Notes',
+  DOCUMENT = 'Document'
 }

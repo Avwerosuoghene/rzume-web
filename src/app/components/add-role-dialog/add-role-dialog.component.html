@@ -1,8 +1,22 @@
-<h2 mat-dialog-title class="dialog-title">{{ dialogTitle }}</h2>
+@if (isDropdownOpen) {
+  <div class="dropdown-backdrop" (click)="closeDropdown()" aria-hidden="true"></div>
+}
+
+<div class="dialog-header">
+  <h2 mat-dialog-title class="dialog-title">{{ dialogTitle }}</h2>
+  <button
+    type="button"
+    mat-icon-button
+    class="close-btn"
+    aria-label="Close dialog"
+    (click)="onCancel()"
+  >
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
 
 <mat-dialog-content class="dialog-content">
   <form [formGroup]="roleForm" class="role-form">
-    <!-- Job Role Input -->
     <div class="form-field">
       <app-form-input
         [config]="jobRoleConfig"
@@ -10,7 +24,6 @@
       ></app-form-input>
     </div>
 
-    <!-- Industry Select -->
     <div class="form-field">
       <app-form-input
         [config]="industryConfig"
@@ -18,64 +31,109 @@
       ></app-form-input>
     </div>
 
-    <!-- File Upload Section -->
-    <div class="file-upload-section">
-      <label class="section-label">Documents</label>
+    <div class="document-section">
+      <span class="section-label" id="documents-label">Documents</span>
 
-      <div
-        class="file-drop-zone"
-        [class.dragging]="isDragging"
-        [class.disabled]="!canAddMoreFiles"
-        (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave($event)"
-        (drop)="onDrop($event)"
-      >
-        <input
-          type="file"
-          #fileInput
-          hidden
-          multiple
-          [accept]="'application/pdf'"
-          (change)="onFileSelected($event)"
-        />
+      <div class="document-multiselect">
+        <button
+          type="button"
+          class="multiselect-trigger"
+          [class.is-open]="isDropdownOpen"
+          [attr.aria-expanded]="isDropdownOpen"
+          aria-labelledby="documents-label"
+          (click)="toggleDropdown()"
+        >
+          <span class="trigger-text">
+            @if (selectedDocuments.length > 0) {
+              {{ selectedDocuments.length }} document{{ selectedDocuments.length > 1 ? 's' : '' }} selected
+            } @else {
+              Select documents
+            }
+          </span>
+          <mat-icon aria-hidden="true">{{ isDropdownOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
 
-        <div class="upload-content">
-          <div class="upload-icon">
-            <mat-icon>cloud_upload</mat-icon>
+        @if (isDropdownOpen) {
+          <div
+            class="multiselect-panel"
+            role="listbox"
+            aria-multiselectable="true"
+            aria-labelledby="documents-label"
+          >
+            <div class="multiselect-search">
+              <mat-icon aria-hidden="true">search</mat-icon>
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Search documents"
+                [(ngModel)]="documentSearchQuery"
+                [ngModelOptions]="{ standalone: true }"
+                aria-label="Search documents"
+              />
+            </div>
+
+            <ul class="multiselect-options" role="group">
+              @for (resume of filteredResumes; track resume.id) {
+                <li
+                  class="multiselect-option"
+                  [class.is-disabled]="!isDocumentSelected(resume.id) && !canAddMoreDocuments"
+                  role="option"
+                  [attr.aria-selected]="isDocumentSelected(resume.id)"
+                >
+                  <label class="option-label">
+                    <input
+                      type="checkbox"
+                      class="option-checkbox"
+                      [checked]="isDocumentSelected(resume.id)"
+                      [disabled]="!isDocumentSelected(resume.id) && !canAddMoreDocuments"
+                      (change)="toggleDocument(resume)"
+                      [attr.aria-label]="resume.fileName"
+                    />
+                    <span class="option-filename">{{ resume.fileName }}</span>
+                  </label>
+                </li>
+              } @empty {
+                @if (allResumes.length === 0) {
+                  <li class="multiselect-empty">
+                    No documents uploaded.
+                    <button type="button" class="upload-link" (click)="navigateToDocumentsPage()">
+                      Upload one
+                    </button>
+                  </li>
+                } @else {
+                  <li class="multiselect-empty">No documents match your search</li>
+                }
+              }
+            </ul>
           </div>
-          <p class="upload-text">
-            <a (click)="canAddMoreFiles && fileInput.click()">Click to choose file(s)</a> and drop here.
-          </p>
-          <p class="file-restrictions">{{ fileRestrictionsText }}</p>
-          <p class="max-documents">{{ maxDocumentsText }}</p>
-        </div>
+        }
       </div>
 
-      <!-- Selected Files List -->
-      @if (selectedFiles.length > 0) {
-        <div class="selected-files">
-          <p class="files-count">{{ selectedFiles.length }} / {{ maxDocuments }} documents</p>
-          <ul class="files-list">
-            @for (file of selectedFiles; track $index) {
-              <li class="file-item">
-                <div class="file-info">
-                  <mat-icon class="file-icon">insert_drive_file</mat-icon>
-                  <span class="file-name">{{ file.name }}</span>
-                  <span class="file-size">({{ formatFileSize(file.size) }})</span>
-                </div>
-                <button
-                  type="button"
-                  mat-icon-button
-                  class="remove-file-btn"
-                  (click)="removeFile($index)"
-                  aria-label="Remove file"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </li>
-            }
-          </ul>
-        </div>
+      @if (selectedDocuments.length > 0) {
+        <ul class="selected-documents">
+          @for (doc of selectedDocuments; track doc.id) {
+            <li class="document-card">
+              <img [src]="getDocumentIcon(doc.fileType)" alt="" aria-hidden="true" class="document-icon" />
+              <div class="document-details">
+                <span class="document-name">{{ doc.fileName }}</span>
+                <span class="document-meta">
+                  {{ doc.uploadedAt | date: 'd MMM, yyyy  h:mma' }}
+                  @if (doc.fileSize) {
+                    &bull; {{ formatFileSize(doc.fileSize) }}
+                  }
+                </span>
+              </div>
+              <button
+                type="button"
+                class="remove-document-btn"
+                aria-label="Remove document"
+                (click)="removeDocument($index)"
+              >
+                <mat-icon aria-hidden="true">close</mat-icon>
+              </button>
+            </li>
+          }
+        </ul>
       }
     </div>
   </form>

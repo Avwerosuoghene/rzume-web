@@ -6,210 +6,125 @@
   display: block;
 }
 
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-6 $spacing-6 $spacing-4;
+}
+
+.close-btn {
+  flex-shrink: 0;
+  color: $gray;
+}
+
 .dialog-title {
   margin: 0;
-  padding: 24px 24px 16px;
-  font-size: 1.25rem;
-  font-weight: 600;
+  padding: 0;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
   color: $black;
 }
 
 .dialog-content {
-  padding: 0 24px 16px;
+  padding: 0 $spacing-6 $spacing-4;
   max-height: 60vh;
 }
 
 .role-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: $spacing-4;
 }
 
 .form-field {
   width: 100%;
 }
 
-.file-upload-section {
+.document-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: $spacing-3;
 }
 
-.section-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: $gray;
-  margin-bottom: 4px;
-}
-
-.file-drop-zone {
-  border: 2px dashed $light-gray;
-  border-radius: 12px;
-  padding: 32px 24px;
-  background-color: $white;
-  transition: all 0.2s ease;
-  cursor: pointer;
-
-  &.dragging {
-    border-color: $rzume-blue;
-    background-color: rgba($rzume-blue, 0.05);
-  }
-
-  &.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    border-color: $light-gray;
-    background-color: $gray;
-  }
-
-  &:hover:not(.disabled) {
-    border-color: $rzume-blue;
-  }
-}
-
-.upload-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 8px;
-}
-
-.upload-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba($rzume-blue, 0.1);
-  border-radius: 50%;
-  margin-bottom: 8px;
-
-  mat-icon {
-    color: $rzume-blue;
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-  }
-}
-
-.upload-text {
-  font-size: 0.875rem;
-  color: $black;
-  margin: 0;
-
-  a {
-    color: $rzume-blue;
-    text-decoration: none;
-    font-weight: 500;
-    cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-.file-restrictions {
-  font-size: 0.75rem;
-  color: $gray;
-  margin: 0;
-}
-
-.max-documents {
-  font-size: 0.75rem;
-  color: $gray;
-  background-color: $gray;
-  padding: 4px 12px;
-  border-radius: 12px;
-  margin: 8px 0 0;
-}
-
-.selected-files {
-  margin-top: 16px;
-}
-
-.files-count {
-  font-size: 0.75rem;
-  color: $gray;
-  margin: 0 0 8px;
-}
-
-.files-list {
+.selected-documents {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: $spacing-2;
 }
 
-.file-item {
+.document-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background-color: $gray;
-  border-radius: 8px;
-  border: 1px solid $light-gray;
+  gap: $spacing-3;
+  background-color: $extra-light-gray;
+  border-radius: $border-radius-md;
+  padding: $spacing-2 $spacing-3;
 }
 
-.file-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow: hidden;
-}
-
-.file-icon {
-  color: $rzume-blue;
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+.document-icon {
+  width: $spacing-10;
+  height: $spacing-10;
   flex-shrink: 0;
 }
 
-.file-name {
-  font-size: 0.875rem;
+.document-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.document-name {
+  @include font-body;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
   color: $black;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.file-size {
-  font-size: 0.75rem;
+.document-meta {
+  @include font-caption;
+  font-size: $font-size-sm;
   color: $gray;
-  flex-shrink: 0;
 }
 
-.remove-file-btn {
+.remove-document-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-1;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
+  display: flex;
+  align-items: center;
+  color: $gray;
 
   mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
+    font-size: $font-size-md;
+    width: $font-size-md;
+    height: $font-size-md;
   }
 }
 
 .dialog-actions {
-  padding: 16px 24px 24px;
+  padding: $spacing-4 $spacing-6 $spacing-6;
   margin: 0;
 }
 
 .submit-btn {
   @extend .rzume-button-primary;
   width: 100%;
-  height: 48px;
-  font-size: 0.875rem;
-  font-weight: 600;
+  height: $spacing-12;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
 
   &:disabled {
-    opacity: 0.6;
+    opacity: $opacity-muted;
     cursor: not-allowed;
   }
 }
@@ -218,27 +133,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: $spacing-2;
 
   &::before {
     content: '';
-    width: 16px;
-    height: 16px;
+    width: $spacing-4;
+    height: $spacing-4;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
-    border-radius: 50%;
+    border-radius: $border-radius-full;
     animation: spin 0.8s linear infinite;
   }
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-// Responsive styles
-@media (min-width: 600px) {
+@media (min-width: $breakpoint-sm) {
   .dialog-content {
     min-width: 500px;
   }

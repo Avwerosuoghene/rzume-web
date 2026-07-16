@@ -36,6 +36,10 @@ export class ApiRoutes {
     stats: `${this.rolesRoute}/stats`,
   }
 
+  static industries = {
+    base: 'api/industries'
+  }
+
   static utility = {
 
   }

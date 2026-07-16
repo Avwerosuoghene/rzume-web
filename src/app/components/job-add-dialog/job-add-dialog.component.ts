@@ -10,13 +10,10 @@ import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { ApplicationStatusOption } from '../../core/models/types/dropdown-option.types';
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
 import { FORM_PLACEHOLDERS } from '../../core/models/constants/form-input.constants';
-import { AddJobDialogData, FormFieldId, FormFieldLabel, NO_RESUMES_AVAILABLE_MSG, Resume } from '../../core/models';
+import { AddJobDialogData, FormFieldId, FormFieldLabel, FormInputSelectConfig, Resume } from '../../core/models';
 import { DocumentHelperService } from '../../core/services/document-helper.service';
-import { DateHelper, DocumentHelper, FormInputConfigHelper } from '../../core/helpers';
+import { DateHelper, FormInputConfigHelper } from '../../core/helpers';
 import { FormInputComponent } from '../form-input/form-input.component';
-import {  FormInputSelectConfig } from '../../core/models';
-import { MainRoutes, RootRoutes } from '../../core/models/enums/application.routes.enums';
-import { PROFILE_TABS } from '../../core/models/constants/profile.constants';
 
 @Component({
   selector: 'app-job-add-dialog',
@@ -32,9 +29,7 @@ export class JobAddDialogComponent implements OnInit {
   applicationStatusOptions: ApplicationStatusOption[] = APPLICATION_STATUS_OPTIONS;
   loaderIsActive: boolean = false;
   editMode: boolean = false;
-  resumes: Resume[] = [];
   selectedResume?: Resume;
-  noResumesMessage = NO_RESUMES_AVAILABLE_MSG;
 
   companyConfig = FormInputConfigHelper.text({
     id: FormFieldId.COMPANY_NAME,
@@ -73,34 +68,22 @@ export class JobAddDialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadResumes();
     this.initializeForm();
     this.editMode = this.addJobDialogData.isEditing;
     if (this.editMode) this.prepopulateFormFields();
   }
 
-  loadResumes(): void {
-    this.resumes = this.documentHelperService.getResumes();
-  }
-
-
-
   isBtnDisabled(): boolean {
-    return (this.applicationFormGroup.invalid ||
-      this.loaderIsActive);
+    return this.applicationFormGroup.invalid || this.loaderIsActive;
   }
 
   initializeForm(): void {
     this.applicationFormGroup = this.fb.group({
       companyName: this.fb.control('', {
-        validators: [
-          Validators.required,
-        ]
+        validators: [Validators.required]
       }),
       position: this.fb.control('', {
-        validators: [
-          Validators.required
-        ]
+        validators: [Validators.required]
       }),
       resumeId: this.fb.control(null),
       jobLink: this.fb.control(''),
@@ -110,20 +93,16 @@ export class JobAddDialogComponent implements OnInit {
     });
   }
 
-
   cancelApplication() {
-    const cancellationData = {
-      status: DialogCloseStatus.Cancelled,
-    };
-    this.dialogRef.close(cancellationData);
+    this.dialogRef.close({ status: DialogCloseStatus.Cancelled });
   }
 
   prepopulateFormFields() {
     if (this.addJobDialogData.jobApplicationData) {
       const jobData = this.addJobDialogData.jobApplicationData;
-
       const resumeId = jobData.resumeId || null;
-      this.selectedResume = this.findResumeById(resumeId);
+      const resumes = this.documentHelperService.getResumes();
+      this.selectedResume = resumeId ? resumes.find(r => r.id === resumeId) : undefined;
 
       this.applicationFormGroup.patchValue({
         companyName: jobData.companyName || '',
@@ -137,17 +116,10 @@ export class JobAddDialogComponent implements OnInit {
     }
   }
 
-  private findResumeById(resumeId?: string | null): Resume | undefined {
-    if (!resumeId) return undefined;
-    return DocumentHelper.findResumeById(this.resumes, resumeId);
-  }
-
-
   getResumeDisplayName(resumeId: string): string {
-    return DocumentHelper.getResumeFileName(this.resumes, resumeId);
+    const resumes = this.documentHelperService.getResumes();
+    return resumes.find(r => r.id === resumeId)?.fileName || '';
   }
-
-
 
   addApplication() {
     const formData = this.applicationFormGroup.value;
@@ -169,28 +141,17 @@ export class JobAddDialogComponent implements OnInit {
   get companyName() {
     return this.applicationFormGroup.get('companyName');
   }
+
   get jobRole() {
     return this.applicationFormGroup.get('position');
   }
 
   get resumeConfig(): FormInputSelectConfig {
-    const resumeOptions = this.resumes.map(resume => ({
-      value: resume.id,
-      label: resume.fileName
-    }));
-
-    if (!this.hasResumes) {
-      resumeOptions.push({
-        value: 'upload-resume',
-        label: '+ Upload Resume'
-      });
-    }
-
     return FormInputConfigHelper.select({
       id: FormFieldId.RESUME_ID,
       label: FormFieldLabel.CV_USED,
       placeholder: FORM_PLACEHOLDERS.RESUME_SELECT,
-      options: resumeOptions
+      options: this.documentHelperService.getSelectOptions()
     });
   }
 
@@ -205,24 +166,7 @@ export class JobAddDialogComponent implements OnInit {
     });
   }
 
-  get hasResumes(): boolean {
-    return this.resumes.length > 0;
-  }
-
   onResumeSelectionChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const selectedValue = selectElement.value;
-
-    if (selectedValue === 'upload-resume') {
-      this.navigateToDocuments();
-    }
+    this.documentHelperService.handleSelection(event, this.router, this.dialogRef);
   }
-
-  private navigateToDocuments(): void {
-    const profileRoute = `/${RootRoutes.main}/${MainRoutes.profileManagement}`;
-    const queryParams = { tab: PROFILE_TABS.DOCUMENTS };
-    this.router.navigate([profileRoute], { queryParams });
-    this.dialogRef.close({ status: DialogCloseStatus.Cancelled });
-  }
-
 }

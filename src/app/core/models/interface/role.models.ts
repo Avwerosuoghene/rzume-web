@@ -17,10 +17,15 @@ export interface RoleDocument {
   uploadedAt: Date;
 }
 
+export interface RoleDocumentRequest {
+  resumeId: string;
+  documentType: string;
+}
+
 export interface CreateRolePayload {
-  jobRole: string;
-  industry: string;
-  documents: File[];
+  title: string;
+  industryId: number;
+  documents: RoleDocumentRequest[];
 }
 
 export interface RoleStats {

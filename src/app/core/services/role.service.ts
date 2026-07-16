@@ -51,8 +51,8 @@ export class RoleService {
           if (response.success && response.data) {
             this.roleState.addRole(response.data);
             this.analyticsService.track(AnalyticsEvent.ROLE_CREATED, {
-              jobRole: payload.jobRole,
-              industry: payload.industry,
+              title: payload.title,
+              industryId: payload.industryId,
               documentCount: payload.documents.length
             });
           }
@@ -60,8 +60,8 @@ export class RoleService {
         catchError(error => {
           this.analyticsService.track(AnalyticsEvent.ROLE_CREATE_FAILED, {
             error_message: error.message || 'Unknown error',
-            jobRole: payload.jobRole,
-            industry: payload.industry
+            title: payload.title,
+            industryId: payload.industryId
           });
           return throwError(() => error);
         })

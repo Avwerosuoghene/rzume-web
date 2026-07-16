@@ -7,3 +7,4 @@ export * from './job-application.models';
 export * from './profile.models';
 export * from './shared.models';
 export * from './form-input.interface';
+export * from './industry.models';

@@ -9,6 +9,7 @@ import { JobApplicationService } from "./job-application.service";
 import { RoleService } from "./role.service";
 import { LoaderService } from "./loader.service";
 import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
+import { CreateRolePayload } from '../models/interface/role.models';
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
@@ -51,6 +52,23 @@ export class DialogHelperService {
         this.createApplication(payload, onSuccess);
       },
       { panelClass: 'add-job-dialog-panel' }
+    );
+  }
+
+  openAddRoleDialog(onSuccess?: () => void): void {
+    this.openAndHandleDialog<CreateRolePayload>(
+      AddRoleDialogComponent,
+      {},
+      (response) => {
+        this.loaderService.showLoader();
+        this.roleService.createRole(response.data!)
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onSuccess?.(),
+            error: () => onSuccess?.()
+          });
+      },
+      { panelClass: 'add-role-dialog-panel' }
     );
   }
 
