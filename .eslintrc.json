@@ -1,7 +1,8 @@
 {
   "root": true,
   "ignorePatterns": [
-    "projects/**/*"
+    "projects/**/*",
+    "src/index.html"
   ],
   "overrides": [
     {
@@ -10,7 +11,7 @@
       ],
       "extends": [
         "eslint:recommended",
-        "@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended"
       ],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
@@ -25,6 +26,14 @@
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-unused-vars": "error"
       }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ]
     }
   ]
 }

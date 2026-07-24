@@ -1,264 +1,86 @@
-# Rzume Web — Claude Code Instructions
+# CLAUDE.md
 
-## Project Overview
+Guidance for Claude Code sessions working in this repo. For what the app itself does, see
+`README.md` — this file is about how to work on it, not what it is.
 
-**Rzume** is a job application tracking and resume management platform.
+## Quick facts
 
-- **Framework**: Angular 18.2.0 (standalone components)
-- **UI Library**: Angular Material 18.2.0
-- **State Management**: Service-based with RxJS BehaviorSubjects (no NgRx)
-- **Authentication**: Google OAuth + JWT tokens
-- **Backend API**: REST API at `localhost:7103` (development)
-- **Deployment**: Docker + Google Cloud Run (port 8080)
-- **Analytics**: Mixpanel + Google Tag Manager
+- Angular 18.2, standalone components, RxJS/`BehaviorSubject` state services, Angular Material
+  (`azure-blue` prebuilt theme). Unit tests: Jasmine/Karma. E2E: Cypress (Playwright is installed
+  but unused/dormant — don't add Playwright specs).
+- Default/PR-target branch is **`master`**, not `main`.
+- `ng lint` works (it didn't for a while — see `/linting-standards` if it ever regresses).
+- A companion Obsidian vault at `~/Documents/rzume-web-vault/` holds feature plans, Figma specs, and
+  implementation summaries — see `_MOC.md` there for the index. It's local-only; PR descriptions
+  still need the short version inline.
+- Figma is connected via the remote MCP server (`.mcp.json`, project-local scope) — read-only
+  design tools are available (`get_design_context`, `get_variable_defs`, etc.).
 
-### Routing Structure
+## There is a full skill package here — use it
+
+This repo has a purpose-built set of skills under `.claude/skills/` covering standards, a
+Figma-driven TDD implementation pipeline, and release tooling. **Don't improvise conventions or
+workflow steps this package already covers** — load the relevant skill instead.
+
+### Start here for a broad/unclear question
+`/frontend-coding-standards` — routes to the right canonical skill. If you already know which
+concern you're dealing with, skip straight to it instead.
+
+### The feature-implementation chain
+
 ```
-/ → /auth (redirect)
-/auth — login, register, onboard, reset-password, request-pass-reset, email-confirmation
-/main  — dashboard, profile-management  (protected by AuthGuardService)
-```
-
-### Key Services
-`AuthenticationService`, `ApiService`, `StorageService`, `GoogleAuthService`, `JobApplicationService`, `JobApplicationStateService`, `SearchStateService`, `ScreenManagerService`, `LoaderService`, `AnalyticsService`
-
----
-
-## Angular 18 Core Standards (Always Apply)
-
-### Standalone Components — Required
-- **Always use standalone components** — no NgModules, ever
-- Do NOT explicitly set `standalone: true` (it is the default in Angular 18+)
-- Import all dependencies directly in the component's `imports` array
-
-### Change Detection — Required
-- **Always use `ChangeDetectionStrategy.OnPush`** on every component
-- Use `ChangeDetectorRef.markForCheck()` when triggering manual detection
-
-### Dependency Injection — Required
-- **Use `inject()` function**, not constructor injection
-- Place all `inject()` calls at the top of the class body
-- Services use `providedIn: 'root'` for singletons
-
-### Template Syntax — Required
-- **Modern control flow only**: `@if`, `@for`, `@switch` — never `*ngIf`, `*ngFor`, `*ngSwitch`
-- Always include `track` in `@for`: `@for (item of items; track item.id)`
-- Keep templates free of complex logic
-
-### Semantic HTML — Required
-| Need | Use |
-|------|-----|
-| Page regions | `<main>`, `<header>`, `<footer>`, `<nav>`, `<aside>` |
-| Content groups | `<section>` (with heading), `<article>` (self-contained) |
-| Lists | `<ul>` / `<ol>` + `<li>` — never `<div>` lists |
-| Text content | `<p>`, `<h1>`–`<h6>`, `<time>`, `<address>` |
-| Actions | `<button type="button">` — **never** `<div (click)>` |
-| Navigation | `<a [routerLink]>` |
-| Structural wrappers (no DOM) | `<ng-container>` |
-| Reusable template fragments | `<ng-template #ref>` |
-| Last resort only | `<div>` / `<span>` for purely presentational wrappers |
-
-### Accessibility — Required
-- All interactive elements must have an accessible name (visible text, `aria-label`, or `aria-labelledby`)
-- Icon-only buttons **must** have `aria-label`; icons use `aria-hidden="true"`
-- Dynamic regions use `aria-live="polite"` (or `"assertive"` for urgent updates)
-- Form controls linked to `<label>` via `for`/`id` or `aria-labelledby`
-- All `<img>` elements have `alt`; decorative images use `alt=""`
-- Use `role` only when no native semantic element exists
-
-### Subscription Management — Required
-```typescript
-private destroy$ = new Subject<void>();
-
-ngOnInit() {
-  this.service.data$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(data => { /* ... */ });
-}
-
-ngOnDestroy() {
-  this.destroy$.next();
-  this.destroy$.complete();
-}
+feature/bug request
+       │
+       ▼
+  /architect            (skip for small, single-file changes — go straight to /implement)
+       │  Mermaid diagram + solution options, written to the vault
+       │  stop-and-ask if there's no clear winner (.claude/rules/human-checkpoint.md)
+       ▼
+  /figma-feature-plan    (only if there's a UI surface with a Figma design)
+       │  Figma → Angular Material / existing-component mapping, read-only
+       ▼
+  /write-tests           (TDD red step — write the failing test FIRST, always)
+       ▼
+  /implement             (TDD green step — make it pass, minimal change)
+       ▼
+  /quality-gate          (self-check before presenting)
+       ▼
+  /code-review           (review the diff against conventions)
+       ▼
+  /pre-commit-checklist  (lint, type-check, tests — the git hook does NOT enforce these)
+       ▼
+  /create-pr             (PR description + implementation-summary.md in the vault)
 ```
 
-### Standard Component Shell
-```typescript
-@Component({
-  selector: 'app-component-name',
-  imports: [/* dependencies */],
-  templateUrl: './component-name.component.html',
-  styleUrl: './component-name.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class ComponentNameComponent implements OnDestroy {
-  private destroy$ = new Subject<void>();
-  private someService = inject(SomeService);
+For a trivial change, it's fine to jump straight to `/implement` (which still expects
+`/write-tests` to have run first) and `/pre-commit-checklist` before committing — the full chain is
+for anything non-trivial enough to benefit from a plan.
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-}
-```
+### Standards skills (referenced throughout the chain, not just at the start)
 
-### State Management Pattern
-```typescript
-@Injectable({ providedIn: 'root' })
-export class FeatureStateService {
-  private stateSubject = new BehaviorSubject<State>(initialState);
-  state$ = this.stateSubject.asObservable().pipe(
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
-  get currentState(): State { return this.stateSubject.value; }
-  updateState(patch: Partial<State>): void {
-    this.stateSubject.next({ ...this.currentState, ...patch });
-  }
-}
-```
+`/angular-patterns` · `/rxjs-state-patterns` · `/material-ui` · `/typescript-standards` ·
+`/linting-standards` · `/web-design-guidelines`
 
----
+### Release tooling
 
-## Code Quality Rules (Always Apply)
+`/security-check` · `/bundle-report` — reach for these around a release or after a dependency
+change, not on every feature.
 
-### TypeScript
-- **No `any` type** — use `unknown` when type is uncertain
-- Avoid implicit returns; no unused variables or imports
-- No `console.log` in production code
-- No hardcoded magic values — use named constants
+### The one rule that cuts across everything
 
-### Angular Anti-Patterns (Prohibited)
-- ❌ Default change detection
-- ❌ Memory leaks (always unsubscribe)
-- ❌ Direct DOM manipulation (use `Renderer2`)
-- ❌ Business logic in templates
-- ❌ NgModules
-- ❌ `@HostBinding` / `@HostListener` (use the `host` object)
-- ❌ `<div (click)>` for actions
-- ❌ `<div>` / `<span>` where a semantic element exists
-- ❌ Bare `<div>` wrappers for structural directives (use `<ng-container>`)
-- ❌ Icon-only buttons without `aria-label`
-- ❌ Form inputs without a linked `<label>`
+`.claude/rules/human-checkpoint.md` — every skill above stops and asks instead of guessing at a
+short list of specific fork-in-the-road moments (no clear architecture winner, an unmapped Figma
+element, a test that can't pass without breaking a convention, a BLOCKER that survives a second
+fix attempt, anything destructive/irreversible). It is not a blanket "ask before every step" rule.
 
-### Component Design
-- Max 300 lines per component file
-- Max 3 levels of component nesting
-- No tight coupling between components
-- No duplicate code (DRY)
+## Known project quirks worth knowing before you dig for them yourself
 
-### Import Order
-1. Angular core (`@angular/core`, `@angular/common`, etc.)
-2. Angular common utilities
-3. Third-party libraries
-4. App core (`@core/...`)
-5. App features
-6. Relative imports
-
----
-
-## Styling System
-
-### SCSS Architecture
-```
-src/app/styles/
-├── variables.scss   — colors, spacing, borders
-├── fonts.scss       — font sizes, weights, typography mixins
-└── mixins.scss      — responsive and utility mixins
-```
-
-Always `@import` variables and fonts at the top of component SCSS files.
-
-### Responsive Breakpoints (Mobile-First)
-```scss
-/* Mobile default: 0–598px */
-/* Tablet: */  @media (min-width: 599px) { }
-/* Desktop: */ @media (min-width: 950px) { }
-```
-
-### Key Variables
-```scss
-// Colors
-$primary-green: #4CAF50;  $error-color: #f44336;
-$text-primary: #333333;   $text-secondary: #666666;
-$background-white: #FFFFFF; $border-color: #E0E0E0;
-
-// Spacing: $spacing-xs (4px) → $spacing-2xl (48px)
-// Font sizes: $font-size-xs (10px) → $font-size-6xl (48px)
-// Font weights: $font-weight-light (300) → $font-weight-extrabold (800)
-```
-
-### Component Style Pattern
-```scss
-@import 'src/app/styles/variables';
-@import 'src/app/styles/fonts';
-
-:host { display: block; padding: $spacing-md; }
-
-.component-container { /* ... */ }
-```
-
----
-
-## Testing Requirements
-
-- **Unit tests**: Jasmine + Karma — all components and services
-- **E2E tests**: Cypress for flows, Playwright for cross-browser
-- **Coverage target**: ≥ 80% (statements, branches, functions, lines)
-- Mock all external dependencies with `jasmine.createSpyObj`
-- Use `HttpClientTestingModule` for HTTP services
-- Use `NoopAnimationsModule` to avoid animation timing issues
-- Test inputs, outputs, loading/error/empty states, and edge cases
-
----
-
-## Project File Conventions
-
-| Artifact | Location | Naming |
-|----------|----------|--------|
-| Page components | `src/app/pages/` | `feature.component.ts` |
-| Presentation components | `src/app/components/` | `widget.component.ts` |
-| Services | `src/app/core/services/` | `feature.service.ts` |
-| Models / interfaces | `src/app/core/models/interface/` | `feature.models.ts` |
-| Enums | `src/app/core/models/` | `feature.enums.ts` |
-| Constants | `src/app/core/models/constants/` | `feature.constants.ts` |
-| Guards | `src/app/core/guards/` | `feature.guard.ts` |
-
-Export everything through the folder's `index.ts` barrel file.
-
----
-
-## Dependency Rules
-
-- Prefer Angular ecosystem packages before adding external libraries
-- Use exact or tilde (`~`) versions for Angular and testing packages
-- Run `npm install <pkg>` for runtime deps, `npm install <pkg> --save-dev` for tooling
-- Remove unused dependencies promptly
-
----
-
-## Available Custom Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/add-feature` | End-to-end workflow for adding a new feature |
-| `/create-component` | Generate a new Angular component with tests |
-| `/create-service` | Generate a new Angular service with tests |
-| `/architect` | Strategic feature planning & architectural design |
-| `/quality-gate` | Run full quality gate validation |
-| `/security-fix` | Detect and remediate npm security vulnerabilities |
-| `/test` | Comprehensive testing workflow (unit + E2E) |
-| `/code-review` | Security & quality code review |
-| `/update-docs` | Synchronise README and documentation |
-
----
-
-## Quality Gate Scripts
-
-```bash
-npm run quality-gate:full       # Full validation suite
-npm run quality-gate:automated  # Type check + security audit
-npm run lint                    # ESLint
-npm run test:ci                 # Unit tests (headless + coverage)
-npm run security:audit          # npm audit
-npm run analyze-bundle          # Bundle size analysis
-```
+- `package.json`'s `overrides` block has scoped exceptions for `ajv` (under `eslint`/
+  `@eslint/eslintrc`) and `uuid` (under `cypress`/`@cypress/request`) — don't remove these, they fix
+  real conflicts with the blanket version bumps. See `/linting-standards` for the full story.
+- `scripts/security-fix.sh` only *prints* a suggested `overrides` snippet — it doesn't write
+  `package.json` itself. If you're tempted to paste its suggestion in, scope it first (see
+  `/security-check`) rather than repeating the mistake that broke lint once already.
+- A truly clean `rm -rf node_modules package-lock.json && npm install` currently fails:
+  `@abacritt/angularx-social-login@^2.3.0` resolves fresh to a version needing Angular ≥21. Don't
+  wipe the lockfile without expecting to deal with this.
