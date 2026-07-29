@@ -59,7 +59,7 @@ export class RoleService {
         }),
         catchError(error => {
           this.analyticsService.track(AnalyticsEvent.ROLE_CREATE_FAILED, {
-            error_message: error.message || 'Unknown error',
+            error_message: error?.message || 'Unknown error',
             title: payload.title,
             industryId: payload.industryId
           });
@@ -81,7 +81,7 @@ export class RoleService {
         }),
         catchError(error => {
           this.analyticsService.track(AnalyticsEvent.ROLE_DELETE_FAILED, {
-            error_message: error.message || 'Unknown error',
+            error_message: error?.message || 'Unknown error',
             roleId
           });
           return throwError(() => error);

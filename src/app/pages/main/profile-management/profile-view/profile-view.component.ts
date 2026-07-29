@@ -18,13 +18,13 @@ import {
   PROFILE_UPDATE_SUCCESS_MSG
 } from '../../../../core/models/constants/dialog-data.constants';
 import { UpdateProfilePayload, ProfilePhotoUploadResult } from '../../../../core/models/interface/profile.models';
-import { User, APIResponse, SessionStorageKeys } from '../../../../core/models';
+import { User, APIResponse } from '../../../../core/models';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { StorageService } from '../../../../core/services';
-import { SessionStorageUtil } from '../../../../core/helpers/session-storage.util';
+import { TokenStorageUtil } from '../../../../core/helpers/token-storage.util';
 import { FormValidationUtil } from '../../../../core/helpers/form-validation.util';
-import { FloatingLabelDirective } from '../../../../core/directives';
+import { FloatingLabelDirective } from '../../../../core/directives/floating-label.directive';
 
 @Component({
   selector: 'app-profile-view',
@@ -94,11 +94,13 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   }
 
   getUserInfo() {
-    this.storageService.user$.subscribe(user => {
-      this.currentUser = user;
-      if (!this.currentUser) return;
-      this.populateForm(this.currentUser);
-    });
+    this.storageService.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+        if (!this.currentUser) return;
+        this.populateForm(this.currentUser);
+      });
   }
 
   private populateForm(user: User): void {
@@ -133,7 +135,7 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   }
 
   private refreshUserData(): void {
-    const token = SessionStorageUtil.getItem(SessionStorageKeys.authToken);
+    const token = TokenStorageUtil.getToken();
     if (!token) return;
 
     this.userService.refreshActiveUser()
@@ -203,20 +205,25 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
     }
 
     const errors = control.errors;
+    const key = this.toScreamingSnakeCase(fieldName);
     if (errors['required']) {
-      return this.errorMessages[`${fieldName.toUpperCase()}_REQUIRED` as keyof typeof PROFILE_ERROR_MESSAGES];
+      return this.errorMessages[`${key}_REQUIRED` as keyof typeof PROFILE_ERROR_MESSAGES];
     }
     if (errors['minlength']) {
-      return this.errorMessages[`${fieldName.toUpperCase()}_MIN_LENGTH` as keyof typeof PROFILE_ERROR_MESSAGES];
+      return this.errorMessages[`${key}_MIN_LENGTH` as keyof typeof PROFILE_ERROR_MESSAGES];
     }
     if (errors['maxlength']) {
-      return this.errorMessages[`${fieldName.toUpperCase()}_MAX_LENGTH` as keyof typeof PROFILE_ERROR_MESSAGES];
+      return this.errorMessages[`${key}_MAX_LENGTH` as keyof typeof PROFILE_ERROR_MESSAGES];
     }
     if (errors['pattern']) {
-      return this.errorMessages[`${fieldName.toUpperCase()}_INVALID` as keyof typeof PROFILE_ERROR_MESSAGES];
+      return this.errorMessages[`${key}_INVALID` as keyof typeof PROFILE_ERROR_MESSAGES];
     }
 
     return '';
+  }
+
+  private toScreamingSnakeCase(fieldName: string): string {
+    return fieldName.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
   }
 
 

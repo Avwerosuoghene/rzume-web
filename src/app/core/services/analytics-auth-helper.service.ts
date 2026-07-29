@@ -50,7 +50,7 @@ export class AnalyticsAuthHelperService {
   // Handle authentication failure
   handleAuthFailure(error: any, method: SignupMethod, event: AnalyticsEvent): void {
     this.analyticsService.track(event, {
-      error_message: error.message || 'Unknown error',
+      error_message: error?.message || 'Unknown error',
       signup_method: method,
       signin_method: method
     });

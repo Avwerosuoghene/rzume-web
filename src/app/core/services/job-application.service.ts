@@ -56,7 +56,7 @@ export class JobApplicationService {
         ...this.currentFilter,
         page,
         pageSize
-      }).subscribe();
+      }).subscribe({ error: () => {} });
     }
   }
 

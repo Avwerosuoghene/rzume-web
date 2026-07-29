@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, forwardRef, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
-import { FloatingLabelDirective } from '../../core/directives';
+import { FloatingLabelDirective } from '../../core/directives/floating-label.directive';
 import { 
   FormInputConfig, 
   SelectOption, 
@@ -31,7 +32,7 @@ import { DEFAULT_ERROR_MESSAGES, FORM_INPUT_DEFAULTS, PASSWORD_VISIBILITY_ICONS,
     }
   ]
 })
-export class FormInputComponent implements ControlValueAccessor, OnInit, AfterViewInit {
+export class FormInputComponent implements ControlValueAccessor, OnInit, AfterViewInit, OnDestroy {
   constructor(private cdr: ChangeDetectorRef) {}
   @Input() config!: FormInputConfig;
   @Input() control?: AbstractControl | null;
@@ -49,6 +50,7 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
+  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     this.validateConfig();
@@ -57,6 +59,11 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
   ngAfterViewInit(): void {
     this.setupControlValueSync();
     this.cdr.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private setupControlValueSync(): void {
@@ -76,7 +83,7 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
   }
 
   private subscribeToControlChanges(): void {
-    this.control?.valueChanges?.subscribe(value => {
+    this.control?.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(value => {
       if (value !== this.value) {
         this.value = value;
       }

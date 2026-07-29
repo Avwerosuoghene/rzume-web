@@ -147,17 +147,21 @@ export class GoogleTagService extends AnalyticsService {
             return;
         }
 
-        // Resetting user_id to undefined
-        const gTagId = this.configService.googleTagId;
+        try {
+            // Resetting user_id to undefined
+            const gTagId = this.configService.googleTagId;
 
-        gtag('config', gTagId, {
-            'user_id': undefined
-        });
+            gtag('config', gTagId, {
+                'user_id': undefined
+            });
 
-        gtag('set', 'user_properties', {
-            'email': undefined,
-            'subscription_status': undefined
-        });
+            gtag('set', 'user_properties', {
+                'email': undefined,
+                'subscription_status': undefined
+            });
+        } catch (error) {
+            console.error('Google Tag reset error:', error);
+        }
     }
 
     optIn(): void {

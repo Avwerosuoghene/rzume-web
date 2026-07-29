@@ -14,7 +14,7 @@ export class RoleHelper {
       }
 
       const limit = Number.parseInt(feature.featureValue, 10);
-      return Number.isNaN(limit) ? DEFAULT_ROLE_LIMIT : limit;
+      return Number.isNaN(limit) || limit <= 0 ? DEFAULT_ROLE_LIMIT : limit;
     } catch {
       return DEFAULT_ROLE_LIMIT;
     }

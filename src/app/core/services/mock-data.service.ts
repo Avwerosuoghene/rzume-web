@@ -66,7 +66,6 @@ export class MockDataService {
   getOrders(page: number, limit: number) {
     const offset = (page - 1) * limit;
     const paginatedData = this.mockResponse.data.data.slice(offset, offset + limit);
-    console.log(paginatedData)
     return of({
       ...this.mockResponse,
       data: {

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthRoutes, RootRoutes } from '../models/enums/application.routes.enums';
-import { LoaderService, UserService } from '../services';
+import { LoaderService } from '../services/loader.service';
+import { UserService } from '../services/user.service';
 import { AuthHelperService } from '../services/auth-helper.service';
 import { TokenStorageUtil } from '../helpers/token-storage.util';
 import { CompositeAnalyticsService } from '../services/analytics/composite-analytics.service';

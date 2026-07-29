@@ -33,12 +33,11 @@ export class ApiService {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
-        statusCode: error.statusCode,
+        statusCode: error.status,
         errorMessage: errorMsg
       }
       if (handleResponse)
-
-        this.handleErrorWithObservable(responseError);
+        return this.handleErrorWithObservable(responseError);
 
       return throwError(() => responseError);
 
@@ -57,7 +56,7 @@ export class ApiService {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
-        statusCode: error.statusCode,
+        statusCode: error.status,
         errorMessage: errorMsg
       }
       if (handleResponse)
@@ -77,7 +76,7 @@ export class ApiService {
       let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
-        statusCode: error.statusCode,
+        statusCode: error.status,
         errorMessage: errorMsg
       }
       if (handleResponse)

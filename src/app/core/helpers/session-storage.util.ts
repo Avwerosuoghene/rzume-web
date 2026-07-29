@@ -7,7 +7,15 @@ export class SessionStorageUtil {
 
   static getItem<K extends keyof SessionStorageData>(key: K): SessionStorageData[K] | null {
     const item = sessionStorage.getItem(key);
-    return item ? (JSON.parse(item) as SessionStorageData[K]) : null;
+    if (!item) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(item) as SessionStorageData[K];
+    } catch {
+      return null;
+    }
   }
 
   static removeItem<K extends keyof SessionStorageData>(key: K): void {

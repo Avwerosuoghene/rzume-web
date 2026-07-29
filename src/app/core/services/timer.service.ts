@@ -13,6 +13,7 @@ export class TimerService {
   }
 
   setTimer(startMinutes: number = 4): void {
+    this.clearTimer();
     let timer = startMinutes * 60;
 
     this.timerInterval = setInterval(() => {

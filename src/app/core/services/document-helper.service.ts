@@ -31,6 +31,7 @@ export class DocumentHelperService {
             this.setResumes(response.data);
           }
         },
+        error: () => {}
       });
   }
 
@@ -52,7 +53,7 @@ export class DocumentHelperService {
       .filter(r => !excludeIds.includes(r.id))
       .map(r => ({ value: r.id, label: r.fileName }));
 
-    if (!all.length) {
+    if (!options.length) {
       options.push({ value: 'upload-resume', label: '+ Upload Document' });
     }
 

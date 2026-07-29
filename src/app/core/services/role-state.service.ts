@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { Role, RoleStats } from '../models/interface/role.models';
 import { ROLE_LIMIT } from '../models/constants/role.constants';
 
@@ -31,6 +31,7 @@ export class RoleStateService {
   );
 
   roles$ = this.stateSubject.asObservable().pipe(
+    map(state => state.roles),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
