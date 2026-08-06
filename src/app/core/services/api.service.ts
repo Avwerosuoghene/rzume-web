@@ -4,7 +4,7 @@ import { ConfigService } from './config.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, catchError, throwError } from 'rxjs';
 import { InfoDialogComponent } from '../../components/info-dialog/info-dialog.component';
-import { ApiUrlParam, ERROR_UNKNOWN, ErrorResponse, GetRequestOptions, IconStat, InfoDialogData } from '../models';
+import { ERROR_UNKNOWN, ErrorResponse, GetRequestOptions, IconStat, InfoDialogData } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class ApiService {
 
     const { route, params, headers, withBearer, handleResponse } = options;
 
-    let requestRoute: string = `${this.configService.apiUrls.backend}/${route}`;
+    const requestRoute: string = `${this.configService.apiUrls.backend}/${route}`;
     let requestParams = new HttpParams();
     if (params) {
       params.forEach(param => {
@@ -25,12 +25,12 @@ export class ApiService {
       })
     }
 
-    let requestHeaders = this.mergeHeaders(headers);
+    const requestHeaders = this.mergeHeaders(headers);
 
     return this.httpClient.get<T>(requestRoute, {
       headers: requestHeaders, params: requestParams
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
+      const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
         statusCode: error.status,
@@ -46,14 +46,14 @@ export class ApiService {
   }
 
   public put<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): Observable<T> {
-    let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
+    const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
-    let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
+    const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.put<T>(route, body, {
       headers: headers
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
+      const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
         statusCode: error.status,
@@ -66,14 +66,14 @@ export class ApiService {
   }
 
   public post<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false, useJsonContentType: boolean = true): Observable<T> {
-    let route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
+    const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
-    let headers = this.mergeHeaders(reqHeaders, useJsonContentType);
+    const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.post<T>(route, body, {
       headers
     }).pipe(catchError((error) => {
-      let errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
+      const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
       const responseError: ErrorResponse = {
         statusCode: error.status,

@@ -5,14 +5,12 @@ import { Router } from '@angular/router';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { AngularMaterialModules, CoreModules } from '../../../core/modules';
-import { SessionStorageKeys, APIResponse, RootRoutes, ErrorResponse, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes, FormFieldId, FormFieldLabel } from '../../../core/models';
+import { APIResponse, RootRoutes, InfoDialogData, MSG_EXPIRED_SESSION, IconStat, AuthRoutes, FormFieldId, FormFieldLabel } from '../../../core/models';
 import { ProfileManagementService } from '../../../core/services';
 import { slideOutAnimation } from '../../../core/animations';
-import { FormInputConfigHelper, FormValidationUtil, SessionStorageUtil } from '../../../core/helpers';
-import { UpdateProfilePayload } from '../../../core/models/interface/profile.models';
-import { finalize, pipe } from 'rxjs';
+import { FormInputConfigHelper, FormValidationUtil } from '../../../core/helpers';
+import { finalize } from 'rxjs';
 import { FormInputComponent } from '../../../components/form-input/form-input.component';
-import { FormInputType, FormInputConfig } from '../../../core/models';
 
 @Component({
   selector: 'app-onboard',
@@ -103,7 +101,7 @@ export class OnboardComponent {
       backdropClass: "blurred"
     });
 
-    errorDialogRef.afterClosed().subscribe(result => {
+    errorDialogRef.afterClosed().subscribe(() => {
       this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.signup}`);
     });
 

@@ -1,5 +1,5 @@
 import { MIME_TYPE_MAP, DEFAULT_CV_UPLOAD_LIMIT, SessionStorageKeys, SubscriptionFeatureKeys } from "../models";
-import { SubscriptionFeatures } from "../models/interface/profile.models";
+import { SubscriptionFeatures, Resume } from "../models/interface/profile.models";
 
 
 export class DocumentHelper {
@@ -62,11 +62,11 @@ export class DocumentHelper {
     return '/assets/icons/pdf-icon.svg';
   }
 
-  static findResumeById(resumes: any[], resumeId: string): any | undefined {
+  static findResumeById(resumes: Resume[], resumeId: string): Resume | undefined {
     return resumes.find(resume => resume.id === resumeId);
   }
 
-  static getResumeFileName(resumes: any[], resumeId: string): string {
+  static getResumeFileName(resumes: Resume[], resumeId: string): string {
     const resume = this.findResumeById(resumes, resumeId);
     return resume?.fileName || '';
   }

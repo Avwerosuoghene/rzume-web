@@ -109,7 +109,7 @@ describe('JobCardItemComponent', () => {
     });
 
     it('should not copy when link is null', () => {
-      component.copyLink(null as any);
+      component.copyLink(null as unknown as string);
 
       expect(mockClipboard.copy).not.toHaveBeenCalled();
       expect(mockSnackBar.open).not.toHaveBeenCalled();

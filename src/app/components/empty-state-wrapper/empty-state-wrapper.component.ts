@@ -12,7 +12,7 @@ import { JobApplicationFilter } from '../../core/models/interface/job-applicatio
   styleUrls: ['./empty-state-wrapper.component.scss']
 })
 export class EmptyStateWrapperComponent implements OnChanges {
-  @Input() data: any[] = [];
+  @Input() data: unknown[] = [];
   @Input() currentFilter: JobApplicationFilter = {};
   @Output() actionButtonClicked = new EventEmitter<void>();
 

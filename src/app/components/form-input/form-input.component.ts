@@ -1,14 +1,14 @@
 import { Component, Input, Output, EventEmitter, forwardRef, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { FloatingLabelDirective } from '../../core/directives/floating-label.directive';
-import { 
-  FormInputConfig, 
-  SelectOption, 
-  FormInputSelectConfig, 
-  FormInputDateConfig 
+import {
+  FormInputConfig,
+  FormInputSelectConfig,
+  FormInputDateConfig
 } from '../../core/models/interface/form-input.interface';
 import { FormInputType } from '../../core/models/enums/form-input.enums';
 import { DEFAULT_ERROR_MESSAGES, FORM_INPUT_DEFAULTS, PASSWORD_VISIBILITY_ICONS, PASSWORD_INPUT_TYPES } from '../../core/models/constants/form-input.constants';
@@ -168,18 +168,18 @@ export class FormInputComponent implements ControlValueAccessor, OnInit, AfterVi
     this.disabled = isDisabled;
   }
 
-  onValueChange(event: Event | any): void {
-    let newValue: any;
-    
+  onValueChange(event: Event | MatDatepickerInputEvent<unknown>): void {
+    let newValue: unknown;
+
     // Handle Material datepicker event
-    if (event.value !== undefined) {
+    if ('value' in event) {
       newValue = event.value;
     } else {
       // Handle regular input/select/textarea events
       const target = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
       newValue = target.value;
     }
-    
+
     this.value = newValue;
     
     // Update parent control if it exists

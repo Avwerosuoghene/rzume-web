@@ -1,18 +1,10 @@
-import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { SignupComponent } from './signup.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatDialogHarness } from '@angular/material/dialog/testing';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { LoginComponent } from '../login/login.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { GoogleAuthService } from '../../../core/services/google-auth.service';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
@@ -25,7 +17,6 @@ describe('SignupComponent', () => {
   let mockAuthService: jasmine.SpyObj<AuthenticationService>;
   let mockGoogleAuthService: jasmine.SpyObj<GoogleAuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let mockDialog: jasmine.SpyObj<MatDialog>;
 
   beforeEach(async () => {
     const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['signup', 'loadGoogleScript']);
@@ -69,8 +60,7 @@ describe('SignupComponent', () => {
     mockGoogleAuthService = TestBed.inject(GoogleAuthService) as jasmine.SpyObj<GoogleAuthService>;
     mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     spyOn(mockRouter, 'navigate');
-    mockDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
-    
+
     fixture.detectChanges();
   });
 
@@ -202,10 +192,8 @@ describe('SignupComponent', () => {
   });
 
   it('should handle Google login error', () => {
-    const mockError: ErrorResponse = { errorMessage: 'Google login failed', statusCode: 400 };
-    
-    component.handleGoogleLoginError(mockError);
-    
+    component.handleGoogleLoginError();
+
     expect(component.loaderIsActive).toBe(false);
   });
 

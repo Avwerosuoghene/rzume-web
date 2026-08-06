@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +8,7 @@ export class MockDataService {
 
   constructor() { }
 
-  private mockResponse = {
+  private readonly mockResponse = {
     "message": "Orders gotten successfully",
     "data": {
       "data": [

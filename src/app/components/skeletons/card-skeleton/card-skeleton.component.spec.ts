@@ -98,7 +98,6 @@ describe('CardSkeletonComponent', () => {
   it('should have proper border-radius for different elements', () => {
     const compiled = fixture.nativeElement;
     const menuBtn = compiled.querySelector('.skeleton-menu-btn');
-    const statusBtn = compiled.querySelector('.skeleton-status');
     const regularSkeleton = compiled.querySelector('.skeleton-tab');
     
     const menuStyles = getComputedStyle(menuBtn);

@@ -7,7 +7,7 @@ import { DocumentHelperService } from '../../../../core/services/document-helper
 import { ProfileManagementService } from '../../../../core/services/profile-management.service';
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
 import { LoaderService } from '../../../../core/services/loader.service';
-import { DocumentItem, Resume, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
+import { DocumentItem, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
 import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
 import { APIResponse, DOCUMENT_VALIDATION, DOWNLOADING_DOCUMENT, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION, IconStat, DEFAULT_CV_UPLOAD_LIMIT } from '../../../../core/models';
 import { DocumentHelper } from '../../../../core/helpers';

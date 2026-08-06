@@ -10,7 +10,6 @@ import { SideBarElement } from '../../../core/models';
 describe('SideBarComponent', () => {
   let component: SideBarComponent;
   let fixture: ComponentFixture<SideBarComponent>;
-  let mockConfigService: jasmine.SpyObj<ConfigService>;
 
   const mockConfig = {
     featureFlags: {
@@ -33,8 +32,7 @@ describe('SideBarComponent', () => {
 
     fixture = TestBed.createComponent(SideBarComponent);
     component = fixture.componentInstance;
-    mockConfigService = TestBed.inject(ConfigService) as jasmine.SpyObj<ConfigService>;
-    
+
     fixture.detectChanges();
   });
 

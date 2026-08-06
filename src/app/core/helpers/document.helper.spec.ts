@@ -2,6 +2,7 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { DocumentHelper } from './document.helper';
 import { SessionStorageKeys } from '../models';
 import { DEFAULT_CV_UPLOAD_LIMIT } from '../models/constants/document.constants';
+import { Resume } from '../models/interface/profile.models';
 
 describe('DocumentHelper', () => {
   afterEach(() => {
@@ -88,7 +89,10 @@ describe('DocumentHelper', () => {
   });
 
   describe('findResumeById / getResumeFileName', () => {
-    const resumes = [{ id: '1', fileName: 'resume.pdf' }, { id: '2', fileName: 'cover.pdf' }];
+    const resumes: Resume[] = [
+      { id: '1', fileName: 'resume.pdf', uploadedAt: new Date('2026-01-01'), url: 'http://example.com/resume.pdf' },
+      { id: '2', fileName: 'cover.pdf', uploadedAt: new Date('2026-01-02'), url: 'http://example.com/cover.pdf' }
+    ];
 
     it('should find the resume matching the given id', () => {
       expect(DocumentHelper.findResumeById(resumes, '2')).toEqual(resumes[1]);

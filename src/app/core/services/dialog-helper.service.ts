@@ -8,7 +8,7 @@ import { AddRoleDialogComponent } from '../../components/add-role-dialog/add-rol
 import { JobApplicationService } from "./job-application.service";
 import { RoleService } from "./role.service";
 import { LoaderService } from "./loader.service";
-import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
 import { CreateRolePayload } from '../models/interface/role.models';
 
 @Injectable({ providedIn: 'root' })

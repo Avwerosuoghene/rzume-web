@@ -1,5 +1,3 @@
-import { SubscriptionFeatures } from './profile.models';
-
 export interface AuthRequest {
   email: string,
   password: string,

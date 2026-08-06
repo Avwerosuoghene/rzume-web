@@ -5,12 +5,11 @@ import { ApiService } from './api.service';
 import { DialogHelperService } from './dialog-helper.service';
 import { LoaderService } from './loader.service';
 import { APIResponse, ApiRoutes } from '../models';
-import { 
-  UpdateProfilePayload, 
+import {
+  UpdateProfilePayload,
   ProfilePhotoUploadResult,
   DocumentItem,
   UploadDocumentPayload,
-  DeleteDocumentPayload,
   Resume,
   SubscriptionFeatures
 } from '../models/interface/profile.models';

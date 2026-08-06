@@ -10,7 +10,7 @@ import { ApplicationStatusOption } from '../../core/models/types/dropdown-option
 import { APPLICATION_STATUS_OPTIONS } from '../../core/models/constants/application-status-options.constants';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { FormInputComponent } from '../form-input/form-input.component';
-import { FormInputType, FormInputSelectConfig, FormFieldId, FormFieldLabel } from '../../core/models';
+import { FormFieldId, FormFieldLabel } from '../../core/models';
 import { FormInputConfigHelper } from '../../core/helpers';
 
 @Component({

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { CarouselComponent } from './carousel.component';
 import { CarouselNavigationMode, CarouselItem } from '../../core/models/interface/carousel.models';
 import { BorderRadius } from '../../core/models';

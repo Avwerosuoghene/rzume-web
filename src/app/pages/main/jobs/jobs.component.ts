@@ -1,8 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { Subject, takeUntil } from 'rxjs';
-import { ScreenManagerService } from '../../../core/services/screen-manager.service';
 import { AnalyticsService } from '../../../core/services/analytics/analytics.service';
 import { AnalyticsEvent } from '../../../core/models/analytics-events.enum';
 

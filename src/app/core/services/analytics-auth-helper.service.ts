@@ -3,7 +3,6 @@ import { AnalyticsService } from './analytics/analytics.service';
 import { AnalyticsUserContextService } from './analytics-user-context.service';
 import { AnalyticsEvent, SignupMethod } from '../models/analytics-events.enum';
 import { User } from '../models/interface/authentication.models';
-import { SigninResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'

@@ -166,7 +166,6 @@ describe('FeedbackDialogComponent', () => {
   });
 
   it('should bind comments to textarea', () => {
-    const textarea = fixture.nativeElement.querySelector('.comments-textarea');
     component.comments = 'Test comment';
     fixture.detectChanges();
 

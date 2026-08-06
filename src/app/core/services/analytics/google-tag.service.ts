@@ -6,7 +6,7 @@ import { AnalyticsEvent } from '../../models/analytics-events.enum';
 import { ConfigService } from '../config.service';
 import { AnalyticsUserContextService } from '../analytics-user-context.service';
 
-declare var gtag: Function;
+declare const gtag: (...args: unknown[]) => void;
 
 @Injectable({
     providedIn: 'root'
@@ -15,9 +15,9 @@ export class GoogleTagService extends AnalyticsService {
     private initialized = false;
 
     constructor(
-        private configService: ConfigService,
-        private userContextService: AnalyticsUserContextService,
-        @Inject(PLATFORM_ID) private platformId: Object
+        private readonly configService: ConfigService,
+        private readonly userContextService: AnalyticsUserContextService,
+        @Inject(PLATFORM_ID) private readonly platformId: object
     ) {
         super();
     }

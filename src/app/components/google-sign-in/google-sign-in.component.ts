@@ -1,10 +1,17 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { ConfigService } from '../../core/services/config.service';
 import { GOOGLE_SCRIPT_ERROR } from '../../core/models';
 
-declare let google: any;
+declare let google: {
+  accounts: {
+    id: {
+      initialize: (config: { client_id: string; ux_mode: string; callback: (token: string) => void }) => void;
+      renderButton: (element: HTMLElement, config: { type: string; width: number }) => void;
+    };
+  };
+};
 
 @Component({
   selector: 'app-google-sign-in',
@@ -16,7 +23,7 @@ declare let google: any;
 
 export class GoogleSignInComponent implements OnInit {
 
-  @Output() onClick: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onClick: EventEmitter<void> = new EventEmitter<void>();
   @Output() tokenEmitter: EventEmitter<string> = new EventEmitter<string>();
   @Input() googleBtnText!: string;
   loaderIsActive: boolean = false;
@@ -30,7 +37,7 @@ export class GoogleSignInComponent implements OnInit {
     this.authService.loadGoogleScript().catch(this.handleScriptError);
   }
 
-  handleScriptError = (err: any): void => {
+  handleScriptError = (err: unknown): void => {
     console.error(GOOGLE_SCRIPT_ERROR, err);
   };
 

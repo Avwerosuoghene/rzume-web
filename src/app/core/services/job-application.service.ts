@@ -230,7 +230,7 @@ export class JobApplicationService {
     };
 
     return Object.entries(paramMap)
-      .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+      .filter(([, value]) => value !== undefined && value !== null && value !== '')
       .map(([name, value]) => ({ name, value }));
   }
 }

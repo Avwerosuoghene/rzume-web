@@ -12,8 +12,6 @@ import { AnalyticsInterceptor } from './core/interceptors/analytics.interceptor'
 import { ConfigService } from './core/services/config.service';
 import { SelectivePreloadStrategy } from './core/strategies/selective-preload.strategy';
 import { AnalyticsService } from './core/services/analytics/analytics.service';
-import { MixpanelService } from './core/services/analytics/mixpanel.service';
-import { GoogleTagService } from './core/services/analytics/google-tag.service';
 import { CompositeAnalyticsService } from './core/services/analytics/composite-analytics.service';
 import { GlobalErrorHandler } from './core/services/global-error-handler.service';
 import { AnalyticsTrackingService } from './core/services/analytics-tracking.service';
@@ -28,7 +26,9 @@ function initializeAnalytics(analyticsService: AnalyticsService, configService: 
 }
 
 // Initialize analytics tracking after router is available
-function initializeAnalyticsTracking(analyticsTrackingService: AnalyticsTrackingService, analyticsService: AnalyticsService) {
+// AnalyticsService remains in `deps` below (though unused here) to force it to
+// initialize before this factory runs.
+function initializeAnalyticsTracking(analyticsTrackingService: AnalyticsTrackingService) {
   return () => {
     // Wait a bit for analytics to be initialized
     setTimeout(() => {

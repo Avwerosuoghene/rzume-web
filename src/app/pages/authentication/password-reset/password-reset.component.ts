@@ -1,18 +1,17 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
-import { PasswordUtility, SessionStorageUtil, PasswordStrengthResult, FormInputConfigHelper } from '../../../core/helpers';
-import { APIResponse, AuthRoutes, ErrorResponse, FormFieldId, FormFieldLabel, IconStat, PASSWORD_RESET_FAILED, PASSWORD_RESET_SUCCESS, PassWordResetScreens, PasswordVisibility, ResetPassword, RootRoutes, ToggledPassword } from '../../../core/models';
+import { PasswordUtility, PasswordStrengthResult, FormInputConfigHelper } from '../../../core/helpers';
+import { APIResponse, AuthRoutes, ErrorResponse, FormFieldId, FormFieldLabel, IconStat, PASSWORD_RESET_FAILED, PASSWORD_RESET_SUCCESS, PassWordResetScreens, PasswordVisibility, ResetPassword, ToggledPassword } from '../../../core/models';
 import { AuthenticationService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
 import { CircularLoaderComponent } from '../../../components/circular-loader/circular-loader.component';
 import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 import { FormInputComponent } from '../../../components/form-input/form-input.component';
-import { FormInputType, FormInputConfig } from '../../../core/models';
 
 @Component({
   selector: 'app-password-reset',

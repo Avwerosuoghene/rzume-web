@@ -79,28 +79,24 @@ export class AuthGuardService {
   }
 
   private async getActiveToken(): Promise<boolean> {
-    try {
-      // Race between validation and timeout
-      const isValid = await Promise.race([
-        this.userService.getActiveUser(),
-        this.createTimeout()
-      ]);
-      
-      if (isValid) {
-        this.analytics.track(AnalyticsEvent.AUTH_GUARD_VALIDATION_SUCCESS, {
-          source: 'server',
-          timestamp: new Date().toISOString()
-        });
-        return true;
-      } else {
-        this.analytics.track(AnalyticsEvent.AUTH_GUARD_VALIDATION_FAILED, {
-          reason: 'invalid_token',
-          timestamp: new Date().toISOString()
-        });
-        return false;
-      }
-    } catch (error) {
-      throw error;
+    // Race between validation and timeout
+    const isValid = await Promise.race([
+      this.userService.getActiveUser(),
+      this.createTimeout()
+    ]);
+
+    if (isValid) {
+      this.analytics.track(AnalyticsEvent.AUTH_GUARD_VALIDATION_SUCCESS, {
+        source: 'server',
+        timestamp: new Date().toISOString()
+      });
+      return true;
+    } else {
+      this.analytics.track(AnalyticsEvent.AUTH_GUARD_VALIDATION_FAILED, {
+        reason: 'invalid_token',
+        timestamp: new Date().toISOString()
+      });
+      return false;
     }
   }
 

@@ -19,8 +19,9 @@ export class TableHeaderComponent {
   @Output() selectAll = new EventEmitter<boolean>();
   @Output() sort = new EventEmitter<string>();
 
-  toggleAllSelectionsEvent(event: any): void {
-    this.selectAll.emit(event);
+  toggleAllSelectionsEvent(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.selectAll.emit(checked);
   }
 
  getLongWidthItems(item: string) {
