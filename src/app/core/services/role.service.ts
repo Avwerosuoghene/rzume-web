@@ -5,7 +5,7 @@ import { ApiService } from './api.service';
 import { RoleStateService } from './role-state.service';
 import { AnalyticsService } from './analytics/analytics.service';
 import { APIResponse, ApiRoutes, GetRequestOptions } from '../models';
-import { Role, CreateRolePayload, RoleStats } from '../models/interface/role.models';
+import { Role, CreateRolePayload, RoleListResponse, RoleStats } from '../models/interface/role.models';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class RoleService {
     private analyticsService: AnalyticsService
   ) { }
 
-  getRoles(): Observable<APIResponse<Role[]>> {
+  getRoles(): Observable<APIResponse<RoleListResponse>> {
     this.roleState.setLoading(true);
     this.roleState.setError(null);
 
@@ -28,11 +28,11 @@ export class RoleService {
       handleResponse: true
     };
 
-    return this.apiService.get<APIResponse<Role[]>>(getReqOptions)
+    return this.apiService.get<APIResponse<RoleListResponse>>(getReqOptions)
       .pipe(
         tap(response => {
           if (response.success && response.data) {
-            this.roleState.setRoles(response.data);
+            this.roleState.setRoles(response.data.roles);
           }
           this.roleState.setLoading(false);
         }),

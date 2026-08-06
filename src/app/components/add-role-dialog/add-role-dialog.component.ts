@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
 import { CoreModules } from '../../core/modules/core-modules';
@@ -9,7 +10,7 @@ import { FormInputComponent } from '../form-input/form-input.component';
 import { DocumentHelperService } from '../../core/services/document-helper.service';
 import { IndustryService } from '../../core/services/industry.service';
 import { DocumentHelper, FormInputConfigHelper } from '../../core/helpers';
-import { FormFieldId, FormFieldLabel, FormInputSelectConfig } from '../../core/models';
+import { FORM_PLACEHOLDERS, FormFieldId, FormFieldLabel, FormInputSelectConfig } from '../../core/models';
 import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { CreateRolePayload } from '../../core/models/interface/role.models';
 import { Industry } from '../../core/models/interface/industry.models';
@@ -24,7 +25,8 @@ import { ROLE_DIALOG_CONFIG, ROLE_DOCUMENT_LIMIT, ROLE_VALIDATION } from '../../
   imports: [
     CoreModules,
     AngularMaterialModules,
-    FormInputComponent
+    FormInputComponent,
+    OverlayModule
   ],
   templateUrl: './add-role-dialog.component.html',
   styleUrl: './add-role-dialog.component.scss',
@@ -49,6 +51,11 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
 
   readonly dialogTitle = ROLE_DIALOG_CONFIG.TITLE;
   readonly maxDocuments = ROLE_DOCUMENT_LIMIT;
+
+  readonly multiselectOverlayPositions: ConnectedPosition[] = [
+    { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
+    { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 }
+  ];
 
   jobRoleControl = this.fb.control('', {
     validators: [
@@ -105,6 +112,7 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
     return FormInputConfigHelper.select({
       id: FormFieldId.INDUSTRY,
       label: FormFieldLabel.INDUSTRY,
+      placeholder: FORM_PLACEHOLDERS.INDUSTRY_SELECT,
       required: true,
       options: this.industries.map(i => ({ value: String(i.id), label: i.name }))
     });

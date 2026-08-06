@@ -35,6 +35,21 @@ export class RoleStateService {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
+  stats$ = this.stateSubject.asObservable().pipe(
+    map(state => state.stats),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  loading$ = this.stateSubject.asObservable().pipe(
+    map(state => state.isLoading),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  error$ = this.stateSubject.asObservable().pipe(
+    map(state => state.error),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
   getCurrentState(): RoleState {
     return this.stateSubject.value;
   }

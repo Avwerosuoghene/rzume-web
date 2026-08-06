@@ -248,4 +248,33 @@ describe('AddRoleDialogComponent', () => {
   it('should clean up subscriptions on destroy without throwing', () => {
     expect(() => component.ngOnDestroy()).not.toThrow();
   });
+
+  describe('UI parity with job-add-dialog (see ui-parity-fix diagnosis)', () => {
+    it('should wrap form fields in .form-input-container, so the .form-select CSS override in styles.scss actually applies to the industry select', () => {
+      const select = fixture.nativeElement.querySelector('select');
+      expect(select).not.toBeNull();
+      expect(select!.closest('.form-input-container')).not.toBeNull();
+    });
+
+    it('should configure a placeholder for the industry select, matching the pattern job-add-dialog\'s resumeConfig already uses', () => {
+      expect(component.industryConfig.placeholder).toBeTruthy();
+    });
+
+    it('should give the documents multiselect trigger a real layout (currently unstyled — no CSS for it exists anywhere in the app)', () => {
+      const trigger = fixture.nativeElement.querySelector('.multiselect-trigger');
+      expect(trigger).not.toBeNull();
+      expect(getComputedStyle(trigger).display).toBe('flex');
+    });
+
+    it('should render the open documents panel via CDK Overlay, not nested inside the scrollable dialog content, so mat-dialog-content\'s overflow:auto cannot clip it (bug: user had to scroll the modal to see the options)', () => {
+      component.toggleDropdown();
+      fixture.detectChanges();
+
+      const panelInsideDialog = fixture.nativeElement.querySelector('.multiselect-panel');
+      const panelInOverlay = document.querySelector('.cdk-overlay-container .multiselect-panel');
+
+      expect(panelInsideDialog).toBeNull();
+      expect(panelInOverlay).not.toBeNull();
+    });
+  });
 });

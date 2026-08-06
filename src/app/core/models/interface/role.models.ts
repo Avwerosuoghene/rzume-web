@@ -1,8 +1,7 @@
 export interface Role {
   id: string;
-  userId: string;
-  jobRole: string;
-  industry: string;
+  title: string;
+  industryName: string;
   documents: RoleDocument[];
   createdAt: Date;
   updatedAt: Date;
@@ -13,7 +12,7 @@ export interface RoleDocument {
   fileName: string;
   fileSize: number;
   fileType: string;
-  url: string;
+  documentUrl: string;
   uploadedAt: Date;
 }
 
@@ -31,4 +30,9 @@ export interface CreateRolePayload {
 export interface RoleStats {
   createdCount: number;
   maxAllowed: number;
+}
+
+export interface RoleListResponse {
+  count: number;
+  roles: Role[];
 }

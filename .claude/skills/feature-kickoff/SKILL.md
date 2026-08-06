@@ -91,8 +91,17 @@ skill never edits files in that repo.
 
 **4a. Find the controller for this feature.**
 `src/Rzume.API/Controllers/<Feature>Controller.cs` — list every action, its HTTP verb/route, and
-request/response DTO (`src/Rzume.API/DTO/<Feature>/`). The `postman/Rzume.API.postman_collection.json`
-collection is a secondary cross-check if a controller is hard to find by name.
+request/response DTO (`src/Rzume.API/DTO/<Feature>/`). **Open the response DTO's actual fields, not
+just its filename** — endpoint-exists is not the same as shape-matches. A controller action can be
+✅ "built and wired" by route while still returning a shape the frontend doesn't expect: real
+example from this project, `RolesController.GetAll()` returns `ApiResponse<RoleListResponseDto>`
+(`{ count, roles }`, collection wrapped in an envelope) — the frontend originally assumed
+`response.data` was the bare `Role[]` itself, passed the whole envelope object into
+`RoleStateService.setRoles()`, and the roles page rendered completely blank against the real
+backend (200 response, no error) despite every unit test passing, because the mocks fed the wrong
+assumption back to themselves. See `roles-api-gap` memory for the full incident. The
+`postman/Rzume.API.postman_collection.json` collection is a secondary cross-check if a controller is
+hard to find by name.
 
 **4b. Find what the frontend already expects.**
 `src/app/core/models/constants/api.routes.ts` (the `ApiRoutes` entries for this feature) and the

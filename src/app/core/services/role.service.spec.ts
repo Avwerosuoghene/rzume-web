@@ -6,7 +6,7 @@ import { RoleStateService } from './role-state.service';
 import { AnalyticsService } from './analytics/analytics.service';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
 import { APIResponse } from '../models';
-import { Role, CreateRolePayload, RoleStats } from '../models/interface/role.models';
+import { Role, CreateRolePayload, RoleListResponse, RoleStats } from '../models/interface/role.models';
 
 describe('RoleService', () => {
   let service: RoleService;
@@ -15,7 +15,7 @@ describe('RoleService', () => {
   let analyticsServiceSpy: jasmine.SpyObj<AnalyticsService>;
 
   const okResponse = <T>(data?: T): APIResponse<T> => ({ statusCode: 200, success: true, message: '', data });
-  const role = { id: '1', userId: 'u1', jobRole: 'Engineer', industry: 'Tech', documents: [], createdAt: new Date(), updatedAt: new Date() } as Role;
+  const role = { id: '1', title: 'Engineer', industryName: 'Tech', documents: [], createdAt: new Date(), updatedAt: new Date() } as Role;
 
   beforeEach(() => {
     apiServiceSpy = jasmine.createSpyObj('ApiService', ['get', 'post', 'delete']);
@@ -36,13 +36,23 @@ describe('RoleService', () => {
 
   describe('getRoles', () => {
     it('should set loading true immediately, then update roles and clear loading on success', (done) => {
-      apiServiceSpy.get.and.returnValue(of(okResponse([role])));
+      apiServiceSpy.get.and.returnValue(of(okResponse({ count: 1, roles: [role] })));
 
       service.getRoles().subscribe(() => {
         expect(roleStateSpy.setLoading).toHaveBeenCalledWith(true);
         expect(roleStateSpy.setError).toHaveBeenCalledWith(null);
         expect(roleStateSpy.setRoles).toHaveBeenCalledWith([role]);
         expect(roleStateSpy.setLoading).toHaveBeenCalledWith(false);
+        done();
+      });
+    });
+
+    it('should unwrap the {count, roles} envelope the real API returns, not pass it through whole (real bug found in the browser — see roles-api-response-shape finding)', (done) => {
+      apiServiceSpy.get.and.returnValue(of(okResponse({ count: 2, roles: [role, role] })));
+
+      service.getRoles().subscribe(() => {
+        expect(roleStateSpy.setRoles).toHaveBeenCalledWith([role, role]);
+        expect(roleStateSpy.setRoles).not.toHaveBeenCalledWith(jasmine.objectContaining({ count: jasmine.any(Number) }));
         done();
       });
     });
@@ -62,7 +72,7 @@ describe('RoleService', () => {
     });
 
     it('should not update roles when the response is unsuccessful', () => {
-      apiServiceSpy.get.and.returnValue(of({ statusCode: 200, success: false, message: '' } as APIResponse<Role[]>));
+      apiServiceSpy.get.and.returnValue(of({ statusCode: 200, success: false, message: '' } as APIResponse<RoleListResponse>));
       service.getRoles().subscribe();
       expect(roleStateSpy.setRoles).not.toHaveBeenCalled();
     });

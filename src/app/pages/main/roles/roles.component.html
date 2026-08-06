@@ -2,7 +2,7 @@
 
   <div class="role-limit-bar">
     <p class="role-limit-text">
-      <span class="role-limit-label">Role limit:</span> {{ roleCount }} / {{ roleLimit }} roles created
+      <span class="role-limit-label">Role limit:</span> {{ (stats$ | async)?.createdCount ?? 0 }} / {{ roleLimit }} roles created
     </p>
     <button class="add-role-btn" type="button" (click)="openAddRoleDialog()">
       <span class="add-icon">+</span> Add New Role
@@ -15,10 +15,22 @@
       <p class="active-roles-subtitle">You are only allowed maximum of two ({{ roleLimit }}) roles at this stage.</p>
     </div>
 
-    <div class="empty-state-card">
-      <img src="assets/icons/folder-icon.svg" alt="" class="empty-state-icon" />
-      <p class="empty-state-text">No roles added yet. Click "Add new role" to start.</p>
-    </div>
+    <app-role-card-skeleton *ngIf="loading$ | async; else rolesContent" data-cy="roles-loading"></app-role-card-skeleton>
+
+    <ng-template #rolesContent>
+      <div class="empty-state-wrapper" *ngIf="(roles$ | async)?.length === 0">
+        <app-empty-state
+          [icon]="emptyState.icon"
+          [title]="emptyState.title"
+          [message]="emptyState.message"
+        ></app-empty-state>
+      </div>
+
+      <app-role-card
+        *ngFor="let role of (roles$ | async)"
+        [role]="role"
+      ></app-role-card>
+    </ng-template>
   </div>
 
 </section>

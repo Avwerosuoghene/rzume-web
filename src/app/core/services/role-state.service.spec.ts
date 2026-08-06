@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { RoleStateService } from './role-state.service';
-import { Role } from '../models/interface/role.models';
+import { Role, RoleStats } from '../models/interface/role.models';
 
 describe('RoleStateService', () => {
   let service: RoleStateService;
 
   const role = (id: string): Role =>
-    ({ id, userId: 'u1', jobRole: 'Engineer', industry: 'Tech', documents: [], createdAt: new Date(), updatedAt: new Date() });
+    ({ id, title: 'Engineer', industryName: 'Tech', documents: [], createdAt: new Date(), updatedAt: new Date() });
 
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [RoleStateService] });
@@ -110,6 +110,48 @@ describe('RoleStateService', () => {
       service.roles$.subscribe(r => (received = r));
 
       expect(received).toEqual(roles);
+    });
+  });
+
+  describe('stats$', () => {
+    it('should emit just the stats slice, not the full state', (done) => {
+      service.setRoles([role('1'), role('2')]);
+
+      service.stats$.subscribe(emitted => {
+        expect(emitted).toEqual({ createdCount: 2, maxAllowed: 2 });
+        done();
+      });
+    });
+
+    it('should give a late subscriber the current stats immediately', () => {
+      service.setRoles([role('1')]);
+
+      let received: RoleStats | undefined;
+      service.stats$.subscribe(s => (received = s));
+
+      expect(received).toEqual({ createdCount: 1, maxAllowed: 2 });
+    });
+  });
+
+  describe('loading$', () => {
+    it('should emit just the isLoading slice, not the full state', (done) => {
+      service.setLoading(true);
+
+      service.loading$.subscribe(emitted => {
+        expect(emitted).toBe(true);
+        done();
+      });
+    });
+  });
+
+  describe('error$', () => {
+    it('should emit just the error slice, not the full state', (done) => {
+      service.setError('Failed to load roles');
+
+      service.error$.subscribe(emitted => {
+        expect(emitted).toBe('Failed to load roles');
+        done();
+      });
     });
   });
 

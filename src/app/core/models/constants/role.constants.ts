@@ -49,7 +49,8 @@ export const ROLE_ERROR_MESSAGES = {
   INDUSTRY_REQUIRED: 'Industry is required',
   MAX_DOCUMENTS_REACHED: `You can only upload a maximum of ${ROLE_DOCUMENT_LIMIT} documents`,
   FILE_TOO_LARGE: `File size must not exceed ${ROLE_DOCUMENT_MAX_SIZE / 1024}KB`,
-  INVALID_FILE_TYPE: 'Only PDF files are allowed'
+  INVALID_FILE_TYPE: 'Only PDF files are allowed',
+  LOAD_FAILED: 'Failed to load roles. Please try again.'
 } as const;
 
 export const ROLE_DIALOG_CONFIG = {

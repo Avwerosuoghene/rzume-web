@@ -1,7 +1,3 @@
-@if (isDropdownOpen) {
-  <div class="dropdown-backdrop" (click)="closeDropdown()" aria-hidden="true"></div>
-}
-
 <div class="dialog-header">
   <h2 mat-dialog-title class="dialog-title">{{ dialogTitle }}</h2>
   <button
@@ -17,18 +13,20 @@
 
 <mat-dialog-content class="dialog-content">
   <form [formGroup]="roleForm" class="role-form">
-    <div class="form-field">
-      <app-form-input
-        [config]="jobRoleConfig"
-        [control]="jobRoleControl"
-      ></app-form-input>
-    </div>
+    <div class="form-input-container">
+      <div class="form-field">
+        <app-form-input
+          [config]="jobRoleConfig"
+          [control]="jobRoleControl"
+        ></app-form-input>
+      </div>
 
-    <div class="form-field">
-      <app-form-input
-        [config]="industryConfig"
-        [control]="industryControl"
-      ></app-form-input>
+      <div class="form-field">
+        <app-form-input
+          [config]="industryConfig"
+          [control]="industryControl"
+        ></app-form-input>
+      </div>
     </div>
 
     <div class="document-section">
@@ -36,6 +34,8 @@
 
       <div class="document-multiselect">
         <button
+          #documentsOrigin="cdkOverlayOrigin"
+          cdkOverlayOrigin
           type="button"
           class="multiselect-trigger"
           [class.is-open]="isDropdownOpen"
@@ -53,7 +53,16 @@
           <mat-icon aria-hidden="true">{{ isDropdownOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
         </button>
 
-        @if (isDropdownOpen) {
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="documentsOrigin"
+          [cdkConnectedOverlayOpen]="isDropdownOpen"
+          [cdkConnectedOverlayHasBackdrop]="true"
+          cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+          [cdkConnectedOverlayWidth]="documentsOrigin.elementRef.nativeElement.offsetWidth"
+          [cdkConnectedOverlayPositions]="multiselectOverlayPositions"
+          (backdropClick)="closeDropdown()"
+        >
           <div
             class="multiselect-panel"
             role="listbox"
@@ -106,7 +115,7 @@
               }
             </ul>
           </div>
-        }
+        </ng-template>
       </div>
 
       @if (selectedDocuments.length > 0) {

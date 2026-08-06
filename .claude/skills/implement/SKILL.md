@@ -15,6 +15,18 @@ writing**: read the failing test to understand exactly what's expected, then rea
 similar files in the same area to match current patterns — don't introduce a new pattern for
 something the codebase already does a different way.
 
+This applies doubly to **cross-cutting UI concerns** (loading, empty, error, confirmation states) —
+these are easy to solve locally with a plausible-looking one-off (a spinner, an inline error `<p>`)
+without realizing the app already has a shared answer elsewhere. Real examples found the hard way
+while building the roles feature: the app uses a dedicated skeleton component per content shape
+(`components/skeletons/` — `CardSkeletonComponent`, `TableSkeletonComponent`, etc.) for every
+list-loading state, never `CircularLoaderComponent` (that's reserved for inline button busy-states
+and full-page auth flows only); and it surfaces API errors via the shared
+`DialogHelperService.openInfoDialog(IconStat.failed, message)` modal, not inline template text —
+see the `roles-api-gap` memory for the full incident. Before building new UI for any of these,
+check `components/skeletons/index.ts`, `components/empty-state*`, and `DialogHelperService` for an
+existing convention first.
+
 If you were invoked without a failing test already in hand, stop and run `/write-tests` first —
 this skill assumes red-before-green, it doesn't skip it.
 

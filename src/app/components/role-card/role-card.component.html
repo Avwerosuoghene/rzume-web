@@ -1,0 +1,11 @@
+<div class="role-card">
+  <div class="role-card-header">
+    <p class="role-card-title">{{ role.title }}</p>
+    <p class="role-card-industry">{{ role.industryName }}</p>
+  </div>
+
+  <app-document-item
+    *ngFor="let document of role.documents"
+    [document]="toDocumentItem(document)">
+  </app-document-item>
+</div>

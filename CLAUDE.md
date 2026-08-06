@@ -59,6 +59,12 @@ For a trivial change, it's fine to jump straight to `/implement` (which still ex
 `/write-tests` to have run first) and `/pre-commit-checklist` before committing — the full chain is
 for anything non-trivial enough to benefit from a plan.
 
+For an **already-built** component that looks or behaves wrong compared to Figma and/or a working
+reference elsewhere in the app ("this doesn't look like the other X"), use `/ui-parity-fix` first —
+it diagnoses the actual structural cause (a missing wrapper class, an unstyled custom widget, a
+config field a working reference passes that this one doesn't) before `/write-tests`/`/implement`
+touch anything. Don't skip straight to CSS-tweaking from a screenshot.
+
 ### Standards skills (referenced throughout the chain, not just at the start)
 
 `/angular-patterns` · `/rxjs-state-patterns` · `/material-ui` · `/typescript-standards` ·
