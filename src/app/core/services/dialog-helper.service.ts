@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ComponentType } from "@angular/cdk/portal";
 import { finalize } from "rxjs";
 import { JobAddDialogComponent, JobViewDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
 import { ConfirmDeleteModalComponent } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
@@ -21,8 +22,8 @@ export class DialogHelperService {
   ) { }
 
   private openAndHandleDialog<T>(
-    component: any,
-    data: any,
+    component: ComponentType<unknown>,
+    data: unknown,
     onSubmit: (response: DialogCloseResponse<T>) => void,
     config: { disableClose?: boolean; panelClass?: string } = {}
   ): void {

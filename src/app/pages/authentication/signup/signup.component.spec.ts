@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { SignupComponent } from './signup.component';
+import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
+import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -49,12 +51,12 @@ describe('SignupComponent', () => {
     // Mock the ViewChild components before detectChanges
     component.passwordCheckerComp = {
       checkPasswordStrength: jasmine.createSpy('checkPasswordStrength').and.returnValue({ score: 4, strength: 'STRONG' })
-    } as any;
-    
+    } as unknown as PasswordStrengthCheckerComponent;
+
     component.googleButtonComponent = {
       initiateGoogleSignup: jasmine.createSpy('initiateGoogleSignup'),
       toggleLoader: jasmine.createSpy('toggleLoader')
-    } as any;
+    } as unknown as GoogleSignInComponent;
     
     mockAuthService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
     mockGoogleAuthService = TestBed.inject(GoogleAuthService) as jasmine.SpyObj<GoogleAuthService>;

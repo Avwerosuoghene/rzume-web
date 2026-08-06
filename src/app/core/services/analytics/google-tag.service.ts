@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AnalyticsService } from './analytics.service';
-import { AnalyticsUser, EventProperties } from '../../models/analytics.models';
+import { AnalyticsUser, EventProperties, GoogleTagUserProperties } from '../../models/analytics.models';
 import { AnalyticsEvent } from '../../models/analytics-events.enum';
 import { ConfigService } from '../config.service';
 import { AnalyticsUserContextService } from '../analytics-user-context.service';
@@ -69,7 +69,7 @@ export class GoogleTagService extends AnalyticsService {
         try {
             const gTagId = this.configService.googleTagId;
 
-            const userProperties: any = {};
+            const userProperties: GoogleTagUserProperties = {};
             if (user.email) userProperties.email = user.email;
             if (user.subscriptionStatus) userProperties.subscription_status = user.subscriptionStatus;
 
@@ -123,7 +123,7 @@ export class GoogleTagService extends AnalyticsService {
         }
 
         try {
-            const userProps: any = {};
+            const userProps: GoogleTagUserProperties = {};
             if (properties.email) userProps.email = properties.email;
             if (properties.subscriptionStatus) userProps.subscription_status = properties.subscriptionStatus;
 

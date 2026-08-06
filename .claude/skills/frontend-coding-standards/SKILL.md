@@ -20,6 +20,7 @@ If the request is already specific, skip this skill and load the canonical skill
 
 | Concern | Canonical skill |
 |---|---|
+| Resuming/kicking off a feature — status check, live requirements, Figma + backend API sync | `/feature-kickoff` |
 | Component declaration, `OnPush`, folder/barrel structure, when to split a component | `/angular-patterns` |
 | `BehaviorSubject` state services, subscription cleanup, `shareReplay`, async pipe vs. manual subscribe | `/rxjs-state-patterns` |
 | Which Angular Material module/component to use, adding a new Material module | `/material-ui` |
@@ -47,6 +48,7 @@ If the request is already specific, skip this skill and load the canonical skill
 ## Status
 
 Full pipeline is scaffolded: Tier 1 (standards, rows above `/architect`), Tier 2 (the
-feature-implementation chain: `/architect` → `/figma-feature-plan` → `/write-tests` → `/implement`
-→ `/quality-gate` → `/code-review` → `/pre-commit-checklist`), and Tier 3
+feature-implementation chain: `/feature-kickoff` (optional entry point when resuming a feature) →
+`/architect` → `/figma-feature-plan` → `/write-tests` → `/implement` → `/quality-gate` →
+`/code-review` → `/pre-commit-checklist`), and Tier 3
 (`/security-check`, `/bundle-report`, `/create-pr`).

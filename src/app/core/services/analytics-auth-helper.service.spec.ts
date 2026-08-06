@@ -4,6 +4,7 @@ import { AnalyticsService } from './analytics/analytics.service';
 import { AnalyticsUserContextService } from './analytics-user-context.service';
 import { AnalyticsEvent, SignupMethod } from '../models/analytics-events.enum';
 import { User } from '../models/interface/authentication.models';
+import { ErrorResponse } from '../models';
 
 describe('AnalyticsAuthHelperService', () => {
   let service: AnalyticsAuthHelperService;
@@ -68,8 +69,12 @@ describe('AnalyticsAuthHelperService', () => {
   });
 
   describe('handleAuthFailure', () => {
-    it('should track the failure event with the error message', () => {
-      service.handleAuthFailure(new Error('Invalid credentials'), SignupMethod.EMAIL, AnalyticsEvent.AUTH_SIGNIN_FAILED);
+    // The real error shape here: every caller reaches this via authentication.service.ts's
+    // catchError(error => ...), and ApiService always throws ErrorResponse { statusCode,
+    // errorMessage } (never a plain Error with .message) — see api.service.ts's catchError.
+    it('should track the failure event with the backend errorMessage', () => {
+      const error: ErrorResponse = { statusCode: 401, errorMessage: 'Invalid credentials' };
+      service.handleAuthFailure(error, SignupMethod.EMAIL, AnalyticsEvent.AUTH_SIGNIN_FAILED);
 
       expect(analyticsServiceSpy.track).toHaveBeenCalledWith(AnalyticsEvent.AUTH_SIGNIN_FAILED, {
         error_message: 'Invalid credentials',
@@ -78,8 +83,19 @@ describe('AnalyticsAuthHelperService', () => {
       });
     });
 
-    it('should fall back to "Unknown error" when the error has no message', () => {
+    it('should fall back to "Unknown error" when the error has no errorMessage', () => {
       service.handleAuthFailure({}, SignupMethod.EMAIL, AnalyticsEvent.AUTH_SIGNIN_FAILED);
+
+      expect(analyticsServiceSpy.track).toHaveBeenCalledWith(AnalyticsEvent.AUTH_SIGNIN_FAILED, jasmine.objectContaining({
+        error_message: 'Unknown error'
+      }));
+    });
+
+    // Regression test: a plain Error's .message was previously (incorrectly) read instead of
+    // .errorMessage, which the real ErrorResponse type never has — this always silently
+    // produced "Unknown error" in production regardless of the real failure reason.
+    it('should fall back to "Unknown error" for a plain Error, since it has .message but not .errorMessage', () => {
+      service.handleAuthFailure(new Error('Invalid credentials'), SignupMethod.EMAIL, AnalyticsEvent.AUTH_SIGNIN_FAILED);
 
       expect(analyticsServiceSpy.track).toHaveBeenCalledWith(AnalyticsEvent.AUTH_SIGNIN_FAILED, jasmine.objectContaining({
         error_message: 'Unknown error'

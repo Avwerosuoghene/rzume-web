@@ -26,7 +26,7 @@ export interface ViewJobDialogData {
 
 export interface AddRoleDialogData {
   isEditing?: boolean;
-  roleData?: any;
+  roleData?: unknown;
 }
 
 

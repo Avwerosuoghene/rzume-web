@@ -36,11 +36,11 @@ export class GoogleAuthService {
 
 
   handleCredentialResponse(
-    response: any,
+    token: string,
     onSuccess: (success: boolean, token?: string) => void,
     onError: (error: ErrorResponse) => void
   ): void {
-    const googleSigninPayload: GoogleSignInPayload = { userToken: response.credential };
+    const googleSigninPayload: GoogleSignInPayload = { userToken: token };
 
     this.authService.googleLogin(googleSigninPayload).subscribe({
       next: ({ success, data }: APIResponse<SigninResponse>) => {

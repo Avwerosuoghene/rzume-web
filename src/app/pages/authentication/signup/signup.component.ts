@@ -205,8 +205,8 @@ export class SignupComponent implements OnInit, OnDestroy {
     });
   }
 
-  handleCredentialResponse(response: any) {
-    this.googleAuthService.handleCredentialResponse(response, (success, token) => this.handleGoogleLoginSuccess(success, token), () => this.handleGoogleLoginError())
+  handleCredentialResponse(token: string) {
+    this.googleAuthService.handleCredentialResponse(token, (success, resultToken) => this.handleGoogleLoginSuccess(success, resultToken), () => this.handleGoogleLoginError())
   }
 
   handleGoogleLoginSuccess(success: boolean, token?: string): void {

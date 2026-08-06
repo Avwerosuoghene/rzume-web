@@ -13,6 +13,12 @@ export interface GoogleSignInPayload {
   userToken: string,
 }
 
+// Shape of the callback response from Google Identity Services' credential prompt —
+// only the field this app actually reads.
+export interface GoogleCredentialResponse {
+  credential: string;
+}
+
 
 export interface RequestPassResetPayload {
   email: string

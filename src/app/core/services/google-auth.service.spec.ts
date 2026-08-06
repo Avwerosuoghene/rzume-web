@@ -42,7 +42,7 @@ describe('GoogleAuthService', () => {
       const onSuccess = jasmine.createSpy('onSuccess');
       const onError = jasmine.createSpy('onError');
 
-      service.handleCredentialResponse({ credential: 'g-credential' }, onSuccess, onError);
+      service.handleCredentialResponse('g-credential', onSuccess, onError);
 
       expect(authServiceSpy.googleLogin).toHaveBeenCalledWith({ userToken: 'g-credential' });
       expect(onSuccess).toHaveBeenCalledWith(true, 'tok-1');
@@ -60,7 +60,7 @@ describe('GoogleAuthService', () => {
       } as APIResponse<SigninResponse>));
 
       const onSuccess = jasmine.createSpy('onSuccess');
-      service.handleCredentialResponse({ credential: 'g-credential' }, onSuccess, () => {});
+      service.handleCredentialResponse('g-credential', onSuccess, () => {});
 
       // onSuccess only ever receives (success, token) — persistSession has nowhere to go.
       expect(onSuccess.calls.mostRecent().args.length).toBe(2);
@@ -71,7 +71,7 @@ describe('GoogleAuthService', () => {
       authServiceSpy.googleLogin.and.returnValue(throwError(() => error));
 
       const onError = jasmine.createSpy('onError');
-      service.handleCredentialResponse({ credential: 'bad' }, () => {}, onError);
+      service.handleCredentialResponse('bad', () => {}, onError);
 
       expect(onError).toHaveBeenCalledWith(error);
     });

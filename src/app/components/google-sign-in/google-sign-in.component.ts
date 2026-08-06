@@ -2,12 +2,12 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } fro
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { ConfigService } from '../../core/services/config.service';
-import { GOOGLE_SCRIPT_ERROR } from '../../core/models';
+import { GOOGLE_SCRIPT_ERROR, GoogleCredentialResponse } from '../../core/models';
 
 declare let google: {
   accounts: {
     id: {
-      initialize: (config: { client_id: string; ux_mode: string; callback: (token: string) => void }) => void;
+      initialize: (config: { client_id: string; ux_mode: string; callback: (response: GoogleCredentialResponse) => void }) => void;
       renderButton: (element: HTMLElement, config: { type: string; width: number }) => void;
     };
   };
@@ -56,8 +56,8 @@ export class GoogleSignInComponent implements OnInit {
     google.accounts.id.initialize({
       client_id: this.configService.apiUrls.googleAuth,
       ux_mode: 'popup',
-      callback: (token: string) => {
-        this.tokenEmitter.emit(token);
+      callback: (response: GoogleCredentialResponse) => {
+        this.tokenEmitter.emit(response.credential);
       },
     });
     google.accounts.id.renderButton(googleLoginWrapper, {

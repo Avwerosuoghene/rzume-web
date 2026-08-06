@@ -86,7 +86,7 @@ describe('AnalyticsUserContextService', () => {
       service.updateUserFromAuth({ email: 'user@example.com', firstName: 'Jane' } as User);
       const result = service.enrichEventProperties({ custom: 'value' });
 
-      expect(result.custom).toBe('value');
+      expect(result['custom']).toBe('value');
       expect(result.user_email).toBe('user@example.com');
       expect(result.user_first_name).toBe('Jane');
       expect(result.user_authenticated).toBe(true);

@@ -128,7 +128,7 @@ describe('MainComponent', () => {
 
   it('should update layout based on window size', () => {
     // Ensure component is initialized so closeSidebar doesn't recurse
-    (component as any).isInitialized = true;
+    (component as unknown as { isInitialized: boolean }).isInitialized = true;
   
     // Mobile view
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: MOBILE_BREAKPOINT - 1 });

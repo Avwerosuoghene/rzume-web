@@ -238,7 +238,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(() => this.reloadDashboardData());
   }
 
-  handleSelectionChanged(event: any): void {
+  handleSelectionChanged(event: Array<JobApplicationItem>): void {
     this.selectedItems = event;
   }
 

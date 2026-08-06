@@ -220,17 +220,20 @@ export class JobApplicationService {
   private buildApplicationsParams(filter?: JobApplicationFilter): ApiUrlParam[] {
     if (!filter) return [];
 
-    const paramMap: Record<string, any> = {
+    const paramMap: Record<string, string | undefined> = {
       status: filter?.status?.toString(),
       searchQuery: filter?.searchQuery,
       startDate: filter?.startDate?.toISOString(),
       endDate: filter?.endDate?.toISOString(),
-      pageNumber: filter?.page,
-      pageSize: filter?.pageSize
+      pageNumber: filter?.page?.toString(),
+      pageSize: filter?.pageSize?.toString()
     };
 
     return Object.entries(paramMap)
-      .filter(([, value]) => value !== undefined && value !== null && value !== '')
+      .filter((entry): entry is [string, string] => {
+        const [, value] = entry;
+        return value !== undefined && value !== null && value !== '';
+      })
       .map(([name, value]) => ({ name, value }));
   }
 }

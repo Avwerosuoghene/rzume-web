@@ -17,7 +17,12 @@ describe('GoogleTagService', () => {
       isAnalyticsEnabled: true
     });
     userContextServiceSpy = jasmine.createSpyObj('AnalyticsUserContextService', ['enrichEventProperties']);
-    userContextServiceSpy.enrichEventProperties.and.callFake((props?: object) => ({ ...props, enriched: true }));
+    userContextServiceSpy.enrichEventProperties.and.callFake((props?: object) => ({
+      ...props,
+      enriched: true,
+      user_authenticated: false,
+      timestamp: '2026-01-01T00:00:00.000Z'
+    }));
 
     gtagSpy = jasmine.createSpy('gtag');
     (globalThis as unknown as { gtag: jasmine.Spy }).gtag = gtagSpy;

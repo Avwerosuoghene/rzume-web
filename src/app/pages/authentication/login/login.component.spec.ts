@@ -7,6 +7,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 
 import { LoginComponent } from './login.component';
+import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { GoogleAuthService } from '../../../core/services/google-auth.service';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
@@ -52,7 +53,7 @@ describe('LoginComponent', () => {
     component.googleButtonComponent = {
       initiateGoogleSignup: jasmine.createSpy('initiateGoogleSignup'),
       toggleLoader: jasmine.createSpy('toggleLoader')
-    } as any;
+    } as unknown as GoogleSignInComponent;
     
     mockAuthService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
     mockGoogleAuthService = TestBed.inject(GoogleAuthService) as jasmine.SpyObj<GoogleAuthService>;

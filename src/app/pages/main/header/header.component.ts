@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AngularMaterialModules } from '../../../core/modules/material-modules';
-import { NavigationEnd, Router } from '@angular/router';
+import { Event as RouterEvent, NavigationEnd, Router } from '@angular/router';
 import { BorderRadius, User } from '../../../core/models';
 import { CoreModules } from '../../../core/modules';
 import { StorageService } from '../../../core/services';
@@ -118,7 +118,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   subscribeToRoute(): void {
     this.router.events.pipe(
       takeUntil(this.destroy$)
-    ).subscribe((event: any) => {
+    ).subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         this.getCurrentRoute();
       }

@@ -32,6 +32,9 @@ concern you're dealing with, skip straight to it instead.
 feature/bug request
        │
        ▼
+  /feature-kickoff       (resuming/picking up a feature — status + live requirements + Figma
+       │                  + backend-repo API sync; skip for a brand-new feature or a small fix)
+       ▼
   /architect            (skip for small, single-file changes — go straight to /implement)
        │  Mermaid diagram + solution options, written to the vault
        │  stop-and-ask if there's no clear winner (.claude/rules/human-checkpoint.md)

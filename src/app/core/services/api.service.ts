@@ -45,7 +45,7 @@ export class ApiService {
 
   }
 
-  public put<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): Observable<T> {
+  public put<T>(apiRoute: string, body: unknown, handleResponse: boolean, reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): Observable<T> {
     const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
     const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
@@ -65,7 +65,7 @@ export class ApiService {
     }))
   }
 
-  public post<T>(apiRoute: string, body: any, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false, useJsonContentType: boolean = true): Observable<T> {
+  public post<T>(apiRoute: string, body: unknown, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false, useJsonContentType: boolean = true): Observable<T> {
     const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
     const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
@@ -87,7 +87,7 @@ export class ApiService {
     }))
   }
 
-  public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: any, useJsonContentType: boolean = true): Observable<T> {
+  public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: unknown, useJsonContentType: boolean = true): Observable<T> {
     const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
 
     const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
@@ -115,7 +115,7 @@ export class ApiService {
   }
 
 
-  private handleErrorWithObservable(errorResponse: ErrorResponse): Observable<any> {
+  private handleErrorWithObservable(errorResponse: ErrorResponse): Observable<never> {
 
 
     const dialogData: InfoDialogData = {
