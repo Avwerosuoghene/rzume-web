@@ -63,6 +63,18 @@ describe('RoleCardComponent', () => {
     expect(items).toHaveSize(2);
   });
 
+  it('should lay documents out side by side in a row when there are multiple, per Figma (node 1314:2933) — not stacked full-width', () => {
+    component.role = role([document('1'), document('2')]);
+    fixture.detectChanges();
+
+    const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
+    expect(items).toHaveSize(2);
+
+    const firstTop = (items[0].nativeElement as HTMLElement).getBoundingClientRect().top;
+    const secondTop = (items[1].nativeElement as HTMLElement).getBoundingClientRect().top;
+    expect(firstTop).toBe(secondTop);
+  });
+
   it('should map RoleDocument.documentUrl to DocumentItem.url (backend/frontend field names differ, see roles-api-gap)', () => {
     const doc = document('1');
     const mapped = component.toDocumentItem(doc);

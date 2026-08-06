@@ -31,3 +31,16 @@
   color: $grey-500;
   margin: 0;
 }
+
+// 30px matches Figma exactly (node 1314:2933) — not one of the app's $spacing-* values.
+.role-card-documents {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+
+  app-document-item {
+    flex: 1 0 0;
+    min-width: 0;
+  }
+}

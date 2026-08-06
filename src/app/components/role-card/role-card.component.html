@@ -4,8 +4,10 @@
     <p class="role-card-industry">{{ role.industryName }}</p>
   </div>
 
-  <app-document-item
-    *ngFor="let document of role.documents"
-    [document]="toDocumentItem(document)">
-  </app-document-item>
+  <div class="role-card-documents">
+    <app-document-item
+      *ngFor="let document of role.documents"
+      [document]="toDocumentItem(document)">
+    </app-document-item>
+  </div>
 </div>
