@@ -23,6 +23,7 @@ export interface UploadedDocument {
 })
 export class DocumentItemComponent {
   @Input() document!: DocumentItem;
+  @Input() actionsVariant: 'icons' | 'menu' = 'icons';
   @Output() delete = new EventEmitter<string>();
   @Output() download = new EventEmitter<string>();
 

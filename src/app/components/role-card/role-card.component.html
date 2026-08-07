@@ -23,7 +23,8 @@
   <div class="role-card-documents">
     <app-document-item
       *ngFor="let document of role.documents"
-      [document]="toDocumentItem(document)">
+      [document]="toDocumentItem(document)"
+      actionsVariant="menu">
     </app-document-item>
   </div>
 </div>

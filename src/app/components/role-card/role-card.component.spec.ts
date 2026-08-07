@@ -72,6 +72,14 @@ describe('RoleCardComponent', () => {
     expect(items).toHaveSize(2);
   });
 
+  it('should always show the kebab-menu actions variant, not the desktop icon pair, per Figma (node 1314:2681)', () => {
+    component.role = role([document('1')]);
+    fixture.detectChanges();
+
+    const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
+    expect(items[0].componentInstance.actionsVariant).toBe('menu');
+  });
+
   it('should lay documents out side by side in a row when there are multiple, per Figma (node 1314:2933) — not stacked full-width', () => {
     component.role = role([document('1'), document('2')]);
     fixture.detectChanges();

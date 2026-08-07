@@ -49,6 +49,25 @@ describe('DocumentItemComponent', () => {
     expect(spy).toHaveBeenCalledWith('doc-1');
   });
 
+  it('should default actionsVariant to "icons" (viewport-toggled desktop icons / mobile menu)', () => {
+    expect(component.actionsVariant).toBe('icons');
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.desktop-actions')).toBeTruthy();
+    expect(compiled.querySelector('.mobile-actions')).toBeTruthy();
+    expect(compiled.querySelector('.menu-actions')).toBeFalsy();
+  });
+
+  it('should render only the always-visible kebab menu when actionsVariant is "menu" (see role-card Figma node 1314:2681)', () => {
+    component.actionsVariant = 'menu';
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.menu-actions')).toBeTruthy();
+    expect(compiled.querySelector('.desktop-actions')).toBeFalsy();
+    expect(compiled.querySelector('.mobile-actions')).toBeFalsy();
+  });
+
   it('should delegate the document icon to DocumentHelper', () => {
     spyOn(DocumentHelper, 'getDocumentIcon').and.returnValue('/assets/icons/pdf-icon.svg');
 

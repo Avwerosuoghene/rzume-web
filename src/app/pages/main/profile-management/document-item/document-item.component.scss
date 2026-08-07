@@ -60,6 +60,11 @@
       display: none; // Hidden on desktop
     }
   }
+
+  // actionsVariant="menu" — always the kebab menu, no viewport toggle (role-card, Figma node 1314:2681)
+  .menu-actions {
+    display: block;
+  }
 }
 
 .icon-btn {
