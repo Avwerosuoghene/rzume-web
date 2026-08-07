@@ -4,6 +4,7 @@ import { ComponentType } from "@angular/cdk/portal";
 import { finalize } from "rxjs";
 import { JobAddDialogComponent, JobViewDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
 import { ConfirmDeleteModalComponent, ConfirmDeleteModalData } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
+import { ConfirmUploadModalComponent, ConfirmUploadModalData, ConfirmedUploadEntry } from '../../components/confirm-upload-modal/confirm-upload-modal.component';
 import { PolicyDialogComponent } from '../../components/policy-dialog/policy-dialog.component';
 import { AddRoleDialogComponent } from '../../components/add-role-dialog/add-role-dialog.component';
 import { JobApplicationService } from "./job-application.service";
@@ -71,6 +72,17 @@ export class DialogHelperService {
           });
       },
       { panelClass: 'add-role-dialog-panel' }
+    );
+  }
+
+  openConfirmUploadDialog(files: File[], onConfirm: (entries: ConfirmedUploadEntry[]) => void): void {
+    const dialogData: ConfirmUploadModalData = { files };
+
+    this.openAndHandleDialog<ConfirmedUploadEntry[]>(
+      ConfirmUploadModalComponent,
+      dialogData,
+      (response) => onConfirm(response.data!),
+      { disableClose: false }
     );
   }
 

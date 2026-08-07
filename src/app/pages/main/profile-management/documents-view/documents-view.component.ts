@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { concatMap, finalize, from, toArray } from 'rxjs';
-import { AngularMaterialModules } from '../../../../core/modules';
 import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
 import { DocumentItemComponent } from '../document-item/document-item.component';
 import { DocumentHelperService } from '../../../../core/services/document-helper.service';
@@ -10,16 +8,16 @@ import { ProfileManagementService } from '../../../../core/services/profile-mana
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { DocumentItem, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
-import { DOCUMENT_TYPES, DOCUMENT_TYPE_LABELS, DocumentType } from '../../../../core/models/constants/profile.constants';
 import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
 import { APIResponse, DOCUMENT_VALIDATION, DOWNLOADING_DOCUMENT, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION, IconStat, DEFAULT_CV_UPLOAD_LIMIT } from '../../../../core/models';
 import { DocumentHelper } from '../../../../core/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmedUploadEntry } from '../../../../components/confirm-upload-modal/confirm-upload-modal.component';
 
 @Component({
   selector: 'app-documents-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, AngularMaterialModules, FileUploaderComponent, DocumentItemComponent],
+  imports: [CommonModule, FileUploaderComponent, DocumentItemComponent],
   templateUrl: './documents-view.component.html',
   styleUrls: ['./documents-view.component.scss']
 })
@@ -28,8 +26,6 @@ export class DocumentsViewComponent implements OnInit {
   @Input() uploadLimit: number = DEFAULT_CV_UPLOAD_LIMIT;
   isUploading = false;
   maxFileSize = DOCUMENT_VALIDATION.MAX_FILE_SIZE;
-  selectedDocumentType: DocumentType = DOCUMENT_TYPES.RESUME;
-  readonly documentTypeOptions = Object.entries(DOCUMENT_TYPE_LABELS) as [DocumentType, string][];
 
   constructor(
     private documentHelper: DocumentHelperService,
@@ -54,20 +50,23 @@ export class DocumentsViewComponent implements OnInit {
     const filesToUpload = files.slice(0, remainingSlots);
     const skippedCount = files.length - filesToUpload.length;
 
-    this.uploadFiles(filesToUpload, skippedCount);
+    this.dialogHelper.openConfirmUploadDialog(
+      filesToUpload,
+      (entries) => this.uploadFiles(entries, skippedCount)
+    );
   }
 
-  private buildUploadPayload(file: File): UploadDocumentPayload {
+  private buildUploadPayload(entry: ConfirmedUploadEntry): UploadDocumentPayload {
     return {
-      file,
-      type: this.selectedDocumentType
+      file: entry.file,
+      type: entry.documentType
     };
   }
 
-  private uploadFiles(files: File[], skippedCount: number): void {
+  private uploadFiles(entries: ConfirmedUploadEntry[], skippedCount: number): void {
     this.isUploading = true;
-    from(files).pipe(
-      concatMap(file => this.profileService.uploadResume(this.buildUploadPayload(file))),
+    from(entries).pipe(
+      concatMap(entry => this.profileService.uploadResume(this.buildUploadPayload(entry))),
       toArray(),
       finalize(() => this.isUploading = false)
     ).subscribe({

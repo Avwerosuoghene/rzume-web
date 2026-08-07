@@ -11,6 +11,7 @@ import { DocumentItem } from '../../../../core/models/interface/profile.models';
 import { DocumentHelper } from '../../../../core/helpers';
 import { DOCUMENT_TYPES } from '../../../../core/models/constants/profile.constants';
 import { IconStat } from '../../../../core/models/enums';
+import { ConfirmedUploadEntry } from '../../../../components/confirm-upload-modal/confirm-upload-modal.component';
 
 describe('DocumentsViewComponent', () => {
   let component: DocumentsViewComponent;
@@ -33,7 +34,7 @@ describe('DocumentsViewComponent', () => {
   beforeEach(async () => {
     documentHelperSpy = jasmine.createSpyObj('DocumentHelperService', ['fetchResumes']);
     profileServiceSpy = jasmine.createSpyObj('ProfileManagementService', ['uploadResume', 'deleteResume']);
-    dialogHelperSpy = jasmine.createSpyObj('DialogHelperService', ['openSuccessDialog', 'openDeleteConfirmation', 'openInfoDialog']);
+    dialogHelperSpy = jasmine.createSpyObj('DialogHelperService', ['openSuccessDialog', 'openDeleteConfirmation', 'openInfoDialog', 'openConfirmUploadDialog']);
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
     loaderServiceSpy = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
 
@@ -62,10 +63,10 @@ describe('DocumentsViewComponent', () => {
   describe('onFilesSelected', () => {
     it('should do nothing when no files are provided', () => {
       component.onFilesSelected([]);
-      expect(profileServiceSpy.uploadResume).not.toHaveBeenCalled();
+      expect(dialogHelperSpy.openConfirmUploadDialog).not.toHaveBeenCalled();
     });
 
-    it('should show the limit-reached dialog instead of uploading when the limit is reached', () => {
+    it('should show the limit-reached dialog instead of opening the confirm dialog when the limit is reached', () => {
       component.documents = [mockDoc, { ...mockDoc, id: 'doc-2' }];
       component.uploadLimit = 2;
 
@@ -73,88 +74,109 @@ describe('DocumentsViewComponent', () => {
       component.onFilesSelected([file]);
 
       expect(dialogHelperSpy.openInfoDialog).toHaveBeenCalled();
-      expect(profileServiceSpy.uploadResume).not.toHaveBeenCalled();
+      expect(dialogHelperSpy.openConfirmUploadDialog).not.toHaveBeenCalled();
     });
 
-    it('should upload every selected file when there is enough room under the limit (see test-backfill #54)', () => {
+    it('should open the confirm-upload dialog with every file that fits under the remaining limit (see test-backfill #54)', () => {
       component.documents = [];
       component.uploadLimit = 3;
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
       const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
       const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
 
       component.onFilesSelected([file1, file2]);
 
-      expect(profileServiceSpy.uploadResume).toHaveBeenCalledTimes(2);
-      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file1, type: DOCUMENT_TYPES.RESUME });
-      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file2, type: DOCUMENT_TYPES.RESUME });
+      expect(dialogHelperSpy.openConfirmUploadDialog).toHaveBeenCalledWith([file1, file2], jasmine.any(Function));
     });
 
-    it('should upload only as many files as remain under the limit, skipping the rest (see test-backfill #54)', () => {
+    it('should only pass files up to the remaining limit to the confirm dialog, leaving the rest out (see test-backfill #54)', () => {
       component.documents = [mockDoc];
       component.uploadLimit = 2;
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
       const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
       const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
 
       component.onFilesSelected([file1, file2]);
 
-      expect(profileServiceSpy.uploadResume).toHaveBeenCalledTimes(1);
-      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file1, type: DOCUMENT_TYPES.RESUME });
+      expect(dialogHelperSpy.openConfirmUploadDialog).toHaveBeenCalledWith([file1], jasmine.any(Function));
     });
 
-    it('should show a skipped-files message after the success dialog closes when more files were selected than remaining slots', () => {
-      component.documents = [mockDoc];
-      component.uploadLimit = 2;
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
-      dialogHelperSpy.openSuccessDialog.and.callFake((_t: string, _m: string, onClosed?: () => void) => onClosed?.());
-      const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
-      const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
+    describe('after the confirm-upload dialog is confirmed', () => {
+      function confirmWith(entries: ConfirmedUploadEntry[]) {
+        dialogHelperSpy.openConfirmUploadDialog.and.callFake((_files: File[], onConfirm: (entries: ConfirmedUploadEntry[]) => void) => onConfirm(entries));
+      }
 
-      component.onFilesSelected([file1, file2]);
+      it('should upload every confirmed entry using its own chosen document type', () => {
+        profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+        const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
+        confirmWith([
+          { file: file1, documentType: DOCUMENT_TYPES.RESUME },
+          { file: file2, documentType: DOCUMENT_TYPES.COVER_LETTER }
+        ]);
 
-      expect(dialogHelperSpy.openInfoDialog).toHaveBeenCalledWith(IconStat.warn, jasmine.any(String));
-    });
+        component.onFilesSelected([file1, file2]);
 
-    it('should NOT show a skipped-files message when every selected file fits under the limit', () => {
-      component.documents = [];
-      component.uploadLimit = 3;
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
-      dialogHelperSpy.openSuccessDialog.and.callFake((_t: string, _m: string, onClosed?: () => void) => onClosed?.());
-      const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file1, type: DOCUMENT_TYPES.RESUME });
+        expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file2, type: DOCUMENT_TYPES.COVER_LETTER });
+      });
 
-      component.onFilesSelected([file]);
+      it('should show a skipped-files message after the success dialog closes when more files were selected than remaining slots', () => {
+        component.documents = [mockDoc];
+        component.uploadLimit = 2;
+        profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+        dialogHelperSpy.openSuccessDialog.and.callFake((_t: string, _m: string, onClosed?: () => void) => onClosed?.());
+        const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
+        confirmWith([{ file: file1, documentType: DOCUMENT_TYPES.RESUME }]);
 
-      expect(dialogHelperSpy.openInfoDialog).not.toHaveBeenCalled();
-    });
+        component.onFilesSelected([file1, file2]);
 
-    it('should set isUploading during the upload and reset it once complete', () => {
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
-      const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        expect(dialogHelperSpy.openInfoDialog).toHaveBeenCalledWith(IconStat.warn, jasmine.any(String));
+      });
 
-      component.onFilesSelected([file]);
+      it('should NOT show a skipped-files message when every selected file fits under the limit', () => {
+        component.documents = [];
+        component.uploadLimit = 3;
+        profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+        dialogHelperSpy.openSuccessDialog.and.callFake((_t: string, _m: string, onClosed?: () => void) => onClosed?.());
+        const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        confirmWith([{ file, documentType: DOCUMENT_TYPES.RESUME }]);
 
-      expect(component.isUploading).toBe(false);
-    });
+        component.onFilesSelected([file]);
 
-    it('should show a success dialog and refresh resumes after a successful upload', () => {
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
-      const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        expect(dialogHelperSpy.openInfoDialog).not.toHaveBeenCalled();
+      });
 
-      component.onFilesSelected([file]);
+      it('should set isUploading during the upload and reset it once complete', () => {
+        profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+        const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        confirmWith([{ file, documentType: DOCUMENT_TYPES.RESUME }]);
 
-      expect(dialogHelperSpy.openSuccessDialog).toHaveBeenCalled();
-      expect(documentHelperSpy.fetchResumes).toHaveBeenCalled();
-    });
+        component.onFilesSelected([file]);
 
-    it('should not show a success dialog when the upload response reports failure', () => {
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: false, statusCode: 400, message: 'failed', data: undefined as unknown as DocumentItem }));
-      const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        expect(component.isUploading).toBe(false);
+      });
 
-      component.onFilesSelected([file]);
+      it('should show a success dialog and refresh resumes after a successful upload', () => {
+        profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+        const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        confirmWith([{ file, documentType: DOCUMENT_TYPES.RESUME }]);
 
-      expect(dialogHelperSpy.openSuccessDialog).not.toHaveBeenCalled();
-      expect(documentHelperSpy.fetchResumes).not.toHaveBeenCalled();
+        component.onFilesSelected([file]);
+
+        expect(dialogHelperSpy.openSuccessDialog).toHaveBeenCalled();
+        expect(documentHelperSpy.fetchResumes).toHaveBeenCalled();
+      });
+
+      it('should not show a success dialog when the upload response reports failure', () => {
+        profileServiceSpy.uploadResume.and.returnValue(of({ success: false, statusCode: 400, message: 'failed', data: undefined as unknown as DocumentItem }));
+        const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+        confirmWith([{ file, documentType: DOCUMENT_TYPES.RESUME }]);
+
+        component.onFilesSelected([file]);
+
+        expect(dialogHelperSpy.openSuccessDialog).not.toHaveBeenCalled();
+        expect(documentHelperSpy.fetchResumes).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -230,27 +252,5 @@ describe('DocumentsViewComponent', () => {
 
   it('trackByDocId should return the document id', () => {
     expect(component.trackByDocId(0, mockDoc)).toBe('doc-1');
-  });
-
-  describe('document type selection (backend contract: POST /resume now accepts an optional documentType field)', () => {
-    it('should default selectedDocumentType to "Resume"', () => {
-      expect(component.selectedDocumentType).toBe(DOCUMENT_TYPES.RESUME);
-      expect(component.selectedDocumentType).toBe('Resume');
-    });
-
-    it('should include the currently selected document type in the upload payload', () => {
-      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
-      component.selectedDocumentType = DOCUMENT_TYPES.COVER_LETTER;
-      const file = new File(['a'], 'cover.pdf', { type: 'application/pdf' });
-
-      component.onFilesSelected([file]);
-
-      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file, type: DOCUMENT_TYPES.COVER_LETTER });
-    });
-
-    it('should render a document type selector in the template', () => {
-      const select = fixture.nativeElement.querySelector('[data-cy="document-type-select"]');
-      expect(select).not.toBeNull();
-    });
   });
 });

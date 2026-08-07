@@ -123,6 +123,38 @@ describe('DialogHelperService', () => {
     });
   });
 
+  describe('openConfirmUploadDialog', () => {
+    it('should pass the given files to the dialog', () => {
+      mockDialogClose(undefined);
+      const file = new File(['a'], 'a.pdf');
+
+      service.openConfirmUploadDialog([file], () => {});
+
+      expect(dialogSpy.open).toHaveBeenCalledWith(jasmine.any(Function), jasmine.objectContaining({
+        data: { files: [file] }
+      }));
+    });
+
+    it('should call onConfirm with the submitted entries when the dialog closes as Submitted', () => {
+      const entries = [{ file: new File(['a'], 'a.pdf'), documentType: 'Resume' as const }];
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: entries });
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openConfirmUploadDialog([entries[0].file], onConfirm);
+
+      expect(onConfirm).toHaveBeenCalledWith(entries);
+    });
+
+    it('should NOT call onConfirm when the dialog is cancelled', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openConfirmUploadDialog([new File(['a'], 'a.pdf')], onConfirm);
+
+      expect(onConfirm).not.toHaveBeenCalled();
+    });
+  });
+
   describe('openDeleteRoleConfirmation', () => {
     it('should open the modal with the exact Figma copy (Remove Role / Are you sure you want to delete this Role?)', () => {
       mockDialogClose({ status: DialogCloseStatus.Cancelled });

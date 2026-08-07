@@ -6,15 +6,6 @@
     </p>
   </div>
 
-  <mat-form-field appearance="outline" class="document-type-field" data-cy="document-type-select">
-    <mat-label>Document type</mat-label>
-    <mat-select [(ngModel)]="selectedDocumentType" [ngModelOptions]="{ standalone: true }">
-      <mat-option *ngFor="let option of documentTypeOptions" [value]="option[0]">
-        {{ option[1] }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
   <app-file-uploader
     [isFileLimitReached]="isUploadLimitReached"
     (filesSelected)="onFilesSelected($event)"

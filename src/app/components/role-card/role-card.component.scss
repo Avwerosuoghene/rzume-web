@@ -45,14 +45,25 @@
 }
 
 // 30px matches Figma exactly (node 1314:2933) — not one of the app's $spacing-* values.
+// Mobile-first: stacked below the 600px tablet-and-up threshold (see /web-design-guidelines),
+// side-by-side per Figma from 600px up.
 .role-card-documents {
   display: flex;
-  align-items: center;
-  gap: 30px;
+  flex-direction: column;
+  gap: $spacing-4;
   width: 100%;
 
+  @media (min-width: 600px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+  }
+
   app-document-item {
-    flex: 1 0 0;
     min-width: 0;
+
+    @media (min-width: 600px) {
+      flex: 1 0 0;
+    }
   }
 }

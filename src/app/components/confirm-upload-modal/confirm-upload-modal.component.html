@@ -1,0 +1,31 @@
+<div class="modal-container">
+  <h2 class="modal-title">Confirm Upload</h2>
+  <p class="modal-message">Choose a document type for each file, then upload.</p>
+
+  <ul class="selected-documents">
+    @for (entry of entries; track entry.file) {
+      <li class="document-card">
+        <div class="document-card-header">
+          <img [src]="getDocumentIcon(entry.file)" alt="" aria-hidden="true" class="document-icon" />
+          <div class="document-details">
+            <span class="document-name">{{ entry.file.name }}</span>
+            <span class="document-meta">{{ formatFileSize(entry.file) }}</span>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="document-type-field">
+          <mat-label>Document type</mat-label>
+          <mat-select [(ngModel)]="entry.documentType" [ngModelOptions]="{ standalone: true }">
+            @for (option of documentTypeOptions; track option[0]) {
+              <mat-option [value]="option[0]">{{ option[1] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </li>
+    }
+  </ul>
+
+  <div class="button-group">
+    <button mat-stroked-button class="close-button" (click)="onCancel()">Cancel</button>
+    <button mat-flat-button class="upload-button" (click)="onConfirm()">Upload All</button>
+  </div>
+</div>
