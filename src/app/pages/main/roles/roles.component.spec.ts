@@ -34,7 +34,7 @@ describe('RolesComponent', () => {
 
   beforeEach(async () => {
     analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['track']);
-    dialogHelperServiceSpy = jasmine.createSpyObj('DialogHelperService', ['openAddRoleDialog', 'openInfoDialog']);
+    dialogHelperServiceSpy = jasmine.createSpyObj('DialogHelperService', ['openAddRoleDialog', 'openInfoDialog', 'openDeleteRoleConfirmation']);
     roleServiceSpy = jasmine.createSpyObj('RoleService', ['getRoles', 'getRoleStats']);
     roleServiceSpy.getRoles.and.returnValue(of(okResponse({ count: 0, roles: [] })));
 
@@ -121,6 +121,18 @@ describe('RolesComponent', () => {
     fixture.detectChanges();
 
     expect(dialogHelperServiceSpy.openInfoDialog).toHaveBeenCalledWith(IconStat.failed, ROLE_ERROR_MESSAGES.LOAD_FAILED);
+  });
+
+  it('should open the delete confirmation when a role card emits delete', () => {
+    fixture.detectChanges();
+    const targetRole = role('1');
+    roleStateService.setRoles([targetRole]);
+    fixture.detectChanges();
+
+    const card = fixture.debugElement.query(By.directive(RoleCardComponent));
+    card.triggerEventHandler('delete', targetRole);
+
+    expect(dialogHelperServiceSpy.openDeleteRoleConfirmation).toHaveBeenCalledWith(targetRole, jasmine.any(Function));
   });
 
 });

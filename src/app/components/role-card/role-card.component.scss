@@ -14,6 +14,18 @@
 
 .role-card-header {
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  button {
+    color: $gray;
+    flex-shrink: 0;
+  }
+}
+
+.role-card-heading {
+  display: flex;
   flex-direction: column;
   gap: $spacing-1;
 }

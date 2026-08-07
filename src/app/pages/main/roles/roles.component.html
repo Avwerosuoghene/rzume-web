@@ -29,6 +29,7 @@
       <app-role-card
         *ngFor="let role of (roles$ | async)"
         [role]="role"
+        (delete)="onDeleteRole($event)"
       ></app-role-card>
     </ng-template>
   </div>

@@ -1,7 +1,23 @@
 <div class="role-card">
   <div class="role-card-header">
-    <p class="role-card-title">{{ role.title }}</p>
-    <p class="role-card-industry">{{ role.industryName }}</p>
+    <div class="role-card-heading">
+      <p class="role-card-title">{{ role.title }}</p>
+      <p class="role-card-industry">{{ role.industryName }}</p>
+    </div>
+
+    <button mat-icon-button [matMenuTriggerFor]="roleMenu" aria-label="Role actions">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #roleMenu="matMenu">
+      <button mat-menu-item disabled>
+        <mat-icon>edit</mat-icon>
+        <span>Edit Role</span>
+      </button>
+      <button mat-menu-item (click)="onDelete()">
+        <mat-icon>delete</mat-icon>
+        <span>Remove Role</span>
+      </button>
+    </mat-menu>
   </div>
 
   <div class="role-card-documents">

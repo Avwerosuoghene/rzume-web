@@ -58,3 +58,8 @@ export const ROLE_DIALOG_CONFIG = {
   FILE_RESTRICTIONS_TEXT: `PDF only (max. ${ROLE_DOCUMENT_MAX_SIZE / 1024}kb per document)`,
   MAX_DOCUMENTS_TEXT: `You are only allowed maximum of ${ROLE_DOCUMENT_LIMIT} documents`
 } as const;
+
+export const ROLE_DELETE_CONFIRM = {
+  TITLE: 'Remove Role',
+  MESSAGE: 'Are you sure you want to delete this Role?'
+} as const;

@@ -3,14 +3,15 @@ import { MatDialog } from "@angular/material/dialog";
 import { ComponentType } from "@angular/cdk/portal";
 import { finalize } from "rxjs";
 import { JobAddDialogComponent, JobViewDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
-import { ConfirmDeleteModalComponent } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
+import { ConfirmDeleteModalComponent, ConfirmDeleteModalData } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
 import { PolicyDialogComponent } from '../../components/policy-dialog/policy-dialog.component';
 import { AddRoleDialogComponent } from '../../components/add-role-dialog/add-role-dialog.component';
 import { JobApplicationService } from "./job-application.service";
 import { RoleService } from "./role.service";
 import { LoaderService } from "./loader.service";
 import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
-import { CreateRolePayload } from '../models/interface/role.models';
+import { CreateRolePayload, Role } from '../models/interface/role.models';
+import { ROLE_DELETE_CONFIRM } from '../models/constants/role.constants';
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
@@ -70,6 +71,28 @@ export class DialogHelperService {
           });
       },
       { panelClass: 'add-role-dialog-panel' }
+    );
+  }
+
+  openDeleteRoleConfirmation(role: Role, onConfirm: () => void): void {
+    const dialogData: ConfirmDeleteModalData = {
+      title: ROLE_DELETE_CONFIRM.TITLE,
+      message: ROLE_DELETE_CONFIRM.MESSAGE
+    };
+
+    this.openAndHandleDialog<null>(
+      ConfirmDeleteModalComponent,
+      dialogData,
+      () => {
+        this.loaderService.showLoader();
+        this.roleService.deleteRole(role.id)
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onConfirm(),
+            error: () => onConfirm()
+          });
+      },
+      { disableClose: false }
     );
   }
 

@@ -12,6 +12,7 @@ import { EmptyStateComponent } from '../../../components/empty-state/empty-state
 import { RoleCardSkeletonComponent } from '../../../components/skeletons/role-card-skeleton/role-card-skeleton.component';
 import { IconStat } from '../../../core/models/enums';
 import { ROLE_ERROR_MESSAGES, ROLE_EMPTY_STATES } from '../../../core/models/constants/role.constants';
+import { Role } from '../../../core/models/interface/role.models';
 
 @Component({
   selector: 'app-roles',
@@ -52,5 +53,9 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   openAddRoleDialog(): void {
     this.dialogHelperService.openAddRoleDialog();
+  }
+
+  onDeleteRole(role: Role): void {
+    this.dialogHelperService.openDeleteRoleConfirmation(role, () => {});
   }
 }

@@ -25,7 +25,7 @@ describe('DialogHelperService', () => {
   beforeEach(() => {
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
     jobApplicationServiceSpy = jasmine.createSpyObj('JobApplicationService', ['addApplication', 'updateJobApplication']);
-    roleServiceSpy = jasmine.createSpyObj('RoleService', ['createRole']);
+    roleServiceSpy = jasmine.createSpyObj('RoleService', ['createRole', 'deleteRole']);
     loaderServiceSpy = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
 
     TestBed.configureTestingModule({
@@ -120,6 +120,41 @@ describe('DialogHelperService', () => {
 
       expect(onSuccess).toHaveBeenCalled();
       expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
+    });
+  });
+
+  describe('openDeleteRoleConfirmation', () => {
+    it('should open the modal with the exact Figma copy (Remove Role / Are you sure you want to delete this Role?)', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+
+      service.openDeleteRoleConfirmation({ id: 'role-1' } as Role, () => {});
+
+      expect(dialogSpy.open).toHaveBeenCalledWith(jasmine.any(Function), jasmine.objectContaining({
+        data: { title: 'Remove Role', message: 'Are you sure you want to delete this Role?' }
+      }));
+    });
+
+    it('should call roleService.deleteRole and onConfirm when the dialog closes as Submitted', () => {
+      mockDialogClose({ status: DialogCloseStatus.Submitted });
+      roleServiceSpy.deleteRole.and.returnValue(of({ success: true } as APIResponse<boolean>));
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openDeleteRoleConfirmation({ id: 'role-1' } as Role, onConfirm);
+
+      expect(loaderServiceSpy.showLoader).toHaveBeenCalled();
+      expect(roleServiceSpy.deleteRole).toHaveBeenCalledWith('role-1');
+      expect(onConfirm).toHaveBeenCalled();
+      expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
+    });
+
+    it('should NOT call roleService.deleteRole when the dialog is cancelled', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openDeleteRoleConfirmation({ id: 'role-1' } as Role, onConfirm);
+
+      expect(roleServiceSpy.deleteRole).not.toHaveBeenCalled();
+      expect(onConfirm).not.toHaveBeenCalled();
     });
   });
 

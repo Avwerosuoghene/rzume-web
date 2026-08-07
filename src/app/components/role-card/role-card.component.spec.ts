@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatMenuHarness } from '@angular/material/menu/testing';
 import { RoleCardComponent } from './role-card.component';
 import { DocumentItemComponent } from '../../pages/main/profile-management/document-item/document-item.component';
 import { Role, RoleDocument } from '../../core/models/interface/role.models';
@@ -26,13 +30,16 @@ describe('RoleCardComponent', () => {
     updatedAt: new Date()
   });
 
+  let loader: HarnessLoader;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoleCardComponent]
+      imports: [RoleCardComponent, NoopAnimationsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RoleCardComponent);
     component = fixture.componentInstance;
+    loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
   it('should create', () => {
@@ -82,11 +89,51 @@ describe('RoleCardComponent', () => {
     expect(mapped.url).toBe(doc.documentUrl);
   });
 
-  it('should not render any actions menu (edit/delete are deferred to a later pass)', () => {
-    component.role = role();
-    fixture.detectChanges();
+  describe('actions menu (see feature-spec-delete-role)', () => {
+    // mat-menu-item's rendered text includes the mat-icon ligature text (e.g. "edit") concatenated
+    // with the visible label span, so an exact-match {text} harness filter doesn't hit — find by
+    // substring instead, same reason job-card-item's equivalent menu would need this too.
+    async function findMenuItem(menu: MatMenuHarness, label: string) {
+      const items = await menu.getItems();
+      const texts = await Promise.all(items.map(item => item.getText()));
+      const index = texts.findIndex(text => text.includes(label));
+      return items[index];
+    }
 
-    const menuTrigger = fixture.nativeElement.querySelector('[mat-icon-button], [matMenuTriggerFor], mat-menu');
-    expect(menuTrigger).toBeNull();
+    it('should render a kebab menu trigger on the role card', async () => {
+      component.role = role();
+      fixture.detectChanges();
+
+      const menu = await loader.getHarness(MatMenuHarness);
+      expect(menu).toBeTruthy();
+    });
+
+    it('should render "Edit Role" as disabled with no click behavior (stub this pass, see roles-api-gap)', async () => {
+      component.role = role();
+      fixture.detectChanges();
+
+      const menu = await loader.getHarness(MatMenuHarness);
+      await menu.open();
+      const editItem = await findMenuItem(menu, 'Edit Role');
+
+      expect(editItem).toBeTruthy();
+      expect(await editItem.isDisabled()).toBe(true);
+    });
+
+    it('should emit delete with the role when "Remove Role" is clicked', async () => {
+      const testRole = role();
+      component.role = testRole;
+      fixture.detectChanges();
+
+      let emitted: Role | undefined;
+      component.delete.subscribe(r => (emitted = r));
+
+      const menu = await loader.getHarness(MatMenuHarness);
+      await menu.open();
+      const removeItem = await findMenuItem(menu, 'Remove Role');
+      await removeItem.click();
+
+      expect(emitted).toBe(testRole);
+    });
   });
 });
