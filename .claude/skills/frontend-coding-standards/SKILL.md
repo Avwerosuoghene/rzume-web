@@ -30,6 +30,7 @@ If the request is already specific, skip this skill and load the canonical skill
 | Planning a feature/bug fix before writing code — solution options, Mermaid diagrams | `/architect` |
 | Mapping a Figma design to Angular Material components | `/figma-feature-plan` |
 | An existing (already-built) component doesn't match Figma or a working reference elsewhere in the app | `/ui-parity-fix` |
+| A backend API changed and you need to know what in the frontend needs updating | `/backend-contract-sync` |
 | Writing the failing test first (TDD red step) | `/write-tests` |
 | Making a failing test pass (TDD green step) | `/implement` |
 | Validating a solution before presenting it | `/quality-gate` |
