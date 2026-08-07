@@ -55,11 +55,13 @@ export const PROFILE_ERROR_MESSAGES = {
   INVALID_FILE_TYPE: 'Only JPEG, PNG, and WebP images are allowed'
 } as const;
 
+// Values match the backend's own convention ("Resume" / "CoverLetter") — the API doesn't enforce
+// a fixed enum (any string <=50 chars is accepted), this closed set is a client-side choice.
 export const DOCUMENT_TYPES = {
-  RESUME: 'resume',
-  COVER_LETTER: 'cover_letter',
-  CERTIFICATE: 'certificate',
-  OTHER: 'other'
+  RESUME: 'Resume',
+  COVER_LETTER: 'CoverLetter',
+  CERTIFICATE: 'Certificate',
+  OTHER: 'Other'
 } as const;
 
 export type DocumentType = typeof DOCUMENT_TYPES[keyof typeof DOCUMENT_TYPES];

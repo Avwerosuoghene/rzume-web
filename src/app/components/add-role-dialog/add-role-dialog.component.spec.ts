@@ -197,7 +197,7 @@ describe('AddRoleDialogComponent', () => {
       expect(dialogRefSpy.close).not.toHaveBeenCalled();
     });
 
-    it('should close the dialog with a Submitted status and the built payload', () => {
+    it('should close the dialog with a Submitted status and the built payload (backend contract: documentType removed from POST/PUT /roles document items — see backend-contract-sync)', () => {
       component.jobRoleControl.setValue('Software Engineer');
       component.industryControl.setValue('1');
       component.toggleDocument(mockResume);
@@ -209,24 +209,9 @@ describe('AddRoleDialogComponent', () => {
         data: {
           title: 'Software Engineer',
           industryId: 1,
-          documents: [{ resumeId: 'res-1', documentType: 'application/pdf' }]
+          documents: [{ resumeId: 'res-1' }]
         }
       });
-    });
-
-    it('should fall back to application/pdf when a selected document has no fileType', () => {
-      const resumeWithoutType: Resume = { ...mockResume, id: 'res-4', fileType: undefined };
-      component.jobRoleControl.setValue('Software Engineer');
-      component.industryControl.setValue('1');
-      component.toggleDocument(resumeWithoutType);
-
-      component.onSubmit();
-
-      expect(dialogRefSpy.close).toHaveBeenCalledWith(jasmine.objectContaining({
-        data: jasmine.objectContaining({
-          documents: [{ resumeId: 'res-4', documentType: 'application/pdf' }]
-        })
-      }));
     });
   });
 

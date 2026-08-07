@@ -9,16 +9,17 @@ export interface Role {
 
 export interface RoleDocument {
   id: string;
+  resumeId: string;
   fileName: string;
   fileSize: number;
   fileType: string;
+  documentType: string;
   documentUrl: string;
   uploadedAt: Date;
 }
 
 export interface RoleDocumentRequest {
   resumeId: string;
-  documentType: string;
 }
 
 export interface CreateRolePayload {

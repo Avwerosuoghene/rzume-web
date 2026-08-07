@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { DocumentsViewComponent } from './documents-view.component';
 import { DocumentHelperService } from '../../../../core/services/document-helper.service';
@@ -8,6 +9,8 @@ import { DialogHelperService } from '../../../../core/services/dialog-helper.ser
 import { LoaderService } from '../../../../core/services/loader.service';
 import { DocumentItem } from '../../../../core/models/interface/profile.models';
 import { DocumentHelper } from '../../../../core/helpers';
+import { DOCUMENT_TYPES } from '../../../../core/models/constants/profile.constants';
+import { IconStat } from '../../../../core/models/enums';
 
 describe('DocumentsViewComponent', () => {
   let component: DocumentsViewComponent;
@@ -35,7 +38,7 @@ describe('DocumentsViewComponent', () => {
     loaderServiceSpy = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
 
     await TestBed.configureTestingModule({
-      imports: [DocumentsViewComponent],
+      imports: [DocumentsViewComponent, NoopAnimationsModule],
       providers: [
         { provide: DocumentHelperService, useValue: documentHelperSpy },
         { provide: ProfileManagementService, useValue: profileServiceSpy },
@@ -73,7 +76,23 @@ describe('DocumentsViewComponent', () => {
       expect(profileServiceSpy.uploadResume).not.toHaveBeenCalled();
     });
 
-    it('should upload only the first file when multiple files are selected, silently ignoring the rest', () => {
+    it('should upload every selected file when there is enough room under the limit (see test-backfill #54)', () => {
+      component.documents = [];
+      component.uploadLimit = 3;
+      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+      const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+      const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
+
+      component.onFilesSelected([file1, file2]);
+
+      expect(profileServiceSpy.uploadResume).toHaveBeenCalledTimes(2);
+      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file1, type: DOCUMENT_TYPES.RESUME });
+      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file2, type: DOCUMENT_TYPES.RESUME });
+    });
+
+    it('should upload only as many files as remain under the limit, skipping the rest (see test-backfill #54)', () => {
+      component.documents = [mockDoc];
+      component.uploadLimit = 2;
       profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
       const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
       const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
@@ -81,7 +100,32 @@ describe('DocumentsViewComponent', () => {
       component.onFilesSelected([file1, file2]);
 
       expect(profileServiceSpy.uploadResume).toHaveBeenCalledTimes(1);
-      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file1 });
+      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file: file1, type: DOCUMENT_TYPES.RESUME });
+    });
+
+    it('should show a skipped-files message after the success dialog closes when more files were selected than remaining slots', () => {
+      component.documents = [mockDoc];
+      component.uploadLimit = 2;
+      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+      dialogHelperSpy.openSuccessDialog.and.callFake((_t: string, _m: string, onClosed?: () => void) => onClosed?.());
+      const file1 = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+      const file2 = new File(['b'], 'second.pdf', { type: 'application/pdf' });
+
+      component.onFilesSelected([file1, file2]);
+
+      expect(dialogHelperSpy.openInfoDialog).toHaveBeenCalledWith(IconStat.warn, jasmine.any(String));
+    });
+
+    it('should NOT show a skipped-files message when every selected file fits under the limit', () => {
+      component.documents = [];
+      component.uploadLimit = 3;
+      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+      dialogHelperSpy.openSuccessDialog.and.callFake((_t: string, _m: string, onClosed?: () => void) => onClosed?.());
+      const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
+
+      component.onFilesSelected([file]);
+
+      expect(dialogHelperSpy.openInfoDialog).not.toHaveBeenCalled();
     });
 
     it('should set isUploading during the upload and reset it once complete', () => {
@@ -186,5 +230,27 @@ describe('DocumentsViewComponent', () => {
 
   it('trackByDocId should return the document id', () => {
     expect(component.trackByDocId(0, mockDoc)).toBe('doc-1');
+  });
+
+  describe('document type selection (backend contract: POST /resume now accepts an optional documentType field)', () => {
+    it('should default selectedDocumentType to "Resume"', () => {
+      expect(component.selectedDocumentType).toBe(DOCUMENT_TYPES.RESUME);
+      expect(component.selectedDocumentType).toBe('Resume');
+    });
+
+    it('should include the currently selected document type in the upload payload', () => {
+      profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+      component.selectedDocumentType = DOCUMENT_TYPES.COVER_LETTER;
+      const file = new File(['a'], 'cover.pdf', { type: 'application/pdf' });
+
+      component.onFilesSelected([file]);
+
+      expect(profileServiceSpy.uploadResume).toHaveBeenCalledWith({ file, type: DOCUMENT_TYPES.COVER_LETTER });
+    });
+
+    it('should render a document type selector in the template', () => {
+      const select = fixture.nativeElement.querySelector('[data-cy="document-type-select"]');
+      expect(select).not.toBeNull();
+    });
   });
 });

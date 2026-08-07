@@ -10,6 +10,7 @@ import { APIResponse } from '../models';
 import { FEEDBACK_SUCCESS_TITLE, FEEDBACK_SUCCESS_MESSAGE } from '../models/constants/feedback.constants';
 import { FeedbackSubmission } from '../models/interface/feedback.interface';
 import { ProfilePhotoUploadResult } from '../models/interface/profile.models';
+import { DOCUMENT_TYPES } from '../models/constants/profile.constants';
 
 describe('ProfileManagementService', () => {
   let service: ProfileManagementService;
@@ -126,6 +127,26 @@ describe('ProfileManagementService', () => {
 
       const body = apiServiceSpy.post.calls.mostRecent().args[1];
       expect(body instanceof FormData).toBe(true);
+    });
+
+    it('should append documentType to the FormData when provided (backend contract: POST /resume now accepts an optional documentType field)', () => {
+      const file = new File(['content'], 'resume.pdf', { type: 'application/pdf' });
+      apiServiceSpy.post.and.returnValue(of(okResponse({} as never)));
+
+      service.uploadResume({ file, type: DOCUMENT_TYPES.COVER_LETTER }).subscribe();
+
+      const body = apiServiceSpy.post.calls.mostRecent().args[1] as FormData;
+      expect(body.get('documentType')).toBe(DOCUMENT_TYPES.COVER_LETTER);
+    });
+
+    it('should NOT append documentType to the FormData when omitted (server defaults to "Resume")', () => {
+      const file = new File(['content'], 'resume.pdf', { type: 'application/pdf' });
+      apiServiceSpy.post.and.returnValue(of(okResponse({} as never)));
+
+      service.uploadResume({ file }).subscribe();
+
+      const body = apiServiceSpy.post.calls.mostRecent().args[1] as FormData;
+      expect(body.get('documentType')).toBeNull();
     });
   });
 

@@ -43,7 +43,6 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   roleForm!: FormGroup;
-  isLoading = false;
   industries: Industry[] = [];
   selectedDocuments: Resume[] = [];
   documentSearchQuery = '';
@@ -133,7 +132,7 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
   }
 
   get isSubmitDisabled(): boolean {
-    return this.roleForm.invalid || this.isLoading || this.selectedDocuments.length === 0;
+    return this.roleForm.invalid || this.selectedDocuments.length === 0;
   }
 
   isDocumentSelected(resumeId: string): boolean {
@@ -185,14 +184,11 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.roleForm.invalid || this.selectedDocuments.length === 0) return;
 
-    this.isLoading = true;
-
     const payload: CreateRolePayload = {
       title: this.roleForm.get('jobRole')?.value,
       industryId: Number(this.roleForm.get('industry')?.value),
       documents: this.selectedDocuments.map(d => ({
-        resumeId: d.id,
-        documentType: d.fileType ?? 'application/pdf'
+        resumeId: d.id
       }))
     };
 

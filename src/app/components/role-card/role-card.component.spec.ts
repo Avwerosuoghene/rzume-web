@@ -14,9 +14,11 @@ describe('RoleCardComponent', () => {
 
   const document = (id: string): RoleDocument => ({
     id,
+    resumeId: `resume-${id}`,
     fileName: `resume-${id}.pdf`,
     fileSize: 1024,
     fileType: 'application/pdf',
+    documentType: 'Resume',
     documentUrl: `https://example.com/${id}.pdf`,
     uploadedAt: new Date()
   });
