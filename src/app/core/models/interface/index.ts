@@ -1,3 +1,4 @@
+export * from './action-menu.models';
 export * from './authentication.models';
 export * from './carousel.models';
 export * from './config.models';

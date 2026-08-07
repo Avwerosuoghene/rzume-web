@@ -1,3 +1,4 @@
+export * from './action-menu';
 export * from './circular-loader';
 export * from  './custom-search-input';
 export * from './custom-table';

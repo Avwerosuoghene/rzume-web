@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { DocumentItemComponent } from './document-item.component';
-import { DocumentItem } from '../../../../core/models';
+import { ActionMenuComponent } from '../../../../components/action-menu/action-menu.component';
+import { DocumentItem, ACTION_TYPES } from '../../../../core/models';
 import { DocumentHelper } from '../../../../core/helpers';
 
 describe('DocumentItemComponent', () => {
@@ -66,6 +68,42 @@ describe('DocumentItemComponent', () => {
     expect(compiled.querySelector('.menu-actions')).toBeTruthy();
     expect(compiled.querySelector('.desktop-actions')).toBeFalsy();
     expect(compiled.querySelector('.mobile-actions')).toBeFalsy();
+  });
+
+  describe('ActionMenuComponent composition', () => {
+    it('should pass a download/delete ActionMenuItem pair to every rendered ActionMenuComponent', () => {
+      const menus = fixture.debugElement.queryAll(By.directive(ActionMenuComponent));
+      expect(menus.length).toBeGreaterThan(0);
+
+      for (const menu of menus) {
+        const instance = menu.componentInstance as ActionMenuComponent;
+        const keys = instance.actions.map(a => a.key);
+        expect(keys).toContain(ACTION_TYPES.DOWNLOAD);
+        expect(keys).toContain(ACTION_TYPES.DELETE);
+      }
+    });
+
+    it('should call onDownload() when the "download" action\'s callback is invoked', () => {
+      const spy = jasmine.createSpy('download');
+      component.download.subscribe(spy);
+
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const downloadAction = menu.actions.find(a => a.key === ACTION_TYPES.DOWNLOAD);
+      downloadAction?.callback();
+
+      expect(spy).toHaveBeenCalledWith('doc-1');
+    });
+
+    it('should call onDelete() when the "delete" action\'s callback is invoked', () => {
+      const spy = jasmine.createSpy('delete');
+      component.delete.subscribe(spy);
+
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const deleteAction = menu.actions.find(a => a.key === ACTION_TYPES.DELETE);
+      deleteAction?.callback();
+
+      expect(spy).toHaveBeenCalledWith('doc-1');
+    });
   });
 
   it('should delegate the document icon to DocumentHelper', () => {
