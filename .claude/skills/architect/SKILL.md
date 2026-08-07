@@ -46,6 +46,23 @@ core/
 Job applications are the central domain object (`JobApplicationItem`, `JobApplicationStateService`).
 Most feature work touches `pages/main/*` and `core/services/*`.
 
+## Backlog awareness
+
+`~/Documents/rzume-web-vault/test-backfill-findings.md` is the project's running bug/failing-test
+backlog — entries are marked **Fixed**, **No bugs, clean**, or (for open items) **Documented, not
+fixed**, plus a "Pre-existing, out-of-scope discovery" section listing currently-failing tests.
+When a plan's Affected Files intersect a file with an open entry there:
+
+- **Unambiguous, low-risk item** → fold the fix into the plan's Affected Files, so `/write-tests` →
+  `/implement` picks it up in the same pass as the feature. This is how the backlog shrinks through
+  normal feature work instead of a separate big bug-fixing effort later.
+- **A "needs a judgment call" item** → surface it under Open Questions (`options` mode) or Risks &
+  Considerations (`plan` mode) instead of deciding it silently — this is exactly what
+  `.claude/rules/human-checkpoint.md` exists for.
+
+Don't expand the search beyond files the plan already touches — this is about catching overlap
+with work already in front of you, not a standalone backlog audit.
+
 ## Constraints every plan must respect
 
 - New state → a `<Domain>StateService` with a private `BehaviorSubject`, not component-local state
