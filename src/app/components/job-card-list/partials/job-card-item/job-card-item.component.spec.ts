@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { JobCardItemComponent } from './job-card-item.component';
+import { ActionMenuComponent } from '../../../action-menu/action-menu.component';
 import { JobApplicationItem } from '../../../../core/models/interface/job-application.models';
-import { ApplicationStatus, COPY_SUCCESS_MESSAGE, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION } from '../../../../core/models';
+import { ApplicationStatus, COPY_SUCCESS_MESSAGE, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION, ACTION_TYPES } from '../../../../core/models';
 
 describe('JobCardItemComponent', () => {
   let component: JobCardItemComponent;
@@ -124,5 +126,46 @@ describe('JobCardItemComponent', () => {
     expect(component.edit).toBeDefined();
     expect(component.delete).toBeDefined();
     expect(component.statusChange).toBeDefined();
+  });
+
+  describe('ActionMenuComponent composition', () => {
+    beforeEach(() => fixture.detectChanges());
+
+    it('should render a single ActionMenuComponent with edit/changeStatus/delete actions, in the "menu" variant', () => {
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+
+      expect(menu.variant).toBe('menu');
+      const keys = menu.actions.map(a => a.key);
+      expect(keys).toContain(ACTION_TYPES.EDIT);
+      expect(keys).toContain(ACTION_TYPES.CHANGE_STATUS);
+      expect(keys).toContain(ACTION_TYPES.DELETE);
+    });
+
+    it('should emit edit when the "edit" action\'s callback is invoked', () => {
+      spyOn(component.edit, 'emit');
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+
+      menu.actions.find(a => a.key === ACTION_TYPES.EDIT)?.callback();
+
+      expect(component.edit.emit).toHaveBeenCalledWith(mockJob);
+    });
+
+    it('should emit statusChange when the "changeStatus" action\'s callback is invoked', () => {
+      spyOn(component.statusChange, 'emit');
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+
+      menu.actions.find(a => a.key === ACTION_TYPES.CHANGE_STATUS)?.callback();
+
+      expect(component.statusChange.emit).toHaveBeenCalledWith(mockJob);
+    });
+
+    it('should emit delete when the "delete" action\'s callback is invoked', () => {
+      spyOn(component.delete, 'emit');
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+
+      menu.actions.find(a => a.key === ACTION_TYPES.DELETE)?.callback();
+
+      expect(component.delete.emit).toHaveBeenCalledWith(mockJob);
+    });
   });
 });
