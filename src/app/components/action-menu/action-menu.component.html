@@ -19,8 +19,10 @@
     <mat-menu #menu="matMenu">
       @for (action of actions; track action.key) {
         <button mat-menu-item (click)="action.callback()">
-          <img [src]="iconFor(action.key)" [alt]="labelFor(action)" class="menu-item-icon" />
-          <span>{{ labelFor(action) }}</span>
+          <span class="menu-item-content">
+            <img [src]="iconFor(action.key)" [alt]="labelFor(action)" class="menu-item-icon" />
+            <span>{{ labelFor(action) }}</span>
+          </span>
         </button>
       }
     </mat-menu>

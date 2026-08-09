@@ -11,3 +11,7 @@ export const DOCUMENT_UPLOAD_SUCCESS_MSG = 'Your document has been successfully 
 export const DOCUMENT_DELETE_SUCCESS_TITLE = 'Document Deleted';
 export const DOCUMENT_DELETE_SUCCESS_MSG = 'Your document has been successfully deleted.';
 export const NO_RESUMES_AVAILABLE_MSG = 'No resumes available. Please upload a resume first.';
+export const CONFIRM_UPLOAD_SUBTITLE_SINGLE = 'Choose a document type for this file, then upload.';
+export const CONFIRM_UPLOAD_SUBTITLE_MULTIPLE = 'Choose a document type for each file, then upload.';
+export const CONFIRM_UPLOAD_BUTTON_LABEL_SINGLE = 'Upload';
+export const CONFIRM_UPLOAD_BUTTON_LABEL_MULTIPLE = 'Upload All';

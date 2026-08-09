@@ -4,6 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AngularMaterialModules } from '../../core/modules';
 import { DialogCloseResponse, DialogCloseStatus } from '../../core/models';
+import {
+  CONFIRM_UPLOAD_SUBTITLE_SINGLE,
+  CONFIRM_UPLOAD_SUBTITLE_MULTIPLE,
+  CONFIRM_UPLOAD_BUTTON_LABEL_SINGLE,
+  CONFIRM_UPLOAD_BUTTON_LABEL_MULTIPLE
+} from '../../core/models/constants/dialog-data.constants';
 import { DOCUMENT_TYPES, DOCUMENT_TYPE_LABELS, DocumentType } from '../../core/models/constants/profile.constants';
 import { DocumentHelper } from '../../core/helpers';
 
@@ -40,6 +46,14 @@ export class ConfirmUploadModalComponent {
 
   formatFileSize(file: File): string {
     return DocumentHelper.formatFileSize(file.size);
+  }
+
+  get subtitleText(): string {
+    return this.entries.length === 1 ? CONFIRM_UPLOAD_SUBTITLE_SINGLE : CONFIRM_UPLOAD_SUBTITLE_MULTIPLE;
+  }
+
+  get confirmButtonLabel(): string {
+    return this.entries.length === 1 ? CONFIRM_UPLOAD_BUTTON_LABEL_SINGLE : CONFIRM_UPLOAD_BUTTON_LABEL_MULTIPLE;
   }
 
   onCancel(): void {

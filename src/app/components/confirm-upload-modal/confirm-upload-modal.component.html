@@ -1,6 +1,6 @@
 <div class="modal-container">
   <h2 class="modal-title">Confirm Upload</h2>
-  <p class="modal-message">Choose a document type for each file, then upload.</p>
+  <p class="modal-message">{{ subtitleText }}</p>
 
   <ul class="selected-documents">
     @for (entry of entries; track entry.file) {
@@ -26,6 +26,6 @@
 
   <div class="button-group">
     <button mat-stroked-button class="close-button" (click)="onCancel()">Cancel</button>
-    <button mat-flat-button class="upload-button" (click)="onConfirm()">Upload All</button>
+    <button mat-flat-button class="upload-button" (click)="onConfirm()">{{ confirmButtonLabel }}</button>
   </div>
 </div>

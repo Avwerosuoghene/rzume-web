@@ -71,4 +71,34 @@ describe('ConfirmUploadModalComponent', () => {
       data: component.entries
     });
   });
+
+  describe('subtitleText (see feedback: singular wording should not assume multiple files)', () => {
+    it('should reference "this file" when exactly one file is selected', () => {
+      component.entries = [{ file: file1, documentType: DOCUMENT_TYPES.RESUME }];
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.modal-message').textContent).toContain('this file');
+    });
+
+    it('should reference "each file" when multiple files are selected', () => {
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.modal-message').textContent).toContain('each file');
+    });
+  });
+
+  describe('confirmButtonLabel', () => {
+    it('should read "Upload" for a single file', () => {
+      component.entries = [{ file: file1, documentType: DOCUMENT_TYPES.RESUME }];
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.upload-button').textContent.trim()).toBe('Upload');
+    });
+
+    it('should read "Upload All" for multiple files', () => {
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.upload-button').textContent.trim()).toBe('Upload All');
+    });
+  });
 });
