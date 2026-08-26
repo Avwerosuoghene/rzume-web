@@ -1,8 +1,8 @@
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
 
 export class FormValidationUtil {
 
-  static noSpacesValidator(control: AbstractControl): { [key: string]: any } | null {
+  static noSpacesValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (value && value.includes(' ')) {
       return { noSpaces: true };

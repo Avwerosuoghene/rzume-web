@@ -19,6 +19,7 @@ export interface DocumentItem {
   fileName: string;
   fileSize?: number;
   fileType?: string;
+  documentType?: string | null;
   uploadedAt: Date;
   url: string;
 }
@@ -30,6 +31,18 @@ export interface Resume {
   url: string;
   fileSize?: number;
   fileType?: string;
+  documentType?: string | null;
+}
+
+export interface AttachedDocument {
+  id: string;
+  resumeId: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+  documentType: string;
+  documentUrl: string;
+  uploadedAt: Date;
 }
 
 export interface UploadDocumentPayload {

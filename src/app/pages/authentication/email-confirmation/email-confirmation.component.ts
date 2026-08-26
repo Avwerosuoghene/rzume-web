@@ -8,7 +8,7 @@ import { SessionStorageUtil } from '../../../core/helpers/session-storage.util';
 import { TokenStorageUtil } from '../../../core/helpers/token-storage.util';
 import { AuthRoutes, RootRoutes } from '../../../core/models/enums/application.routes.enums';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
-import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, InfoDialogData, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, SigninResponse, ValidateUserResponse } from '../../../core/models';
+import { APIResponse, BTN_CONTINUE, BTN_RESEND_VALIDATION, EMAIL, EMAIL_CONFIRM_HEADER, EMAIL_CONFIRM_MSG, EMAIL_VALIDATED_HEADER, EMAIL_VALIDATING_HEADER, EMAIL_VALIDATING_MSG, EMAIL_VALIDATION_ERROR_HEADER, ErrorResponse, IconStat, InfoDialogData, MSG_EXPIRED_SESSION, QUERY_TOKEN, SessionStorageKeys, SigninResponse } from '../../../core/models';
 
 @Component({
   selector: 'app-email-confirmation',
@@ -61,9 +61,9 @@ export class EmailConfirmationComponent {
         this.emailValidMsg = message;
         this.emailValidationHeader = EMAIL_VALIDATION_ERROR_HEADER;
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
 
-        const errorMsg = error.errorMessage ? error.errorMessage : error.errorMessages[0] ? error.errorMessages[0] : 'Something went wrong';
+        const errorMsg = (error as Partial<ErrorResponse>)?.errorMessage || 'Something went wrong';
         this.loaderIsActive = false;
         this.emailValidationHeader = EMAIL_VALIDATION_ERROR_HEADER;
         this.emailValidMsg = errorMsg;
@@ -107,7 +107,7 @@ export class EmailConfirmationComponent {
       backdropClass: "blurred"
     });
 
-    errorDialogRef.afterClosed().subscribe(result => {
+    errorDialogRef.afterClosed().subscribe(() => {
       this.navigateOut(`/${RootRoutes.auth}/${AuthRoutes.signup}`);
     });
     return

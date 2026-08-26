@@ -5,6 +5,10 @@ Any skill in the feature-implementation chain (`architect`, `figma-feature-plan`
 question, not a guess, not a silent default, not picking "the most likely" option — when it hits
 one of these:
 
+- **`feature-kickoff`**: the backend API sync finds a capability the frontend needs that the
+  backend doesn't implement yet (⚠️/❌ in the API availability map), or the live requirements
+  interview is ambiguous enough that two different implementations could satisfy the same
+  statement
 - **`architect`**: the solution-options comparison has no clear winner, or two+ options tie on
   risk/effort with no obvious tiebreaker from existing codebase conventions
 - **`figma-feature-plan`**: a Figma element (component, token, icon) has no existing Angular

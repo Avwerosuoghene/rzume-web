@@ -8,7 +8,9 @@ export const FORM_INPUT_DEFAULTS = {
 } as const;
 
 export const FORM_PLACEHOLDERS = {
-  RESUME_SELECT: 'Select a resume (optional)'
+  RESUME_SELECT: 'Select a resume (optional)',
+  ROLE_SELECT: 'Select a role',
+  INDUSTRY_SELECT: 'Select an industry'
 } as const;
 
 export const INPUT_TYPE_ICONS: Record<FormInputType, string> = {

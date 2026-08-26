@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { DEFAULT_LANDING_PAGE_URL } from '../models/constants';
+import { AppConfig } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
 
-  private config: any;
+  private config: AppConfig | undefined;
   private configLoadPromise: Promise<void> | null = null;
 
   constructor(private http: HttpClient) { }
@@ -20,7 +21,7 @@ export class ConfigService {
 
     this.configLoadPromise = (async () => {
       try {
-        const config = await firstValueFrom(this.http.get('/assets/config/config.json'));
+        const config = await firstValueFrom(this.http.get<AppConfig>('/assets/config/config.json'));
         this.config = config;
       } catch (err) {
         console.error(err);

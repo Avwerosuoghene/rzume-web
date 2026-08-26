@@ -1,3 +1,35 @@
+// Spacing scale (4px base unit)
+$spacing-1:  4px;
+$spacing-2:  8px;
+$spacing-3:  12px;
+$spacing-4:  16px;
+$spacing-5:  20px;
+$spacing-6:  24px;
+$spacing-8:  32px;
+$spacing-10: 40px;
+$spacing-12: 48px;
+$spacing-16: 64px;
+
+// Border radius
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-full: 50%;
+
+// Breakpoints
+$breakpoint-sm: 600px;
+$breakpoint-md: 800px;
+$breakpoint-lg: 950px;
+
+// Layout — header heights matching main.component.scss grid rows
+$header-height-mobile:  60px;
+$header-height-tablet:  120px;
+$header-height-desktop: 134px;
+
+// Opacity
+$opacity-muted: 0.5;
+
+// Colors
 $black: rgba(28, 28, 30, 1);
 $rzume-blue: rgba(62, 127, 255, 1);
 $rzume-blue-light: rgba(62, 127, 255, 0.1);
@@ -8,6 +40,12 @@ $gray: rgba(139, 139, 139, 1);
 $light-gray: rgb(227,227,228);
 $extra-light-gray: rgb(247 247 247);
 $low-opacity-gray: rgba(243, 244, 246, 1);
+$grey-900: #101928;
+$grey-500: #667185;
+$grey-400: #98A2B3;
+$grey-200: #E2E2E2;
+$grey-100: #F0F2F5;
+$grey-card-bg: #E5E5EA;
 $basic-green: var(--Success-Color, rgba(93, 210, 122, 1));
 $basic-green-light: rgba(93, 210, 122, 0.15);
 $amber: rgb(255, 191, 0);

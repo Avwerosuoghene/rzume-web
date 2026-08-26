@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ElementRef } from '@angular/core';
-import { of, Subject } from 'rxjs';
 import { JobCardListComponent } from './job-card-list.component';
 import { DialogHelperService } from '../../core/services/dialog-helper.service';
 import { JobApplicationItem } from '../../core/models/interface/job-application.models';
@@ -96,7 +95,7 @@ describe('JobCardListComponent', () => {
       component.jobs = mockJobs;
       component.totalItems = 5;
       
-      const mockEvent = { target: document.createElement('div') } as any;
+      const mockEvent = { target: document.createElement('div') } as unknown as Event;
       component.handleScroll(mockEvent);
 
       expect(component.loadMore.emit).toHaveBeenCalled();
@@ -106,7 +105,7 @@ describe('JobCardListComponent', () => {
       spyOn(component.loadMore, 'emit');
       spyOn(component, 'isAtBottom').and.returnValue(false);
       
-      const mockEvent = { target: document.createElement('div') } as any;
+      const mockEvent = { target: document.createElement('div') } as unknown as Event;
       component.handleScroll(mockEvent);
 
       expect(component.loadMore.emit).not.toHaveBeenCalled();
@@ -119,7 +118,7 @@ describe('JobCardListComponent', () => {
       component.jobs = mockJobs;
       component.totalItems = 2;
       
-      const mockEvent = { target: document.createElement('div') } as any;
+      const mockEvent = { target: document.createElement('div') } as unknown as Event;
       component.handleScroll(mockEvent);
 
       expect(component.loadMore.emit).not.toHaveBeenCalled();
@@ -186,7 +185,6 @@ describe('JobCardListComponent', () => {
   describe('handleJobApplicationDelete', () => {
     it('should open delete confirmation dialog', () => {
       const mockJob = mockJobs[0];
-      const mockCallback = jasmine.createSpy('callback');
       mockDialogHelper.openDeleteConfirmation.and.callFake((items, callback) => {
         callback();
       });

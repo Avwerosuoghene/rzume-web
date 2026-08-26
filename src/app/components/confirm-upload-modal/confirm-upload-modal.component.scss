@@ -1,0 +1,112 @@
+@import '../../styles/theme.scss';
+@import '../../styles/fonts.scss';
+@import '../../styles/general_styles.scss';
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+
+  @media (min-width: 600px) {
+    max-width: 500px;
+    width: 80vw;
+    padding: 40px;
+    gap: 20px;
+  }
+}
+
+.modal-title {
+  color: $black;
+}
+
+.modal-message {
+  color: $gray;
+}
+
+.selected-documents {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.document-card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  background-color: $extra-light-gray;
+  border-radius: $border-radius-md;
+  padding: $spacing-3;
+}
+
+.document-card-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.document-icon {
+  width: $spacing-10;
+  height: $spacing-10;
+  flex-shrink: 0;
+}
+
+.document-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.document-name {
+  @include font-body;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $black;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.document-meta {
+  @include font-caption;
+  font-size: $font-size-sm;
+  color: $gray;
+}
+
+.document-type-field {
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-top: 10px;
+
+  @media (min-width: 600px) {
+    margin-top: 20px;
+  }
+}
+
+.close-button, .upload-button {
+  flex: 1;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.close-button {
+  border: 1px solid $light-gray;
+  color: $black;
+}
+
+.upload-button {
+  @extend .rzume-button-primary;
+}

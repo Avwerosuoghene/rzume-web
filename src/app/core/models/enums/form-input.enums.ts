@@ -23,13 +23,17 @@ export enum FormFieldId {
   USERNAME = 'username',
   COMPANY_NAME = 'companyName',
   POSITION = 'position',
+  JOB_ROLE = 'jobRole',
+  ROLE = 'roleId',
+  INDUSTRY = 'industry',
   JOB_LINK = 'jobLink',
   RESUME_ID = 'resumeId',
   STATUS = 'status',
   APPLICATION_DATE = 'applicationDate',
   NOTES = 'notes',
   REMEMBER_ME = 'rememberMe',
-  TERMS_CHECKED = 'termsChecked'
+  TERMS_CHECKED = 'termsChecked',
+  DOCUMENT_ID = 'documentId'
 }
 
 export enum FormFieldLabel {
@@ -39,9 +43,12 @@ export enum FormFieldLabel {
   USERNAME = 'Username',
   COMPANY = 'Company',
   JOB_ROLE = 'Job Role',
+  ROLE = 'Role',
+  INDUSTRY = 'Industry',
   JOB_URL = 'Job URL',
   CV_USED = 'CV Used',
   APPLICATION_STATUS = 'Application Status',
   DATE = 'Date',
-  NOTES = 'Notes'
+  NOTES = 'Notes',
+  DOCUMENT = 'Document'
 }

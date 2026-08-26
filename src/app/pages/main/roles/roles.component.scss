@@ -2,5 +2,91 @@
 @import "../../../styles/general_styles.scss";
 
 .roles_container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - #{$header-height-mobile});
+  height: calc(var(--vh, 1vh) * 100 - #{$header-height-mobile});
+  width: 100%;
+  padding: $spacing-6;
+  gap: $spacing-4;
+  overflow: hidden;
 
+  @media (min-width: $breakpoint-sm) {
+    height: calc(100vh - #{$header-height-tablet});
+    height: calc(var(--vh, 1vh) * 100 - #{$header-height-tablet});
+  }
+
+  @media (min-width: $breakpoint-md) {
+    height: calc(100vh - #{$header-height-desktop});
+    height: calc(var(--vh, 1vh) * 100 - #{$header-height-desktop});
+  }
 }
+
+.role-limit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $white;
+  border: 1.5px solid $grey-card-bg;
+  border-radius: $border-radius-md;
+  padding: $spacing-3 $spacing-5;
+  flex-shrink: 0;
+}
+
+.role-limit-text {
+  @include font-body;
+  font-size: $font-size-base;
+  color: $gray;
+  margin: 0;
+}
+
+.role-limit-label {
+  font-weight: $font-weight-semibold;
+  color: $black;
+}
+
+.add-role-btn {
+  @extend .rzume-button-primary;
+  padding: 0 $spacing-5;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  gap: $spacing-2;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-roles-section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.active-roles-header {
+  flex-shrink: 0;
+}
+
+.active-roles-title {
+  @include font-heading;
+  font-size: $font-size-md;
+  color: $black;
+  margin: 0 0 $spacing-1 0;
+}
+
+.active-roles-subtitle {
+  @include font-caption;
+  font-size: $font-size-sm;
+  color: $gray;
+  margin: 0;
+}
+
+.empty-state-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 297px;
+  background-color: $white;
+  border: 1px solid $grey-100;
+  border-radius: 10px;
+  padding: $spacing-12 $spacing-6;
+}
+

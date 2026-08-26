@@ -35,12 +35,12 @@ describe('DateHelper', () => {
     });
 
     it('should throw error for null date', () => {
-      expect(() => DateHelper.formatDateForBackend(null as any))
+      expect(() => DateHelper.formatDateForBackend(null as unknown as Date))
         .toThrowError('Invalid date provided to formatDateForBackend');
     });
 
     it('should throw error for undefined date', () => {
-      expect(() => DateHelper.formatDateForBackend(undefined as any))
+      expect(() => DateHelper.formatDateForBackend(undefined as unknown as Date))
         .toThrowError('Invalid date provided to formatDateForBackend');
     });
   });

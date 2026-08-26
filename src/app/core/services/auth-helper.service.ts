@@ -27,10 +27,7 @@ export class AuthHelperService {
     this.loaderService.showLoader();
     this.authService.logout()
       .pipe(finalize(() => this.handleLogoutComplete()))
-      .subscribe({
-        next: () => this.handleLogoutComplete(),
-        error: () => this.handleLogoutComplete()
-      });
+      .subscribe({ error: () => {} });
   }
 
   private handleLogoutComplete(): void {

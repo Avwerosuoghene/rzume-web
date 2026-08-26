@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChange } from '@angular/core';
 import { EmptyStateWrapperComponent } from './empty-state-wrapper.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
-import { JobApplicationFilter } from '../../core/models/interface/job-application.models';
 import { ApplicationStatus } from '../../core/models/enums/shared.enums';
 
 describe('EmptyStateWrapperComponent', () => {
@@ -31,23 +30,23 @@ describe('EmptyStateWrapperComponent', () => {
 
   describe('ngOnChanges', () => {
     it('should call updateDisplayState when data changes', () => {
-      spyOn(component as any, 'updateDisplayState');
+      spyOn(component as unknown as { updateDisplayState: () => void }, 'updateDisplayState');
       
       component.ngOnChanges({
         data: new SimpleChange([], [1, 2, 3], false)
       });
 
-      expect((component as any).updateDisplayState).toHaveBeenCalled();
+      expect(component['updateDisplayState']).toHaveBeenCalled();
     });
 
     it('should call updateDisplayState when currentFilter changes', () => {
-      spyOn(component as any, 'updateDisplayState');
+      spyOn(component as unknown as { updateDisplayState: () => void }, 'updateDisplayState');
       
       component.ngOnChanges({
         currentFilter: new SimpleChange({}, { searchQuery: 'test' }, false)
       });
 
-      expect((component as any).updateDisplayState).toHaveBeenCalled();
+      expect(component['updateDisplayState']).toHaveBeenCalled();
     });
   });
 
@@ -56,7 +55,7 @@ describe('EmptyStateWrapperComponent', () => {
       component.data = [];
       component.currentFilter = {};
       
-      (component as any).updateDisplayState();
+      component['updateDisplayState']();
 
       expect(component.showEmptyState).toBe(true);
       expect(component.hasSearchResults).toBe(true);
@@ -66,7 +65,7 @@ describe('EmptyStateWrapperComponent', () => {
       component.data = [{ id: '1' }];
       component.currentFilter = {};
       
-      (component as any).updateDisplayState();
+      component['updateDisplayState']();
 
       expect(component.showEmptyState).toBe(false);
       expect(component.hasSearchResults).toBe(true);
@@ -76,7 +75,7 @@ describe('EmptyStateWrapperComponent', () => {
       component.data = [];
       component.currentFilter = { searchQuery: 'test' };
       
-      (component as any).updateDisplayState();
+      component['updateDisplayState']();
 
       expect(component.showEmptyState).toBe(false);
       expect(component.hasSearchResults).toBe(false);
@@ -86,27 +85,27 @@ describe('EmptyStateWrapperComponent', () => {
       component.data = [];
       component.currentFilter = { status: ApplicationStatus.Applied };
       
-      (component as any).updateDisplayState();
+      component['updateDisplayState']();
 
       expect(component.showEmptyState).toBe(false);
       expect(component.hasSearchResults).toBe(false);
     });
 
     it('should handle null data', () => {
-      component.data = null as any;
+      component.data = null as unknown as unknown[];
       component.currentFilter = {};
       
-      (component as any).updateDisplayState();
+      component['updateDisplayState']();
 
       expect(component.showEmptyState).toBe(true);
       expect(component.hasSearchResults).toBe(true);
     });
 
     it('should handle undefined data', () => {
-      component.data = undefined as any;
+      component.data = undefined as unknown as unknown[];
       component.currentFilter = {};
       
-      (component as any).updateDisplayState();
+      component['updateDisplayState']();
 
       expect(component.showEmptyState).toBe(true);
       expect(component.hasSearchResults).toBe(true);

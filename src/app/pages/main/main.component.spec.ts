@@ -1,9 +1,8 @@
-import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { of, Subject } from 'rxjs';
 
 import { MainComponent } from './main.component';
@@ -15,7 +14,6 @@ describe('MainComponent', () => {
   let component: MainComponent;
   let fixture: ComponentFixture<MainComponent>;
   let mockUiStateService: jasmine.SpyObj<UiStateService>;
-  let mockConfigService: jasmine.SpyObj<ConfigService>;
 
 
   beforeEach(async () => {
@@ -44,7 +42,6 @@ describe('MainComponent', () => {
     fixture = TestBed.createComponent(MainComponent);
     component = fixture.componentInstance;
     mockUiStateService = TestBed.inject(UiStateService) as jasmine.SpyObj<UiStateService>;
-    mockConfigService = TestBed.inject(ConfigService) as jasmine.SpyObj<ConfigService>;
 
     // Navigate to a valid route to set router.url
     const router = TestBed.inject(Router);
@@ -117,7 +114,7 @@ describe('MainComponent', () => {
     tick(100);
 
     component['isInitialized'] = true;
-    spyOn(component['ngZone'], 'run').and.callFake((fn: Function) => fn());
+    spyOn(component['ngZone'], 'run').and.callFake(<T>(fn: () => T) => fn());
 
     component.sidebarOpen = true;
     fixture.detectChanges();
@@ -131,7 +128,7 @@ describe('MainComponent', () => {
 
   it('should update layout based on window size', () => {
     // Ensure component is initialized so closeSidebar doesn't recurse
-    (component as any).isInitialized = true;
+    (component as unknown as { isInitialized: boolean }).isInitialized = true;
   
     // Mobile view
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: MOBILE_BREAKPOINT - 1 });

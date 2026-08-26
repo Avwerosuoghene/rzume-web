@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { DocumentItem } from '../../../../core/models';
+import { ActionMenuComponent } from '../../../../components/action-menu/action-menu.component';
+import { DocumentItem, ActionMenuItem, ActionType, ACTION_TYPES } from '../../../../core/models';
 import { DocumentHelper } from '../../../../core/helpers';
 
 export interface UploadedDocument {
@@ -17,14 +15,29 @@ export interface UploadedDocument {
 @Component({
   selector: 'app-document-item',
   standalone: true,
-  imports: [CommonModule, DatePipe, MatMenuModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, DatePipe, ActionMenuComponent],
   templateUrl: './document-item.component.html',
   styleUrls: ['./document-item.component.scss']
 })
 export class DocumentItemComponent {
   @Input() document!: DocumentItem;
+  @Input() actionsVariant: 'icons' | 'menu' = 'icons';
+  @Input() excludeActions: ActionType[] = [];
   @Output() delete = new EventEmitter<string>();
   @Output() download = new EventEmitter<string>();
+
+  get documentActions(): ActionMenuItem[] {
+    const allActions: ActionMenuItem[] = [
+      { key: ACTION_TYPES.VIEW, label: 'View document', callback: () => this.onView() },
+      { key: ACTION_TYPES.DOWNLOAD, label: 'Download document', callback: () => this.onDownload() },
+      { key: ACTION_TYPES.DELETE, label: 'Delete document', callback: () => this.onDelete() }
+    ];
+    return allActions.filter(action => !this.excludeActions.includes(action.key));
+  }
+
+  onView(): void {
+    window.open(this.document.url, '_blank', 'noopener');
+  }
 
   onDelete(): void {
     this.delete.emit(this.document.id);

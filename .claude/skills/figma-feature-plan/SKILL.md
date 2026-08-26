@@ -32,6 +32,16 @@ Comes after `/architect` (which decides the structural approach) and before `/wr
 - **Missing the Figma link/node** → ask which one, don't guess which frame is relevant.
 - **Scope is one feature/frame per run** — don't try to spec an entire page hierarchy in one pass.
 
+## Troubleshooting: "you don't have edit access to this file"
+
+If `get_design_context`/`get_variable_defs`/`get_code_connect_map` all fail with this error even
+though the user can view the file fine in their own browser, don't assume it's a broken connection
+— check whether the file is sitting in the user's personal Figma **Drafts** rather than inside a
+team project. Drafts show on the home screen regardless of team membership, but the MCP server's
+access check doesn't extend to them the way the browser session does. Fix: have the user move the
+file into a team project (or duplicate it there), then retry the same calls. Full incident and root
+cause in the `mcp-figma-connection` memory.
+
 ## Workflow
 
 **Step 1 — Get the design context.**

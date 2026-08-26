@@ -1,3 +1,39 @@
 <section class="roles_container">
-  <h2>Roles Management Coming Soon</h2>
+
+  <div class="role-limit-bar">
+    <p class="role-limit-text">
+      <span class="role-limit-label">Role limit:</span> {{ (stats$ | async)?.createdCount ?? 0 }} / {{ roleLimit }} roles created
+    </p>
+    <button class="add-role-btn" type="button" (click)="openAddRoleDialog()">
+      <span class="add-icon">+</span> Add New Role
+    </button>
+  </div>
+
+  <div class="active-roles-section">
+    <div class="active-roles-header">
+      <h3 class="active-roles-title">Active roles</h3>
+      <p class="active-roles-subtitle">You are only allowed maximum of two ({{ roleLimit }}) roles at this stage.</p>
+    </div>
+
+    <app-role-card-skeleton *ngIf="loading$ | async; else rolesContent" data-cy="roles-loading"></app-role-card-skeleton>
+
+    <ng-template #rolesContent>
+      <div class="empty-state-wrapper" *ngIf="(roles$ | async)?.length === 0">
+        <app-empty-state
+          [icon]="emptyState.icon"
+          [title]="emptyState.title"
+          [message]="emptyState.message"
+        ></app-empty-state>
+      </div>
+
+      <app-role-card
+        *ngFor="let role of (roles$ | async)"
+        [role]="role"
+        (editRole)="onEditRole($event)"
+        (delete)="onDeleteRole($event)"
+        (deleteDocument)="onDeleteRoleDocument($event)"
+      ></app-role-card>
+    </ng-template>
+  </div>
+
 </section>

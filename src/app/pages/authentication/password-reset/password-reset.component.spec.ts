@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { PasswordResetComponent } from './password-reset.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
+import { PasswordStrengthCheckerComponent } from '../../../components/password-strength-checker/password-strength-checker.component';
 
 describe('PasswordResetComponent', () => {
   let component: PasswordResetComponent;
@@ -39,11 +40,11 @@ describe('PasswordResetComponent', () => {
     
     // Mock the ViewChild component before detectChanges
     component.passwordCheckerComp = {
-      checkPasswordStrength: jasmine.createSpy('checkPasswordStrength').and.returnValue({ 
-        score: 4, 
-        strength: 'STRONG' 
+      checkPasswordStrength: jasmine.createSpy('checkPasswordStrength').and.returnValue({
+        score: 4,
+        strength: 'STRONG'
       })
-    } as any;
+    } as unknown as PasswordStrengthCheckerComponent;
     
     fixture.detectChanges();
   });

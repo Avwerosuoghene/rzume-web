@@ -1,12 +1,12 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AnalyticsService } from './analytics.service';
-import { AnalyticsUser, EventProperties } from '../../models/analytics.models';
+import { AnalyticsUser, EventProperties, GoogleTagUserProperties } from '../../models/analytics.models';
 import { AnalyticsEvent } from '../../models/analytics-events.enum';
 import { ConfigService } from '../config.service';
 import { AnalyticsUserContextService } from '../analytics-user-context.service';
 
-declare var gtag: Function;
+declare const gtag: (...args: unknown[]) => void;
 
 @Injectable({
     providedIn: 'root'
@@ -15,9 +15,9 @@ export class GoogleTagService extends AnalyticsService {
     private initialized = false;
 
     constructor(
-        private configService: ConfigService,
-        private userContextService: AnalyticsUserContextService,
-        @Inject(PLATFORM_ID) private platformId: Object
+        private readonly configService: ConfigService,
+        private readonly userContextService: AnalyticsUserContextService,
+        @Inject(PLATFORM_ID) private readonly platformId: object
     ) {
         super();
     }
@@ -69,7 +69,7 @@ export class GoogleTagService extends AnalyticsService {
         try {
             const gTagId = this.configService.googleTagId;
 
-            const userProperties: any = {};
+            const userProperties: GoogleTagUserProperties = {};
             if (user.email) userProperties.email = user.email;
             if (user.subscriptionStatus) userProperties.subscription_status = user.subscriptionStatus;
 
@@ -123,7 +123,7 @@ export class GoogleTagService extends AnalyticsService {
         }
 
         try {
-            const userProps: any = {};
+            const userProps: GoogleTagUserProperties = {};
             if (properties.email) userProps.email = properties.email;
             if (properties.subscriptionStatus) userProps.subscription_status = properties.subscriptionStatus;
 
@@ -147,17 +147,21 @@ export class GoogleTagService extends AnalyticsService {
             return;
         }
 
-        // Resetting user_id to undefined
-        const gTagId = this.configService.googleTagId;
+        try {
+            // Resetting user_id to undefined
+            const gTagId = this.configService.googleTagId;
 
-        gtag('config', gTagId, {
-            'user_id': undefined
-        });
+            gtag('config', gTagId, {
+                'user_id': undefined
+            });
 
-        gtag('set', 'user_properties', {
-            'email': undefined,
-            'subscription_status': undefined
-        });
+            gtag('set', 'user_properties', {
+                'email': undefined,
+                'subscription_status': undefined
+            });
+        } catch (error) {
+            console.error('Google Tag reset error:', error);
+        }
     }
 
     optIn(): void {

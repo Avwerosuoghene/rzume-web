@@ -13,59 +13,66 @@
     id="add_job_form"
   >
     <div class="form-input-container">
-      <app-form-input 
-        [config]="companyConfig" 
-        [control]="applicationFormGroup.get('companyName')">
+      <app-form-input
+        [config]="roleSelectConfig"
+        [control]="applicationFormGroup.get('roleId')">
       </app-form-input>
 
-      <app-form-input 
-        [config]="roleConfig" 
-        [control]="applicationFormGroup.get('position')">
-      </app-form-input>
-
-      <div (change)="onResumeSelectionChange($event)">
-        <app-form-input 
-          [config]="resumeConfig" 
-          [control]="applicationFormGroup.get('resumeId')">
-        </app-form-input>
-      </div>
-
-      <app-form-input 
-        [config]="jobLinkConfig" 
-        [control]="applicationFormGroup.get('jobLink')">
-      </app-form-input>
-
-      <div class="application-status_date-container">
-        <app-form-input 
-          [config]="dateConfig" 
-          [control]="applicationFormGroup.get('applicationDate')">
+      @if (roleSelected) {
+        <app-form-input
+          [config]="companyConfig"
+          [control]="applicationFormGroup.get('companyName')">
         </app-form-input>
 
-        <app-form-input 
-          [config]="statusConfig" 
-          [control]="applicationFormGroup.get('status')">
+        <app-form-input
+          [config]="jobTitleConfig"
+          [control]="applicationFormGroup.get('position')">
         </app-form-input>
-      </div>
 
-      <app-form-input 
-        [config]="notesConfig" 
-        [control]="applicationFormGroup.get('notes')">
-      </app-form-input>
+        <app-job-application-document-picker
+          [availableResumes]="roleDocumentResumes"
+          [preSuggestedDocuments]="preSuggestedDocuments"
+          (documentsChange)="onDocumentsChange($event)"
+          (uploadRequested)="onUploadRequested()"
+        ></app-job-application-document-picker>
 
-      <button
-        id="add_job_btn"
-        mat-flat-button
-        [disabled]="isBtnDisabled()"
-        type="submit"
-      >
-        <div class="button-elements">
-          @if (loaderIsActive) {
-          <app-circular-loader></app-circular-loader>
-          }
+        <app-form-input
+          [config]="jobLinkConfig"
+          [control]="applicationFormGroup.get('jobLink')">
+        </app-form-input>
 
-          <p>{{ editMode ? "Update" : "Add" + " Job Application" }}</p>
+        <div class="application-status_date-container">
+          <app-form-input
+            [config]="dateConfig"
+            [control]="applicationFormGroup.get('applicationDate')">
+          </app-form-input>
+
+          <app-form-input
+            [config]="statusConfig"
+            [control]="applicationFormGroup.get('status')">
+          </app-form-input>
         </div>
-      </button>
+
+        <app-form-input
+          [config]="notesConfig"
+          [control]="applicationFormGroup.get('notes')">
+        </app-form-input>
+
+        <button
+          id="add_job_btn"
+          mat-flat-button
+          [disabled]="isBtnDisabled()"
+          type="submit"
+        >
+          <div class="button-elements">
+            @if (loaderIsActive) {
+            <app-circular-loader></app-circular-loader>
+            }
+
+            <p>{{ editMode ? "Update" : "Add" + " Job Application" }}</p>
+          </div>
+        </button>
+      }
     </div>
   </form>
 </div>

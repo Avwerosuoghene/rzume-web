@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Renderer2, OnInit, AfterViewInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Renderer2, OnInit, AfterViewInit, DoCheck } from '@angular/core';
 import { CssClass, ElementTag, EmptyValue, TIMING } from '../models';
 
 
@@ -7,12 +7,12 @@ import { CssClass, ElementTag, EmptyValue, TIMING } from '../models';
   selector: '[appFloatingLabel]',
   standalone: true
 })
-export class FloatingLabelDirective implements OnInit, AfterViewInit {
+export class FloatingLabelDirective implements OnInit, AfterViewInit, DoCheck {
   private formField: HTMLElement | null = null;
 
   constructor(
-    private el: ElementRef,
-    private renderer: Renderer2
+    private readonly el: ElementRef,
+    private readonly renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
@@ -22,6 +22,10 @@ export class FloatingLabelDirective implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => this.checkValue(), TIMING.IMMEDIATE_CHECK);
     setTimeout(() => this.checkValue(), TIMING.DELAYED_CHECK);
+  }
+
+  ngDoCheck(): void {
+    this.checkValue();
   }
 
   @HostListener('input')
@@ -58,7 +62,7 @@ export class FloatingLabelDirective implements OnInit, AfterViewInit {
     }
 
     const value = select.value;
-    
+
     if (this.isValidValue(value)) {
       return true;
     }
@@ -70,9 +74,9 @@ export class FloatingLabelDirective implements OnInit, AfterViewInit {
     if (select.options.length === 0) {
       return false;
     }
-    
+
     const firstOption = select.options[0];
-    return firstOption?.disabled && 
+    return firstOption?.disabled &&
            (!firstOption.value || firstOption.value === EmptyValue.EMPTY_STRING);
   }
 
@@ -81,9 +85,9 @@ export class FloatingLabelDirective implements OnInit, AfterViewInit {
   }
 
   private isValidValue(value: string): boolean {
-    return value !== EmptyValue.EMPTY_STRING 
-      && value !== null 
-      && value !== undefined 
+    return value !== EmptyValue.EMPTY_STRING
+      && value !== null
+      && value !== undefined
       && value !== EmptyValue.NULL_STRING;
   }
 

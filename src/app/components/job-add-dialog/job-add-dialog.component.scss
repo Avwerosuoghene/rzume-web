@@ -47,6 +47,15 @@
         margin-top: 20px;
       }
     }
+
+    // app-job-application-document-picker isn't a .form-field (it's its own component with its
+    // own internal layout), so it doesn't pick up the global .form-field { margin-top: 20px }
+    // rhythm every other stacked field gets — without this it sits flush against the role select
+    // above it.
+    app-job-application-document-picker {
+      display: block;
+      margin-top: 20px;
+    }
   }
 
   #add_job_btn {

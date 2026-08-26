@@ -1,0 +1,69 @@
+@import "../../styles/fonts.scss";
+@import "../../styles/theme.scss";
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  width: 100%;
+  padding: $spacing-6;
+  background-color: $grey-card-bg;
+  border: 1.5px solid $grey-200;
+  border-radius: 10px;
+}
+
+.role-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  button {
+    color: $gray;
+    flex-shrink: 0;
+  }
+}
+
+.role-card-heading {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.role-card-title {
+  @include font-heading;
+  font-size: $font-size-md;
+  color: $grey-900;
+  margin: 0;
+}
+
+.role-card-industry {
+  @include font-body;
+  font-size: $font-size-base;
+  color: $grey-500;
+  margin: 0;
+}
+
+// 30px matches Figma exactly (node 1314:2933) — not one of the app's $spacing-* values.
+// Mobile-first: stacked below the 600px tablet-and-up threshold (see /web-design-guidelines),
+// side-by-side per Figma from 600px up.
+.role-card-documents {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  width: 100%;
+
+  @media (min-width: 600px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+  }
+
+  app-document-item {
+    min-width: 0;
+
+    @media (min-width: 600px) {
+      flex: 1 0 0;
+    }
+  }
+}

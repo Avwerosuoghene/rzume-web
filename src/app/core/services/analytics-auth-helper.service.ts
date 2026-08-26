@@ -3,7 +3,7 @@ import { AnalyticsService } from './analytics/analytics.service';
 import { AnalyticsUserContextService } from './analytics-user-context.service';
 import { AnalyticsEvent, SignupMethod } from '../models/analytics-events.enum';
 import { User } from '../models/interface/authentication.models';
-import { SigninResponse } from '../models';
+import { ErrorResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -48,9 +48,10 @@ export class AnalyticsAuthHelperService {
   }
 
   // Handle authentication failure
-  handleAuthFailure(error: any, method: SignupMethod, event: AnalyticsEvent): void {
+  handleAuthFailure(error: unknown, method: SignupMethod, event: AnalyticsEvent): void {
+    const errorMessage = (error as Partial<ErrorResponse>)?.errorMessage || 'Unknown error';
     this.analyticsService.track(event, {
-      error_message: error.message || 'Unknown error',
+      error_message: errorMessage,
       signup_method: method,
       signin_method: method
     });

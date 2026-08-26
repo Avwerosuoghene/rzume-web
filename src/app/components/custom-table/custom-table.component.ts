@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularMaterialModules } from '../../core/modules';
-import { ApplicationStatus, CONFIRM_DELETE_MSG, DELETE_APP_TITLE, DialogCloseResponse, IconStat, InfoDialogData, JobStatChangeDialogData } from '../../core/models';
+import { ApplicationStatus, DELETE_APP_TITLE, DialogCloseResponse } from '../../core/models';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableBodyComponent } from './table-body/table-body.component';
 import { TablePagintionComponent } from "./table-pagintion/table-pagintion.component";
@@ -115,9 +115,7 @@ export class CustomTableComponent {
     this.pageChanged.emit(page);
   }
 
-  toggleAllSelections(event: any) {
-    const checked = event.target.checked;
-
+  toggleAllSelections(checked: boolean) {
     if (checked) {
       this.selectedItems = [...this.data];
       this.data.forEach(item => item.selected = true);

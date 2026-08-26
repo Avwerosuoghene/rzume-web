@@ -21,3 +21,4 @@ export * from './analytics-user-context.service';
 export * from './analytics-auth-helper.service';
 export * from './linkedin-tracking.service';
 export * from './global-error-handler.service';
+export * from './industry.service';

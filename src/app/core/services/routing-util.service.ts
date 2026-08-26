@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router, NavigationExtras } from '@angular/router';
 import { RootRoutes } from '../models/enums/application.routes.enums';
 
 @Injectable({ providedIn: 'root' })
 export class RoutingUtilService {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private location: Location) {}
 
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean> {
     return this.router.navigate(commands, extras);
@@ -19,7 +20,7 @@ export class RoutingUtilService {
   }
 
   navigateBack(): void {
-    this.router.navigateByUrl(this.router.url);
+    this.location.back();
   }
 
   getCurrentUrl(): string {

@@ -1,5 +1,5 @@
 import { MIME_TYPE_MAP, DEFAULT_CV_UPLOAD_LIMIT, SessionStorageKeys, SubscriptionFeatureKeys } from "../models";
-import { SubscriptionFeatures } from "../models/interface/profile.models";
+import { SubscriptionFeatures, Resume } from "../models/interface/profile.models";
 
 
 export class DocumentHelper {
@@ -23,7 +23,12 @@ export class DocumentHelper {
   }
 
   static getReadableFileType(mimeType: string): string {
-    return MIME_TYPE_MAP[mimeType] || mimeType.split('/')[1].toUpperCase();
+    if (MIME_TYPE_MAP[mimeType]) {
+      return MIME_TYPE_MAP[mimeType];
+    }
+
+    const subtype = mimeType.split('/')[1];
+    return (subtype || mimeType).toUpperCase();
   }
 
   static getReadableFileTypes(mimeTypes: string[]): string {
@@ -57,11 +62,11 @@ export class DocumentHelper {
     return '/assets/icons/pdf-icon.svg';
   }
 
-  static findResumeById(resumes: any[], resumeId: string): any | undefined {
+  static findResumeById(resumes: Resume[], resumeId: string): Resume | undefined {
     return resumes.find(resume => resume.id === resumeId);
   }
 
-  static getResumeFileName(resumes: any[], resumeId: string): string {
+  static getResumeFileName(resumes: Resume[], resumeId: string): string {
     const resume = this.findResumeById(resumes, resumeId);
     return resume?.fileName || '';
   }
@@ -89,7 +94,7 @@ export class DocumentHelper {
       }
 
       const limit = parseInt(cvLimitFeature.featureValue, 10);
-      return isNaN(limit) ? DEFAULT_CV_UPLOAD_LIMIT : limit;
+      return isNaN(limit) || limit <= 0 ? DEFAULT_CV_UPLOAD_LIMIT : limit;
     } catch (error) {
       return DEFAULT_CV_UPLOAD_LIMIT;
     }

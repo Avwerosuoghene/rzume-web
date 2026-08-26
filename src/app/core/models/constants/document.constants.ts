@@ -6,3 +6,4 @@ export const MIME_TYPE_MAP: { [key: string]: string } = {
   };
 
 export const DEFAULT_CV_UPLOAD_LIMIT = 2;
+export const DEFAULT_ROLE_LIMIT = 2;

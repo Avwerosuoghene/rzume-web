@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import mixpanel from 'mixpanel-browser';
 import { AnalyticsService } from './analytics.service';
-import { AnalyticsUser, EventProperties } from '../../models/analytics.models';
+import { AnalyticsUser, EventProperties, MixpanelUserProperties } from '../../models/analytics.models';
 import { AnalyticsEvent } from '../../models/analytics-events.enum';
 import { ConfigService } from '../config.service';
 import { AnalyticsUserContextService } from '../analytics-user-context.service';
@@ -58,7 +58,7 @@ export class MixpanelService extends AnalyticsService {
     try {
       mixpanel.identify(user.userId);
 
-      const userProperties: any = {};
+      const userProperties: MixpanelUserProperties = {};
       if (user.email) userProperties.$email = user.email;
       if (user.name) userProperties.$name = user.name;
       if (user.signupDate) userProperties.signup_date = user.signupDate;
@@ -126,7 +126,7 @@ export class MixpanelService extends AnalyticsService {
     }
 
     try {
-      const userProps: any = {};
+      const userProps: MixpanelUserProperties = {};
       if (properties.email) userProps.$email = properties.email;
       if (properties.name) userProps.$name = properties.name;
       if (properties.signupDate) userProps.signup_date = properties.signupDate;
@@ -140,13 +140,13 @@ export class MixpanelService extends AnalyticsService {
     }
   }
 
-  setUserProperty(property: string, value: any): void {
+  setUserProperty(property: string, value: unknown): void {
     if (!this.initialized) {
       return;
     }
 
     try {
-      const userProps: any = {};
+      const userProps: Record<string, unknown> = {};
       userProps[property] = value;
 
       mixpanel.people.set(userProps);

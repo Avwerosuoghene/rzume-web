@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { APIResponse, ApiRoutes, ApiUrlParam, GetRequestOptions, PaginatedItem } from '../models';
-import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem, JobApplicationStats } from '../models/interface/job-application.models';
+import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem, JobApplicationStats, UpdateApplicationPayload } from '../models/interface/job-application.models';
 import { tap, catchError } from 'rxjs';
 import { throwError } from 'rxjs';
 import { JobApplicationStateService } from './job-application-state.service';
@@ -56,7 +56,7 @@ export class JobApplicationService {
         ...this.currentFilter,
         page,
         pageSize
-      }).subscribe();
+      }).subscribe({ error: () => {} });
     }
   }
 
@@ -92,21 +92,21 @@ export class JobApplicationService {
     );
   }
 
-  updateJobApplication(payload: JobApplicationItem) {
+  updateJobApplication(id: string, payload: UpdateApplicationPayload) {
     return this.apiService.put<APIResponse<boolean>>(
-      `${ApiRoutes.jobApplication.base}/${payload.id}`, payload, true
+      `${ApiRoutes.jobApplication.base}/${id}`, payload, true
     ).pipe(
       tap(response => {
         if (response.success) {
           this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_UPDATED, {
-            application_id: payload.id
+            application_id: id
           });
         }
       }),
       catchError(error => {
         this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_UPDATE_FAILED, {
           error_message: error.message || 'Unknown error',
-          application_id: payload.id
+          application_id: id
         });
         return throwError(() => error);
       })
@@ -220,17 +220,20 @@ export class JobApplicationService {
   private buildApplicationsParams(filter?: JobApplicationFilter): ApiUrlParam[] {
     if (!filter) return [];
 
-    const paramMap: Record<string, any> = {
+    const paramMap: Record<string, string | undefined> = {
       status: filter?.status?.toString(),
       searchQuery: filter?.searchQuery,
       startDate: filter?.startDate?.toISOString(),
       endDate: filter?.endDate?.toISOString(),
-      pageNumber: filter?.page,
-      pageSize: filter?.pageSize
+      pageNumber: filter?.page?.toString(),
+      pageSize: filter?.pageSize?.toString()
     };
 
     return Object.entries(paramMap)
-      .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+      .filter((entry): entry is [string, string] => {
+        const [, value] = entry;
+        return value !== undefined && value !== null && value !== '';
+      })
       .map(([name, value]) => ({ name, value }));
   }
 }

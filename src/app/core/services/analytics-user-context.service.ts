@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/interface/authentication.models';
+import { EventProperties, EnrichedEventProperties } from '../models/analytics.models';
 
 export interface AnalyticsUserContext {
   email?: string;
@@ -68,11 +69,11 @@ export class AnalyticsUserContextService {
   }
 
   // Enrich event properties with user context
-  enrichEventProperties(properties?: any): any {
+  enrichEventProperties(properties?: EventProperties): EnrichedEventProperties {
     const userContext = this.getUserContext();
-    
+
     // Always include available user information
-    const enrichedProperties = {
+    const enrichedProperties: EnrichedEventProperties = {
       ...properties,
       user_email: userContext.email,
       user_username: userContext.username,

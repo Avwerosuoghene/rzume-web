@@ -1,5 +1,6 @@
 import { IconStat } from "../enums";
 import { JobApplicationItem } from "./job-application.models";
+import { Role } from "./role.models";
 
 export interface InfoDialogData {
   infoMessage: string;
@@ -22,6 +23,11 @@ export interface PolicyDialogData {
 
 export interface ViewJobDialogData {
   jobApplication: JobApplicationItem;
+}
+
+export interface AddRoleDialogData {
+  isEditing?: boolean;
+  roleData?: Role;
 }
 
 

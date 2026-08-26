@@ -1,0 +1,294 @@
+@import "../../styles/fonts.scss";
+@import "../../styles/theme.scss";
+@import "../../styles/general_styles.scss";
+
+:host {
+  display: block;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-6 $spacing-6 $spacing-4;
+}
+
+.close-btn {
+  flex-shrink: 0;
+  color: $gray;
+}
+
+.dialog-title {
+  margin: 0;
+  padding: 0;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $black;
+}
+
+.dialog-content {
+  padding: 0 $spacing-6 $spacing-4;
+  max-height: 60vh;
+}
+
+.role-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.document-section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.document-multiselect {
+  width: 100%;
+}
+
+.multiselect-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  background-color: transparent;
+  border: 1px solid $light-gray;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  font: inherit;
+  color: $black;
+
+  &:hover {
+    border-color: darken($light-gray, 10%);
+  }
+
+  &.is-open {
+    border-color: $rzume-blue;
+    box-shadow: 0 0 0 3px rgba(62, 127, 255, 0.1);
+  }
+
+  mat-icon {
+    color: $gray;
+    flex-shrink: 0;
+  }
+}
+
+.trigger-text {
+  @include font-body;
+  font-size: $font-size-base;
+  color: $black;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Positioned by CDK Overlay (cdkConnectedOverlay in add-role-dialog.component.html) — this only
+// needs its own visual chrome, not position/top/left/z-index, since it's portaled outside
+// mat-dialog-content and can't be clipped by the dialog's own overflow:auto.
+.multiselect-panel {
+  width: 100%;
+  margin-top: $spacing-1;
+  background-color: $white;
+  border: 1px solid $light-gray;
+  border-radius: $border-radius-md;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.multiselect-search {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3;
+  border-bottom: 1px solid $extra-light-gray;
+  flex-shrink: 0;
+
+  mat-icon {
+    color: $gray;
+    font-size: $font-size-lg;
+    width: $font-size-lg;
+    height: $font-size-lg;
+    flex-shrink: 0;
+  }
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  @include font-body;
+  font-size: $font-size-base;
+  color: $black;
+
+  &::placeholder {
+    color: $gray;
+  }
+}
+
+.multiselect-options {
+  list-style: none;
+  margin: 0;
+  padding: $spacing-1 0;
+  overflow-y: auto;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-2 $spacing-3;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $extra-light-gray;
+  }
+}
+
+.option-checkbox {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.option-filename {
+  @include font-body;
+  font-size: $font-size-base;
+  color: $black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.multiselect-option.is-disabled {
+  .option-label {
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .option-checkbox {
+    cursor: not-allowed;
+  }
+}
+
+.multiselect-empty {
+  @include font-caption;
+  font-size: $font-size-sm;
+  color: $gray;
+  padding: $spacing-4 $spacing-3;
+  text-align: center;
+}
+
+.upload-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: $rzume-blue;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.selected-documents {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.document-card {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  background-color: $extra-light-gray;
+  border-radius: $border-radius-md;
+  padding: $spacing-2 $spacing-3;
+}
+
+.document-icon {
+  width: $spacing-10;
+  height: $spacing-10;
+  flex-shrink: 0;
+}
+
+.document-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.document-name {
+  @include font-body;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $black;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.document-meta {
+  @include font-caption;
+  font-size: $font-size-sm;
+  color: $gray;
+}
+
+.remove-document-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: $gray;
+
+  mat-icon {
+    font-size: $font-size-md;
+    width: $font-size-md;
+    height: $font-size-md;
+  }
+}
+
+.dialog-actions {
+  padding: $spacing-4 $spacing-6 $spacing-6;
+  margin: 0;
+}
+
+.submit-btn {
+  @extend .rzume-button-primary;
+  width: 100%;
+  height: $spacing-12;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+
+  &:disabled {
+    opacity: $opacity-muted;
+    cursor: not-allowed;
+  }
+}
+
+@media (min-width: $breakpoint-sm) {
+  .dialog-content {
+    min-width: 500px;
+  }
+}

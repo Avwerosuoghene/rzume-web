@@ -1,13 +1,13 @@
 import { SideBarElement, RootRoutes, MainRoutes } from "../models";
 import { PAGINATION_DEFAULTS } from "../models/constants/dashboard.constants";
-import { JobApplicationFilter, JobApplicationItem, JobApplicationStatItemDto } from "../models/interface/job-application.models";
+import { JobApplicationFilter, JobApplicationItem, JobApplicationStatItemDto, JobApplicationStats } from "../models/interface/job-application.models";
 import { ConfigService } from "../services/config.service";
 
 export function hasActiveFilters(filter: JobApplicationFilter): boolean {
     return !!filter?.searchQuery || Object.values(filter || {}).some(val => !!val);
 }
 
-export function mapApplicationToTableData(application: JobApplicationItem): any {
+export function mapApplicationToTableData(application: JobApplicationItem): JobApplicationItem {
     return {
         ...application,
         applicationDate: application.applicationDate ? new Date(application.applicationDate) : undefined,
@@ -42,13 +42,13 @@ export function updatePagination(
     state.itemsPerPage = pagination.pageSize;
 }
 
-export function mapJobStats(stats: any): JobApplicationStatItemDto[] {
+export function mapJobStats(stats: Partial<JobApplicationStats>): JobApplicationStatItemDto[] {
     return [
         stats.totalApplications,
         stats.rejected,
         stats.inProgress,
         stats.offerReceived
-    ].filter(Boolean);
+    ].filter((stat): stat is JobApplicationStatItemDto => Boolean(stat));
 }
 
 export function normalizeFilter(currentFilter: JobApplicationFilter, newFilter: JobApplicationFilter): JobApplicationFilter {
@@ -58,7 +58,7 @@ export function normalizeFilter(currentFilter: JobApplicationFilter, newFilter: 
     return { ...currentFilter, ...newFilter };
 }
 
-export function buildPagination(data: any) {
+export function buildPagination(data: { totalCount: number; totalPages: number; pageNumber: number; pageSize: number }) {
     return {
         totalCount: data.totalCount,
         totalPages: data.totalPages,

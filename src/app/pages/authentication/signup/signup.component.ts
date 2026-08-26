@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules, CoreModules, RouterModules } from '../../../core/modules';
 import { PasswordStrengthResult, PasswordUtility, SessionStorageUtil, FormInputConfigHelper, FormValidationUtil } from '../../../core/helpers';
-import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, SignupResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, GoogleSignInPayload, SigninResponse, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
+import { PasswordVisibility, RootRoutes, AuthRoutes, AuthRequest, APIResponse, ErrorResponse, USER_EMAIL_NOT_CONFIRMED_MSG, InfoDialogData, IconStat, SessionStorageKeys, GOOGLE_SIGNIN_BUTTON_TEXT } from '../../../core/models';
 import { AuthenticationService, GoogleAuthService, DialogHelperService } from '../../../core/services';
 import { PasswordStrength } from '../../../core/models/enums/password-strength.enum';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
@@ -205,8 +205,8 @@ export class SignupComponent implements OnInit, OnDestroy {
     });
   }
 
-  handleCredentialResponse(response: any) {
-    this.googleAuthService.handleCredentialResponse(response, (success, token) => this.handleGoogleLoginSuccess(success, token), (error) => this.handleGoogleLoginError(error))
+  handleCredentialResponse(token: string) {
+    this.googleAuthService.handleCredentialResponse(token, (success, resultToken) => this.handleGoogleLoginSuccess(success, resultToken), () => this.handleGoogleLoginError())
   }
 
   handleGoogleLoginSuccess(success: boolean, token?: string): void {
@@ -215,7 +215,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.googleAuthService.handleGoogleAuthResponse(success, token);
   }
 
-  handleGoogleLoginError(error: ErrorResponse): void {
+  handleGoogleLoginError(): void {
     this.toggleLoader(false);
     this.googleButtonComponent.toggleLoader(false);
   }

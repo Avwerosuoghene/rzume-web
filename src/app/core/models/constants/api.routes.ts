@@ -2,6 +2,7 @@ export class ApiRoutes {
   private static authRoute = 'api/auth';
   private static profileManagementRoute = 'api/profilemanagement';
   private static jobApplicationRoute = 'api/jobapplications';
+  private static rolesRoute = 'api/roles';
 
   static auth = {
     register: `${this.authRoute}/register`,
@@ -28,6 +29,15 @@ export class ApiRoutes {
     resumes: `${this.profileManagementRoute}/resumes`,
     subscriptionFeatures: `${this.profileManagementRoute}/subscription-features`,
     feedback: `${this.profileManagementRoute}/feedback`
+  }
+
+  static roles = {
+    base: `${this.rolesRoute}`,
+    stats: `${this.rolesRoute}/stats`,
+  }
+
+  static industries = {
+    base: 'api/industries'
   }
 
   static utility = {

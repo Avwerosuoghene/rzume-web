@@ -18,8 +18,8 @@ export class TablePagintionComponent implements OnInit, OnChanges {
   pageSizeOptions: number[] = [5, 10, 20, 50];
   pageNumbers: number[] = [];
 
-  triggerItemsPerPageChange(event: any): void {
-    this.itemsPerPage = +event.target.value;
+  triggerItemsPerPageChange(event: Event): void {
+    this.itemsPerPage = +(event.target as HTMLSelectElement).value;
     this.itemsPerPageChanged.emit(this.itemsPerPage);
   }
 

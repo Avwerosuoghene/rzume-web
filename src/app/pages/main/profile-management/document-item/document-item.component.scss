@@ -60,26 +60,10 @@
       display: none; // Hidden on desktop
     }
   }
-}
 
-.icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-
-  img {
-    width: 20px;
-    height: 20px;
-  }
-
-  &:hover {
-    background-color: rgba($black, 0.05);
+  // actionsVariant="menu" — always the kebab menu, no viewport toggle (role-card, Figma node 1314:2681)
+  .menu-actions {
+    display: block;
   }
 }
-
 

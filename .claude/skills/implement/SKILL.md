@@ -15,8 +15,47 @@ writing**: read the failing test to understand exactly what's expected, then rea
 similar files in the same area to match current patterns — don't introduce a new pattern for
 something the codebase already does a different way.
 
+This applies doubly to **cross-cutting UI concerns** (loading, empty, error, confirmation states) —
+these are easy to solve locally with a plausible-looking one-off (a spinner, an inline error `<p>`)
+without realizing the app already has a shared answer elsewhere. Real examples found the hard way
+while building the roles feature: the app uses a dedicated skeleton component per content shape
+(`components/skeletons/` — `CardSkeletonComponent`, `TableSkeletonComponent`, etc.) for every
+list-loading state, never `CircularLoaderComponent` (that's reserved for inline button busy-states
+and full-page auth flows only); and it surfaces API errors via the shared
+`DialogHelperService.openInfoDialog(IconStat.failed, message)` modal, not inline template text —
+see the `roles-api-gap` memory for the full incident. Before building new UI for any of these,
+check `components/skeletons/index.ts`, `components/empty-state*`, and `DialogHelperService` for an
+existing convention first.
+
 If you were invoked without a failing test already in hand, stop and run `/write-tests` first —
 this skill assumes red-before-green, it doesn't skip it.
+
+## Backlog sweep-as-you-go
+
+`~/Documents/rzume-web-vault/test-backfill-findings.md` is the project's running bug/failing-test
+backlog. Whenever this skill has you open a file to implement the current task, check whether that
+same file already has an entry there that isn't marked **Fixed** / **No bugs, clean** / confirmed
+intentional — or is named in the "Pre-existing, out-of-scope discovery" failing-tests section — and
+fix it as part of this pass, not just the feature at hand. The point is sequential backlog
+reduction driven by normal feature work, one file at a time, instead of a separate big bug-fixing
+sweep later.
+
+- **Scope**: only backlog items in files you're already reading/editing for the current task. Don't
+  go searching the rest of the backlog file for unrelated files outside today's change — that turns
+  ordinary feature work into an unbounded bug hunt, which defeats the point.
+- **Respect the file's own policy** (stated at its top): a clear, low-risk, unambiguous bug gets
+  fixed inline through the normal red-first `/write-tests` → `/implement` flow, same as any other
+  fix. An entry that says it needs a judgment call about intended behavior — most entries marked
+  "Documented, not fixed" do, by design — is a `.claude/rules/human-checkpoint.md` trigger: ask the
+  user the specific question the entry already raises, don't silently resolve it just because you
+  happened to be in the file.
+- **A pre-existing failing test you hit locally** (`npx ng test` on a file you're touching, failing
+  for reasons unrelated to your change) gets the same treatment: fix it if the correct behavior is
+  unambiguous, flag it per `human-checkpoint` if it isn't.
+- **Close the loop**: once fixed, update that entry in `test-backfill-findings.md` in place — change
+  its heading to **Fixed**, and add a short note on what changed and in service of which feature,
+  matching the file's existing entry style. This is how the backlog visibly shrinks over time
+  instead of only growing.
 
 ## UI Detection Gate
 
@@ -91,6 +130,9 @@ default to resolve alone.
       change or a pre-existing violation before assuming you broke it)
 - [ ] `npm run type-check` passes
 - [ ] New shared state follows the `StateService` pattern; new UI follows `/material-ui`
+- [ ] Checked whether any file touched has an open entry in
+      `~/Documents/rzume-web-vault/test-backfill-findings.md` — fixed it (unambiguous) or flagged it
+      per `human-checkpoint` (judgment call), and updated the entry if fixed
 
 Before presenting the final solution, self-check against `/quality-gate`'s `implement` checklist.
 

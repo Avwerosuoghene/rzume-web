@@ -14,7 +14,6 @@ describe('AuthGuardService - Phase 2 & 3', () => {
   let userService: jasmine.SpyObj<UserService>;
   let loaderService: jasmine.SpyObj<LoaderService>;
   let router: jasmine.SpyObj<Router>;
-  let authHelper: jasmine.SpyObj<AuthHelperService>;
   let analytics: jasmine.SpyObj<CompositeAnalyticsService>;
   let cacheService: jasmine.SpyObj<TokenValidationCacheService>;
 
@@ -42,7 +41,6 @@ describe('AuthGuardService - Phase 2 & 3', () => {
     userService = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
     loaderService = TestBed.inject(LoaderService) as jasmine.SpyObj<LoaderService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    authHelper = TestBed.inject(AuthHelperService) as jasmine.SpyObj<AuthHelperService>;
     analytics = TestBed.inject(CompositeAnalyticsService) as jasmine.SpyObj<CompositeAnalyticsService>;
     cacheService = TestBed.inject(TokenValidationCacheService) as jasmine.SpyObj<TokenValidationCacheService>;
   });

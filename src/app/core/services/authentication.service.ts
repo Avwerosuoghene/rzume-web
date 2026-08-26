@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ApiRoutes } from '../models/constants/api.routes';
-import { HttpHeaders } from '@angular/common/http';
-import { APIResponse, ApiUrlParam, GetRequestParams, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, AuthRequest, User, ValidateUserResponse, GenerateEmailToken, GetRequestOptions, RequestPassResetPayload, ResetPassword } from '../models';
+import { APIResponse, ApiUrlParam, GOOGLE_SCRIPT_ID, GOOGLE_SCRIPT_SRC, GoogleSignInPayload, SigninResponse, AuthRequest, User, GenerateEmailToken, GetRequestOptions, RequestPassResetPayload, ResetPassword } from '../models';
 import { AnalyticsAuthHelperService } from './analytics-auth-helper.service';
 import { AnalyticsEvent, SignupMethod } from '../models/analytics-events.enum';
 import { tap, catchError } from 'rxjs/operators';

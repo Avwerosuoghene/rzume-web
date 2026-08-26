@@ -17,7 +17,7 @@ import { GoogleAuthService } from '../../../core/services/google-auth.service';
 import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { InfoDialogComponent } from '../../../components/info-dialog/info-dialog.component';
 import { IconStat, SessionStorageKeys } from '../../../core/models/enums/shared.enums';
-import { APIResponse, ErrorResponse, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT, InfoDialogData } from '../../../core/models';
+import { APIResponse, PasswordVisibility, SigninResponse, AuthRequest, GOOGLE_SIGNIN_BUTTON_TEXT, InfoDialogData } from '../../../core/models';
 import { OnboardingStages } from '../../../core/models/enums/profile.enum';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
 import { FormInputComponent } from '../../../components/form-input/form-input.component';
@@ -76,8 +76,8 @@ export class LoginComponent {
       this.loaderIsActive);
   }
 
-  handleCredentialResponse(response: any) {
-    this.googleAuthService.handleCredentialResponse(response, (success, token) => this.handleGoogleLoginSuccess(success, token), (error) => this.handleGoogleLoginError(error))
+  handleCredentialResponse(token: string) {
+    this.googleAuthService.handleCredentialResponse(token, (success, resultToken) => this.handleGoogleLoginSuccess(success, resultToken), () => this.handleGoogleLoginError())
   }
 
   handleGoogleLoginSuccess(success: boolean, token?: string): void {
@@ -86,7 +86,7 @@ export class LoginComponent {
     this.googleAuthService.handleGoogleAuthResponse(success, token);
   }
 
-  handleGoogleLoginError(error: ErrorResponse): void {
+  handleGoogleLoginError(): void {
     this.toggleLoader(false);
     this.googleButtonComponent.toggleLoader(false);
   }
@@ -128,7 +128,7 @@ export class LoginComponent {
     const loginPayload: AuthRequest = this.generateLoginPayload(userMail, password, rememberMe);
     this.authService.login(loginPayload).subscribe({
       next: (response: APIResponse<SigninResponse>) => this.handleSignInSuccess(response, userMail),
-      error: (error: ErrorResponse) => this.handleSignInError(error)
+      error: () => this.handleSignInError()
 
     });
   }
@@ -181,7 +181,7 @@ export class LoginComponent {
     });
   }
 
-  handleSignInError(error: ErrorResponse) {
+  handleSignInError() {
     this.toggleLoader(false);
   }
 

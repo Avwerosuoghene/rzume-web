@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of, throwError, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 
 import { DashboardComponent } from './dashboard.component';
 import { JobApplicationService } from '../../../core/services/job-application.service';
@@ -17,7 +17,6 @@ describe('DashboardComponent', () => {
   let fixture: ComponentFixture<DashboardComponent>;
   let mockJobApplicationService: jasmine.SpyObj<JobApplicationService>;
   let mockJobApplicationStateService: jasmine.SpyObj<JobApplicationStateService>;
-  let mockScreenManagerService: jasmine.SpyObj<ScreenManagerService>;
   let mockSearchStateService: jasmine.SpyObj<SearchStateService>;
   let mockDialogHelperService: jasmine.SpyObj<DialogHelperService>;
 
@@ -119,7 +118,6 @@ describe('DashboardComponent', () => {
     
     mockJobApplicationService = TestBed.inject(JobApplicationService) as jasmine.SpyObj<JobApplicationService>;
     mockJobApplicationStateService = TestBed.inject(JobApplicationStateService) as jasmine.SpyObj<JobApplicationStateService>;
-    mockScreenManagerService = TestBed.inject(ScreenManagerService) as jasmine.SpyObj<ScreenManagerService>;
     mockSearchStateService = TestBed.inject(SearchStateService) as jasmine.SpyObj<SearchStateService>;
     mockDialogHelperService = TestBed.inject(DialogHelperService) as jasmine.SpyObj<DialogHelperService>;
     
@@ -285,18 +283,20 @@ describe('DashboardComponent', () => {
     expect(component.selectedItems).toEqual(selectedItems);
   });
 
-  it('should handle job status updates', () => {
+  it('should handle job status updates by sending only the id and new status, not the full item', () => {
     const updatedJob = { ...mockJobApplications[0], status: ApplicationStatus.InProgress };
-    
+
     component.handleStatusUpdate({ item: updatedJob });
 
-    expect(mockDialogHelperService.updateApplication).toHaveBeenCalledWith(updatedJob, jasmine.any(Function));
+    expect(mockDialogHelperService.updateApplication).toHaveBeenCalledWith(
+      { id: updatedJob.id, status: ApplicationStatus.InProgress },
+      jasmine.any(Function)
+    );
   });
 
   it('should handle load more', () => {
     component.itemsPerPage = 5; // Set initial value to match default
-    const initialItemsPerPage = component.itemsPerPage;
-    
+
     component.handleLoadMore();
     
     expect(component.itemsPerPage).toBe(10); // 5 + 5

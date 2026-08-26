@@ -1,0 +1,30 @@
+<div class="action-menu-container">
+  @if (variant === 'icons') {
+    <div class="icon-actions">
+      @for (action of actions; track action.key) {
+        <button
+          type="button"
+          class="icon-btn"
+          [attr.aria-label]="labelFor(action)"
+          (click)="action.callback()"
+        >
+          <img [src]="iconFor(action.key)" [alt]="labelFor(action)" />
+        </button>
+      }
+    </div>
+  } @else {
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      @for (action of actions; track action.key) {
+        <button mat-menu-item (click)="action.callback()">
+          <span class="menu-item-content">
+            <img [src]="iconFor(action.key)" [alt]="labelFor(action)" class="menu-item-icon" />
+            <span>{{ labelFor(action) }}</span>
+          </span>
+        </button>
+      }
+    </mat-menu>
+  }
+</div>

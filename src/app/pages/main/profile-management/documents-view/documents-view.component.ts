@@ -1,17 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { finalize } from 'rxjs';
+import { concatMap, finalize, from, toArray } from 'rxjs';
 import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
 import { DocumentItemComponent } from '../document-item/document-item.component';
 import { DocumentHelperService } from '../../../../core/services/document-helper.service';
 import { ProfileManagementService } from '../../../../core/services/profile-management.service';
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
 import { LoaderService } from '../../../../core/services/loader.service';
-import { DocumentItem, Resume, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
+import { DocumentItem, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
 import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
 import { APIResponse, DOCUMENT_VALIDATION, DOWNLOADING_DOCUMENT, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION, IconStat, DEFAULT_CV_UPLOAD_LIMIT } from '../../../../core/models';
 import { DocumentHelper } from '../../../../core/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmedUploadEntry } from '../../../../components/confirm-upload-modal/confirm-upload-modal.component';
 
 @Component({
   selector: 'app-documents-view',
@@ -45,35 +46,48 @@ export class DocumentsViewComponent implements OnInit {
       return;
     }
 
-    const file = files[0];
+    const remainingSlots = this.uploadLimit - this.documents.length;
+    const filesToUpload = files.slice(0, remainingSlots);
+    const skippedCount = files.length - filesToUpload.length;
 
-    const payload = this.buildUploadPayload(file);
-    this.uploadDocument(payload);
+    this.dialogHelper.openConfirmUploadDialog(
+      filesToUpload,
+      (entries) => this.uploadFiles(entries, skippedCount)
+    );
   }
 
-
-
-  private buildUploadPayload(file: File): UploadDocumentPayload {
+  private buildUploadPayload(entry: ConfirmedUploadEntry): UploadDocumentPayload {
     return {
-      file: file,
+      file: entry.file,
+      type: entry.documentType
     };
   }
 
-  private uploadDocument(payload: UploadDocumentPayload): void {
+  private uploadFiles(entries: ConfirmedUploadEntry[], skippedCount: number): void {
     this.isUploading = true;
-    this.profileService.uploadResume(payload)
-      .pipe(finalize(() => this.isUploading = false))
-      .subscribe({
-        next: (response) => this.handleUploadSuccess(response)
-      });
+    from(entries).pipe(
+      concatMap(entry => this.profileService.uploadResume(this.buildUploadPayload(entry))),
+      toArray(),
+      finalize(() => this.isUploading = false)
+    ).subscribe({
+      next: (responses) => this.handleBatchUploadSuccess(responses, skippedCount)
+    });
   }
 
-  private handleUploadSuccess(response: APIResponse<DocumentItem>): void {
-    if (!response.success) return;
+  private handleBatchUploadSuccess(responses: APIResponse<DocumentItem>[], skippedCount: number): void {
+    if (!responses.some(response => response.success)) return;
 
     this.dialogHelper.openSuccessDialog(
       DOCUMENT_UPLOAD_SUCCESS_TITLE,
-      DOCUMENT_UPLOAD_SUCCESS_MSG
+      DOCUMENT_UPLOAD_SUCCESS_MSG,
+      () => {
+        if (skippedCount > 0) {
+          this.dialogHelper.openInfoDialog(
+            IconStat.warn,
+            `${skippedCount} file${skippedCount > 1 ? 's were' : ' was'} skipped because you reached your upload limit.`
+          );
+        }
+      }
     );
     this.documentHelper.fetchResumes();
   }

@@ -5,12 +5,11 @@ import { ApiService } from './api.service';
 import { DialogHelperService } from './dialog-helper.service';
 import { LoaderService } from './loader.service';
 import { APIResponse, ApiRoutes } from '../models';
-import { 
-  UpdateProfilePayload, 
+import {
+  UpdateProfilePayload,
   ProfilePhotoUploadResult,
   DocumentItem,
   UploadDocumentPayload,
-  DeleteDocumentPayload,
   Resume,
   SubscriptionFeatures
 } from '../models/interface/profile.models';
@@ -105,7 +104,10 @@ export class ProfileManagementService {
   uploadResume(payload: UploadDocumentPayload): Observable<APIResponse<DocumentItem>> {
     const formData = new FormData();
     formData.append('file', payload.file);
-    
+    if (payload.type) {
+      formData.append('documentType', payload.type);
+    }
+
     return this.apiService.post<APIResponse<DocumentItem>>(
       ApiRoutes.profileManagement.resume,
       formData,

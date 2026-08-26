@@ -26,26 +26,38 @@ export class AnalyticsInterceptor implements HttpInterceptor {
             tap({
                 next: (event) => {
                     if (event instanceof HttpResponse) {
-                        const duration = Date.now() - startTime;
-                        
-                        this.analyticsService.track(AnalyticsEvent.API_CALL_SUCCESS, {
-                            endpoint: request.url,
-                            method: request.method,
-                            status_code: event.status,
-                            duration_ms: duration
-                        });
+                        // Guarded: tap's callbacks aren't caught by RxJS — if track() itself
+                        // threw here, it would replace the real response/error on the stream,
+                        // corrupting what downstream interceptors (e.g. AuthInterceptor's 401
+                        // check) actually see. Analytics failing must never do that.
+                        try {
+                            const duration = Date.now() - startTime;
+
+                            this.analyticsService.track(AnalyticsEvent.API_CALL_SUCCESS, {
+                                endpoint: request.url,
+                                method: request.method,
+                                status_code: event.status,
+                                duration_ms: duration
+                            });
+                        } catch (trackingError) {
+                            console.error('Failed to track API call success', trackingError);
+                        }
                     }
                 },
                 error: (error: HttpErrorResponse) => {
-                    const duration = Date.now() - startTime;
-                    
-                    this.analyticsService.track(AnalyticsEvent.API_CALL_FAILED, {
-                        endpoint: request.url,
-                        method: request.method,
-                        status_code: error.status,
-                        error_message: error.message,
-                        duration_ms: duration
-                    });
+                    try {
+                        const duration = Date.now() - startTime;
+
+                        this.analyticsService.track(AnalyticsEvent.API_CALL_FAILED, {
+                            endpoint: request.url,
+                            method: request.method,
+                            status_code: error.status,
+                            error_message: error.message,
+                            duration_ms: duration
+                        });
+                    } catch (trackingError) {
+                        console.error('Failed to track API call failure', trackingError);
+                    }
                 }
             })
         );

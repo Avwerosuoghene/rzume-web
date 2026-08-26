@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -8,11 +7,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 
 import { LoginComponent } from './login.component';
+import { GoogleSignInComponent } from '../../../components/google-sign-in/google-sign-in.component';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { GoogleAuthService } from '../../../core/services/google-auth.service';
 import { RoutingUtilService } from '../../../core/services/routing-util.service';
 import { ConfigService } from '../../../core/services/config.service';
-import { PasswordVisibility, ErrorResponse } from '../../../core/models';
+import { PasswordVisibility } from '../../../core/models';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -20,9 +20,6 @@ describe('LoginComponent', () => {
   let mockAuthService: jasmine.SpyObj<AuthenticationService>;
   let mockGoogleAuthService: jasmine.SpyObj<GoogleAuthService>;
   let mockRoutingUtilService: jasmine.SpyObj<RoutingUtilService>;
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockDialog: jasmine.SpyObj<MatDialog>;
-  let mockConfigService: jasmine.SpyObj<ConfigService>;
 
   beforeEach(async () => {
     const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['login', 'loadGoogleScript']);
@@ -31,43 +28,10 @@ describe('LoginComponent', () => {
       'handleGoogleAuthResponse'
     ]);
     const routingUtilServiceSpy = jasmine.createSpyObj('RoutingUtilService', ['navigateToMain', 'navigateToAuth']);
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
     const configServiceSpy = jasmine.createSpyObj('ConfigService', ['loadConfig'], {
       featureFlags: { enableProfileManagement: true }
     });
-    const activatedRouteSpy = {
-      queryParams: of({}),
-      params: of({}),
-      snapshot: {
-        queryParams: {},
-        params: {},
-        url: [],
-        fragment: null,
-        data: {},
-        outlet: 'primary',
-        component: null,
-        routeConfig: null,
-        root: {} as any,
-        parent: null,
-        firstChild: null,
-        children: [],
-        pathFromRoot: [],
-        paramMap: new Map(),
-        queryParamMap: new Map()
-      },
-      url: of([]),
-      fragment: of(null),
-      data: of({}),
-      outlet: 'primary',
-      component: null,
-      routeConfig: null,
-      root: {} as any,
-      parent: null,
-      firstChild: null,
-      children: [],
-      pathFromRoot: []
-    };
 
     configServiceSpy.loadConfig.and.returnValue(Promise.resolve());
     authServiceSpy.loadGoogleScript.and.returnValue(Promise.resolve());
@@ -89,15 +53,12 @@ describe('LoginComponent', () => {
     component.googleButtonComponent = {
       initiateGoogleSignup: jasmine.createSpy('initiateGoogleSignup'),
       toggleLoader: jasmine.createSpy('toggleLoader')
-    } as any;
+    } as unknown as GoogleSignInComponent;
     
     mockAuthService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
     mockGoogleAuthService = TestBed.inject(GoogleAuthService) as jasmine.SpyObj<GoogleAuthService>;
     mockRoutingUtilService = TestBed.inject(RoutingUtilService) as jasmine.SpyObj<RoutingUtilService>;
-    mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    mockDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
-    mockConfigService = TestBed.inject(ConfigService) as jasmine.SpyObj<ConfigService>;
-    
+
     fixture.detectChanges();
   });
 
@@ -178,9 +139,8 @@ describe('LoginComponent', () => {
     spyOn(component, 'toggleLoader');
     const mockGoogleComponent = jasmine.createSpyObj('GoogleSignInComponent', ['toggleLoader']);
     component.googleButtonComponent = mockGoogleComponent;
-    const mockError: ErrorResponse = { statusCode: 400, errorMessage: 'Error' };
 
-    component.handleGoogleLoginError(mockError);
+    component.handleGoogleLoginError();
 
     expect(component.toggleLoader).toHaveBeenCalledWith(false);
     expect(mockGoogleComponent.toggleLoader).toHaveBeenCalledWith(false);

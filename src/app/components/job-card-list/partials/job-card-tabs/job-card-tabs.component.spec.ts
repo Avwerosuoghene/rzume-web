@@ -67,7 +67,7 @@ describe('JobCardTabsComponent', () => {
       component.activeTab = 'previous';
 
       // Test with a tab that has undefined value
-      const undefinedTab = { label: 'Invalid', value: undefined as any };
+      const undefinedTab = { label: 'Invalid', value: undefined as unknown as string };
       component.selectTab(undefinedTab);
 
       expect(component.activeTab).toBeUndefined();

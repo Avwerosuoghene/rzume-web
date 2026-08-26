@@ -12,7 +12,7 @@ export interface PasswordStrengthResult {
 }
 
 export class PasswordUtility {
-  private static passwordVisibilityTimer: any;
+  private static passwordVisibilityTimer: ReturnType<typeof setTimeout> | undefined;
   
   static toggleVisibility(passwordVisibility: PasswordVisibility): PasswordVisibility {
     if (passwordVisibility === PasswordVisibility.password) {

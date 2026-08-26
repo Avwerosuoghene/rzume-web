@@ -229,7 +229,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   handleStatusUpdate(updateData: { item: JobApplicationItem }): void {
-    this.dialogHelperService.updateApplication(updateData.item, () => this.reloadDashboardData());
+    this.dialogHelperService.updateApplication(
+      { id: updateData.item.id, status: updateData.item.status },
+      () => this.reloadDashboardData()
+    );
   }
 
   handleDeleteApplications(applicationIds: string[]): void {
@@ -238,7 +241,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(() => this.reloadDashboardData());
   }
 
-  handleSelectionChanged(event: any): void {
+  handleSelectionChanged(event: Array<JobApplicationItem>): void {
     this.selectedItems = event;
   }
 

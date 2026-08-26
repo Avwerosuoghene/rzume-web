@@ -54,30 +54,7 @@
 </ng-template>
 
 <ng-template #actionTemplate let-item>
-  <td class="centered">
-    <button
-      mat-icon-button
-      [matMenuTriggerFor]="menu"
-      (click)="$event.stopPropagation()"
-      aria-label="more options"
-    >
-      <mat-icon>more_horiz</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <ng-container *ngIf="!selectedItems.length">
-        <button mat-menu-item (click)="triggerApplicationEdit(item)">
-          <mat-icon>edit</mat-icon>
-          <span>Edit</span>
-        </button>
-        <button mat-menu-item (click)="triggerStatusChange(item)">
-          <mat-icon>swap_horiz</mat-icon>
-          <span>Change Status</span>
-        </button>
-      </ng-container>
-      <button mat-menu-item (click)="triggerDelete(item)">
-        <mat-icon>delete</mat-icon>
-        <span>Remove</span>
-      </button>
-    </mat-menu>
+  <td class="centered" (click)="$event.stopPropagation()">
+    <app-action-menu [actions]="getRowActions(item)" variant="menu"></app-action-menu>
   </td>
 </ng-template>

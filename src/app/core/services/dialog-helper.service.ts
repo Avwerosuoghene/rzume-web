@@ -1,24 +1,31 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ComponentType } from "@angular/cdk/portal";
 import { finalize } from "rxjs";
 import { JobAddDialogComponent, JobViewDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
-import { ConfirmDeleteModalComponent } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
+import { ConfirmDeleteModalComponent, ConfirmDeleteModalData } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
+import { ConfirmUploadModalComponent, ConfirmUploadModalData, ConfirmedUploadEntry } from '../../components/confirm-upload-modal/confirm-upload-modal.component';
 import { PolicyDialogComponent } from '../../components/policy-dialog/policy-dialog.component';
+import { AddRoleDialogComponent } from '../../components/add-role-dialog/add-role-dialog.component';
 import { JobApplicationService } from "./job-application.service";
+import { RoleService } from "./role.service";
 import { LoaderService } from "./loader.service";
-import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG, DELETE_APP_TITLE } from "../models";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, AddRoleDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, UpdateApplicationPayload, JobApplicationFormValue, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
+import { CreateRolePayload, Role } from '../models/interface/role.models';
+import { ROLE_DELETE_CONFIRM, ROLE_DOCUMENT_DELETE_CONFIRM } from '../models/constants/role.constants';
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
   constructor(
-    private dialog: MatDialog,
-    private loaderService: LoaderService,
-    private jobApplicationService: JobApplicationService
+    private readonly dialog: MatDialog,
+    private readonly loaderService: LoaderService,
+    private readonly jobApplicationService: JobApplicationService,
+    private readonly roleService: RoleService
   ) { }
 
   private openAndHandleDialog<T>(
-    component: any,
-    data: any,
+    component: ComponentType<unknown>,
+    data: unknown,
     onSubmit: (response: DialogCloseResponse<T>) => void,
     config: { disableClose?: boolean; panelClass?: string } = {}
   ): void {
@@ -40,7 +47,7 @@ export class DialogHelperService {
   openAddApplicationDialog(onSuccess: () => void): void {
     const dialogData: AddJobDialogData = { isEditing: false };
 
-    this.openAndHandleDialog<JobApplicationItem>(
+    this.openAndHandleDialog<JobApplicationFormValue>(
       JobAddDialogComponent,
       dialogData,
       (response) => {
@@ -51,14 +58,109 @@ export class DialogHelperService {
     );
   }
 
+  openAddRoleDialog(onSuccess?: () => void): void {
+    this.openAndHandleDialog<CreateRolePayload>(
+      AddRoleDialogComponent,
+      {},
+      (response) => {
+        this.loaderService.showLoader();
+        this.roleService.createRole(response.data!)
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onSuccess?.(),
+            error: () => onSuccess?.()
+          });
+      },
+      { panelClass: 'add-role-dialog-panel' }
+    );
+  }
+
+  openEditRoleDialog(role: Role, onSuccess?: () => void): void {
+    const dialogData: AddRoleDialogData = { isEditing: true, roleData: role };
+
+    this.openAndHandleDialog<CreateRolePayload>(
+      AddRoleDialogComponent,
+      dialogData,
+      (response) => {
+        this.loaderService.showLoader();
+        this.roleService.updateRole(role.id, response.data!)
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onSuccess?.(),
+            error: () => onSuccess?.()
+          });
+      },
+      { panelClass: 'add-role-dialog-panel' }
+    );
+  }
+
+  openConfirmUploadDialog(files: File[], onConfirm: (entries: ConfirmedUploadEntry[]) => void): void {
+    const dialogData: ConfirmUploadModalData = { files };
+
+    this.openAndHandleDialog<ConfirmedUploadEntry[]>(
+      ConfirmUploadModalComponent,
+      dialogData,
+      (response) => onConfirm(response.data!),
+      { disableClose: false }
+    );
+  }
+
+  openDeleteRoleDocumentConfirmation(role: Role, documentId: string, onConfirm: () => void): void {
+    const dialogData: ConfirmDeleteModalData = {
+      title: ROLE_DOCUMENT_DELETE_CONFIRM.TITLE,
+      message: ROLE_DOCUMENT_DELETE_CONFIRM.MESSAGE
+    };
+
+    this.openAndHandleDialog<null>(
+      ConfirmDeleteModalComponent,
+      dialogData,
+      () => {
+        this.loaderService.showLoader();
+        const remainingDocuments = role.documents
+          .filter(document => document.id !== documentId)
+          .map(document => ({ resumeId: document.resumeId }));
+
+        this.roleService.updateRole(role.id, { documents: remainingDocuments })
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onConfirm(),
+            error: () => onConfirm()
+          });
+      },
+      { disableClose: false }
+    );
+  }
+
+  openDeleteRoleConfirmation(role: Role, onConfirm: () => void): void {
+    const dialogData: ConfirmDeleteModalData = {
+      title: ROLE_DELETE_CONFIRM.TITLE,
+      message: ROLE_DELETE_CONFIRM.MESSAGE
+    };
+
+    this.openAndHandleDialog<null>(
+      ConfirmDeleteModalComponent,
+      dialogData,
+      () => {
+        this.loaderService.showLoader();
+        this.roleService.deleteRole(role.id)
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onConfirm(),
+            error: () => onConfirm()
+          });
+      },
+      { disableClose: false }
+    );
+  }
+
   openEditApplicationDialog(jobData: JobApplicationItem, onSuccess: () => void): void {
     const dialogData: AddJobDialogData = { isEditing: true, jobApplicationData: jobData };
 
-    this.openAndHandleDialog<JobApplicationItem>(
+    this.openAndHandleDialog<JobApplicationFormValue>(
       JobAddDialogComponent,
       dialogData,
       (response) => {
-        this.updateApplication(response.data!, onSuccess);
+        this.updateApplication({ ...response.data!, id: response.data!.id! }, onSuccess);
       },
       { panelClass: 'add-job-dialog-panel' }
     );
@@ -102,20 +204,25 @@ export class DialogHelperService {
     );
   }
 
-  updateApplication(data: JobApplicationItem, onComplete?: () => void): void {
-    const payload = this.buildUpdatePayload(data);
+  updateApplication(data: UpdateApplicationPayload & { id: string }, onComplete?: () => void): void {
+    const { id, ...payload } = data;
     this.loaderService.showLoader();
-    this.jobApplicationService.updateJobApplication(payload)
+    this.jobApplicationService.updateJobApplication(id, payload)
       .pipe(finalize(() => this.loaderService.hideLoader()))
       .subscribe({ next: () => onComplete?.(), error: () => onComplete?.() });
   }
 
-  private buildCreatePayload(data: JobApplicationItem): CreateApplicationPayload {
-    return { ...data } as CreateApplicationPayload;
-  }
-
-  private buildUpdatePayload(data: JobApplicationItem) {
-    return { ...data };
+  private buildCreatePayload(data: JobApplicationFormValue): CreateApplicationPayload {
+    return {
+      position: data.position,
+      companyName: data.companyName,
+      jobLink: data.jobLink,
+      roleId: data.roleId,
+      documents: data.documents,
+      notes: data.notes,
+      status: data.status as ApplicationStatus,
+      applicationDate: data.applicationDate
+    };
   }
 
   openDeleteConfirmation(
@@ -136,8 +243,8 @@ export class DialogHelperService {
     );
   }
 
-  
-  
+
+
   openJobStatusDialog(item: JobApplicationItem, onSubmit: (updated: JobApplicationItem) => void): void {
     const dialogData: JobStatChangeDialogData = { jobItem: item };
 

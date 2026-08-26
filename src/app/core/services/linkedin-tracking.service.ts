@@ -18,7 +18,7 @@ interface LinkedInTrackingData {
   conversion_id?: number;
   value?: number;
   currency?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
