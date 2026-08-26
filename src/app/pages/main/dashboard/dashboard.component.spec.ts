@@ -283,12 +283,15 @@ describe('DashboardComponent', () => {
     expect(component.selectedItems).toEqual(selectedItems);
   });
 
-  it('should handle job status updates', () => {
+  it('should handle job status updates by sending only the id and new status, not the full item', () => {
     const updatedJob = { ...mockJobApplications[0], status: ApplicationStatus.InProgress };
-    
+
     component.handleStatusUpdate({ item: updatedJob });
 
-    expect(mockDialogHelperService.updateApplication).toHaveBeenCalledWith(updatedJob, jasmine.any(Function));
+    expect(mockDialogHelperService.updateApplication).toHaveBeenCalledWith(
+      { id: updatedJob.id, status: ApplicationStatus.InProgress },
+      jasmine.any(Function)
+    );
   });
 
   it('should handle load more', () => {

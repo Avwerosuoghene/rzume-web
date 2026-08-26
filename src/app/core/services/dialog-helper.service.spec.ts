@@ -7,6 +7,8 @@ import { RoleService } from './role.service';
 import { LoaderService } from './loader.service';
 import { DialogCloseStatus, JobApplicationItem, IconStat, APIResponse } from '../models';
 import { Role } from '../models/interface/role.models';
+import { JobApplicationFormValue, UpdateApplicationPayload } from '../models/interface/job-application.models';
+import { ApplicationStatus } from '../models/enums/shared.enums';
 
 describe('DialogHelperService', () => {
   let service: DialogHelperService;
@@ -83,8 +85,19 @@ describe('DialogHelperService', () => {
   });
 
   describe('openAddApplicationDialog', () => {
+    const formValue: JobApplicationFormValue = {
+      position: 'Senior Backend Engineer',
+      companyName: 'Acme Corp',
+      jobLink: 'https://example.com/job',
+      roleId: 'role-1',
+      documents: [{ resumeId: 'resume-1', documentType: 'Resume' }],
+      notes: 'notes',
+      status: ApplicationStatus.Wishlist,
+      applicationDate: '2026-01-01'
+    };
+
     it('should create the application and call onSuccess after a successful submission', () => {
-      mockDialogClose({ status: DialogCloseStatus.Submitted, data: { title: 'Engineer' } });
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: formValue });
       jobApplicationServiceSpy.addApplication.and.returnValue(of({ success: true } as APIResponse<boolean>));
 
       // openSuccessDialog opens a second dialog — keep returning a closed dialog for it too
@@ -96,6 +109,38 @@ describe('DialogHelperService', () => {
       expect(loaderServiceSpy.showLoader).toHaveBeenCalled();
       expect(jobApplicationServiceSpy.addApplication).toHaveBeenCalled();
       expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
+    });
+
+    it('should build the create payload from the dialog\'s form value, including roleId and documents', () => {
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: formValue });
+      jobApplicationServiceSpy.addApplication.and.returnValue(of({ success: true } as APIResponse<boolean>));
+      dialogSpy.open.and.returnValue(dialogRefSpy);
+
+      service.openAddApplicationDialog(() => {});
+
+      expect(jobApplicationServiceSpy.addApplication).toHaveBeenCalledWith({
+        position: 'Senior Backend Engineer',
+        companyName: 'Acme Corp',
+        jobLink: 'https://example.com/job',
+        roleId: 'role-1',
+        documents: [{ resumeId: 'resume-1', documentType: 'Resume' }],
+        notes: 'notes',
+        status: ApplicationStatus.Wishlist,
+        applicationDate: formValue.applicationDate
+      });
+    });
+
+    it('should build the create payload with roleId omitted when the user did not select a role', () => {
+      const noRoleFormValue: JobApplicationFormValue = { ...formValue, roleId: undefined };
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: noRoleFormValue });
+      jobApplicationServiceSpy.addApplication.and.returnValue(of({ success: true } as APIResponse<boolean>));
+      dialogSpy.open.and.returnValue(dialogRefSpy);
+
+      service.openAddApplicationDialog(() => {});
+
+      expect(jobApplicationServiceSpy.addApplication).toHaveBeenCalledWith(
+        jasmine.objectContaining({ roleId: undefined })
+      );
     });
   });
 
@@ -191,14 +236,68 @@ describe('DialogHelperService', () => {
   });
 
   describe('updateApplication', () => {
+    const formValue: UpdateApplicationPayload & { id: string } = {
+      id: '1',
+      position: 'Senior Backend Engineer',
+      companyName: 'Acme Corp',
+      roleId: 'role-1',
+      documents: [{ resumeId: 'resume-1', documentType: 'CoverLetter' }],
+      status: ApplicationStatus.Applied
+    };
+
     it('should call onComplete after a successful update', () => {
       jobApplicationServiceSpy.updateJobApplication.and.returnValue(of({ success: true } as APIResponse<boolean>));
       const onComplete = jasmine.createSpy('onComplete');
 
-      service.updateApplication({ id: '1' } as JobApplicationItem, onComplete);
+      service.updateApplication(formValue, onComplete);
 
       expect(onComplete).toHaveBeenCalled();
       expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
+    });
+
+    it('should call updateJobApplication with the form value\'s id and a payload built from the rest of the fields', () => {
+      jobApplicationServiceSpy.updateJobApplication.and.returnValue(of({ success: true } as APIResponse<boolean>));
+
+      service.updateApplication(formValue);
+
+      expect(jobApplicationServiceSpy.updateJobApplication).toHaveBeenCalledWith('1', {
+        position: 'Senior Backend Engineer',
+        companyName: 'Acme Corp',
+        roleId: 'role-1',
+        documents: [{ resumeId: 'resume-1', documentType: 'CoverLetter' }],
+        status: ApplicationStatus.Applied
+      });
+    });
+
+    it('should NOT send documents at all for a status-only update (sending [] would clear every attached document)', () => {
+      jobApplicationServiceSpy.updateJobApplication.and.returnValue(of({ success: true } as APIResponse<boolean>));
+      const statusOnlyUpdate: UpdateApplicationPayload & { id: string } = {
+        id: '1',
+        status: ApplicationStatus.InProgress
+      };
+
+      service.updateApplication(statusOnlyUpdate);
+
+      const sentPayload = jobApplicationServiceSpy.updateJobApplication.calls.mostRecent().args[1];
+      expect(sentPayload.documents).toBeUndefined();
+    });
+  });
+
+  describe('openEditApplicationDialog', () => {
+    it('should update the application and call onSuccess after a successful submission', () => {
+      const formValue: JobApplicationFormValue = {
+        id: '1',
+        documents: [],
+        status: ApplicationStatus.Applied
+      };
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: formValue });
+      jobApplicationServiceSpy.updateJobApplication.and.returnValue(of({ success: true } as APIResponse<boolean>));
+
+      const onSuccess = jasmine.createSpy('onSuccess');
+      service.openEditApplicationDialog({ id: '1' } as JobApplicationItem, onSuccess);
+
+      expect(jobApplicationServiceSpy.updateJobApplication).toHaveBeenCalledWith('1', jasmine.any(Object));
+      expect(onSuccess).toHaveBeenCalled();
     });
   });
 

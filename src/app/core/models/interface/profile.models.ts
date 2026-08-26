@@ -34,6 +34,17 @@ export interface Resume {
   documentType?: string | null;
 }
 
+export interface AttachedDocument {
+  id: string;
+  resumeId: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+  documentType: string;
+  documentUrl: string;
+  uploadedAt: Date;
+}
+
 export interface UploadDocumentPayload {
   file: File;
   type?: DocumentType;

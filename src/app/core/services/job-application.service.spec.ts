@@ -7,7 +7,7 @@ import { AnalyticsService } from './analytics/analytics.service';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
 import { APIResponse, PaginatedItem } from '../models';
 import { ApplicationStatus } from '../models/enums/shared.enums';
-import { CreateApplicationPayload, JobApplicationItem } from '../models/interface/job-application.models';
+import { CreateApplicationPayload, JobApplicationItem, UpdateApplicationPayload } from '../models/interface/job-application.models';
 
 describe('JobApplicationService', () => {
   let service: JobApplicationService;
@@ -97,11 +97,24 @@ describe('JobApplicationService', () => {
   });
 
   describe('updateJobApplication', () => {
+    it('should PUT to the application-specific URL using the given id', () => {
+      apiServiceSpy.put.and.returnValue(of(okResponse(true)));
+      const payload: UpdateApplicationPayload = { position: 'Senior Eng' };
+
+      service.updateJobApplication('app-1', payload).subscribe();
+
+      expect(apiServiceSpy.put).toHaveBeenCalledWith(
+        jasmine.stringMatching(/\/app-1$/),
+        payload,
+        true
+      );
+    });
+
     it('should track the update on success', (done) => {
       apiServiceSpy.put.and.returnValue(of(okResponse(true)));
-      const item = { id: 'app-1' } as JobApplicationItem;
+      const payload: UpdateApplicationPayload = { position: 'Senior Eng' };
 
-      service.updateJobApplication(item).subscribe(() => {
+      service.updateJobApplication('app-1', payload).subscribe(() => {
         expect(analyticsServiceSpy.track).toHaveBeenCalledWith(AnalyticsEvent.JOB_APPLICATION_UPDATED, { application_id: 'app-1' });
         done();
       });

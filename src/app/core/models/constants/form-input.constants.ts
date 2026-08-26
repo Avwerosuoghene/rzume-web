@@ -9,6 +9,7 @@ export const FORM_INPUT_DEFAULTS = {
 
 export const FORM_PLACEHOLDERS = {
   RESUME_SELECT: 'Select a resume (optional)',
+  ROLE_SELECT: 'Select a role',
   INDUSTRY_SELECT: 'Select an industry'
 } as const;
 

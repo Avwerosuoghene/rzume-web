@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { APIResponse, ApiRoutes, ApiUrlParam, GetRequestOptions, PaginatedItem } from '../models';
-import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem, JobApplicationStats } from '../models/interface/job-application.models';
+import { CreateApplicationPayload, DeleteApplicationsPayload, JobApplicationFilter, JobApplicationItem, JobApplicationStats, UpdateApplicationPayload } from '../models/interface/job-application.models';
 import { tap, catchError } from 'rxjs';
 import { throwError } from 'rxjs';
 import { JobApplicationStateService } from './job-application-state.service';
@@ -92,21 +92,21 @@ export class JobApplicationService {
     );
   }
 
-  updateJobApplication(payload: JobApplicationItem) {
+  updateJobApplication(id: string, payload: UpdateApplicationPayload) {
     return this.apiService.put<APIResponse<boolean>>(
-      `${ApiRoutes.jobApplication.base}/${payload.id}`, payload, true
+      `${ApiRoutes.jobApplication.base}/${id}`, payload, true
     ).pipe(
       tap(response => {
         if (response.success) {
           this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_UPDATED, {
-            application_id: payload.id
+            application_id: id
           });
         }
       }),
       catchError(error => {
         this.analyticsService.track(AnalyticsEvent.JOB_APPLICATION_UPDATE_FAILED, {
           error_message: error.message || 'Unknown error',
-          application_id: payload.id
+          application_id: id
         });
         return throwError(() => error);
       })

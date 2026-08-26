@@ -1,0 +1,119 @@
+<div class="document-picker-container">
+  <div class="document-multiselect">
+    <button
+      #documentsOrigin="cdkOverlayOrigin"
+      cdkOverlayOrigin
+      type="button"
+      class="multiselect-trigger"
+      [class.is-open]="isDropdownOpen"
+      [attr.aria-expanded]="isDropdownOpen"
+      aria-labelledby="job-documents-label"
+      (click)="toggleDropdown()"
+    >
+      <span class="trigger-text">
+        @if (entries.length > 0) {
+          {{ entries.length }} document{{ entries.length > 1 ? 's' : '' }} selected
+        } @else {
+          Select documents
+        }
+      </span>
+      <mat-icon aria-hidden="true">{{ isDropdownOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </button>
+
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="documentsOrigin"
+      [cdkConnectedOverlayOpen]="isDropdownOpen"
+      [cdkConnectedOverlayHasBackdrop]="true"
+      cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+      [cdkConnectedOverlayWidth]="documentsOrigin.elementRef.nativeElement.offsetWidth"
+      [cdkConnectedOverlayPositions]="multiselectOverlayPositions"
+      (backdropClick)="closeDropdown()"
+    >
+      <div
+        class="multiselect-panel"
+        role="listbox"
+        aria-multiselectable="true"
+        aria-labelledby="job-documents-label"
+      >
+        <div class="multiselect-search">
+          <mat-icon aria-hidden="true">search</mat-icon>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search documents"
+            [(ngModel)]="documentSearchQuery"
+            [ngModelOptions]="{ standalone: true }"
+            aria-label="Search documents"
+          />
+        </div>
+
+        <ul class="multiselect-options" role="group">
+          @for (resume of filteredResumes; track resume.id) {
+            <li class="multiselect-option" role="option" [attr.aria-selected]="isSelected(resume.id)">
+              <label class="option-label">
+                <input
+                  type="checkbox"
+                  class="option-checkbox"
+                  [checked]="isSelected(resume.id)"
+                  (change)="toggle(resume)"
+                  [attr.aria-label]="resume.fileName"
+                />
+                <span class="option-filename">{{ resume.fileName }}</span>
+              </label>
+            </li>
+          } @empty {
+            @if (availableResumes.length === 0) {
+              <li class="multiselect-empty">
+                No documents uploaded.
+                <button type="button" class="upload-link" (click)="onUploadRequested()">
+                  Upload one
+                </button>
+              </li>
+            } @else {
+              <li class="multiselect-empty">No documents match your search</li>
+            }
+          }
+        </ul>
+      </div>
+    </ng-template>
+  </div>
+
+  @if (selectedDocumentViews.length > 0) {
+    <ul class="selected-documents">
+      @for (view of selectedDocumentViews; track view.resume.id) {
+        <li class="document-card">
+          <img [src]="getDocumentIcon(view.resume)" alt="" aria-hidden="true" class="document-icon" />
+          <div class="document-details">
+            <span class="document-name">{{ view.resume.fileName }}</span>
+            <span class="document-meta">
+              {{ view.resume.uploadedAt | date: 'd MMM, yyyy  h:mma' }}
+              @if (view.resume.fileSize) {
+                &bull; {{ formatFileSize(view.resume.fileSize) }}
+              }
+            </span>
+          </div>
+          <mat-form-field appearance="outline" class="document-type-field">
+            <mat-label>Document type</mat-label>
+            <mat-select
+              [value]="view.documentType"
+              (selectionChange)="updateDocumentType(view.resume.id, $event.value)"
+            >
+              @for (option of documentTypeOptions; track option[0]) {
+                <mat-option [value]="option[0]">{{ option[1] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            type="button"
+            class="remove-document-btn"
+            aria-label="Remove document"
+            (click)="removeDocument(view.resume.id)"
+          >
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

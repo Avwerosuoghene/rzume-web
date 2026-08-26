@@ -10,17 +10,17 @@ import { AddRoleDialogComponent } from '../../components/add-role-dialog/add-rol
 import { JobApplicationService } from "./job-application.service";
 import { RoleService } from "./role.service";
 import { LoaderService } from "./loader.service";
-import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, UpdateApplicationPayload, JobApplicationFormValue, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
 import { CreateRolePayload, Role } from '../models/interface/role.models';
 import { ROLE_DELETE_CONFIRM } from '../models/constants/role.constants';
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
   constructor(
-    private dialog: MatDialog,
-    private loaderService: LoaderService,
-    private jobApplicationService: JobApplicationService,
-    private roleService: RoleService
+    private readonly dialog: MatDialog,
+    private readonly loaderService: LoaderService,
+    private readonly jobApplicationService: JobApplicationService,
+    private readonly roleService: RoleService
   ) { }
 
   private openAndHandleDialog<T>(
@@ -47,7 +47,7 @@ export class DialogHelperService {
   openAddApplicationDialog(onSuccess: () => void): void {
     const dialogData: AddJobDialogData = { isEditing: false };
 
-    this.openAndHandleDialog<JobApplicationItem>(
+    this.openAndHandleDialog<JobApplicationFormValue>(
       JobAddDialogComponent,
       dialogData,
       (response) => {
@@ -111,11 +111,11 @@ export class DialogHelperService {
   openEditApplicationDialog(jobData: JobApplicationItem, onSuccess: () => void): void {
     const dialogData: AddJobDialogData = { isEditing: true, jobApplicationData: jobData };
 
-    this.openAndHandleDialog<JobApplicationItem>(
+    this.openAndHandleDialog<JobApplicationFormValue>(
       JobAddDialogComponent,
       dialogData,
       (response) => {
-        this.updateApplication(response.data!, onSuccess);
+        this.updateApplication({ ...response.data!, id: response.data!.id! }, onSuccess);
       },
       { panelClass: 'add-job-dialog-panel' }
     );
@@ -159,20 +159,25 @@ export class DialogHelperService {
     );
   }
 
-  updateApplication(data: JobApplicationItem, onComplete?: () => void): void {
-    const payload = this.buildUpdatePayload(data);
+  updateApplication(data: UpdateApplicationPayload & { id: string }, onComplete?: () => void): void {
+    const { id, ...payload } = data;
     this.loaderService.showLoader();
-    this.jobApplicationService.updateJobApplication(payload)
+    this.jobApplicationService.updateJobApplication(id, payload)
       .pipe(finalize(() => this.loaderService.hideLoader()))
       .subscribe({ next: () => onComplete?.(), error: () => onComplete?.() });
   }
 
-  private buildCreatePayload(data: JobApplicationItem): CreateApplicationPayload {
-    return { ...data } as CreateApplicationPayload;
-  }
-
-  private buildUpdatePayload(data: JobApplicationItem) {
-    return { ...data };
+  private buildCreatePayload(data: JobApplicationFormValue): CreateApplicationPayload {
+    return {
+      position: data.position,
+      companyName: data.companyName,
+      jobLink: data.jobLink,
+      roleId: data.roleId,
+      documents: data.documents,
+      notes: data.notes,
+      status: data.status as ApplicationStatus,
+      applicationDate: data.applicationDate
+    };
   }
 
   openDeleteConfirmation(
@@ -193,8 +198,8 @@ export class DialogHelperService {
     );
   }
 
-  
-  
+
+
   openJobStatusDialog(item: JobApplicationItem, onSubmit: (updated: JobApplicationItem) => void): void {
     const dialogData: JobStatChangeDialogData = { jobItem: item };
 

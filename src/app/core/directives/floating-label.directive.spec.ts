@@ -3,6 +3,8 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FloatingLabelDirective } from './floating-label.directive';
 
 describe('FloatingLabelDirective', () => {
+  const containers: HTMLElement[] = [];
+
   function createDirective(hostHtml: string, targetSelector: string): {
     directive: FloatingLabelDirective;
     target: HTMLElement;
@@ -11,6 +13,7 @@ describe('FloatingLabelDirective', () => {
     const container = document.createElement('div');
     container.innerHTML = hostHtml;
     document.body.appendChild(container);
+    containers.push(container);
 
     const target = container.querySelector(targetSelector) as HTMLElement;
     const renderer = TestBed.inject(RendererFactory2).createRenderer(null, null);
@@ -20,7 +23,8 @@ describe('FloatingLabelDirective', () => {
   }
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    containers.forEach(container => container.remove());
+    containers.length = 0;
   });
 
   describe('with a text input', () => {
@@ -76,6 +80,22 @@ describe('FloatingLabelDirective', () => {
       (target as HTMLInputElement).value = '';
       directive.onValueChange();
       expect(formField.classList.contains('has-value')).toBe(false);
+    }));
+
+    it('should detect a value set without any DOM event (e.g. FormInputComponent\'s [value] property binding reacting to a parent patchValue()) via ngDoCheck', fakeAsync(() => {
+      const { directive, target, formField } = createDirective(html, 'input');
+      directive.ngOnInit();
+      directive.ngAfterViewInit();
+      tick(100);
+      expect(formField.classList.contains('has-value')).toBe(false);
+
+      // Angular's [value]="value" property binding sets the DOM property directly, the same
+      // way a programmatic FormControl.patchValue() flows through — neither dispatches a real
+      // input/change event, so the existing @HostListener-only detection never re-runs.
+      (target as HTMLInputElement).value = 'hello';
+      directive.ngDoCheck();
+
+      expect(formField.classList.contains('has-value')).toBe(true);
     }));
 
     it('should re-check on blur after a short delay', fakeAsync(() => {

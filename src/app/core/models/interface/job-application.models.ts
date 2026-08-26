@@ -1,5 +1,16 @@
 import { ApplicationStatus } from "../enums";
-import { Resume } from "./profile.models";
+import { AttachedDocument, Resume } from "./profile.models";
+
+export interface JobApplicationDocumentRequestItem {
+  resumeId: string;
+  documentType: string;
+}
+
+export interface JobApplicationRoleSummary {
+  id: string;
+  title: string;
+  industryName: string;
+}
 
 export interface JobApplicationItem {
   id: string;
@@ -10,9 +21,13 @@ export interface JobApplicationItem {
   jobLink?: string;
   resume?: Resume;
   resumeId?: string;
+  roleId?: string;
+  role?: JobApplicationRoleSummary;
+  coverLetter?: AttachedDocument;
+  otherDocuments?: AttachedDocument[];
   notes?: string;
   status: string;
-  selected?: boolean; 
+  selected?: boolean;
 }
 
 
@@ -29,10 +44,37 @@ export interface CreateApplicationPayload {
   position?: string;
   companyName?: string;
   jobLink?: string;
-  resumeId?: string;
+  roleId?: string;
+  documents?: JobApplicationDocumentRequestItem[];
   notes?: string;
   status: ApplicationStatus;
-  applicationDate?: Date;
+  applicationDate?: string;
+}
+
+export interface UpdateApplicationPayload {
+  position?: string;
+  companyName?: string;
+  jobLink?: string;
+  roleId?: string;
+  documents?: JobApplicationDocumentRequestItem[];
+  notes?: string;
+  status?: string;
+  applicationDate?: string;
+}
+
+// What JobAddDialogComponent actually closes with — a request-shaped value (documents as
+// {resumeId, documentType} pairs the user picked), not the display-shaped JobApplicationItem
+// the rest of the app reads back from the API.
+export interface JobApplicationFormValue {
+  id?: string;
+  position?: string;
+  companyName?: string;
+  jobLink?: string;
+  roleId?: string;
+  documents: JobApplicationDocumentRequestItem[];
+  notes?: string;
+  status: string;
+  applicationDate?: string;
 }
 
 export interface DeleteApplicationsPayload{

@@ -6,13 +6,14 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { RoleCardComponent } from './role-card.component';
 import { DocumentItemComponent } from '../../pages/main/profile-management/document-item/document-item.component';
-import { Role, RoleDocument } from '../../core/models/interface/role.models';
+import { Role } from '../../core/models/interface/role.models';
+import { AttachedDocument } from '../../core/models/interface/profile.models';
 
 describe('RoleCardComponent', () => {
   let component: RoleCardComponent;
   let fixture: ComponentFixture<RoleCardComponent>;
 
-  const document = (id: string): RoleDocument => ({
+  const document = (id: string): AttachedDocument => ({
     id,
     resumeId: `resume-${id}`,
     fileName: `resume-${id}.pdf`,
@@ -23,7 +24,7 @@ describe('RoleCardComponent', () => {
     uploadedAt: new Date()
   });
 
-  const role = (documents: RoleDocument[] = []): Role => ({
+  const role = (documents: AttachedDocument[] = []): Role => ({
     id: 'role-1',
     title: 'UIUX Designer',
     industryName: 'Technology',
