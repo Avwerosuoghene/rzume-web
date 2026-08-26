@@ -6,7 +6,7 @@ import { RoleStateService } from './role-state.service';
 import { AnalyticsService } from './analytics/analytics.service';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
 import { APIResponse } from '../models';
-import { Role, CreateRolePayload, RoleListResponse, RoleStats } from '../models/interface/role.models';
+import { Role, CreateRolePayload, RoleListResponse, RoleStats, UpdateRolePayload } from '../models/interface/role.models';
 
 describe('RoleService', () => {
   let service: RoleService;
@@ -18,8 +18,8 @@ describe('RoleService', () => {
   const role = { id: '1', title: 'Engineer', industryName: 'Tech', documents: [], createdAt: new Date(), updatedAt: new Date() } as Role;
 
   beforeEach(() => {
-    apiServiceSpy = jasmine.createSpyObj('ApiService', ['get', 'post', 'delete']);
-    roleStateSpy = jasmine.createSpyObj('RoleStateService', ['setLoading', 'setError', 'setRoles', 'addRole', 'removeRole', 'setStats']);
+    apiServiceSpy = jasmine.createSpyObj('ApiService', ['get', 'post', 'put', 'delete']);
+    roleStateSpy = jasmine.createSpyObj('RoleStateService', ['setLoading', 'setError', 'setRoles', 'addRole', 'updateRole', 'removeRole', 'setStats']);
     analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['track']);
 
     TestBed.configureTestingModule({
@@ -132,6 +132,35 @@ describe('RoleService', () => {
       service.deleteRole('role-1').subscribe({
         error: (err) => {
           expect(analyticsServiceSpy.track).toHaveBeenCalledWith(AnalyticsEvent.ROLE_DELETE_FAILED, jasmine.objectContaining({
+            roleId: 'role-1'
+          }));
+          expect(err).toBe(error);
+          done();
+        }
+      });
+    });
+  });
+
+  describe('updateRole', () => {
+    it('should update the role in state and track the update on success', (done) => {
+      const payload: UpdateRolePayload = { documents: [{ resumeId: 'resume-1' }] };
+      apiServiceSpy.put.and.returnValue(of(okResponse(role)));
+
+      service.updateRole('role-1', payload).subscribe(() => {
+        expect(apiServiceSpy.put).toHaveBeenCalledWith('api/roles/role-1', payload, true);
+        expect(roleStateSpy.updateRole).toHaveBeenCalledWith(role);
+        expect(analyticsServiceSpy.track).toHaveBeenCalledWith(AnalyticsEvent.ROLE_UPDATED, { roleId: 'role-1' });
+        done();
+      });
+    });
+
+    it('should track failure and re-throw on error', (done) => {
+      const error = new Error('update failed');
+      apiServiceSpy.put.and.returnValue(throwError(() => error));
+
+      service.updateRole('role-1', { documents: [] }).subscribe({
+        error: (err) => {
+          expect(analyticsServiceSpy.track).toHaveBeenCalledWith(AnalyticsEvent.ROLE_UPDATE_FAILED, jasmine.objectContaining({
             roleId: 'role-1'
           }));
           expect(err).toBe(error);

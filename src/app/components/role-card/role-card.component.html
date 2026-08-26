@@ -9,7 +9,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #roleMenu="matMenu">
-      <button mat-menu-item disabled>
+      <button mat-menu-item (click)="onEditRole()">
         <mat-icon>edit</mat-icon>
         <span>Edit Role</span>
       </button>
@@ -24,7 +24,9 @@
     <app-document-item
       *ngFor="let document of role.documents"
       [document]="toDocumentItem(document)"
-      actionsVariant="menu">
+      actionsVariant="menu"
+      [excludeActions]="excludedDocumentActions"
+      (delete)="onDeleteDocument($event)">
     </app-document-item>
   </div>
 </div>

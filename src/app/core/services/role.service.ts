@@ -5,7 +5,7 @@ import { ApiService } from './api.service';
 import { RoleStateService } from './role-state.service';
 import { AnalyticsService } from './analytics/analytics.service';
 import { APIResponse, ApiRoutes, GetRequestOptions } from '../models';
-import { Role, CreateRolePayload, RoleListResponse, RoleStats } from '../models/interface/role.models';
+import { Role, CreateRolePayload, RoleListResponse, RoleStats, UpdateRolePayload } from '../models/interface/role.models';
 import { AnalyticsEvent } from '../models/analytics-events.enum';
 
 @Injectable({
@@ -62,6 +62,27 @@ export class RoleService {
             error_message: error?.message || 'Unknown error',
             title: payload.title,
             industryId: payload.industryId
+          });
+          return throwError(() => error);
+        })
+      );
+  }
+
+  updateRole(roleId: string, payload: UpdateRolePayload): Observable<APIResponse<Role>> {
+    return this.apiService.put<APIResponse<Role>>(`${ApiRoutes.roles.base}/${roleId}`, payload, true)
+      .pipe(
+        tap(response => {
+          if (response.success && response.data) {
+            this.roleState.updateRole(response.data);
+            this.analyticsService.track(AnalyticsEvent.ROLE_UPDATED, {
+              roleId
+            });
+          }
+        }),
+        catchError(error => {
+          this.analyticsService.track(AnalyticsEvent.ROLE_UPDATE_FAILED, {
+            error_message: error?.message || 'Unknown error',
+            roleId
           });
           return throwError(() => error);
         })

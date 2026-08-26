@@ -55,6 +55,9 @@ export const ROLE_ERROR_MESSAGES = {
 
 export const ROLE_DIALOG_CONFIG = {
   TITLE: 'Add New Role',
+  EDIT_TITLE: 'Edit Role',
+  SUBMIT_BUTTON_TEXT: 'Add Job Role',
+  SAVE_BUTTON_TEXT: 'Save',
   FILE_RESTRICTIONS_TEXT: `PDF only (max. ${ROLE_DOCUMENT_MAX_SIZE / 1024}kb per document)`,
   MAX_DOCUMENTS_TEXT: `You are only allowed maximum of ${ROLE_DOCUMENT_LIMIT} documents`
 } as const;
@@ -62,4 +65,9 @@ export const ROLE_DIALOG_CONFIG = {
 export const ROLE_DELETE_CONFIRM = {
   TITLE: 'Remove Role',
   MESSAGE: 'Are you sure you want to delete this Role?'
+} as const;
+
+export const ROLE_DOCUMENT_DELETE_CONFIRM = {
+  TITLE: 'Delete Document',
+  MESSAGE: 'Are you sure you want to remove this document from the role?'
 } as const;

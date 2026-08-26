@@ -55,7 +55,15 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.dialogHelperService.openAddRoleDialog();
   }
 
+  onEditRole(role: Role): void {
+    this.dialogHelperService.openEditRoleDialog(role, () => {});
+  }
+
   onDeleteRole(role: Role): void {
     this.dialogHelperService.openDeleteRoleConfirmation(role, () => {});
+  }
+
+  onDeleteRoleDocument(event: { role: Role; documentId: string }): void {
+    this.dialogHelperService.openDeleteRoleDocumentConfirmation(event.role, event.documentId, () => {});
   }
 }

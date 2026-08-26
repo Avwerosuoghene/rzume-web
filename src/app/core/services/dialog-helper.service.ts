@@ -10,9 +10,9 @@ import { AddRoleDialogComponent } from '../../components/add-role-dialog/add-rol
 import { JobApplicationService } from "./job-application.service";
 import { RoleService } from "./role.service";
 import { LoaderService } from "./loader.service";
-import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, UpdateApplicationPayload, JobApplicationFormValue, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
+import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, AddRoleDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, UpdateApplicationPayload, JobApplicationFormValue, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
 import { CreateRolePayload, Role } from '../models/interface/role.models';
-import { ROLE_DELETE_CONFIRM } from '../models/constants/role.constants';
+import { ROLE_DELETE_CONFIRM, ROLE_DOCUMENT_DELETE_CONFIRM } from '../models/constants/role.constants';
 
 @Injectable({ providedIn: 'root' })
 export class DialogHelperService {
@@ -75,6 +75,25 @@ export class DialogHelperService {
     );
   }
 
+  openEditRoleDialog(role: Role, onSuccess?: () => void): void {
+    const dialogData: AddRoleDialogData = { isEditing: true, roleData: role };
+
+    this.openAndHandleDialog<CreateRolePayload>(
+      AddRoleDialogComponent,
+      dialogData,
+      (response) => {
+        this.loaderService.showLoader();
+        this.roleService.updateRole(role.id, response.data!)
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onSuccess?.(),
+            error: () => onSuccess?.()
+          });
+      },
+      { panelClass: 'add-role-dialog-panel' }
+    );
+  }
+
   openConfirmUploadDialog(files: File[], onConfirm: (entries: ConfirmedUploadEntry[]) => void): void {
     const dialogData: ConfirmUploadModalData = { files };
 
@@ -82,6 +101,32 @@ export class DialogHelperService {
       ConfirmUploadModalComponent,
       dialogData,
       (response) => onConfirm(response.data!),
+      { disableClose: false }
+    );
+  }
+
+  openDeleteRoleDocumentConfirmation(role: Role, documentId: string, onConfirm: () => void): void {
+    const dialogData: ConfirmDeleteModalData = {
+      title: ROLE_DOCUMENT_DELETE_CONFIRM.TITLE,
+      message: ROLE_DOCUMENT_DELETE_CONFIRM.MESSAGE
+    };
+
+    this.openAndHandleDialog<null>(
+      ConfirmDeleteModalComponent,
+      dialogData,
+      () => {
+        this.loaderService.showLoader();
+        const remainingDocuments = role.documents
+          .filter(document => document.id !== documentId)
+          .map(document => ({ resumeId: document.resumeId }));
+
+        this.roleService.updateRole(role.id, { documents: remainingDocuments })
+          .pipe(finalize(() => this.loaderService.hideLoader()))
+          .subscribe({
+            next: () => onConfirm(),
+            error: () => onConfirm()
+          });
+      },
       { disableClose: false }
     );
   }

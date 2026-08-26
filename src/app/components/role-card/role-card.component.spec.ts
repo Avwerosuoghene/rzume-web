@@ -8,6 +8,7 @@ import { RoleCardComponent } from './role-card.component';
 import { DocumentItemComponent } from '../../pages/main/profile-management/document-item/document-item.component';
 import { Role } from '../../core/models/interface/role.models';
 import { AttachedDocument } from '../../core/models/interface/profile.models';
+import { ACTION_TYPES } from '../../core/models';
 
 describe('RoleCardComponent', () => {
   let component: RoleCardComponent;
@@ -100,6 +101,43 @@ describe('RoleCardComponent', () => {
     expect(mapped.url).toBe(doc.documentUrl);
   });
 
+  it('should exclude download from the document action menu (view already gets the user to the file)', () => {
+    component.role = role([document('1')]);
+    fixture.detectChanges();
+
+    const item = fixture.debugElement.query(By.directive(DocumentItemComponent)).componentInstance as DocumentItemComponent;
+    const keys = item.documentActions.map(a => a.key);
+
+    expect(keys).not.toContain(ACTION_TYPES.DOWNLOAD);
+    expect(keys).toEqual([ACTION_TYPES.VIEW, ACTION_TYPES.DELETE]);
+  });
+
+  describe('onDeleteDocument', () => {
+    it('should emit deleteDocument with the role and the document id', () => {
+      const testRole = role([document('1')]);
+      component.role = testRole;
+      fixture.detectChanges();
+
+      let emitted: { role: Role; documentId: string } | undefined;
+      component.deleteDocument.subscribe(e => (emitted = e));
+
+      component.onDeleteDocument('1');
+
+      expect(emitted).toEqual({ role: testRole, documentId: '1' });
+    });
+
+    it('should call onDeleteDocument when DocumentItemComponent emits (delete)', () => {
+      component.role = role([document('1')]);
+      fixture.detectChanges();
+      spyOn(component, 'onDeleteDocument');
+
+      const item = fixture.debugElement.query(By.directive(DocumentItemComponent)).componentInstance as DocumentItemComponent;
+      item.delete.emit('1');
+
+      expect(component.onDeleteDocument).toHaveBeenCalledWith('1');
+    });
+  });
+
   describe('actions menu (see feature-spec-delete-role)', () => {
     // mat-menu-item's rendered text includes the mat-icon ligature text (e.g. "edit") concatenated
     // with the visible label span, so an exact-match {text} harness filter doesn't hit — find by
@@ -119,16 +157,20 @@ describe('RoleCardComponent', () => {
       expect(menu).toBeTruthy();
     });
 
-    it('should render "Edit Role" as disabled with no click behavior (stub this pass, see roles-api-gap)', async () => {
-      component.role = role();
+    it('should emit editRole with the role when "Edit Role" is clicked', async () => {
+      const testRole = role();
+      component.role = testRole;
       fixture.detectChanges();
+
+      let emitted: Role | undefined;
+      component.editRole.subscribe(r => (emitted = r));
 
       const menu = await loader.getHarness(MatMenuHarness);
       await menu.open();
       const editItem = await findMenuItem(menu, 'Edit Role');
+      await editItem.click();
 
-      expect(editItem).toBeTruthy();
-      expect(await editItem.isDisabled()).toBe(true);
+      expect(emitted).toBe(testRole);
     });
 
     it('should emit delete with the role when "Remove Role" is clicked', async () => {

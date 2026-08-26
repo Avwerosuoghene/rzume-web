@@ -36,6 +36,26 @@ describe('RoleStateService', () => {
     });
   });
 
+  describe('updateRole', () => {
+    it('should replace the matching role in place, without changing createdCount', () => {
+      service.setRoles([role('1'), role('2')]);
+      const updated: Role = { ...role('1'), title: 'Senior Engineer' };
+
+      service.updateRole(updated);
+
+      expect(service.getRoles().find(r => r.id === '1')?.title).toBe('Senior Engineer');
+      expect(service.getRoles().map(r => r.id)).toEqual(['1', '2']);
+      expect(service.getStats().createdCount).toBe(2);
+    });
+
+    it('should leave the state unchanged when no role matches the id', () => {
+      service.setRoles([role('1')]);
+      service.updateRole({ ...role('missing'), title: 'Ghost' });
+
+      expect(service.getRoles()).toEqual([role('1')]);
+    });
+  });
+
   describe('removeRole', () => {
     it('should remove the matching role and decrement createdCount', () => {
       service.setRoles([role('1'), role('2')]);

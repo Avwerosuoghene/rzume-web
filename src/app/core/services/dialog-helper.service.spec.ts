@@ -27,7 +27,7 @@ describe('DialogHelperService', () => {
   beforeEach(() => {
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
     jobApplicationServiceSpy = jasmine.createSpyObj('JobApplicationService', ['addApplication', 'updateJobApplication']);
-    roleServiceSpy = jasmine.createSpyObj('RoleService', ['createRole', 'deleteRole']);
+    roleServiceSpy = jasmine.createSpyObj('RoleService', ['createRole', 'updateRole', 'deleteRole']);
     loaderServiceSpy = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
 
     TestBed.configureTestingModule({
@@ -168,6 +168,54 @@ describe('DialogHelperService', () => {
     });
   });
 
+  describe('openEditRoleDialog', () => {
+    const testRole: Role = { id: 'role-1', title: 'Engineer', industryName: 'Tech', documents: [], createdAt: new Date(), updatedAt: new Date() };
+
+    it('should pass isEditing and the role as dialog data', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+
+      service.openEditRoleDialog(testRole, () => {});
+
+      expect(dialogSpy.open).toHaveBeenCalledWith(jasmine.any(Function), jasmine.objectContaining({
+        data: { isEditing: true, roleData: testRole }
+      }));
+    });
+
+    it('should call roleService.updateRole with the role\'s id and the submitted payload, then onSuccess, when Submitted', () => {
+      const payload = { title: 'Senior Engineer', industryId: 1, documents: [{ resumeId: 'resume-1' }] };
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: payload });
+      roleServiceSpy.updateRole.and.returnValue(of({ success: true } as APIResponse<Role>));
+      const onSuccess = jasmine.createSpy('onSuccess');
+
+      service.openEditRoleDialog(testRole, onSuccess);
+
+      expect(loaderServiceSpy.showLoader).toHaveBeenCalled();
+      expect(roleServiceSpy.updateRole).toHaveBeenCalledWith('role-1', payload);
+      expect(onSuccess).toHaveBeenCalled();
+      expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
+    });
+
+    it('should also call onSuccess if the update errors', () => {
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: {} });
+      roleServiceSpy.updateRole.and.returnValue(throwError(() => new Error('boom')));
+      const onSuccess = jasmine.createSpy('onSuccess');
+
+      service.openEditRoleDialog(testRole, onSuccess);
+
+      expect(onSuccess).toHaveBeenCalled();
+    });
+
+    it('should NOT call roleService.updateRole when the dialog is cancelled', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+      const onSuccess = jasmine.createSpy('onSuccess');
+
+      service.openEditRoleDialog(testRole, onSuccess);
+
+      expect(roleServiceSpy.updateRole).not.toHaveBeenCalled();
+      expect(onSuccess).not.toHaveBeenCalled();
+    });
+  });
+
   describe('openConfirmUploadDialog', () => {
     it('should pass the given files to the dialog', () => {
       mockDialogClose(undefined);
@@ -231,6 +279,49 @@ describe('DialogHelperService', () => {
       service.openDeleteRoleConfirmation({ id: 'role-1' } as Role, onConfirm);
 
       expect(roleServiceSpy.deleteRole).not.toHaveBeenCalled();
+      expect(onConfirm).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('openDeleteRoleDocumentConfirmation', () => {
+    const testRole = {
+      id: 'role-1',
+      documents: [
+        { id: 'doc-1', resumeId: 'resume-1', fileName: 'a.pdf', fileSize: 1, fileType: 'application/pdf', documentType: 'Resume', documentUrl: 'x', uploadedAt: new Date() },
+        { id: 'doc-2', resumeId: 'resume-2', fileName: 'b.pdf', fileSize: 1, fileType: 'application/pdf', documentType: 'CoverLetter', documentUrl: 'y', uploadedAt: new Date() }
+      ]
+    } as Role;
+
+    it('should open the modal with the Delete Document copy', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+
+      service.openDeleteRoleDocumentConfirmation(testRole, 'doc-1', () => {});
+
+      expect(dialogSpy.open).toHaveBeenCalledWith(jasmine.any(Function), jasmine.objectContaining({
+        data: jasmine.objectContaining({ title: 'Delete Document' })
+      }));
+    });
+
+    it('should call roleService.updateRole with the remaining documents (the deleted one omitted) and onConfirm when Submitted', () => {
+      mockDialogClose({ status: DialogCloseStatus.Submitted });
+      roleServiceSpy.updateRole.and.returnValue(of({ success: true } as APIResponse<Role>));
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openDeleteRoleDocumentConfirmation(testRole, 'doc-1', onConfirm);
+
+      expect(loaderServiceSpy.showLoader).toHaveBeenCalled();
+      expect(roleServiceSpy.updateRole).toHaveBeenCalledWith('role-1', { documents: [{ resumeId: 'resume-2' }] });
+      expect(onConfirm).toHaveBeenCalled();
+      expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
+    });
+
+    it('should NOT call roleService.updateRole when the dialog is cancelled', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openDeleteRoleDocumentConfirmation(testRole, 'doc-1', onConfirm);
+
+      expect(roleServiceSpy.updateRole).not.toHaveBeenCalled();
       expect(onConfirm).not.toHaveBeenCalled();
     });
   });

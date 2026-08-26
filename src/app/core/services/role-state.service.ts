@@ -85,6 +85,15 @@ export class RoleStateService {
     });
   }
 
+  updateRole(updatedRole: Role): void {
+    const currentRoles = this.stateSubject.value.roles;
+    const updatedRoles = currentRoles.map(role => role.id === updatedRole.id ? updatedRole : role);
+    this.stateSubject.next({
+      ...this.stateSubject.value,
+      roles: updatedRoles
+    });
+  }
+
   removeRole(roleId: string): void {
     const currentRoles = this.stateSubject.value.roles;
     const updatedRoles = currentRoles.filter(role => role.id !== roleId);

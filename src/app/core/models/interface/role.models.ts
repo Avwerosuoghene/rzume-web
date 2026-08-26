@@ -19,6 +19,15 @@ export interface CreateRolePayload {
   documents: RoleDocumentRequest[];
 }
 
+// All fields optional — omitted means "leave unchanged" on the backend, matching
+// UpdateApplicationPayload's semantics. Sending only `documents` (the full desired list) is
+// how a single document gets removed from a role without touching its title/industry.
+export interface UpdateRolePayload {
+  title?: string;
+  industryId?: number;
+  documents?: RoleDocumentRequest[];
+}
+
 export interface RoleStats {
   createdCount: number;
   maxAllowed: number;

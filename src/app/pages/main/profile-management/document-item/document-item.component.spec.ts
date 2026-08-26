@@ -42,6 +42,14 @@ describe('DocumentItemComponent', () => {
     expect(spy).toHaveBeenCalledWith('doc-1');
   });
 
+  it('should open the document\'s url in a new tab on view (Figma "Parent action modal", node 1314:2597)', () => {
+    spyOn(window, 'open');
+
+    component.onView();
+
+    expect(window.open).toHaveBeenCalledWith('http://example.com/resume.pdf', '_blank', 'noopener');
+  });
+
   it('should emit the document id on download', () => {
     const spy = jasmine.createSpy('download');
     component.download.subscribe(spy);
@@ -70,17 +78,55 @@ describe('DocumentItemComponent', () => {
     expect(compiled.querySelector('.mobile-actions')).toBeFalsy();
   });
 
+  describe('excludeActions', () => {
+    it('should include view/download/delete by default (excludeActions empty)', () => {
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const keys = menu.actions.map(a => a.key);
+
+      expect(keys).toEqual([ACTION_TYPES.VIEW, ACTION_TYPES.DOWNLOAD, ACTION_TYPES.DELETE]);
+    });
+
+    it('should omit an action listed in excludeActions (e.g. role-card excluding download since it duplicates view)', () => {
+      component.excludeActions = [ACTION_TYPES.DOWNLOAD];
+      fixture.detectChanges();
+
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const keys = menu.actions.map(a => a.key);
+
+      expect(keys).toEqual([ACTION_TYPES.VIEW, ACTION_TYPES.DELETE]);
+    });
+  });
+
   describe('ActionMenuComponent composition', () => {
-    it('should pass a download/delete ActionMenuItem pair to every rendered ActionMenuComponent', () => {
+    it('should pass view/download/delete ActionMenuItems to every rendered ActionMenuComponent', () => {
       const menus = fixture.debugElement.queryAll(By.directive(ActionMenuComponent));
       expect(menus.length).toBeGreaterThan(0);
 
       for (const menu of menus) {
         const instance = menu.componentInstance as ActionMenuComponent;
         const keys = instance.actions.map(a => a.key);
+        expect(keys).toContain(ACTION_TYPES.VIEW);
         expect(keys).toContain(ACTION_TYPES.DOWNLOAD);
         expect(keys).toContain(ACTION_TYPES.DELETE);
       }
+    });
+
+    it('should list view before download before delete, matching the Figma menu order', () => {
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const keys = menu.actions.map(a => a.key);
+
+      expect(keys.indexOf(ACTION_TYPES.VIEW)).toBeLessThan(keys.indexOf(ACTION_TYPES.DOWNLOAD));
+      expect(keys.indexOf(ACTION_TYPES.DOWNLOAD)).toBeLessThan(keys.indexOf(ACTION_TYPES.DELETE));
+    });
+
+    it('should call onView() when the "view" action\'s callback is invoked', () => {
+      spyOn(component, 'onView');
+
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const viewAction = menu.actions.find(a => a.key === ACTION_TYPES.VIEW);
+      viewAction?.callback();
+
+      expect(component.onView).toHaveBeenCalled();
     });
 
     it('should call onDownload() when the "download" action\'s callback is invoked', () => {

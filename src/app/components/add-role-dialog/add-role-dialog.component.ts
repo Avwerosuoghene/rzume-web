@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { Subject, takeUntil } from 'rxjs';
 import { AngularMaterialModules } from '../../core/modules/material-modules';
@@ -15,6 +15,7 @@ import { DialogCloseStatus } from '../../core/models/enums/dialog.enums';
 import { CreateRolePayload } from '../../core/models/interface/role.models';
 import { Industry } from '../../core/models/interface/industry.models';
 import { Resume } from '../../core/models/interface/profile.models';
+import { AddRoleDialogData } from '../../core/models/interface/dialog-models';
 import { MainRoutes, RootRoutes } from '../../core/models/enums/application.routes.enums';
 import { PROFILE_TABS } from '../../core/models/constants/profile.constants';
 import { ROLE_DIALOG_CONFIG, ROLE_DOCUMENT_LIMIT, ROLE_VALIDATION } from '../../core/models/constants/role.constants';
@@ -39,16 +40,18 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
   private industryService = inject(IndustryService);
   private router = inject(Router);
   private dialogRef = inject(MatDialogRef<AddRoleDialogComponent>);
+  private dialogData = inject<AddRoleDialogData>(MAT_DIALOG_DATA);
 
   private destroy$ = new Subject<void>();
+  private documentsPrepopulated = false;
 
   roleForm!: FormGroup;
   industries: Industry[] = [];
   selectedDocuments: Resume[] = [];
   documentSearchQuery = '';
   isDropdownOpen = false;
+  editMode = false;
 
-  readonly dialogTitle = ROLE_DIALOG_CONFIG.TITLE;
   readonly maxDocuments = ROLE_DOCUMENT_LIMIT;
 
   readonly multiselectOverlayPositions: ConnectedPosition[] = [
@@ -82,12 +85,22 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
       industry: this.industryControl
     });
 
+    this.editMode = this.dialogData?.isEditing ?? false;
+    const existingRole = this.dialogData?.roleData;
+    if (existingRole) {
+      this.jobRoleControl.setValue(existingRole.title);
+    }
+
     this.industryService.getIndustries()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: response => {
           if (response.success && response.data) {
             this.industries = response.data;
+            if (existingRole) {
+              const matchingIndustry = this.industries.find(i => i.name === existingRole.industryName);
+              if (matchingIndustry) this.industryControl.setValue(String(matchingIndustry.id));
+            }
             this.cdr.markForCheck();
           }
         }
@@ -99,12 +112,27 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
 
     this.documentHelperService.resumes$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.cdr.markForCheck());
+      .subscribe(resumes => {
+        if (existingRole && !this.documentsPrepopulated) {
+          const roleResumeIds = new Set(existingRole.documents.map(d => d.resumeId));
+          this.selectedDocuments = resumes.filter(r => roleResumeIds.has(r.id));
+          this.documentsPrepopulated = true;
+        }
+        this.cdr.markForCheck();
+      });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  get dialogTitle(): string {
+    return this.editMode ? ROLE_DIALOG_CONFIG.EDIT_TITLE : ROLE_DIALOG_CONFIG.TITLE;
+  }
+
+  get submitButtonText(): string {
+    return this.editMode ? ROLE_DIALOG_CONFIG.SAVE_BUTTON_TEXT : ROLE_DIALOG_CONFIG.SUBMIT_BUTTON_TEXT;
   }
 
   get industryConfig(): FormInputSelectConfig {

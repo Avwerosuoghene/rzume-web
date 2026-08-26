@@ -34,7 +34,7 @@ describe('RolesComponent', () => {
 
   beforeEach(async () => {
     analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['track']);
-    dialogHelperServiceSpy = jasmine.createSpyObj('DialogHelperService', ['openAddRoleDialog', 'openInfoDialog', 'openDeleteRoleConfirmation']);
+    dialogHelperServiceSpy = jasmine.createSpyObj('DialogHelperService', ['openAddRoleDialog', 'openInfoDialog', 'openDeleteRoleConfirmation', 'openDeleteRoleDocumentConfirmation', 'openEditRoleDialog']);
     roleServiceSpy = jasmine.createSpyObj('RoleService', ['getRoles', 'getRoleStats']);
     roleServiceSpy.getRoles.and.returnValue(of(okResponse({ count: 0, roles: [] })));
 
@@ -133,6 +133,30 @@ describe('RolesComponent', () => {
     card.triggerEventHandler('delete', targetRole);
 
     expect(dialogHelperServiceSpy.openDeleteRoleConfirmation).toHaveBeenCalledWith(targetRole, jasmine.any(Function));
+  });
+
+  it('should open the delete-document confirmation when a role card emits deleteDocument', () => {
+    fixture.detectChanges();
+    const targetRole = role('1');
+    roleStateService.setRoles([targetRole]);
+    fixture.detectChanges();
+
+    const card = fixture.debugElement.query(By.directive(RoleCardComponent));
+    card.triggerEventHandler('deleteDocument', { role: targetRole, documentId: 'doc-1' });
+
+    expect(dialogHelperServiceSpy.openDeleteRoleDocumentConfirmation).toHaveBeenCalledWith(targetRole, 'doc-1', jasmine.any(Function));
+  });
+
+  it('should open the edit-role dialog when a role card emits editRole', () => {
+    fixture.detectChanges();
+    const targetRole = role('1');
+    roleStateService.setRoles([targetRole]);
+    fixture.detectChanges();
+
+    const card = fixture.debugElement.query(By.directive(RoleCardComponent));
+    card.triggerEventHandler('editRole', targetRole);
+
+    expect(dialogHelperServiceSpy.openEditRoleDialog).toHaveBeenCalledWith(targetRole, jasmine.any(Function));
   });
 
 });
