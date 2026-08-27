@@ -234,6 +234,21 @@ describe('DocumentsViewComponent', () => {
       expect(snackBarSpy.open).toHaveBeenCalled();
       expect(DocumentHelper.downloadDocument).toHaveBeenCalledWith(mockDoc.url, mockDoc.fileName);
     });
+
+    it('should use downloadUrl instead of url when the document has a separate download link', () => {
+      spyOn(DocumentHelper, 'downloadDocument');
+      const docWithDownloadUrl: DocumentItem = {
+        ...mockDoc,
+        id: 'doc-2',
+        url: 'http://example.com/inline/resume.pdf',
+        downloadUrl: 'http://example.com/attachment/resume.pdf'
+      };
+      component.documents = [docWithDownloadUrl];
+
+      component.onDownloadDocument('doc-2');
+
+      expect(DocumentHelper.downloadDocument).toHaveBeenCalledWith(docWithDownloadUrl.downloadUrl!, docWithDownloadUrl.fileName);
+    });
   });
 
   describe('isUploadLimitReached', () => {
