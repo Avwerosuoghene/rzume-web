@@ -128,6 +128,16 @@ describe('RoleCardComponent', () => {
     expect(distinctTops.size).toBeGreaterThan(1);
   });
 
+  it('should pass a tighter filename truncate limit than DocumentItemComponent\'s own default, since this card is far narrower than Profile Management\'s full-width list', () => {
+    component.role = role([document('1')]);
+    component.isExpanded = true;
+    fixture.detectChanges();
+
+    const item = fixture.debugElement.query(By.directive(DocumentItemComponent)).componentInstance as DocumentItemComponent;
+    expect(item.filenameTruncateLimit).toBe(18);
+    expect(item.filenameTruncateLimit).toBeLessThan(30);
+  });
+
   it('should give each document card an explicit min-width — a real floor (not 0) for the icon/text/menu to stay comfortable — with no max-width ceiling so it can keep growing to fill the row', () => {
     component.role = role([document('1')]);
     component.isExpanded = true;

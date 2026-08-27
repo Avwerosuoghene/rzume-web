@@ -59,6 +59,23 @@ describe('DocumentItemComponent', () => {
       expect(style.overflow).toBe('hidden');
       expect(style.textOverflow).toBe('ellipsis');
     });
+
+    it('should default the truncate limit to 30 characters when filenameTruncateLimit is not set', () => {
+      component.document = { ...mockDocument, fileName: 'a-very-long-resume-filename-that-goes-on-and-on.pdf' };
+      fixture.detectChanges();
+
+      const nameEl: HTMLElement = fixture.nativeElement.querySelector('.document-filename');
+      expect(nameEl.textContent!.trim()).toBe('a-very-long-resume-filename-th...');
+    });
+
+    it('should truncate at a shorter, caller-supplied limit when filenameTruncateLimit is set (role-card uses a tighter limit than Profile Management\'s wider list)', () => {
+      component.document = { ...mockDocument, fileName: 'a-very-long-resume-filename-that-goes-on-and-on.pdf' };
+      component.filenameTruncateLimit = 12;
+      fixture.detectChanges();
+
+      const nameEl: HTMLElement = fixture.nativeElement.querySelector('.document-filename');
+      expect(nameEl.textContent!.trim()).toBe('a-very-long-...');
+    });
   });
 
   it('should emit the document id on delete', () => {

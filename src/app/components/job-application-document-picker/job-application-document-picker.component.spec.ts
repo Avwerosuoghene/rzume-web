@@ -143,6 +143,72 @@ describe('JobApplicationDocumentPickerComponent', () => {
     });
   });
 
+  describe('one-per-type restriction (Resume/CoverLetter capped at one each, per the backend validation rule)', () => {
+    const resumeA: Resume = { id: 'ra', fileName: 'resume-a.pdf', uploadedAt: new Date(), url: 'x', documentType: DOCUMENT_TYPES.RESUME };
+    const resumeB: Resume = { id: 'rb', fileName: 'resume-b.pdf', uploadedAt: new Date(), url: 'x', documentType: DOCUMENT_TYPES.RESUME };
+    const coverA: Resume = { id: 'ca', fileName: 'cover-a.pdf', uploadedAt: new Date(), url: 'x', documentType: DOCUMENT_TYPES.COVER_LETTER };
+    const coverB: Resume = { id: 'cb', fileName: 'cover-b.pdf', uploadedAt: new Date(), url: 'x', documentType: DOCUMENT_TYPES.COVER_LETTER };
+    const otherA: Resume = { id: 'oa', fileName: 'other-a.pdf', uploadedAt: new Date(), url: 'x', documentType: DOCUMENT_TYPES.OTHER };
+    const otherB: Resume = { id: 'ob', fileName: 'other-b.pdf', uploadedAt: new Date(), url: 'x', documentType: DOCUMENT_TYPES.OTHER };
+
+    beforeEach(() => {
+      component.availableResumes = [resumeA, resumeB, coverA, coverB, otherA, otherB];
+      fixture.detectChanges();
+    });
+
+    it('should not select a second Resume-type document once one is already selected', () => {
+      component.toggle(resumeA);
+      component.toggle(resumeB);
+
+      expect(component.isSelected('ra')).toBe(true);
+      expect(component.isSelected('rb')).toBe(false);
+    });
+
+    it('should not select a second CoverLetter-type document once one is already selected', () => {
+      component.toggle(coverA);
+      component.toggle(coverB);
+
+      expect(component.isSelected('ca')).toBe(true);
+      expect(component.isSelected('cb')).toBe(false);
+    });
+
+    it('should allow selecting any number of Other-type documents without restriction', () => {
+      component.toggle(otherA);
+      component.toggle(otherB);
+
+      expect(component.isSelected('oa')).toBe(true);
+      expect(component.isSelected('ob')).toBe(true);
+    });
+
+    it('should allow selecting a Resume-type document again once the previously-selected one is deselected', () => {
+      component.toggle(resumeA);
+      component.toggle(resumeA);
+      component.toggle(resumeB);
+
+      expect(component.isSelected('ra')).toBe(false);
+      expect(component.isSelected('rb')).toBe(true);
+    });
+
+    it('should mark other same-type resumes as disabled in the option list once one of that type is selected', () => {
+      component.toggle(resumeA);
+
+      expect(component.isOptionDisabled(resumeB)).toBe(true);
+      expect(component.isOptionDisabled(resumeA)).toBe(false);
+      expect(component.isOptionDisabled(otherA)).toBe(false);
+    });
+
+    it('should render the disabled checkbox in the template so the user cannot check it directly', () => {
+      component.toggle(resumeA);
+      fixture.detectChanges();
+      component.toggleDropdown();
+      fixture.detectChanges();
+
+      const checkboxes = document.querySelectorAll('.cdk-overlay-container .option-checkbox') as NodeListOf<HTMLInputElement>;
+      const resumeBIndex = component.filteredResumes.findIndex(r => r.id === 'rb');
+      expect(checkboxes[resumeBIndex].disabled).toBe(true);
+    });
+  });
+
   describe('selected document preview', () => {
     beforeEach(() => {
       component.availableResumes = [resume1, resume2];
@@ -164,15 +230,15 @@ describe('JobApplicationDocumentPickerComponent', () => {
       expect(fixture.nativeElement.querySelectorAll('.document-card').length).toBe(0);
     });
 
-    it('should update an entry\'s documentType and re-emit when changed from the preview card', () => {
-      component.toggle(resume1);
-      const emitted: JobApplicationDocumentRequestItem[][] = [];
-      component.documentsChange.subscribe(v => emitted.push(v));
+    it('should show the document\'s type as plain styled text, not an editable dropdown (the type is inherent to the uploaded document, not chosen per application)', () => {
+      const coverLetterResume: Resume = { ...resume1, documentType: DOCUMENT_TYPES.COVER_LETTER };
+      component.availableResumes = [coverLetterResume, resume2];
+      component.toggle(coverLetterResume);
+      fixture.detectChanges();
 
-      component.updateDocumentType('r1', DOCUMENT_TYPES.COVER_LETTER);
-
-      expect(component.entries).toEqual([{ resumeId: 'r1', documentType: DOCUMENT_TYPES.COVER_LETTER }]);
-      expect(emitted).toEqual([[{ resumeId: 'r1', documentType: DOCUMENT_TYPES.COVER_LETTER }]]);
+      const card = fixture.nativeElement.querySelector('.document-card');
+      expect(card.querySelector('mat-select')).toBeNull();
+      expect(card.querySelector('.document-type-label').textContent).toContain('Cover Letter');
     });
 
     it('should remove a document and re-emit when removeDocument is called', () => {

@@ -42,7 +42,8 @@ export class JobApplicationDocumentPickerComponent {
   entries: JobApplicationDocumentRequestItem[] = [];
   documentSearchQuery = '';
   isDropdownOpen = false;
-  readonly documentTypeOptions = Object.entries(DOCUMENT_TYPE_LABELS) as [DocumentType, string][];
+
+  private readonly singlePerTypeDocumentTypes: string[] = [DOCUMENT_TYPES.RESUME, DOCUMENT_TYPES.COVER_LETTER];
 
   readonly multiselectOverlayPositions: ConnectedPosition[] = [
     { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
@@ -68,10 +69,31 @@ export class JobApplicationDocumentPickerComponent {
     return this.entries.some(entry => entry.resumeId === resumeId);
   }
 
+  // Only Resume/CoverLetter are capped at one; a document with no documentType at all is treated
+  // as unrestricted rather than defaulting into the cap, since toggle() only assigns the RESUME
+  // fallback type once it's actually selected — this checks the resume's OWN declared type.
+  private isSingleInstanceType(documentType?: string | null): boolean {
+    return !!documentType && this.singlePerTypeDocumentTypes.includes(documentType);
+  }
+
+  private hasSelectedOfType(documentType: string): boolean {
+    return this.entries.some(entry => {
+      const resume = this.availableResumes.find(r => r.id === entry.resumeId);
+      return resume?.documentType === documentType;
+    });
+  }
+
+  isOptionDisabled(resume: Resume): boolean {
+    if (this.isSelected(resume.id)) return false;
+    if (!this.isSingleInstanceType(resume.documentType)) return false;
+    return this.hasSelectedOfType(resume.documentType!);
+  }
+
   toggle(resume: Resume): void {
     if (this.isSelected(resume.id)) {
       this.entries = this.entries.filter(entry => entry.resumeId !== resume.id);
     } else {
+      if (this.isOptionDisabled(resume)) return;
       this.entries = [
         ...this.entries,
         { resumeId: resume.id, documentType: resume.documentType ?? DOCUMENT_TYPES.RESUME }
@@ -81,12 +103,8 @@ export class JobApplicationDocumentPickerComponent {
     this.cdr.markForCheck();
   }
 
-  updateDocumentType(resumeId: string, documentType: string): void {
-    this.entries = this.entries.map(entry =>
-      entry.resumeId === resumeId ? { ...entry, documentType } : entry
-    );
-    this.documentsChange.emit(this.entries);
-    this.cdr.markForCheck();
+  documentTypeLabel(documentType: string): string {
+    return DOCUMENT_TYPE_LABELS[documentType as DocumentType] ?? documentType;
   }
 
   removeDocument(resumeId: string): void {
@@ -113,9 +131,5 @@ export class JobApplicationDocumentPickerComponent {
 
   getDocumentIcon(resume: Resume): string {
     return DocumentHelper.getDocumentIcon(resume.fileType);
-  }
-
-  formatFileSize(bytes: number): string {
-    return DocumentHelper.formatFileSize(bytes);
   }
 }

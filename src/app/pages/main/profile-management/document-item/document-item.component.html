@@ -2,7 +2,7 @@
   <div class="document-info">
     <img [src]="getDocumentIcon()" [alt]="document.fileType || 'Document'" class="file-icon" />
     <div class="details">
-      <p class="document-filename">{{ document.fileName | truncate: 30 }}</p>
+      <p class="document-filename">{{ document.fileName | truncate: filenameTruncateLimit }}</p>
       <p class="document-meta light_text">
         <span>{{ document.uploadedAt | date: 'dd MMM, yyyy' }}</span>
         <span>•</span>

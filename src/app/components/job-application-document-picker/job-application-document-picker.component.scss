@@ -127,6 +127,24 @@
   cursor: pointer;
 }
 
+// A second Resume/CoverLetter can't be selected while one of that type is already chosen — see
+// JobApplicationDocumentPickerComponent#isOptionDisabled.
+.multiselect-option.is-disabled {
+  .option-label {
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .option-checkbox,
+  .option-filename {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
 .option-filename {
   @include font-body;
   font-size: $font-size-base;
@@ -197,13 +215,22 @@
 
 .document-meta {
   @include font-caption;
-  font-size: $font-size-sm;
+  font-size: 10px;
   color: $gray;
 }
 
-.document-type-field {
-  width: 160px;
+// The document's type is inherent to the uploaded document itself (set at upload time), not
+// something chosen per application — a small styled label, not an editable control.
+.document-type-label {
+  @include font-caption;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $rzume-blue;
+  background-color: rgba(62, 127, 255, 0.1);
+  padding: $spacing-1 $spacing-2;
+  border-radius: $border-radius-sm;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .remove-document-btn {

@@ -50,12 +50,18 @@
 
         <ul class="multiselect-options" role="group">
           @for (resume of filteredResumes; track resume.id) {
-            <li class="multiselect-option" role="option" [attr.aria-selected]="isSelected(resume.id)">
+            <li
+              class="multiselect-option"
+              role="option"
+              [attr.aria-selected]="isSelected(resume.id)"
+              [class.is-disabled]="isOptionDisabled(resume)"
+            >
               <label class="option-label">
                 <input
                   type="checkbox"
                   class="option-checkbox"
                   [checked]="isSelected(resume.id)"
+                  [disabled]="isOptionDisabled(resume)"
                   (change)="toggle(resume)"
                   [attr.aria-label]="resume.fileName"
                 />
@@ -88,22 +94,9 @@
             <span class="document-name">{{ view.resume.fileName }}</span>
             <span class="document-meta">
               {{ view.resume.uploadedAt | date: 'd MMM, yyyy  h:mma' }}
-              @if (view.resume.fileSize) {
-                &bull; {{ formatFileSize(view.resume.fileSize) }}
-              }
             </span>
           </div>
-          <mat-form-field appearance="outline" class="document-type-field">
-            <mat-label>Document type</mat-label>
-            <mat-select
-              [value]="view.documentType"
-              (selectionChange)="updateDocumentType(view.resume.id, $event.value)"
-            >
-              @for (option of documentTypeOptions; track option[0]) {
-                <mat-option [value]="option[0]">{{ option[1] }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+          <span class="document-type-label">{{ documentTypeLabel(view.documentType) }}</span>
           <button
             type="button"
             class="remove-document-btn"

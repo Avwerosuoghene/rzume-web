@@ -24,6 +24,7 @@ export class DocumentItemComponent {
   @Input() document!: DocumentItem;
   @Input() actionsVariant: 'icons' | 'menu' = 'icons';
   @Input() excludeActions: ActionType[] = [];
+  @Input() filenameTruncateLimit = 30;
   @Output() delete = new EventEmitter<string>();
   @Output() download = new EventEmitter<string>();
 

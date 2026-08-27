@@ -83,6 +83,17 @@ describe('JobAddDialogComponent', () => {
       expect(fixture.nativeElement.textContent).not.toContain('Select a role to pre-fill');
     });
 
+    it('should let the dialog scroll vertically when its content is taller than the dialog itself, instead of being clipped with no way to reach the rest of the form', () => {
+      const container: HTMLElement = fixture.nativeElement.querySelector('.add_job_container');
+      const style = getComputedStyle(container);
+
+      expect(style.overflowY).toBe('auto');
+      // Karma's default headless window (~756px wide) is above the 600px breakpoint, so the
+      // desktop rule (height: auto, no viewport-driven bound) is the one in effect here — without
+      // an explicit max-height, an auto-height box with no bound has nothing to scroll *within*.
+      expect(style.maxHeight).not.toBe('none');
+    });
+
     it('should render only the role select before a role is chosen', () => {
       const roleSelect: HTMLElement = fixture.nativeElement.querySelector('#roleId');
       const companyInput: HTMLElement = fixture.nativeElement.querySelector('#companyName');

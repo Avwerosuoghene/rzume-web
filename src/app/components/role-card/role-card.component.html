@@ -47,6 +47,7 @@
       [document]="toDocumentItem(document)"
       actionsVariant="menu"
       [excludeActions]="excludedDocumentActions"
+      [filenameTruncateLimit]="documentFilenameTruncateLimit"
       (delete)="onDeleteDocument($event)">
     </app-document-item>
   </div>

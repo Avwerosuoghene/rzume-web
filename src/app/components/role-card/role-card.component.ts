@@ -25,6 +25,8 @@ export class RoleCardComponent {
   // Management's own document list still uses.
   readonly excludedDocumentActions: ActionType[] = [ACTION_TYPES.DOWNLOAD];
 
+  readonly documentFilenameTruncateLimit = 18;
+
   isExpanded = false;
 
   toDocumentItem(document: AttachedDocument): DocumentItem {
