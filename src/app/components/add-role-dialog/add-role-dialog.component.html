@@ -85,7 +85,6 @@
               @for (resume of filteredResumes; track resume.id) {
                 <li
                   class="multiselect-option"
-                  [class.is-disabled]="!isDocumentSelected(resume.id) && !canAddMoreDocuments"
                   role="option"
                   [attr.aria-selected]="isDocumentSelected(resume.id)"
                 >
@@ -94,7 +93,6 @@
                       type="checkbox"
                       class="option-checkbox"
                       [checked]="isDocumentSelected(resume.id)"
-                      [disabled]="!isDocumentSelected(resume.id) && !canAddMoreDocuments"
                       (change)="toggleDocument(resume)"
                       [attr.aria-label]="resume.fileName"
                     />

@@ -18,7 +18,7 @@ import { Resume } from '../../core/models/interface/profile.models';
 import { AddRoleDialogData } from '../../core/models/interface/dialog-models';
 import { MainRoutes, RootRoutes } from '../../core/models/enums/application.routes.enums';
 import { PROFILE_TABS } from '../../core/models/constants/profile.constants';
-import { ROLE_DIALOG_CONFIG, ROLE_DOCUMENT_LIMIT, ROLE_VALIDATION } from '../../core/models/constants/role.constants';
+import { ROLE_DIALOG_CONFIG, ROLE_VALIDATION } from '../../core/models/constants/role.constants';
 
 @Component({
   selector: 'app-add-role-dialog',
@@ -51,8 +51,6 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
   documentSearchQuery = '';
   isDropdownOpen = false;
   editMode = false;
-
-  readonly maxDocuments = ROLE_DOCUMENT_LIMIT;
 
   readonly multiselectOverlayPositions: ConnectedPosition[] = [
     { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
@@ -155,10 +153,6 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
     return this.allResumes.filter(r => r.fileName.toLowerCase().includes(query));
   }
 
-  get canAddMoreDocuments(): boolean {
-    return this.selectedDocuments.length < this.maxDocuments;
-  }
-
   get isSubmitDisabled(): boolean {
     return this.roleForm.invalid || this.selectedDocuments.length === 0;
   }
@@ -170,7 +164,7 @@ export class AddRoleDialogComponent implements OnInit, OnDestroy {
   toggleDocument(resume: Resume): void {
     if (this.isDocumentSelected(resume.id)) {
       this.selectedDocuments = this.selectedDocuments.filter(d => d.id !== resume.id);
-    } else if (this.canAddMoreDocuments) {
+    } else {
       this.selectedDocuments = [...this.selectedDocuments, resume];
     }
     this.cdr.markForCheck();

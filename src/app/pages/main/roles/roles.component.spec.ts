@@ -72,6 +72,17 @@ describe('RolesComponent', () => {
     expect(roleServiceSpy.getRoleStats).not.toHaveBeenCalled();
   });
 
+  it('should split the Add Role button\'s label into an always-visible "Add" and a breakpoint-hidden " New Role" (mobile shows just "Add"), matching the desktop-actions/mobile-actions convention', () => {
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('.add-role-btn') as HTMLElement;
+    expect(button.textContent).toContain('Add');
+
+    const fullLabel = button.querySelector('.add-role-btn-full-label');
+    expect(fullLabel).toBeTruthy();
+    expect(fullLabel!.textContent).toContain('New Role');
+  });
+
   it('should render app-empty-state when roles$ emits an empty array', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-empty-state')).not.toBeNull();

@@ -33,6 +33,34 @@ describe('DocumentItemComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('long filenames (see: card height growing to accommodate wrapped text)', () => {
+    it('should truncate a filename longer than the character limit, with an ellipsis', () => {
+      component.document = { ...mockDocument, fileName: 'a-very-long-resume-filename-that-goes-on-and-on.pdf' };
+      fixture.detectChanges();
+
+      const nameEl: HTMLElement = fixture.nativeElement.querySelector('.document-filename');
+      expect(nameEl.textContent!.trim().endsWith('...')).toBe(true);
+      expect(nameEl.textContent!.trim().length).toBeLessThan('a-very-long-resume-filename-that-goes-on-and-on.pdf'.length);
+    });
+
+    it('should not truncate a filename within the character limit', () => {
+      component.document = { ...mockDocument, fileName: 'resume.pdf' };
+      fixture.detectChanges();
+
+      const nameEl: HTMLElement = fixture.nativeElement.querySelector('.document-filename');
+      expect(nameEl.textContent!.trim()).toBe('resume.pdf');
+    });
+
+    it('should force the filename onto a single line via CSS, as a backstop regardless of the exact character limit chosen', () => {
+      const nameEl: HTMLElement = fixture.nativeElement.querySelector('.document-filename');
+      const style = getComputedStyle(nameEl);
+
+      expect(style.whiteSpace).toBe('nowrap');
+      expect(style.overflow).toBe('hidden');
+      expect(style.textOverflow).toBe('ellipsis');
+    });
+  });
+
   it('should emit the document id on delete', () => {
     const spy = jasmine.createSpy('delete');
     component.delete.subscribe(spy);

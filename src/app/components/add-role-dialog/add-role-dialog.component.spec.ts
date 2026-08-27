@@ -149,15 +149,14 @@ describe('AddRoleDialogComponent', () => {
         expect(component.isDocumentSelected(mockResume.id)).toBe(false);
       });
 
-      it('should not add more documents once the max limit is reached', () => {
+      it('should allow selecting more than two documents (no cap client-side, matching the backend, which has none either)', () => {
         const thirdResume: Resume = { ...mockResume, id: 'res-3' };
         component.toggleDocument(mockResume);
         component.toggleDocument(mockResume2);
         component.toggleDocument(thirdResume);
 
-        expect(component.selectedDocuments.length).toBe(2);
-        expect(component.canAddMoreDocuments).toBe(false);
-        expect(component.isDocumentSelected('res-3')).toBe(false);
+        expect(component.selectedDocuments.length).toBe(3);
+        expect(component.isDocumentSelected('res-3')).toBe(true);
       });
 
       it('should remove a document by index', () => {

@@ -10,6 +10,7 @@
   background-color: $grey-card-bg;
   border: 1.5px solid $grey-200;
   border-radius: 10px;
+  overflow-x: auto;
 }
 
 .role-card-header {
@@ -44,9 +45,7 @@
   margin: 0;
 }
 
-// 30px matches Figma exactly (node 1314:2933) — not one of the app's $spacing-* values.
-// Mobile-first: stacked below the 600px tablet-and-up threshold (see /web-design-guidelines),
-// side-by-side per Figma from 600px up.
+
 .role-card-documents {
   display: flex;
   flex-direction: column;
@@ -55,15 +54,15 @@
 
   @media (min-width: 600px) {
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     gap: 30px;
   }
 
   app-document-item {
-    min-width: 0;
-
     @media (min-width: 600px) {
-      flex: 1 0 0;
+      flex: 1 1 400px;
+      min-width: 400px;
     }
   }
 }

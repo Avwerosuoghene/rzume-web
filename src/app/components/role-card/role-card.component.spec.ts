@@ -82,8 +82,14 @@ describe('RoleCardComponent', () => {
     expect(items[0].componentInstance.actionsVariant).toBe('menu');
   });
 
-  it('should lay documents out side by side in a row when there are multiple, per Figma (node 1314:2933) — not stacked full-width', () => {
+  it('should lay documents out side by side in a row when there are multiple and the card has room, per Figma (node 1314:2933) — not stacked full-width', () => {
     component.role = role([document('1'), document('2')]);
+    // Karma's default headless window is ~756px, giving .role-card-documents only ~706px of
+    // content width after the card's own padding — too narrow for two 400px-min-width cards plus
+    // the 30px gap (830px) to fit on one row. Widen the host element to a realistic desktop width
+    // so this test reflects "there's room" rather than an artifact of the test runner's viewport.
+    (fixture.nativeElement as HTMLElement).style.width = '1000px';
+    (fixture.nativeElement as HTMLElement).style.display = 'block';
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
@@ -92,6 +98,50 @@ describe('RoleCardComponent', () => {
     const firstTop = (items[0].nativeElement as HTMLElement).getBoundingClientRect().top;
     const secondTop = (items[1].nativeElement as HTMLElement).getBoundingClientRect().top;
     expect(firstTop).toBe(secondTop);
+  });
+
+  it('should wrap even just 2 documents onto separate rows once the card is too narrow for both 400px-min-width cards to fit side by side', () => {
+    component.role = role([document('1'), document('2')]);
+    fixture.detectChanges();
+
+    const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
+    const firstTop = (items[0].nativeElement as HTMLElement).getBoundingClientRect().top;
+    const secondTop = (items[1].nativeElement as HTMLElement).getBoundingClientRect().top;
+    expect(firstTop).not.toBe(secondTop);
+  });
+
+  it('should wrap documents onto additional rows once there are more than fit on one line (the 2-document cap was removed, so a role can have any number attached)', () => {
+    const documents = Array.from({ length: 6 }, (_, i) => document(`${i + 1}`));
+    component.role = role(documents);
+    fixture.detectChanges();
+
+    const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
+    expect(items).toHaveSize(6);
+
+    const tops = items.map(item => (item.nativeElement as HTMLElement).getBoundingClientRect().top);
+    const distinctTops = new Set(tops);
+    expect(distinctTops.size).toBeGreaterThan(1);
+  });
+
+  it('should give each document card an explicit min-width — a real floor (not 0) for the icon/text/menu to stay comfortable — with no max-width ceiling so it can keep growing to fill the row', () => {
+    component.role = role([document('1')]);
+    fixture.detectChanges();
+
+    const item = fixture.debugElement.query(By.directive(DocumentItemComponent)).nativeElement as HTMLElement;
+    const style = getComputedStyle(item);
+
+    expect(style.minWidth).toBe('400px');
+    expect(style.maxWidth).toBe('none');
+  });
+
+  it('should let the role card scroll horizontally rather than break layout if content ever exceeds its width', () => {
+    component.role = role([document('1')]);
+    fixture.detectChanges();
+
+    const card = fixture.nativeElement.querySelector('.role-card') as HTMLElement;
+    const style = getComputedStyle(card);
+
+    expect(style.overflowX).toBe('auto');
   });
 
   it('should map RoleDocument.documentUrl to DocumentItem.url (backend/frontend field names differ, see roles-api-gap)', () => {

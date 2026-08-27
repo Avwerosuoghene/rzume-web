@@ -53,12 +53,28 @@
   gap: $spacing-2;
   align-items: center;
   justify-content: center;
+
+  // "Add" on mobile, "Add New Role" from $breakpoint-sm up — same display:none/@media(min-width)
+  // toggle used by document-item's desktop-actions/mobile-actions split.
+  .add-role-btn-full-label {
+    display: none;
+
+    @media (min-width: $breakpoint-sm) {
+      display: inline;
+    }
+  }
 }
 
 .active-roles-section {
   display: flex;
   flex-direction: column;
   gap: $spacing-3;
+  // .roles_container clips overflow and has a fixed viewport-derived height, so this section
+  // needs its own scroll region — without these three, content past the fold was simply
+  // unreachable on mobile. Matches documents-view.component.scss's .documents-list exactly.
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .active-roles-header {
