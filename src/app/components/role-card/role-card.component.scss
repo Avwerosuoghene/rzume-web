@@ -18,6 +18,7 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
+  gap: $spacing-4;
 
   button {
     color: $gray;
@@ -25,10 +26,58 @@
   }
 }
 
+.role-card-header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.role-card-toggle-icon {
+  transition: transform 200ms ease;
+
+  &.role-card-toggle-icon--expanded {
+    transform: rotate(180deg);
+  }
+}
+
 .role-card-heading {
   display: flex;
   flex-direction: column;
   gap: $spacing-1;
+  min-width: 0;
+}
+
+// Collapsed: title on its own line, industry + document count sharing the line below it — the
+// same stacked layout .role-card-heading already uses, just with the second line itself laid out
+// as a row. min-width: 0 + ellipsis on each line lets long text truncate instead of forcing the
+// row (and the header's flex layout) wider.
+.role-card-heading--collapsed {
+  .role-card-title,
+  .role-card-industry-count {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.role-card-industry-count {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin: 0;
+}
+
+.role-card-separator {
+  color: $grey-500;
+  flex-shrink: 0;
+}
+
+.role-card-document-count {
+  @include font-body;
+  font-size: $font-size-base;
+  color: $grey-500;
+  margin: 0;
 }
 
 .role-card-title {

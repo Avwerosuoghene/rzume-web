@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HarnessLoader } from '@angular/cdk/testing';
@@ -66,8 +66,9 @@ describe('RoleCardComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Technology');
   });
 
-  it('should render one DocumentItemComponent per document on the role', () => {
+  it('should render one DocumentItemComponent per document on the role, once expanded', () => {
     component.role = role([document('1'), document('2')]);
+    component.isExpanded = true;
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
@@ -76,6 +77,7 @@ describe('RoleCardComponent', () => {
 
   it('should always show the kebab-menu actions variant, not the desktop icon pair, per Figma (node 1314:2681)', () => {
     component.role = role([document('1')]);
+    component.isExpanded = true;
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
@@ -84,6 +86,7 @@ describe('RoleCardComponent', () => {
 
   it('should lay documents out side by side in a row when there are multiple and the card has room, per Figma (node 1314:2933) — not stacked full-width', () => {
     component.role = role([document('1'), document('2')]);
+    component.isExpanded = true;
     // Karma's default headless window is ~756px, giving .role-card-documents only ~706px of
     // content width after the card's own padding — too narrow for two 400px-min-width cards plus
     // the 30px gap (830px) to fit on one row. Widen the host element to a realistic desktop width
@@ -102,6 +105,7 @@ describe('RoleCardComponent', () => {
 
   it('should wrap even just 2 documents onto separate rows once the card is too narrow for both 400px-min-width cards to fit side by side', () => {
     component.role = role([document('1'), document('2')]);
+    component.isExpanded = true;
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
@@ -113,6 +117,7 @@ describe('RoleCardComponent', () => {
   it('should wrap documents onto additional rows once there are more than fit on one line (the 2-document cap was removed, so a role can have any number attached)', () => {
     const documents = Array.from({ length: 6 }, (_, i) => document(`${i + 1}`));
     component.role = role(documents);
+    component.isExpanded = true;
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.directive(DocumentItemComponent));
@@ -125,6 +130,7 @@ describe('RoleCardComponent', () => {
 
   it('should give each document card an explicit min-width — a real floor (not 0) for the icon/text/menu to stay comfortable — with no max-width ceiling so it can keep growing to fill the row', () => {
     component.role = role([document('1')]);
+    component.isExpanded = true;
     fixture.detectChanges();
 
     const item = fixture.debugElement.query(By.directive(DocumentItemComponent)).nativeElement as HTMLElement;
@@ -153,6 +159,7 @@ describe('RoleCardComponent', () => {
 
   it('should exclude download from the document action menu (view already gets the user to the file)', () => {
     component.role = role([document('1')]);
+    component.isExpanded = true;
     fixture.detectChanges();
 
     const item = fixture.debugElement.query(By.directive(DocumentItemComponent)).componentInstance as DocumentItemComponent;
@@ -178,6 +185,7 @@ describe('RoleCardComponent', () => {
 
     it('should call onDeleteDocument when DocumentItemComponent emits (delete)', () => {
       component.role = role([document('1')]);
+      component.isExpanded = true;
       fixture.detectChanges();
       spyOn(component, 'onDeleteDocument');
 
@@ -186,6 +194,82 @@ describe('RoleCardComponent', () => {
 
       expect(component.onDeleteDocument).toHaveBeenCalledWith('1');
     });
+  });
+
+  describe('expand/collapse', () => {
+    it('should be collapsed by default, showing the two-line summary and hiding the documents list', () => {
+      component.role = role([document('1'), document('2')]);
+      fixture.detectChanges();
+
+      expect(component.isExpanded).toBe(false);
+      expect(fixture.nativeElement.querySelector('.role-card-documents')).toBeFalsy();
+
+      const summary = fixture.nativeElement.querySelector('.role-card-heading--collapsed') as HTMLElement;
+      expect(summary).toBeTruthy();
+      expect(summary.textContent).toContain('UIUX Designer');
+      expect(summary.textContent).toContain('Technology');
+      expect(summary.textContent).toContain('2 documents');
+    });
+
+    it('should place the title on its own line, with industry and document count sharing the line below it', () => {
+      component.role = role([document('1'), document('2')]);
+      fixture.detectChanges();
+
+      const title = fixture.nativeElement.querySelector('.role-card-heading--collapsed .role-card-title') as HTMLElement;
+      const industryCount = fixture.nativeElement.querySelector('.role-card-heading--collapsed .role-card-industry-count') as HTMLElement;
+      expect(title.getBoundingClientRect().top).not.toBe(industryCount.getBoundingClientRect().top);
+
+      const industry = industryCount.querySelector('.role-card-industry') as HTMLElement;
+      const count = industryCount.querySelector('.role-card-document-count') as HTMLElement;
+      expect(industry.getBoundingClientRect().top).toBe(count.getBoundingClientRect().top);
+    });
+
+    it('should show a singular "1 document" label when the role has exactly one document', () => {
+      component.role = role([document('1')]);
+      fixture.detectChanges();
+
+      const summary = fixture.nativeElement.querySelector('.role-card-heading--collapsed') as HTMLElement;
+      expect(summary.textContent).toContain('1 document');
+      expect(summary.textContent).not.toContain('1 documents');
+    });
+
+    it('should expand to show the full heading and documents list when the toggle is clicked, and not toggle from clicking the summary text itself', () => {
+      component.role = role([document('1')]);
+      fixture.detectChanges();
+
+      const summary = fixture.nativeElement.querySelector('.role-card-heading--collapsed') as HTMLElement;
+      summary.click();
+      fixture.detectChanges();
+      expect(component.isExpanded).toBe(false);
+
+      const toggle: HTMLButtonElement = fixture.nativeElement.querySelector('.role-card-toggle');
+      toggle.click();
+      fixture.detectChanges();
+
+      expect(component.isExpanded).toBe(true);
+      expect(fixture.nativeElement.querySelector('.role-card-documents')).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('.role-card-heading--collapsed')).toBeFalsy();
+    });
+
+    it('should toggle back to collapsed, hiding the documents list again, on a second click', fakeAsync(() => {
+      component.role = role([document('1')]);
+      fixture.detectChanges();
+
+      const toggle: HTMLButtonElement = fixture.nativeElement.querySelector('.role-card-toggle');
+      toggle.click();
+      fixture.detectChanges();
+      toggle.click();
+      fixture.detectChanges();
+      // The documents list carries the :leave collapse animation — even under
+      // NoopAnimationsModule, Angular defers actually removing the element from the DOM until
+      // that (instant, but still async) transition resolves, so a tick is needed before it's
+      // gone.
+      tick();
+      fixture.detectChanges();
+
+      expect(component.isExpanded).toBe(false);
+      expect(fixture.nativeElement.querySelector('.role-card-documents')).toBeFalsy();
+    }));
   });
 
   describe('actions menu (see feature-spec-delete-role)', () => {
