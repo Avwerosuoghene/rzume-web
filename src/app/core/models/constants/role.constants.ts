@@ -51,7 +51,7 @@ export const ROLE_ERROR_MESSAGES = {
 } as const;
 
 export const ROLE_DIALOG_CONFIG = {
-  TITLE: 'Add New Role',
+  TITLE: 'Add Role',
   EDIT_TITLE: 'Edit Role',
   SUBMIT_BUTTON_TEXT: 'Add Job Role',
   SAVE_BUTTON_TEXT: 'Save',
