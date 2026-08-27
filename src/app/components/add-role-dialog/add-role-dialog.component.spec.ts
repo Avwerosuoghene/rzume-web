@@ -129,8 +129,8 @@ describe('AddRoleDialogComponent', () => {
       expect(component.isSubmitDisabled).toBe(false);
     });
 
-    it('should use "Add New Role" as the dialog title', () => {
-      expect(component.dialogTitle).toBe('Add New Role');
+    it('should use "Add Role" as the dialog title', () => {
+      expect(component.dialogTitle).toBe('Add Role');
     });
 
     it('should use "Add Job Role" as the submit button text', () => {
