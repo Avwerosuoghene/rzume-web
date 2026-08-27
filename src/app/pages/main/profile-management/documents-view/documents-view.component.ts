@@ -1,41 +1,71 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { concatMap, finalize, from, toArray } from 'rxjs';
+import { Subject, concatMap, finalize, from, takeUntil, toArray } from 'rxjs';
 import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
 import { DocumentItemComponent } from '../document-item/document-item.component';
 import { DocumentHelperService } from '../../../../core/services/document-helper.service';
 import { ProfileManagementService } from '../../../../core/services/profile-management.service';
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
 import { LoaderService } from '../../../../core/services/loader.service';
+import { SearchStateService } from '../../../../core/services/search-state.service';
 import { DocumentItem, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
 import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
 import { APIResponse, DOCUMENT_VALIDATION, DOWNLOADING_DOCUMENT, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION, IconStat, DEFAULT_CV_UPLOAD_LIMIT } from '../../../../core/models';
+import { PROFILE_EMPTY_STATES } from '../../../../core/models/constants/profile.constants';
 import { DocumentHelper } from '../../../../core/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmedUploadEntry } from '../../../../components/confirm-upload-modal/confirm-upload-modal.component';
+import { CustomSearchInputComponent } from '../../../../components/custom-search-input/custom-search-input.component';
+import { EmptyStateComponent } from '../../../../components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-documents-view',
   standalone: true,
-  imports: [CommonModule, FileUploaderComponent, DocumentItemComponent],
+  imports: [CommonModule, FileUploaderComponent, DocumentItemComponent, CustomSearchInputComponent, EmptyStateComponent],
   templateUrl: './documents-view.component.html',
   styleUrls: ['./documents-view.component.scss']
 })
-export class DocumentsViewComponent implements OnInit {
+export class DocumentsViewComponent implements OnInit, OnDestroy {
   @Input() documents: DocumentItem[] = [];
   @Input() uploadLimit: number = DEFAULT_CV_UPLOAD_LIMIT;
   isUploading = false;
   maxFileSize = DOCUMENT_VALIDATION.MAX_FILE_SIZE;
+  readonly noSearchResultsState = PROFILE_EMPTY_STATES.NO_SEARCH_RESULTS;
+
+  private searchTerm = '';
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private documentHelper: DocumentHelperService,
     private profileService: ProfileManagementService,
     private dialogHelper: DialogHelperService,
     private snackBar: MatSnackBar,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private searchStateService: SearchStateService
   ) { }
 
+  // Matches filename only. Only ever mounted while the Documents tab is active (*ngIf in
+  // profile-management.component.html), so it naturally only reacts to the shared search term
+  // while this tab is visible — no activeTab check needed here.
+  get filteredDocuments(): DocumentItem[] {
+    const query = this.searchTerm.trim().toLowerCase();
+    if (!query) return this.documents;
+    return this.documents.filter(doc => doc.fileName.toLowerCase().includes(query));
+  }
+
+  onSearchChange(term: string): void {
+    this.searchStateService.updateSearchTerm(term);
+  }
+
   ngOnInit(): void {
+    this.searchStateService.searchTerm$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(term => this.searchTerm = term);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onFilesSelected(files: File[]): void {

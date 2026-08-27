@@ -121,6 +121,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ).subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         this.getCurrentRoute();
+        // A term typed on one page's search shouldn't carry over once you navigate to another —
+        // see the global-search vault plan.
+        this.searchStateService.clearSearchTerm();
       }
     });
   }

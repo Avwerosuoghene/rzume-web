@@ -41,7 +41,7 @@ describe('HeaderComponent', () => {
       globalLoaderSubject: of(false)
     });
     const authHelperServiceSpy = jasmine.createSpyObj('AuthHelperService', ['logout']);
-    const searchStateServiceSpy = jasmine.createSpyObj('SearchStateService', ['updateSearchTerm']);
+    const searchStateServiceSpy = jasmine.createSpyObj('SearchStateService', ['updateSearchTerm', 'clearSearchTerm']);
     const screenManagerServiceSpy = jasmine.createSpyObj('ScreenManagerService', [], {
       isMobile$: of(false)
     });
@@ -175,10 +175,22 @@ describe('HeaderComponent', () => {
 
   it('should handle search change', () => {
     const searchTerm = 'test search';
-    
+
     component.onSearchChange(searchTerm);
-    
+
     expect(mockSearchStateService.updateSearchTerm).toHaveBeenCalledWith(searchTerm);
+  });
+
+  it('should clear the search term whenever the route changes, so a term typed on one page does not leak into another (see global-search plan)', () => {
+    const navigationEnd = new NavigationEnd(1, '/main/roles', '/main/roles');
+    Object.defineProperty(mockRouter, 'events', {
+      writable: true,
+      value: of(navigationEnd)
+    });
+
+    component.subscribeToRoute();
+
+    expect(mockSearchStateService.clearSearchTerm).toHaveBeenCalled();
   });
 
   it('should logout user', () => {

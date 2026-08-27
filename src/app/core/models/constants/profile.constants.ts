@@ -94,6 +94,10 @@ export const PROFILE_EMPTY_STATES = {
     title: 'No documents uploaded',
     message: 'Upload your resume, cover letters, and other documents to get started.',
     actionText: 'Upload Document'
+  },
+  NO_SEARCH_RESULTS: {
+    title: 'No documents match your search',
+    message: 'Try a different file name.'
   }
 } as const;
 

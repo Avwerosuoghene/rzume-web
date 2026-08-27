@@ -16,6 +16,18 @@
   }
 }
 
+.documents-toolbar {
+  flex-shrink: 0;
+  max-width: 360px;
+}
+
+.empty-state-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
 .documents-list {
   display: flex;
   flex-direction: column;

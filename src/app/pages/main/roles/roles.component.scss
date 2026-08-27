@@ -81,6 +81,11 @@
   flex-shrink: 0;
 }
 
+.roles-toolbar {
+  flex-shrink: 0;
+  max-width: 360px;
+}
+
 .active-roles-title {
   @include font-heading;
   font-size: $font-size-md;

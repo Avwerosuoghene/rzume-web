@@ -13,9 +13,23 @@
     [maxFileSize]="maxFileSize">
   </app-file-uploader>
 
+  <!-- Mobile search lives in the shared header (see the global-search vault plan); desktop gets
+       its own toolbar here, mirroring Dashboard's job-list-toolbar. Both write into the same
+       SearchStateService.searchTerm$, so filteredDocuments reacts to either. -->
+  <div class="documents-toolbar desktop_only" *ngIf="documents.length > 0">
+    <app-custom-search-input (searchChange)="onSearchChange($event)"></app-custom-search-input>
+  </div>
+
+  <div class="empty-state-wrapper" *ngIf="documents.length > 0 && filteredDocuments.length === 0">
+    <app-empty-state
+      [title]="noSearchResultsState.title"
+      [message]="noSearchResultsState.message"
+    ></app-empty-state>
+  </div>
+
   <div class="documents-list">
     <app-document-item
-      *ngFor="let doc of documents; trackBy: trackByDocId"
+      *ngFor="let doc of filteredDocuments; trackBy: trackByDocId"
       [document]="doc"
       (delete)="onDeleteDocument($event)"
       (download)="onDownloadDocument($event)"

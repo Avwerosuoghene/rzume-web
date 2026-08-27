@@ -23,6 +23,11 @@ export const ROLE_EMPTY_STATES = {
     icon: 'folder_open',
     title: 'No roles added yet',
     message: 'Click \'Add new role\' to start.'
+  },
+  NO_SEARCH_RESULTS: {
+    icon: 'search_off',
+    title: 'No roles match your search',
+    message: 'Try a different title or industry.'
   }
 } as const;
 

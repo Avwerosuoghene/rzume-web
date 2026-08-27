@@ -8,6 +8,7 @@ import { AnalyticsService } from '../../../core/services/analytics/analytics.ser
 import { DialogHelperService } from '../../../core/services/dialog-helper.service';
 import { RoleService } from '../../../core/services/role.service';
 import { RoleStateService } from '../../../core/services/role-state.service';
+import { SearchStateService } from '../../../core/services/search-state.service';
 import { APIResponse } from '../../../core/models';
 import { IconStat } from '../../../core/models/enums';
 import { ROLE_ERROR_MESSAGES } from '../../../core/models/constants/role.constants';
@@ -20,16 +21,18 @@ describe('RolesComponent', () => {
   let dialogHelperServiceSpy: jasmine.SpyObj<DialogHelperService>;
   let roleServiceSpy: jasmine.SpyObj<RoleService>;
   let roleStateService: RoleStateService;
+  let searchStateService: SearchStateService;
 
   const okResponse = <T>(data: T): APIResponse<T> => ({ statusCode: 200, success: true, message: '', data });
 
-  const role = (id: string): Role => ({
+  const role = (id: string, overrides: Partial<Role> = {}): Role => ({
     id,
     title: 'UIUX Designer',
     industryName: 'Technology',
     documents: [],
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    ...overrides
   });
 
   beforeEach(async () => {
@@ -44,13 +47,15 @@ describe('RolesComponent', () => {
         { provide: AnalyticsService, useValue: analyticsServiceSpy },
         { provide: DialogHelperService, useValue: dialogHelperServiceSpy },
         { provide: RoleService, useValue: roleServiceSpy },
-        RoleStateService
+        RoleStateService,
+        SearchStateService
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RolesComponent);
     component = fixture.componentInstance;
     roleStateService = TestBed.inject(RoleStateService);
+    searchStateService = TestBed.inject(SearchStateService);
   });
 
   afterEach(() => {
@@ -168,6 +173,76 @@ describe('RolesComponent', () => {
     card.triggerEventHandler('editRole', targetRole);
 
     expect(dialogHelperServiceSpy.openEditRoleDialog).toHaveBeenCalledWith(targetRole, jasmine.any(Function));
+  });
+
+  describe('search (page-aware search bar — see global-search plan)', () => {
+    const uxRole = role('1', { title: 'UIUX Designer', industryName: 'Technology' });
+    const backendRole = role('2', { title: 'Backend Engineer', industryName: 'Technology' });
+    const salesRole = role('3', { title: 'Sales Lead', industryName: 'Retail' });
+
+    beforeEach(() => {
+      fixture.detectChanges();
+      roleStateService.setRoles([uxRole, backendRole, salesRole]);
+      fixture.detectChanges();
+    });
+
+    it('should show every role when the search term is empty', () => {
+      const cards = fixture.debugElement.queryAll(By.directive(RoleCardComponent));
+      expect(cards).toHaveSize(3);
+    });
+
+    it('should filter roles by title, case-insensitively', () => {
+      searchStateService.updateSearchTerm('designer');
+      fixture.detectChanges();
+
+      const cards = fixture.debugElement.queryAll(By.directive(RoleCardComponent));
+      expect(cards).toHaveSize(1);
+      expect(cards[0].componentInstance.role).toEqual(uxRole);
+    });
+
+    it('should filter roles by industry, case-insensitively', () => {
+      searchStateService.updateSearchTerm('RETAIL');
+      fixture.detectChanges();
+
+      const cards = fixture.debugElement.queryAll(By.directive(RoleCardComponent));
+      expect(cards).toHaveSize(1);
+      expect(cards[0].componentInstance.role).toEqual(salesRole);
+    });
+
+    it('should match either title or industry, showing all roles that match either field', () => {
+      searchStateService.updateSearchTerm('technology');
+      fixture.detectChanges();
+
+      const cards = fixture.debugElement.queryAll(By.directive(RoleCardComponent));
+      expect(cards).toHaveSize(2);
+    });
+
+    it('should show a "no roles match your search" empty state when the term matches nothing, distinct from the "no roles yet" state', () => {
+      searchStateService.updateSearchTerm('nonexistent role title');
+      fixture.detectChanges();
+
+      const emptyState = fixture.nativeElement.querySelector('app-empty-state');
+      expect(emptyState).not.toBeNull();
+      expect(emptyState.textContent).toContain('No roles match your search');
+      expect(fixture.debugElement.queryAll(By.directive(RoleCardComponent))).toHaveSize(0);
+    });
+
+    it('should show every role again once the search term is cleared', () => {
+      searchStateService.updateSearchTerm('designer');
+      fixture.detectChanges();
+      searchStateService.updateSearchTerm('');
+      fixture.detectChanges();
+
+      const cards = fixture.debugElement.queryAll(By.directive(RoleCardComponent));
+      expect(cards).toHaveSize(3);
+    });
+
+    it('should call searchStateService.updateSearchTerm when the desktop search box emits', () => {
+      spyOn(searchStateService, 'updateSearchTerm');
+      component.onSearchChange('backend');
+
+      expect(searchStateService.updateSearchTerm).toHaveBeenCalledWith('backend');
+    });
   });
 
 });

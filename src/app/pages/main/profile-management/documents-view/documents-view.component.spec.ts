@@ -7,6 +7,7 @@ import { DocumentHelperService } from '../../../../core/services/document-helper
 import { ProfileManagementService } from '../../../../core/services/profile-management.service';
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
 import { LoaderService } from '../../../../core/services/loader.service';
+import { SearchStateService } from '../../../../core/services/search-state.service';
 import { DocumentItem } from '../../../../core/models/interface/profile.models';
 import { DocumentHelper } from '../../../../core/helpers';
 import { DOCUMENT_TYPES } from '../../../../core/models/constants/profile.constants';
@@ -21,6 +22,7 @@ describe('DocumentsViewComponent', () => {
   let dialogHelperSpy: jasmine.SpyObj<DialogHelperService>;
   let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
   let loaderServiceSpy: jasmine.SpyObj<LoaderService>;
+  let searchStateService: SearchStateService;
 
   const mockDoc: DocumentItem = {
     id: 'doc-1',
@@ -45,7 +47,8 @@ describe('DocumentsViewComponent', () => {
         { provide: ProfileManagementService, useValue: profileServiceSpy },
         { provide: DialogHelperService, useValue: dialogHelperSpy },
         { provide: MatSnackBar, useValue: snackBarSpy },
-        { provide: LoaderService, useValue: loaderServiceSpy }
+        { provide: LoaderService, useValue: loaderServiceSpy },
+        SearchStateService
       ]
     }).compileComponents();
 
@@ -53,7 +56,12 @@ describe('DocumentsViewComponent', () => {
     component = fixture.componentInstance;
     component.documents = [mockDoc];
     component.uploadLimit = 2;
+    searchStateService = TestBed.inject(SearchStateService);
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    searchStateService.clearSearchTerm();
   });
 
   it('should create', () => {
@@ -267,5 +275,58 @@ describe('DocumentsViewComponent', () => {
 
   it('trackByDocId should return the document id', () => {
     expect(component.trackByDocId(0, mockDoc)).toBe('doc-1');
+  });
+
+  describe('search (page-aware search bar — see global-search plan)', () => {
+    const resume: DocumentItem = { ...mockDoc, id: 'd1', fileName: 'resume.pdf' };
+    const coverLetter: DocumentItem = { ...mockDoc, id: 'd2', fileName: 'cover-letter.pdf' };
+    const certificate: DocumentItem = { ...mockDoc, id: 'd3', fileName: 'certificate.pdf' };
+
+    beforeEach(() => {
+      component.documents = [resume, coverLetter, certificate];
+      fixture.detectChanges();
+    });
+
+    it('should show every document when the search term is empty', () => {
+      expect(component.filteredDocuments).toEqual([resume, coverLetter, certificate]);
+    });
+
+    it('should filter documents by filename, case-insensitively, when the search term changes', () => {
+      searchStateService.updateSearchTerm('COVER');
+      fixture.detectChanges();
+
+      expect(component.filteredDocuments).toEqual([coverLetter]);
+    });
+
+    it('should show every document again once the search term is cleared', () => {
+      searchStateService.updateSearchTerm('cover');
+      fixture.detectChanges();
+      searchStateService.updateSearchTerm('');
+      fixture.detectChanges();
+
+      expect(component.filteredDocuments).toEqual([resume, coverLetter, certificate]);
+    });
+
+    it('should render one app-document-item per filtered document, not per document', () => {
+      searchStateService.updateSearchTerm('resume');
+      fixture.detectChanges();
+
+      const items = fixture.nativeElement.querySelectorAll('app-document-item');
+      expect(items).toHaveSize(1);
+    });
+
+    it('should show a "no documents match your search" message when the term matches nothing', () => {
+      searchStateService.updateSearchTerm('nonexistent file name');
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('No documents match your search');
+    });
+
+    it('should call searchStateService.updateSearchTerm when the desktop search box emits', () => {
+      spyOn(searchStateService, 'updateSearchTerm');
+      component.onSearchChange('resume');
+
+      expect(searchStateService.updateSearchTerm).toHaveBeenCalledWith('resume');
+    });
   });
 });
