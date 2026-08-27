@@ -22,6 +22,7 @@ export interface DocumentItem {
   documentType?: string | null;
   uploadedAt: Date;
   url: string;
+  downloadUrl?: string;
 }
 
 export interface Resume {
@@ -29,6 +30,7 @@ export interface Resume {
   fileName: string;
   uploadedAt: Date;
   url: string;
+  downloadUrl?: string;
   fileSize?: number;
   fileType?: string;
   documentType?: string | null;

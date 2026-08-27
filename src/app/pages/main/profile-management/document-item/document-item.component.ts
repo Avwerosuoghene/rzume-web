@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ActionMenuComponent } from '../../../../components/action-menu/action-menu.component';
 import { DocumentItem, ActionMenuItem, ActionType, ACTION_TYPES } from '../../../../core/models';
 import { DocumentHelper } from '../../../../core/helpers';
+import { TruncatePipe } from '../../../../core/pipes/truncate.pipe';
 
 export interface UploadedDocument {
   id: string;
@@ -15,7 +16,7 @@ export interface UploadedDocument {
 @Component({
   selector: 'app-document-item',
   standalone: true,
-  imports: [CommonModule, DatePipe, ActionMenuComponent],
+  imports: [CommonModule, DatePipe, TruncatePipe, ActionMenuComponent],
   templateUrl: './document-item.component.html',
   styleUrls: ['./document-item.component.scss']
 })

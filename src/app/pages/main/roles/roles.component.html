@@ -5,7 +5,7 @@
       <span class="role-limit-label">Role limit:</span> {{ (stats$ | async)?.createdCount ?? 0 }} / {{ roleLimit }} roles created
     </p>
     <button class="add-role-btn" type="button" (click)="openAddRoleDialog()">
-      <span class="add-icon">+</span> Add New Role
+      <span class="add-icon">+</span> Add<span class="add-role-btn-full-label"> New Role</span>
     </button>
   </div>
 

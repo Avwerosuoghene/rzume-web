@@ -128,7 +128,7 @@ export class DocumentsViewComponent implements OnInit {
 
     this.snackBar.open(DOWNLOADING_DOCUMENT, SNACKBAR_CLOSE_LABEL, { duration: SNACKBAR_DURATION });
 
-    DocumentHelper.downloadDocument(document.url, document.fileName);
+    DocumentHelper.downloadDocument(document.downloadUrl ?? document.url, document.fileName);
   }
 
   get isUploadLimitReached(): boolean {

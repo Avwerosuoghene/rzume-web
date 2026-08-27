@@ -4,13 +4,15 @@ import { AngularMaterialModules } from '../../core/modules';
 import { Role } from '../../core/models/interface/role.models';
 import { AttachedDocument, DocumentItem, ACTION_TYPES, ActionType } from '../../core/models';
 import { DocumentItemComponent } from '../../pages/main/profile-management/document-item/document-item.component';
+import { expandCollapseAnimation } from '../../core/animations/expand-collapse-animation';
 
 @Component({
   selector: 'app-role-card',
   standalone: true,
   imports: [CommonModule, AngularMaterialModules, DocumentItemComponent],
   templateUrl: './role-card.component.html',
-  styleUrl: './role-card.component.scss'
+  styleUrl: './role-card.component.scss',
+  animations: [expandCollapseAnimation]
 })
 export class RoleCardComponent {
   @Input() role!: Role;
@@ -23,9 +25,20 @@ export class RoleCardComponent {
   // Management's own document list still uses.
   readonly excludedDocumentActions: ActionType[] = [ACTION_TYPES.DOWNLOAD];
 
+  isExpanded = false;
+
   toDocumentItem(document: AttachedDocument): DocumentItem {
     const { documentUrl, ...rest } = document;
     return { ...rest, url: documentUrl };
+  }
+
+  toggleExpanded(): void {
+    this.isExpanded = !this.isExpanded;
+  }
+
+  get documentCountLabel(): string {
+    const count = this.role.documents.length;
+    return `${count} document${count === 1 ? '' : 's'}`;
   }
 
   onEditRole(): void {

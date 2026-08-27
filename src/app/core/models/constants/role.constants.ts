@@ -1,5 +1,4 @@
 export const ROLE_LIMIT = 2;
-export const ROLE_DOCUMENT_LIMIT = 2;
 export const ROLE_DOCUMENT_MAX_SIZE = 500 * 1024; // 500KB
 export const ROLE_DOCUMENT_TYPES = ['application/pdf'] as const;
 
@@ -37,7 +36,6 @@ export const ROLE_FORM_LABELS = {
 export const ROLE_VALIDATION = {
   JOB_ROLE_MIN_LENGTH: 2,
   JOB_ROLE_MAX_LENGTH: 100,
-  MAX_DOCUMENTS: ROLE_DOCUMENT_LIMIT,
   MAX_FILE_SIZE: ROLE_DOCUMENT_MAX_SIZE,
   ALLOWED_FILE_TYPES: ROLE_DOCUMENT_TYPES
 } as const;
@@ -47,7 +45,6 @@ export const ROLE_ERROR_MESSAGES = {
   JOB_ROLE_MIN_LENGTH: `Job role must be at least ${ROLE_VALIDATION.JOB_ROLE_MIN_LENGTH} characters`,
   JOB_ROLE_MAX_LENGTH: `Job role cannot exceed ${ROLE_VALIDATION.JOB_ROLE_MAX_LENGTH} characters`,
   INDUSTRY_REQUIRED: 'Industry is required',
-  MAX_DOCUMENTS_REACHED: `You can only upload a maximum of ${ROLE_DOCUMENT_LIMIT} documents`,
   FILE_TOO_LARGE: `File size must not exceed ${ROLE_DOCUMENT_MAX_SIZE / 1024}KB`,
   INVALID_FILE_TYPE: 'Only PDF files are allowed',
   LOAD_FAILED: 'Failed to load roles. Please try again.'
@@ -58,8 +55,7 @@ export const ROLE_DIALOG_CONFIG = {
   EDIT_TITLE: 'Edit Role',
   SUBMIT_BUTTON_TEXT: 'Add Job Role',
   SAVE_BUTTON_TEXT: 'Save',
-  FILE_RESTRICTIONS_TEXT: `PDF only (max. ${ROLE_DOCUMENT_MAX_SIZE / 1024}kb per document)`,
-  MAX_DOCUMENTS_TEXT: `You are only allowed maximum of ${ROLE_DOCUMENT_LIMIT} documents`
+  FILE_RESTRICTIONS_TEXT: `PDF only (max. ${ROLE_DOCUMENT_MAX_SIZE / 1024}kb per document)`
 } as const;
 
 export const ROLE_DELETE_CONFIRM = {
