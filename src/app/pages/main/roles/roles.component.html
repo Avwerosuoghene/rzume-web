@@ -12,7 +12,7 @@
   <div class="active-roles-section">
     <div class="active-roles-header">
       <h3 class="active-roles-title">Active roles</h3>
-      <p class="active-roles-subtitle">You are only allowed maximum of two ({{ roleLimit }}) roles at this stage.</p>
+      <p class="active-roles-subtitle">You are only allowed a maximum of {{ roleLimit }} role{{ roleLimit === 1 ? '' : 's' }} at this stage.</p>
     </div>
 
     <!-- Mobile search lives in the shared header (see the global-search vault plan); desktop gets

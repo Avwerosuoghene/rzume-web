@@ -13,6 +13,7 @@ import { APIResponse } from '../../../core/models';
 import { IconStat } from '../../../core/models/enums';
 import { ROLE_ERROR_MESSAGES } from '../../../core/models/constants/role.constants';
 import { Role } from '../../../core/models/interface/role.models';
+import { RoleHelper } from '../../../core/helpers/role.helper';
 
 describe('RolesComponent', () => {
   let component: RolesComponent;
@@ -242,6 +243,51 @@ describe('RolesComponent', () => {
       component.onSearchChange('backend');
 
       expect(searchStateService.updateSearchTerm).toHaveBeenCalledWith('backend');
+    });
+  });
+
+  describe('role limit subtitle (must reflect the real, plan-derived limit — not a hardcoded number)', () => {
+    // roleLimit is set from RoleHelper.getRoleLimit() in a field initializer, so the spy has to be
+    // in place before the component (and therefore its constructor) is created — the shared
+    // beforeEach's fixture is already too late for this.
+    function createWithRoleLimit(limit: number) {
+      TestBed.resetTestingModule();
+      analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['track']);
+      dialogHelperServiceSpy = jasmine.createSpyObj('DialogHelperService', ['openAddRoleDialog', 'openInfoDialog', 'openDeleteRoleConfirmation', 'openDeleteRoleDocumentConfirmation', 'openEditRoleDialog']);
+      roleServiceSpy = jasmine.createSpyObj('RoleService', ['getRoles', 'getRoleStats']);
+      roleServiceSpy.getRoles.and.returnValue(of(okResponse({ count: 0, roles: [] })));
+      spyOn(RoleHelper, 'getRoleLimit').and.returnValue(limit);
+
+      TestBed.configureTestingModule({
+        imports: [RolesComponent, RoleCardComponent, MatIconModule],
+        providers: [
+          { provide: AnalyticsService, useValue: analyticsServiceSpy },
+          { provide: DialogHelperService, useValue: dialogHelperServiceSpy },
+          { provide: RoleService, useValue: roleServiceSpy },
+          RoleStateService,
+          SearchStateService
+        ]
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(RolesComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    }
+
+    it('should state the actual configured limit, not a hardcoded word, when it differs from the old default of two', () => {
+      createWithRoleLimit(5);
+
+      const subtitle = fixture.nativeElement.querySelector('.active-roles-subtitle').textContent;
+      expect(subtitle).toContain('5 roles');
+      expect(subtitle.toLowerCase()).not.toContain('two');
+    });
+
+    it('should use the singular "role" when the limit is exactly 1', () => {
+      createWithRoleLimit(1);
+
+      const subtitle = fixture.nativeElement.querySelector('.active-roles-subtitle').textContent;
+      expect(subtitle).toContain('1 role');
+      expect(subtitle).not.toContain('1 roles');
     });
   });
 
