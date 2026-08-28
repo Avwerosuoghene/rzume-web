@@ -8,9 +8,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Type } from '@angular/core';
 
 
 export const AngularMaterialModules: readonly Type<unknown>[] = [
-  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule, MatCheckboxModule, MatMenuModule, MatProgressBarModule, MatDatepickerModule, MatSelectModule
+  MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatButtonModule, MatCheckboxModule, MatMenuModule, MatProgressBarModule, MatDatepickerModule, MatSelectModule, MatAutocompleteModule
 ];

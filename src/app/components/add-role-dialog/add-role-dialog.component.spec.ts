@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatAutocompleteHarness } from '@angular/material/autocomplete/testing';
 import { of } from 'rxjs';
 import { AddRoleDialogComponent } from './add-role-dialog.component';
 import { DocumentHelperService } from '../../core/services/document-helper.service';
@@ -20,6 +23,7 @@ describe('AddRoleDialogComponent', () => {
   let documentHelperSpy: jasmine.SpyObj<DocumentHelperService>;
   let industryServiceSpy: jasmine.SpyObj<IndustryService>;
   let routerSpy: jasmine.SpyObj<Router>;
+  let loader: HarnessLoader;
 
   const mockResume: Resume = {
     id: 'res-1',
@@ -79,6 +83,7 @@ describe('AddRoleDialogComponent', () => {
 
     fixture = TestBed.createComponent(AddRoleDialogComponent);
     component = fixture.componentInstance;
+    loader = TestbedHarnessEnvironment.loader(fixture);
   }
 
   describe('create mode', () => {
@@ -261,17 +266,65 @@ describe('AddRoleDialogComponent', () => {
       expect(() => component.ngOnDestroy()).not.toThrow();
     });
 
+    describe('industry field — searchable Material autocomplete (was a native <select>, hard to scroll/search)', () => {
+      // Array.prototype.find can't await an async predicate (it always sees a truthy Promise and
+      // returns the first element) — resolve every option's text up front instead.
+      async function findOptionByText(options: Awaited<ReturnType<MatAutocompleteHarness['getOptions']>>, text: string) {
+        const texts = await Promise.all(options.map(o => o.getText()));
+        const index = texts.indexOf(text);
+        return options[index];
+      }
+
+      it('should render a Material autocomplete, not a native select', () => {
+        expect(fixture.nativeElement.querySelector('select')).toBeNull();
+        expect(fixture.nativeElement.querySelector('input.mat-mdc-autocomplete-trigger')).not.toBeNull();
+      });
+
+      it('should show every industry as an option when nothing has been typed', async () => {
+        const autocomplete = await loader.getHarness(MatAutocompleteHarness);
+        await autocomplete.focus();
+        const options = await autocomplete.getOptions();
+
+        expect(options).toHaveSize(mockIndustries.length);
+      });
+
+      it('should filter industries by typed text, case-insensitively', async () => {
+        const autocomplete = await loader.getHarness(MatAutocompleteHarness);
+        await autocomplete.enterText('health');
+        const options = await autocomplete.getOptions();
+
+        expect(options).toHaveSize(1);
+        expect(await options[0].getText()).toBe('Healthcare');
+      });
+
+      it('should set industryControl to the selected industry\'s id when an option is chosen', async () => {
+        const autocomplete = await loader.getHarness(MatAutocompleteHarness);
+        await autocomplete.focus();
+        const options = await autocomplete.getOptions();
+        await (await findOptionByText(options, 'Healthcare')).click();
+
+        expect(component.industryControl.value).toBe('2');
+      });
+
+      it('should display the selected industry\'s name in the input after selection', async () => {
+        const autocomplete = await loader.getHarness(MatAutocompleteHarness);
+        await autocomplete.focus();
+        const options = await autocomplete.getOptions();
+        await (await findOptionByText(options, 'Healthcare')).click();
+
+        expect(await autocomplete.getValue()).toBe('Healthcare');
+      });
+
+      it('should show a required error when the field is left empty and blurred', () => {
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.industry-field input');
+        input.dispatchEvent(new Event('blur'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('mat-error')?.textContent).toContain('required');
+      });
+    });
+
     describe('UI parity with job-add-dialog (see ui-parity-fix diagnosis)', () => {
-      it('should wrap form fields in .form-input-container, so the .form-select CSS override in styles.scss actually applies to the industry select', () => {
-        const select = fixture.nativeElement.querySelector('select');
-        expect(select).not.toBeNull();
-        expect(select!.closest('.form-input-container')).not.toBeNull();
-      });
-
-      it('should configure a placeholder for the industry select, matching the pattern job-add-dialog\'s resumeConfig already uses', () => {
-        expect(component.industryConfig.placeholder).toBeTruthy();
-      });
-
       it('should give the documents multiselect trigger a real layout (currently unstyled — no CSS for it exists anywhere in the app)', () => {
         const trigger = fixture.nativeElement.querySelector('.multiselect-trigger');
         expect(trigger).not.toBeNull();
@@ -303,6 +356,11 @@ describe('AddRoleDialogComponent', () => {
 
     it('should pre-select the industry matching the role\'s industryName once industries load', () => {
       expect(component.industryControl.value).toBe('1');
+    });
+
+    it('should show the pre-selected industry\'s name in the autocomplete input', async () => {
+      const autocomplete = await loader.getHarness(MatAutocompleteHarness);
+      expect(await autocomplete.getValue()).toBe('Technology');
     });
 
     it('should pre-select the role\'s currently-attached documents once resumes load', () => {
