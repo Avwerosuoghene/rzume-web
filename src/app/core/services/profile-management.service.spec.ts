@@ -159,6 +159,43 @@ describe('ProfileManagementService', () => {
     });
   });
 
+  describe('updateResume', () => {
+    it('should PUT to the resume\'s own route, with the resume id in the URL', () => {
+      apiServiceSpy.put.and.returnValue(of(okResponse({} as never)));
+
+      service.updateResume('resume-1', { fileName: 'new-name' }).subscribe();
+
+      expect(apiServiceSpy.put).toHaveBeenCalledWith(jasmine.stringMatching(/resume-1$/), jasmine.anything(), true);
+    });
+
+    it('should send only fileName when documentType is omitted', () => {
+      apiServiceSpy.put.and.returnValue(of(okResponse({} as never)));
+
+      service.updateResume('resume-1', { fileName: 'new-name' }).subscribe();
+
+      const body = apiServiceSpy.put.calls.mostRecent().args[1];
+      expect(body).toEqual({ fileName: 'new-name' });
+    });
+
+    it('should send only documentType when fileName is omitted', () => {
+      apiServiceSpy.put.and.returnValue(of(okResponse({} as never)));
+
+      service.updateResume('resume-1', { documentType: DOCUMENT_TYPES.COVER_LETTER }).subscribe();
+
+      const body = apiServiceSpy.put.calls.mostRecent().args[1];
+      expect(body).toEqual({ documentType: DOCUMENT_TYPES.COVER_LETTER });
+    });
+
+    it('should send both fields when both are provided', () => {
+      apiServiceSpy.put.and.returnValue(of(okResponse({} as never)));
+
+      service.updateResume('resume-1', { fileName: 'new-name', documentType: DOCUMENT_TYPES.RESUME }).subscribe();
+
+      const body = apiServiceSpy.put.calls.mostRecent().args[1];
+      expect(body).toEqual({ fileName: 'new-name', documentType: DOCUMENT_TYPES.RESUME });
+    });
+  });
+
   describe('submitFeedback', () => {
     const feedback: FeedbackSubmission = { message: 'Great app', rating: 5, pageUrl: '/dashboard' };
 

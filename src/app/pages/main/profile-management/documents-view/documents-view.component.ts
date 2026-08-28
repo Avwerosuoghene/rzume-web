@@ -9,7 +9,8 @@ import { DialogHelperService } from '../../../../core/services/dialog-helper.ser
 import { LoaderService } from '../../../../core/services/loader.service';
 import { SearchStateService } from '../../../../core/services/search-state.service';
 import { DocumentItem, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
-import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
+import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DOCUMENT_UPDATE_SUCCESS_TITLE, DOCUMENT_UPDATE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
+import { EditDocumentModalResult } from '../../../../components/edit-document-modal/edit-document-modal.component';
 import { APIResponse, DOCUMENT_VALIDATION, DOWNLOADING_DOCUMENT, SNACKBAR_CLOSE_LABEL, SNACKBAR_DURATION, IconStat, DEFAULT_CV_UPLOAD_LIMIT } from '../../../../core/models';
 import { PROFILE_EMPTY_STATES } from '../../../../core/models/constants/profile.constants';
 import { DocumentHelper } from '../../../../core/helpers';
@@ -111,6 +112,7 @@ export class DocumentsViewComponent implements OnInit, OnDestroy {
       DOCUMENT_UPLOAD_SUCCESS_TITLE,
       DOCUMENT_UPLOAD_SUCCESS_MSG,
       () => {
+        this.documentHelper.fetchResumes();
         if (skippedCount > 0) {
           this.dialogHelper.openInfoDialog(
             IconStat.warn,
@@ -119,7 +121,6 @@ export class DocumentsViewComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.documentHelper.fetchResumes();
   }
 
   onDeleteDocument(id: string): void {
@@ -148,6 +149,35 @@ export class DocumentsViewComponent implements OnInit, OnDestroy {
     this.dialogHelper.openSuccessDialog(
       DOCUMENT_DELETE_SUCCESS_TITLE,
       DOCUMENT_DELETE_SUCCESS_MSG,
+      () => this.documentHelper.fetchResumes()
+    );
+  }
+
+  onEditDocument(id: string): void {
+    const document = this.documents.find(doc => doc.id === id);
+    if (!document) return;
+
+    this.dialogHelper.openEditDocumentDialog(
+      document,
+      (result) => this.updateDocument(id, result)
+    );
+  }
+
+  private updateDocument(id: string, result: EditDocumentModalResult): void {
+    this.loaderService.showLoader();
+    this.profileService.updateResume(id, result)
+      .pipe(finalize(() => this.loaderService.hideLoader()))
+      .subscribe({
+        next: (response) => this.handleUpdateSuccess(response)
+      });
+  }
+
+  private handleUpdateSuccess(response: APIResponse<DocumentItem>): void {
+    if (!response.success) return;
+
+    this.dialogHelper.openSuccessDialog(
+      DOCUMENT_UPDATE_SUCCESS_TITLE,
+      DOCUMENT_UPDATE_SUCCESS_MSG,
       () => this.documentHelper.fetchResumes()
     );
   }

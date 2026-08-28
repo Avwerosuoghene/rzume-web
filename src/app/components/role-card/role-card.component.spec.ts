@@ -167,7 +167,7 @@ describe('RoleCardComponent', () => {
     expect(mapped.url).toBe(doc.documentUrl);
   });
 
-  it('should exclude download from the document action menu (view already gets the user to the file)', () => {
+  it('should exclude download and edit from the document action menu (view already gets the user to the file; editing a document is a Documents-tab-only, library-management action — see plan-update-document-type)', () => {
     component.role = role([document('1')]);
     component.isExpanded = true;
     fixture.detectChanges();
@@ -176,6 +176,7 @@ describe('RoleCardComponent', () => {
     const keys = item.documentActions.map(a => a.key);
 
     expect(keys).not.toContain(ACTION_TYPES.DOWNLOAD);
+    expect(keys).not.toContain(ACTION_TYPES.EDIT);
     expect(keys).toEqual([ACTION_TYPES.VIEW, ACTION_TYPES.DELETE]);
   });
 

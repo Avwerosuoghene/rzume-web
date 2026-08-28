@@ -22,8 +22,11 @@ export class RoleCardComponent {
 
   // View and download both just get the user to the file, so download is redundant here —
   // excluded rather than removed from DocumentItemComponent's action set, which Profile
-  // Management's own document list still uses.
-  readonly excludedDocumentActions: ActionType[] = [ACTION_TYPES.DOWNLOAD];
+  // Management's own document list still uses. Edit is excluded too: a role-card's document is
+  // just a reference to the same underlying resume, so editing its name/type here would silently
+  // change it everywhere it's referenced — that's a Documents-tab-only, library-management action
+  // (see plan-update-document-type in the vault).
+  readonly excludedDocumentActions: ActionType[] = [ACTION_TYPES.DOWNLOAD, ACTION_TYPES.EDIT];
 
   readonly documentFilenameTruncateLimit = 18;
 

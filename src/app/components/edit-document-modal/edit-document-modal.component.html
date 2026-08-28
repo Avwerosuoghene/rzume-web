@@ -1,0 +1,23 @@
+<div class="modal-container">
+  <h2 class="modal-title">Edit Document</h2>
+
+  <mat-form-field appearance="outline" class="name-field">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="name" [ngModelOptions]="{ standalone: true }" />
+    <span matSuffix class="extension-suffix">{{ extension }}</span>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="document-type-field">
+    <mat-label>Document type</mat-label>
+    <mat-select [(ngModel)]="documentType" [ngModelOptions]="{ standalone: true }">
+      @for (option of documentTypeOptions; track option[0]) {
+        <mat-option [value]="option[0]">{{ option[1] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="button-group">
+    <button mat-stroked-button class="close-button" (click)="onCancel()">Cancel</button>
+    <button mat-flat-button class="save-button" [disabled]="!isNameValid" (click)="onSave()">Save</button>
+  </div>
+</div>

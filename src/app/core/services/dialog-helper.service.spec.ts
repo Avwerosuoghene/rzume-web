@@ -248,6 +248,39 @@ describe('DialogHelperService', () => {
     });
   });
 
+  describe('openEditDocumentDialog', () => {
+    const document = { id: 'doc-1', fileName: 'resume.pdf', uploadedAt: new Date(), url: 'x', documentType: 'Resume' };
+
+    it('should pass the given document to the dialog', () => {
+      mockDialogClose(undefined);
+
+      service.openEditDocumentDialog(document, () => {});
+
+      expect(dialogSpy.open).toHaveBeenCalledWith(jasmine.any(Function), jasmine.objectContaining({
+        data: { document }
+      }));
+    });
+
+    it('should call onConfirm with the submitted result when the dialog closes as Submitted', () => {
+      const result = { fileName: 'renamed', documentType: 'CoverLetter' };
+      mockDialogClose({ status: DialogCloseStatus.Submitted, data: result });
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openEditDocumentDialog(document, onConfirm);
+
+      expect(onConfirm).toHaveBeenCalledWith(result);
+    });
+
+    it('should NOT call onConfirm when the dialog is cancelled', () => {
+      mockDialogClose({ status: DialogCloseStatus.Cancelled });
+      const onConfirm = jasmine.createSpy('onConfirm');
+
+      service.openEditDocumentDialog(document, onConfirm);
+
+      expect(onConfirm).not.toHaveBeenCalled();
+    });
+  });
+
   describe('openDeleteRoleConfirmation', () => {
     it('should open the modal with the exact Figma copy (Remove Role / Are you sure you want to delete this Role?)', () => {
       mockDialogClose({ status: DialogCloseStatus.Cancelled });

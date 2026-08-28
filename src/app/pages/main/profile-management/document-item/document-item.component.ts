@@ -27,10 +27,12 @@ export class DocumentItemComponent {
   @Input() filenameTruncateLimit = 30;
   @Output() delete = new EventEmitter<string>();
   @Output() download = new EventEmitter<string>();
+  @Output() edit = new EventEmitter<string>();
 
   get documentActions(): ActionMenuItem[] {
     const allActions: ActionMenuItem[] = [
       { key: ACTION_TYPES.VIEW, label: 'View document', callback: () => this.onView() },
+      { key: ACTION_TYPES.EDIT, label: 'Edit document', callback: () => this.onEdit() },
       { key: ACTION_TYPES.DOWNLOAD, label: 'Download document', callback: () => this.onDownload() },
       { key: ACTION_TYPES.DELETE, label: 'Delete document', callback: () => this.onDelete() }
     ];
@@ -39,6 +41,10 @@ export class DocumentItemComponent {
 
   onView(): void {
     window.open(this.document.url, '_blank', 'noopener');
+  }
+
+  onEdit(): void {
+    this.edit.emit(this.document.id);
   }
 
   onDelete(): void {

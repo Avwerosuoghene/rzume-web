@@ -35,8 +35,8 @@ describe('DocumentsViewComponent', () => {
 
   beforeEach(async () => {
     documentHelperSpy = jasmine.createSpyObj('DocumentHelperService', ['fetchResumes']);
-    profileServiceSpy = jasmine.createSpyObj('ProfileManagementService', ['uploadResume', 'deleteResume']);
-    dialogHelperSpy = jasmine.createSpyObj('DialogHelperService', ['openSuccessDialog', 'openDeleteConfirmation', 'openInfoDialog', 'openConfirmUploadDialog']);
+    profileServiceSpy = jasmine.createSpyObj('ProfileManagementService', ['uploadResume', 'deleteResume', 'updateResume']);
+    dialogHelperSpy = jasmine.createSpyObj('DialogHelperService', ['openSuccessDialog', 'openDeleteConfirmation', 'openInfoDialog', 'openConfirmUploadDialog', 'openEditDocumentDialog']);
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
     loaderServiceSpy = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
 
@@ -164,7 +164,7 @@ describe('DocumentsViewComponent', () => {
         expect(component.isUploading).toBe(false);
       });
 
-      it('should show a success dialog and refresh resumes after a successful upload', () => {
+      it('should show a success dialog, and refresh resumes once it\'s confirmed/closed', () => {
         profileServiceSpy.uploadResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
         const file = new File(['a'], 'first.pdf', { type: 'application/pdf' });
         confirmWith([{ file, documentType: DOCUMENT_TYPES.RESUME }]);
@@ -172,6 +172,11 @@ describe('DocumentsViewComponent', () => {
         component.onFilesSelected([file]);
 
         expect(dialogHelperSpy.openSuccessDialog).toHaveBeenCalled();
+        expect(documentHelperSpy.fetchResumes).not.toHaveBeenCalled();
+
+        const onClosed = dialogHelperSpy.openSuccessDialog.calls.mostRecent().args[2];
+        onClosed!();
+
         expect(documentHelperSpy.fetchResumes).toHaveBeenCalled();
       });
 
@@ -221,6 +226,47 @@ describe('DocumentsViewComponent', () => {
       component.onDeleteDocument('doc-1');
       const onConfirm = dialogHelperSpy.openDeleteConfirmation.calls.mostRecent().args[1];
       onConfirm();
+
+      expect(dialogHelperSpy.openSuccessDialog).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('onEditDocument', () => {
+    it('should do nothing when the document id is not found', () => {
+      component.onEditDocument('missing-id');
+      expect(dialogHelperSpy.openEditDocumentDialog).not.toHaveBeenCalled();
+    });
+
+    it('should open the edit dialog for a known document', () => {
+      component.onEditDocument('doc-1');
+      expect(dialogHelperSpy.openEditDocumentDialog).toHaveBeenCalledWith(mockDoc, jasmine.any(Function));
+    });
+
+    it('should update the document and show a success dialog on confirm, refreshing once it\'s confirmed/closed', () => {
+      profileServiceSpy.updateResume.and.returnValue(of({ success: true, statusCode: 200, message: 'ok', data: mockDoc }));
+
+      component.onEditDocument('doc-1');
+      const onConfirm = dialogHelperSpy.openEditDocumentDialog.calls.mostRecent().args[1];
+      onConfirm({ fileName: 'renamed', documentType: 'CoverLetter' });
+
+      expect(profileServiceSpy.updateResume).toHaveBeenCalledWith('doc-1', { fileName: 'renamed', documentType: 'CoverLetter' });
+      expect(loaderServiceSpy.showLoader).toHaveBeenCalled();
+      expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
+      expect(dialogHelperSpy.openSuccessDialog).toHaveBeenCalled();
+      expect(documentHelperSpy.fetchResumes).not.toHaveBeenCalled();
+
+      const onClosed = dialogHelperSpy.openSuccessDialog.calls.mostRecent().args[2];
+      onClosed!();
+
+      expect(documentHelperSpy.fetchResumes).toHaveBeenCalled();
+    });
+
+    it('should not show a success dialog when the update response reports failure', () => {
+      profileServiceSpy.updateResume.and.returnValue(of({ success: false, statusCode: 400, message: 'failed', data: undefined as unknown as DocumentItem }));
+
+      component.onEditDocument('doc-1');
+      const onConfirm = dialogHelperSpy.openEditDocumentDialog.calls.mostRecent().args[1];
+      onConfirm({ fileName: 'renamed', documentType: 'CoverLetter' });
 
       expect(dialogHelperSpy.openSuccessDialog).not.toHaveBeenCalled();
     });

@@ -125,6 +125,17 @@ export class ProfileManagementService {
     );
   }
 
+  // "Omitted = unchanged" — matches the backend's UpdateResumeRequest contract (only the fields
+  // actually present in the payload are updated; fileName excludes the extension, which the
+  // backend always preserves from the original upload regardless of what's sent here).
+  updateResume(id: string, payload: { fileName?: string; documentType?: string }): Observable<APIResponse<DocumentItem>> {
+    return this.apiService.put<APIResponse<DocumentItem>>(
+      ApiRoutes.profileManagement.resumes + `/${id}`,
+      payload,
+      true
+    );
+  }
+
   /**
    * Submit user feedback to the backend
    * Follows the same pattern as job application submission

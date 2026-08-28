@@ -78,6 +78,15 @@ describe('DocumentItemComponent', () => {
     });
   });
 
+  it('should emit the document id on edit', () => {
+    const spy = jasmine.createSpy('edit');
+    component.edit.subscribe(spy);
+
+    component.onEdit();
+
+    expect(spy).toHaveBeenCalledWith('doc-1');
+  });
+
   it('should emit the document id on delete', () => {
     const spy = jasmine.createSpy('delete');
     component.delete.subscribe(spy);
@@ -124,15 +133,25 @@ describe('DocumentItemComponent', () => {
   });
 
   describe('excludeActions', () => {
-    it('should include view/download/delete by default (excludeActions empty)', () => {
+    it('should include view/edit/download/delete by default (excludeActions empty)', () => {
       const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
       const keys = menu.actions.map(a => a.key);
 
-      expect(keys).toEqual([ACTION_TYPES.VIEW, ACTION_TYPES.DOWNLOAD, ACTION_TYPES.DELETE]);
+      expect(keys).toEqual([ACTION_TYPES.VIEW, ACTION_TYPES.EDIT, ACTION_TYPES.DOWNLOAD, ACTION_TYPES.DELETE]);
     });
 
     it('should omit an action listed in excludeActions (e.g. role-card excluding download since it duplicates view)', () => {
       component.excludeActions = [ACTION_TYPES.DOWNLOAD];
+      fixture.detectChanges();
+
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const keys = menu.actions.map(a => a.key);
+
+      expect(keys).toEqual([ACTION_TYPES.VIEW, ACTION_TYPES.EDIT, ACTION_TYPES.DELETE]);
+    });
+
+    it('should omit multiple excluded actions (e.g. role-card excluding both download and edit)', () => {
+      component.excludeActions = [ACTION_TYPES.DOWNLOAD, ACTION_TYPES.EDIT];
       fixture.detectChanges();
 
       const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
@@ -192,6 +211,17 @@ describe('DocumentItemComponent', () => {
       const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
       const deleteAction = menu.actions.find(a => a.key === ACTION_TYPES.DELETE);
       deleteAction?.callback();
+
+      expect(spy).toHaveBeenCalledWith('doc-1');
+    });
+
+    it('should call onEdit() when the "edit" action\'s callback is invoked', () => {
+      const spy = jasmine.createSpy('edit');
+      component.edit.subscribe(spy);
+
+      const menu = fixture.debugElement.query(By.directive(ActionMenuComponent)).componentInstance as ActionMenuComponent;
+      const editAction = menu.actions.find(a => a.key === ACTION_TYPES.EDIT);
+      editAction?.callback();
 
       expect(spy).toHaveBeenCalledWith('doc-1');
     });

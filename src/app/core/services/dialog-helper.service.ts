@@ -5,12 +5,14 @@ import { finalize } from "rxjs";
 import { JobAddDialogComponent, JobViewDialogComponent, InfoDialogComponent, JobStatusChangeComponent, SuccessModalComponent } from "../../components";
 import { ConfirmDeleteModalComponent, ConfirmDeleteModalData } from '../../components/confirm-delete-modal/confirm-delete-modal.component';
 import { ConfirmUploadModalComponent, ConfirmUploadModalData, ConfirmedUploadEntry } from '../../components/confirm-upload-modal/confirm-upload-modal.component';
+import { EditDocumentModalComponent, EditDocumentModalData, EditDocumentModalResult } from '../../components/edit-document-modal/edit-document-modal.component';
 import { PolicyDialogComponent } from '../../components/policy-dialog/policy-dialog.component';
 import { AddRoleDialogComponent } from '../../components/add-role-dialog/add-role-dialog.component';
 import { JobApplicationService } from "./job-application.service";
 import { RoleService } from "./role.service";
 import { LoaderService } from "./loader.service";
 import { DialogCloseResponse, DialogCloseStatus, AddJobDialogData, AddRoleDialogData, ViewJobDialogData, JobApplicationItem, CreateApplicationPayload, UpdateApplicationPayload, JobApplicationFormValue, InfoDialogData, IconStat, JobStatChangeDialogData, ApplicationStatus, PolicyDialogData, CONFIRM_DELETE_MSG, ADD_APP_SUCCESS_TITLE, ADD_APP_SUCCESS_MSG } from "../models";
+import { DocumentItem } from '../models/interface/profile.models';
 import { CreateRolePayload, Role } from '../models/interface/role.models';
 import { ROLE_DELETE_CONFIRM, ROLE_DOCUMENT_DELETE_CONFIRM } from '../models/constants/role.constants';
 
@@ -102,6 +104,17 @@ export class DialogHelperService {
       dialogData,
       (response) => onConfirm(response.data!),
       { disableClose: false }
+    );
+  }
+
+  openEditDocumentDialog(document: DocumentItem, onConfirm: (result: EditDocumentModalResult) => void): void {
+    const dialogData: EditDocumentModalData = { document };
+
+    this.openAndHandleDialog<EditDocumentModalResult>(
+      EditDocumentModalComponent,
+      dialogData,
+      (response) => onConfirm(response.data!),
+      { disableClose: false, panelClass: 'edit-document-dialog-panel' }
     );
   }
 
