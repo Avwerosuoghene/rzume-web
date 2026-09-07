@@ -1,8 +1,14 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EMPTY_STATES } from '../../core/models/constants/dashboard.constants';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
-import { JobApplicationFilter } from '../../core/models/interface/job-application.models';
+
+export interface EmptyStateConfig {
+  title?: string;
+  message?: string;
+  icon?: string;
+  showAction?: boolean;
+  actionText?: string;
+}
 
 @Component({
   selector: 'app-empty-state-wrapper',
@@ -13,25 +19,31 @@ import { JobApplicationFilter } from '../../core/models/interface/job-applicatio
 })
 export class EmptyStateWrapperComponent implements OnChanges {
   @Input() data: unknown[] = [];
-  @Input() currentFilter: JobApplicationFilter = {};
+  // Whether the caller currently has an active search/filter — domain-agnostic on purpose, so
+  // this component doesn't need to know about JobApplicationFilter or any other caller-specific
+  // filter shape. Each consumer computes this however makes sense for its own domain.
+  @Input() hasActiveFilter = false;
+  // Content shown when there's genuinely nothing yet (no filter active). Required — every
+  // consumer has its own copy/icon here, there's no sensible app-wide default.
+  @Input() emptyState!: EmptyStateConfig;
+  // Content shown when a filter is active but matches nothing.
+  @Input() noResultsState!: EmptyStateConfig;
   @Output() actionButtonClicked = new EventEmitter<void>();
 
-  EMPTY_STATES = EMPTY_STATES;
-  showEmptyState: boolean = false;
-  hasSearchResults: boolean = true;
+  showEmptyState = false;
+  hasSearchResults = true;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] || changes['currentFilter']) {
+    if (changes['data'] || changes['hasActiveFilter']) {
       this.updateDisplayState();
     }
   }
 
   private updateDisplayState(): void {
     const hasNoItems = !this.data || this.data.length === 0;
-    const hasActiveFilters = this.currentFilter && (this.currentFilter.searchQuery || this.currentFilter.status);
 
-    this.showEmptyState = hasNoItems && !hasActiveFilters;
-    this.hasSearchResults = !(hasNoItems && hasActiveFilters);
+    this.showEmptyState = hasNoItems && !this.hasActiveFilter;
+    this.hasSearchResults = !(hasNoItems && this.hasActiveFilter);
   }
 
   onAction(): void {

@@ -15,9 +15,9 @@ export class ApiService {
 
   public get<T>(options: GetRequestOptions): Observable<T> {
 
-    const { route, params, headers, withBearer, handleResponse } = options;
+    const { route, params, headers, handleResponse } = options;
 
-    const requestRoute: string = `${this.configService.apiUrls.backend}/${route}`;
+    const requestRoute = this.buildRoute(route);
     let requestParams = new HttpParams();
     if (params) {
       params.forEach(param => {
@@ -29,66 +29,32 @@ export class ApiService {
 
     return this.httpClient.get<T>(requestRoute, {
       headers: requestHeaders, params: requestParams
-    }).pipe(catchError((error) => {
-      const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
-
-      const responseError: ErrorResponse = {
-        statusCode: error.status,
-        errorMessage: errorMsg
-      }
-      if (handleResponse)
-        return this.handleErrorWithObservable(responseError);
-
-      return throwError(() => responseError);
-
-    }))
+    }).pipe(this.toErrorOperator<T>(handleResponse));
 
   }
 
   public put<T>(apiRoute: string, body: unknown, handleResponse: boolean, reqHeaders?: HttpHeaders, useJsonContentType: boolean = true): Observable<T> {
-    const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
+    const route = this.buildRoute(apiRoute);
 
     const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.put<T>(route, body, {
       headers: headers
-    }).pipe(catchError((error) => {
-      const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
-
-      const responseError: ErrorResponse = {
-        statusCode: error.status,
-        errorMessage: errorMsg
-      }
-      if (handleResponse)
-        return this.handleErrorWithObservable(responseError);
-      return throwError(() => responseError);
-    }))
+    }).pipe(this.toErrorOperator<T>(handleResponse));
   }
 
   public post<T>(apiRoute: string, body: unknown, handleResponse: boolean, reqHeaders?: HttpHeaders, withBearer: boolean = false, useJsonContentType: boolean = true): Observable<T> {
-    const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
+    const route = this.buildRoute(apiRoute);
 
     const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
 
     return this.httpClient.post<T>(route, body, {
       headers
-    }).pipe(catchError((error) => {
-      const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
-
-      const responseError: ErrorResponse = {
-        statusCode: error.status,
-        errorMessage: errorMsg
-      }
-      if (handleResponse)
-        return this.handleErrorWithObservable(responseError);
-
-      return throwError(() => responseError);
-
-    }))
+    }).pipe(this.toErrorOperator<T>(handleResponse));
   }
 
   public delete<T>(apiRoute: string, handleResponse: boolean, reqHeaders?: HttpHeaders, body?: unknown, useJsonContentType: boolean = true): Observable<T> {
-    const route: string = `${this.configService.apiUrls.backend}/${apiRoute}`;
+    const route = this.buildRoute(apiRoute);
 
     const headers = this.mergeHeaders(reqHeaders, useJsonContentType);
     const options = {
@@ -96,22 +62,31 @@ export class ApiService {
       body
     };
 
-    return this.httpClient.delete<T>(route, options).pipe(
-      catchError((error) => {
-        const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
+    return this.httpClient.delete<T>(route, options).pipe(this.toErrorOperator<T>(handleResponse));
+  }
 
-        const responseError: ErrorResponse = {
-          statusCode: error.status,
-          errorMessage: errorMsg
-        };
+  private buildRoute(route: string): string {
+    return `${this.configService.apiUrls.backend}/${route}`;
+  }
 
-        if (handleResponse) {
-          return this.handleErrorWithObservable(responseError);
-        }
+  // Shared shape behind every HTTP verb's error handling: extract a message, build the
+  // ErrorResponse, and either route it through the generic error dialog (handleResponse) or just
+  // rethrow it for the caller to handle themselves.
+  private toErrorOperator<T>(handleResponse: boolean) {
+    return catchError<T, Observable<T>>((error) => {
+      const errorMsg = error?.error?.message ? error?.error?.message : ERROR_UNKNOWN;
 
-        return throwError(() => responseError);
-      })
-    );
+      const responseError: ErrorResponse = {
+        statusCode: error.status,
+        errorMessage: errorMsg
+      };
+
+      if (handleResponse) {
+        return this.handleErrorWithObservable(responseError);
+      }
+
+      return throwError(() => responseError);
+    });
   }
 
 

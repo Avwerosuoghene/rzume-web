@@ -1,5 +1,6 @@
-import { MIME_TYPE_MAP, DEFAULT_CV_UPLOAD_LIMIT, SessionStorageKeys, SubscriptionFeatureKeys } from "../models";
-import { SubscriptionFeatures, Resume } from "../models/interface/profile.models";
+import { MIME_TYPE_MAP, DEFAULT_CV_UPLOAD_LIMIT, SubscriptionFeatureKeys } from "../models";
+import { Resume } from "../models/interface/profile.models";
+import { SubscriptionFeatureHelper } from "./subscription-feature.helper";
 
 
 export class DocumentHelper {
@@ -36,14 +37,12 @@ export class DocumentHelper {
   }
 
   static formatFileSize(sizeInBytes: number): string {
-    const sizeMB = sizeInBytes / (1024 * 1024);
-    const sizeKB = sizeInBytes / 1024;
-    
-    if (sizeMB >= 1) {
-      return `${sizeMB}MB`;
-    }
-    
-    return `${sizeKB}KB`;
+    if (sizeInBytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(sizeInBytes) / Math.log(k));
+    return Number.parseFloat((sizeInBytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
   static getDocumentIcon(fileType?: string): string {
@@ -72,31 +71,6 @@ export class DocumentHelper {
   }
 
   static getCvUploadLimit(): number {
-    try {
-      const subscriptionFeaturesStr = sessionStorage.getItem(SessionStorageKeys.subscriptionFeatures);
-      
-      if (!subscriptionFeaturesStr) {
-        return DEFAULT_CV_UPLOAD_LIMIT;
-      }
-
-      const subscriptionFeatures: SubscriptionFeatures = JSON.parse(subscriptionFeaturesStr);
-
-      if (!subscriptionFeatures || !subscriptionFeatures.features) {
-        return DEFAULT_CV_UPLOAD_LIMIT;
-      }
-
-      const cvLimitFeature = subscriptionFeatures.features.find(
-        feature => feature.featureKey === SubscriptionFeatureKeys.CvUploadLimit
-      );
-
-      if (!cvLimitFeature || !cvLimitFeature.featureValue) {
-        return DEFAULT_CV_UPLOAD_LIMIT;
-      }
-
-      const limit = parseInt(cvLimitFeature.featureValue, 10);
-      return isNaN(limit) || limit <= 0 ? DEFAULT_CV_UPLOAD_LIMIT : limit;
-    } catch (error) {
-      return DEFAULT_CV_UPLOAD_LIMIT;
-    }
+    return SubscriptionFeatureHelper.getNumericLimit(SubscriptionFeatureKeys.CvUploadLimit, DEFAULT_CV_UPLOAD_LIMIT);
   }
 }

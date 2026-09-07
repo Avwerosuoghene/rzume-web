@@ -17,12 +17,12 @@ import { DocumentHelper } from '../../../../core/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmedUploadEntry } from '../../../../components/confirm-upload-modal/confirm-upload-modal.component';
 import { CustomSearchInputComponent } from '../../../../components/custom-search-input/custom-search-input.component';
-import { EmptyStateComponent } from '../../../../components/empty-state/empty-state.component';
+import { EmptyStateWrapperComponent } from '../../../../components/empty-state-wrapper/empty-state-wrapper.component';
 
 @Component({
   selector: 'app-documents-view',
   standalone: true,
-  imports: [CommonModule, FileUploaderComponent, DocumentItemComponent, CustomSearchInputComponent, EmptyStateComponent],
+  imports: [CommonModule, FileUploaderComponent, DocumentItemComponent, CustomSearchInputComponent, EmptyStateWrapperComponent],
   templateUrl: './documents-view.component.html',
   styleUrls: ['./documents-view.component.scss']
 })
@@ -31,6 +31,7 @@ export class DocumentsViewComponent implements OnInit, OnDestroy {
   @Input() uploadLimit: number = DEFAULT_CV_UPLOAD_LIMIT;
   isUploading = false;
   maxFileSize = DOCUMENT_VALIDATION.MAX_FILE_SIZE;
+  readonly emptyState = PROFILE_EMPTY_STATES.NO_DOCUMENTS;
   readonly noSearchResultsState = PROFILE_EMPTY_STATES.NO_SEARCH_RESULTS;
 
   private searchTerm = '';
@@ -52,6 +53,10 @@ export class DocumentsViewComponent implements OnInit, OnDestroy {
     const query = this.searchTerm.trim().toLowerCase();
     if (!query) return this.documents;
     return this.documents.filter(doc => doc.fileName.toLowerCase().includes(query));
+  }
+
+  get hasActiveFilter(): boolean {
+    return !!this.searchTerm.trim();
   }
 
   onSearchChange(term: string): void {

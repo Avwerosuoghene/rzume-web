@@ -100,14 +100,28 @@
   margin: 0;
 }
 
-.empty-state-wrapper {
+// Only the projected app-empty-state (shown for the genuinely-empty/no-results cases) gets the
+// card look — role cards, shown via the same host when there's data, must not inherit it.
+.roles-empty-state {
+  app-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 297px;
+    background-color: $white;
+    border: 1px solid $grey-100;
+    border-radius: 10px;
+    padding: $spacing-12 $spacing-6;
+  }
+}
+
+// app-empty-state-wrapper's host is display:block with no layout of its own (see
+// empty-state-wrapper.component.scss), so the gap between cards that used to come from
+// .active-roles-section's flex gap (when role cards were its direct children) has to be
+// reproduced here for the projected list.
+.roles-list {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 297px;
-  background-color: $white;
-  border: 1px solid $grey-100;
-  border-radius: 10px;
-  padding: $spacing-12 $spacing-6;
+  flex-direction: column;
+  gap: $spacing-3;
 }
 

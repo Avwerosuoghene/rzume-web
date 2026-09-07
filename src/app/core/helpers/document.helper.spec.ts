@@ -61,12 +61,35 @@ describe('DocumentHelper', () => {
   });
 
   describe('formatFileSize', () => {
-    it('should format sizes at or above 1MB in MB', () => {
-      expect(DocumentHelper.formatFileSize(2 * 1024 * 1024)).toBe('2MB');
+    // Upgraded to match document-item.component.ts's former formatSize() exactly (Bytes/KB/MB/GB,
+    // rounded to 2dp) — see test-backfill-findings.md #53 and plan-duplication-cleanup Phase 2.
+    // This is now the one canonical implementation; document-item.component.ts delegates here.
+    it('should format zero bytes', () => {
+      expect(DocumentHelper.formatFileSize(0)).toBe('0 Bytes');
+    });
+
+    it('should format bytes below 1KB', () => {
+      expect(DocumentHelper.formatFileSize(512)).toBe('512 Bytes');
+    });
+
+    it('should format kilobytes', () => {
+      expect(DocumentHelper.formatFileSize(1024)).toBe('1 KB');
     });
 
     it('should format sizes below 1MB in KB', () => {
-      expect(DocumentHelper.formatFileSize(500 * 1024)).toBe('500KB');
+      expect(DocumentHelper.formatFileSize(500 * 1024)).toBe('500 KB');
+    });
+
+    it('should format sizes at or above 1MB in MB', () => {
+      expect(DocumentHelper.formatFileSize(2 * 1024 * 1024)).toBe('2 MB');
+    });
+
+    it('should format megabytes rounded to 2 decimal places', () => {
+      expect(DocumentHelper.formatFileSize(2.5 * 1024 * 1024)).toBe('2.5 MB');
+    });
+
+    it('should format gigabytes', () => {
+      expect(DocumentHelper.formatFileSize(1024 * 1024 * 1024)).toBe('1 GB');
     });
   });
 

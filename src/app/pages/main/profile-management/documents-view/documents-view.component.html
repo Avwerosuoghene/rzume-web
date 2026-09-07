@@ -20,20 +20,21 @@
     <app-custom-search-input (searchChange)="onSearchChange($event)"></app-custom-search-input>
   </div>
 
-  <div class="empty-state-wrapper" *ngIf="documents.length > 0 && filteredDocuments.length === 0">
-    <app-empty-state
-      [title]="noSearchResultsState.title"
-      [message]="noSearchResultsState.message"
-    ></app-empty-state>
-  </div>
-
-  <div class="documents-list">
-    <app-document-item
-      *ngFor="let doc of filteredDocuments; trackBy: trackByDocId"
-      [document]="doc"
-      (edit)="onEditDocument($event)"
-      (delete)="onDeleteDocument($event)"
-      (download)="onDownloadDocument($event)"
-    ></app-document-item>
-  </div>
+  <app-empty-state-wrapper
+    [data]="filteredDocuments"
+    [hasActiveFilter]="hasActiveFilter"
+    [emptyState]="emptyState"
+    [noResultsState]="noSearchResultsState"
+    class="documents-empty-state"
+  >
+    <div class="documents-list">
+      <app-document-item
+        *ngFor="let doc of filteredDocuments; trackBy: trackByDocId"
+        [document]="doc"
+        (edit)="onEditDocument($event)"
+        (delete)="onDeleteDocument($event)"
+        (download)="onDownloadDocument($event)"
+      ></app-document-item>
+    </div>
+  </app-empty-state-wrapper>
 </div>

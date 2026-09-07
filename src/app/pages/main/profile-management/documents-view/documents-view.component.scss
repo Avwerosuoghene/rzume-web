@@ -21,11 +21,15 @@
   max-width: 360px;
 }
 
-.empty-state-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
+// Only the projected app-empty-state (genuinely-empty/no-results cases) gets this centering —
+// the document list, shown via the same host when there's data, must not inherit it.
+.documents-empty-state {
+  app-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+  }
 }
 
 .documents-list {

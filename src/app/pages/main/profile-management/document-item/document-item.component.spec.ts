@@ -255,14 +255,12 @@ describe('DocumentItemComponent', () => {
       expect(component.formatSize(1024 * 1024 * 1024)).toBe('1 GB');
     });
 
-    // NOTE: this component's own formatSize() (Bytes/KB/MB/GB, rounded to 2dp) produces a
-    // DIFFERENT output than DocumentHelper.formatFileSize() (MB/KB only, unrounded) for the
-    // exact same input — a real, live cross-component formatting inconsistency. See
-    // test-backfill-findings.md #53.
-    it('documents the formatting inconsistency with DocumentHelper.formatFileSize for the same input', () => {
+    // formatSize() now delegates to DocumentHelper.formatFileSize() directly — this proves the
+    // two no longer diverge for the same input. See test-backfill-findings.md #53 and
+    // plan-duplication-cleanup Phase 2.
+    it('should produce the same output as DocumentHelper.formatFileSize for the same input', () => {
       const bytes = mockDocument.fileSize!;
-      expect(component.formatSize(bytes)).toBe('2.5 MB');
-      expect(DocumentHelper.formatFileSize(bytes)).toBe('2.5MB');
+      expect(component.formatSize(bytes)).toBe(DocumentHelper.formatFileSize(bytes));
     });
   });
 });

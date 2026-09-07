@@ -375,4 +375,12 @@ describe('DocumentsViewComponent', () => {
       expect(searchStateService.updateSearchTerm).toHaveBeenCalledWith('resume');
     });
   });
+
+  it('should show the "no documents uploaded" empty state when there are genuinely no documents (via the shared EmptyStateWrapperComponent)', () => {
+    component.documents = [];
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('No documents uploaded');
+    expect(fixture.nativeElement.querySelector('app-document-item')).toBeNull();
+  });
 });

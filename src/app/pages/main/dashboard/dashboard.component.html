@@ -37,7 +37,9 @@
     } @else {
       <app-empty-state-wrapper
         [data]="data"
-        [currentFilter]="currentFilter"
+        [hasActiveFilter]="hasActiveFilter"
+        [emptyState]="EMPTY_STATES.noApplications"
+        [noResultsState]="EMPTY_STATES.noSearchResults"
         (actionButtonClicked)="addNewApplicationEntry()"
         class="empty_state_wrapper"
       >

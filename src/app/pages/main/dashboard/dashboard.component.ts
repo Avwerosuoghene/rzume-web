@@ -13,7 +13,7 @@ import { ScreenManagerService, SearchStateService, DocumentHelperService } from 
 import { Resume } from '../../../core/models/interface/profile.models';
 import { JobCardListComponent } from "../../../components/job-card-list/job-card-list.component";
 import { EmptyStateWrapperComponent } from "../../../components/empty-state-wrapper/empty-state-wrapper.component";
-import { buildPagination, mapApplicationToTableData, mapJobStats, normalizeFilter, resetPagination, updateFilterState, updatePagination } from '../../../core/helpers/dashboard.utils';
+import { buildPagination, hasActiveFilters, mapApplicationToTableData, mapJobStats, normalizeFilter, resetPagination, updateFilterState, updatePagination } from '../../../core/helpers/dashboard.utils';
 import { ITEMS_INCREMENT } from '../../../core/models';
 import { DialogHelperService } from '../../../core/services/dialog-helper.service';
 import { AnalyticsService } from '../../../core/services/analytics/analytics.service';
@@ -65,6 +65,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   currentFilter: JobApplicationFilter = {};
   private destroy$ = new Subject<void>();
+
+  get hasActiveFilter(): boolean {
+    return hasActiveFilters(this.currentFilter);
+  }
 
   constructor(
     private state: JobApplicationStateService,

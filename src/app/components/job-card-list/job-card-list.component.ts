@@ -24,7 +24,8 @@ import {
   JobApplicationFilter,
   JobApplicationItem
 } from '../../core/models/interface/job-application.models';
-import { JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.constants';
+import { EMPTY_STATES, JOB_FILTER_OPTIONS } from '../../core/models/constants/dashboard.constants';
+import { hasActiveFilters } from '../../core/helpers/dashboard.utils';
 import { AngularMaterialModules } from '../../core/modules';
 import { EmptyStateWrapperComponent } from '../empty-state-wrapper/empty-state-wrapper.component';
 import { CircularLoaderComponent } from '../circular-loader/circular-loader.component';
@@ -62,6 +63,7 @@ export class JobCardListComponent implements AfterViewInit, AfterViewChecked, On
   @Input() isLoading = false;
   @Input() totalItems = 0;
   showEmptyState: boolean = false;
+  readonly EMPTY_STATES = EMPTY_STATES;
 
 
   @ViewChild('cardListContainer') private cardListContainer?: ElementRef<HTMLElement>;
@@ -74,6 +76,10 @@ export class JobCardListComponent implements AfterViewInit, AfterViewChecked, On
   currentFilter: JobApplicationFilter = {};
   readonly itemSize = 200; // Approximate height of job card in pixels
   readonly useVirtualScroll = true; // Enable virtual scrolling for performance
+
+  get hasActiveFilter(): boolean {
+    return hasActiveFilters(this.currentFilter);
+  }
 
   constructor(
     private dialogHelper: DialogHelperService,
@@ -158,9 +164,8 @@ export class JobCardListComponent implements AfterViewInit, AfterViewChecked, On
 
   updateDisplayState(): void {
     const hasNoItems = !this.jobs || this.jobs.length === 0;
-    const hasActiveFilters = this.currentFilter && (this.currentFilter.searchQuery || this.currentFilter.status);
 
-    this.showEmptyState = hasNoItems && !hasActiveFilters;
+    this.showEmptyState = hasNoItems && !hasActiveFilters(this.currentFilter);
     this.cdr.markForCheck();
   }
 

@@ -12,7 +12,9 @@
   } @else {
   <app-empty-state-wrapper
     [data]="jobs"
-    [currentFilter]="currentFilter"
+    [hasActiveFilter]="hasActiveFilter"
+    [emptyState]="EMPTY_STATES.noApplications"
+    [noResultsState]="EMPTY_STATES.noSearchResults"
     (actionButtonClicked)="handleAddJobApplication()"
   >
     @if (useVirtualScroll && jobs.length > 10) {

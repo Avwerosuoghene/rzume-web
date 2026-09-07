@@ -42,7 +42,7 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private fetchSubscriptionFeatures(): void {
     const existingFeatures = SessionStorageUtil.getItem(SessionStorageKeys.subscriptionFeatures);
-    
+
     if (existingFeatures) {
       return;
     }
@@ -50,6 +50,7 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loaderService.showLoader();
     this.profileService.getSubscriptionFeatures().subscribe({
       next: (response) => {
+        console.log('Fetched subscription features:', response);
         this.loaderService.hideLoader();
         if (response.success && response.data) {
           SessionStorageUtil.setItem(SessionStorageKeys.subscriptionFeatures, response.data);

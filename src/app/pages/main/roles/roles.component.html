@@ -25,32 +25,24 @@
     <app-role-card-skeleton *ngIf="loading$ | async; else rolesContent" data-cy="roles-loading"></app-role-card-skeleton>
 
     <ng-template #rolesContent>
-      <ng-container *ngIf="roles$ | async as roles">
-        <div class="empty-state-wrapper" *ngIf="roles.length === 0">
-          <app-empty-state
-            [icon]="emptyState.icon"
-            [title]="emptyState.title"
-            [message]="emptyState.message"
-          ></app-empty-state>
-        </div>
-
-        <ng-container *ngIf="roles.length > 0 && (filteredRoles$ | async) as filteredRoles">
-          <div class="empty-state-wrapper" *ngIf="filteredRoles.length === 0">
-            <app-empty-state
-              [icon]="noSearchResultsState.icon"
-              [title]="noSearchResultsState.title"
-              [message]="noSearchResultsState.message"
-            ></app-empty-state>
+      <ng-container *ngIf="(filteredRoles$ | async) as filteredRoles">
+        <app-empty-state-wrapper
+          [data]="filteredRoles"
+          [hasActiveFilter]="(hasActiveFilter$ | async) ?? false"
+          [emptyState]="emptyState"
+          [noResultsState]="noSearchResultsState"
+          class="roles-empty-state"
+        >
+          <div class="roles-list">
+            <app-role-card
+              *ngFor="let role of filteredRoles"
+              [role]="role"
+              (editRole)="onEditRole($event)"
+              (delete)="onDeleteRole($event)"
+              (deleteDocument)="onDeleteRoleDocument($event)"
+            ></app-role-card>
           </div>
-
-          <app-role-card
-            *ngFor="let role of filteredRoles"
-            [role]="role"
-            (editRole)="onEditRole($event)"
-            (delete)="onDeleteRole($event)"
-            (deleteDocument)="onDeleteRoleDocument($event)"
-          ></app-role-card>
-        </ng-container>
+        </app-empty-state-wrapper>
       </ng-container>
     </ng-template>
   </div>
