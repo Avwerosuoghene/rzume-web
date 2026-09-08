@@ -19,7 +19,10 @@ describe('JobViewDialogComponent', () => {
     applicationDate: new Date('2024-01-15'),
     jobLink: 'https://example.com/job',
     notes: 'Test notes',
-    resumeId: 'resume-1'
+    resumeId: 'resume-1',
+    resumeFileName: 'MyCV-2026.pdf',
+    resumeFileType: 'application/pdf',
+    resumeFileSize: 54321
   };
 
   const mockDialogData: ViewJobDialogData = {
@@ -60,5 +63,11 @@ describe('JobViewDialogComponent', () => {
     const compiled = fixture.nativeElement;
     expect(compiled.textContent).toContain('Test Company');
     expect(compiled.textContent).toContain('Software Engineer');
+  });
+
+  it('should display the resume file name from resumeFileName, not a hardcoded placeholder', () => {
+    const compiled = fixture.nativeElement;
+    expect(compiled.textContent).toContain('MyCV-2026.pdf');
+    expect(compiled.textContent).not.toContain('Resume.pdf');
   });
 });

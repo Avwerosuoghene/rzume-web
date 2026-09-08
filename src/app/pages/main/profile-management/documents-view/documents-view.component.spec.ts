@@ -8,6 +8,7 @@ import { ProfileManagementService } from '../../../../core/services/profile-mana
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { SearchStateService } from '../../../../core/services/search-state.service';
+import { RoleService } from '../../../../core/services/role.service';
 import { DocumentItem } from '../../../../core/models/interface/profile.models';
 import { DocumentHelper } from '../../../../core/helpers';
 import { DOCUMENT_TYPES } from '../../../../core/models/constants/profile.constants';
@@ -22,6 +23,7 @@ describe('DocumentsViewComponent', () => {
   let dialogHelperSpy: jasmine.SpyObj<DialogHelperService>;
   let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
   let loaderServiceSpy: jasmine.SpyObj<LoaderService>;
+  let roleServiceSpy: jasmine.SpyObj<RoleService>;
   let searchStateService: SearchStateService;
 
   const mockDoc: DocumentItem = {
@@ -39,6 +41,13 @@ describe('DocumentsViewComponent', () => {
     dialogHelperSpy = jasmine.createSpyObj('DialogHelperService', ['openSuccessDialog', 'openDeleteConfirmation', 'openInfoDialog', 'openConfirmUploadDialog', 'openEditDocumentDialog']);
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
     loaderServiceSpy = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
+    roleServiceSpy = jasmine.createSpyObj('RoleService', ['getRoles']);
+    roleServiceSpy.getRoles.and.returnValue(of({
+      statusCode: 200,
+      success: true,
+      message: '',
+      data: { count: 0, roles: [] }
+    }));
 
     await TestBed.configureTestingModule({
       imports: [DocumentsViewComponent, NoopAnimationsModule],
@@ -48,6 +57,7 @@ describe('DocumentsViewComponent', () => {
         { provide: DialogHelperService, useValue: dialogHelperSpy },
         { provide: MatSnackBar, useValue: snackBarSpy },
         { provide: LoaderService, useValue: loaderServiceSpy },
+        { provide: RoleService, useValue: roleServiceSpy },
         SearchStateService
       ]
     }).compileComponents();
@@ -254,11 +264,15 @@ describe('DocumentsViewComponent', () => {
       expect(loaderServiceSpy.hideLoader).toHaveBeenCalled();
       expect(dialogHelperSpy.openSuccessDialog).toHaveBeenCalled();
       expect(documentHelperSpy.fetchResumes).not.toHaveBeenCalled();
+      expect(roleServiceSpy.getRoles).not.toHaveBeenCalled();
 
       const onClosed = dialogHelperSpy.openSuccessDialog.calls.mostRecent().args[2];
       onClosed!();
 
       expect(documentHelperSpy.fetchResumes).toHaveBeenCalled();
+      // Roles cache their own attached-document filenames (read by job-add-dialog's resume
+      // picker), so a rename has to refresh it too, not just DocumentHelperService's resumes$.
+      expect(roleServiceSpy.getRoles).toHaveBeenCalled();
     });
 
     it('should not show a success dialog when the update response reports failure', () => {

@@ -67,21 +67,21 @@
     }
 
     <!-- Document Used Section (Conditional) -->
-    @if (jobApplication.resume || jobApplication.resumeId) {
+    @if (jobApplication.resumeFileName || jobApplication.resumeId) {
       <hr class="job-view-section-divider">
       <div class="job-view-section">
         <h3 class="job-view-section-header">DOCUMENT USED</h3>
-        
+
         <div class="job-view-document-card">
           <div class="job-view-document-icon-container">
             <img src="/assets/icons/uploaded-document.svg" alt="Document" class="job-view-document-icon" />
           </div>
           <div class="job-view-document-info">
-            <p class="job-view-document-name">{{ jobApplication.resume?.fileName || 'Resume.pdf' }}</p>
+            <p class="job-view-document-name">{{ jobApplication.resumeFileName || 'Resume.pdf' }}</p>
             <p class="job-view-document-meta">
-              {{ jobApplication.resume?.fileType || 'CV/Resume' }}
-              @if (jobApplication.resume?.fileSize) {
-                <span> • {{ formatFileSize(jobApplication.resume?.fileSize!) }}</span>
+              {{ jobApplication.resumeFileType || 'CV/Resume' }}
+              @if (jobApplication.resumeFileSize) {
+                <span> • {{ formatFileSize(jobApplication.resumeFileSize!) }}</span>
               }
             </p>
           </div>

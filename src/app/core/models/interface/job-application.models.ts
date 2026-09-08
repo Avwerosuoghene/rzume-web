@@ -1,5 +1,5 @@
 import { ApplicationStatus } from "../enums";
-import { AttachedDocument, Resume } from "./profile.models";
+import { AttachedDocument } from "./profile.models";
 
 export interface JobApplicationDocumentRequestItem {
   resumeId: string;
@@ -19,8 +19,14 @@ export interface JobApplicationItem {
   userId?: string;
   applicationDate?: Date;
   jobLink?: string;
-  resume?: Resume;
   resumeId?: string;
+  // Read straight off the backend's JobApplicationDto.ResumeFileName/Type/Size — flat fields,
+  // not a nested Resume/AttachedDocument, on purpose: the backend deliberately skips signing a
+  // DocumentUrl/DownloadUrl for the resume slot on every application returned, just to show a
+  // name. Always freshly read from UserResume server-side, so it reflects a rename immediately.
+  resumeFileName?: string;
+  resumeFileType?: string;
+  resumeFileSize?: number;
   roleId?: string;
   role?: JobApplicationRoleSummary;
   coverLetter?: AttachedDocument;

@@ -8,6 +8,7 @@ import { ProfileManagementService } from '../../../../core/services/profile-mana
 import { DialogHelperService } from '../../../../core/services/dialog-helper.service';
 import { LoaderService } from '../../../../core/services/loader.service';
 import { SearchStateService } from '../../../../core/services/search-state.service';
+import { RoleService } from '../../../../core/services/role.service';
 import { DocumentItem, UploadDocumentPayload } from '../../../../core/models/interface/profile.models';
 import { DOCUMENT_UPLOAD_SUCCESS_TITLE, DOCUMENT_UPLOAD_SUCCESS_MSG, DOCUMENT_DELETE_SUCCESS_TITLE, DOCUMENT_DELETE_SUCCESS_MSG, DOCUMENT_UPDATE_SUCCESS_TITLE, DOCUMENT_UPDATE_SUCCESS_MSG, DELETE_DOCUMENT_TITLE } from '../../../../core/models/constants/dialog-data.constants';
 import { EditDocumentModalResult } from '../../../../components/edit-document-modal/edit-document-modal.component';
@@ -43,7 +44,8 @@ export class DocumentsViewComponent implements OnInit, OnDestroy {
     private dialogHelper: DialogHelperService,
     private snackBar: MatSnackBar,
     private loaderService: LoaderService,
-    private searchStateService: SearchStateService
+    private searchStateService: SearchStateService,
+    private roleService: RoleService
   ) { }
 
   // Matches filename only. Only ever mounted while the Documents tab is active (*ngIf in
@@ -183,7 +185,15 @@ export class DocumentsViewComponent implements OnInit, OnDestroy {
     this.dialogHelper.openSuccessDialog(
       DOCUMENT_UPDATE_SUCCESS_TITLE,
       DOCUMENT_UPDATE_SUCCESS_MSG,
-      () => this.documentHelper.fetchResumes()
+      () => {
+        this.documentHelper.fetchResumes();
+        // A renamed resume's new name also needs to reach RoleStateService's cache — Roles
+        // carry their own attached-document filenames (read fresh from the backend on this
+        // call), and job-add-dialog's resume picker reads options off that cached role list,
+        // not off DocumentHelperService.resumes$. Without this, the picker keeps showing the
+        // pre-rename name until something else happens to refetch roles.
+        this.roleService.getRoles().subscribe({ error: () => {} });
+      }
     );
   }
 
