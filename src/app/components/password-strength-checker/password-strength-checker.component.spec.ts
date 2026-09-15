@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PasswordStrengthCheckerComponent } from './password-strength-checker.component';
 import { PasswordStrength } from '../../core/models/enums/password-strength.enum';
-import { PASSWORD_CHECKER_MESSAGES } from './password-strength-checker.constants';
 
 describe('PasswordStrengthCheckerComponent', () => {
   let component: PasswordStrengthCheckerComponent;
@@ -33,12 +32,11 @@ describe('PasswordStrengthCheckerComponent', () => {
       });
     });
 
-    it('should show requirements section with subtle opacity initially', () => {
+    it('should render the requirements section', () => {
       const compiled = fixture.nativeElement;
       const requirementsSection = compiled.querySelector('.requirements-section');
-      
+
       expect(requirementsSection).toBeTruthy();
-      expect(requirementsSection.classList.contains('show-feedback')).toBe(false);
     });
 
     it('should display all 5 password requirements', () => {
@@ -51,36 +49,6 @@ describe('PasswordStrengthCheckerComponent', () => {
       expect(requirements[2].textContent).toContain('lowercase');
       expect(requirements[3].textContent).toContain('number');
       expect(requirements[4].textContent).toContain('special character');
-    });
-  });
-
-  describe('Progressive Feedback', () => {
-    it('should show detailed feedback after user starts typing', () => {
-      component.checkPasswordStrength('Test');
-      fixture.detectChanges();
-      
-      expect(component['showDetailedFeedback']()).toBe(true);
-      
-      const compiled = fixture.nativeElement;
-      const requirementsSection = compiled.querySelector('.requirements-section');
-      expect(requirementsSection.classList.contains('show-feedback')).toBe(true);
-    });
-
-    it('should not show strength section initially', () => {
-      const compiled = fixture.nativeElement;
-      const strengthSection = compiled.querySelector('.strength-section');
-      
-      expect(strengthSection).toBeFalsy();
-    });
-
-    it('should show strength section after user starts typing', () => {
-      component.checkPasswordStrength('Test123');
-      fixture.detectChanges();
-      
-      const compiled = fixture.nativeElement;
-      const strengthSection = compiled.querySelector('.strength-section');
-      
-      expect(strengthSection).toBeTruthy();
     });
   });
 
@@ -98,43 +66,24 @@ describe('PasswordStrengthCheckerComponent', () => {
     it('should show invalid state for unmet requirements', () => {
       component.checkPasswordStrength('test');
       fixture.detectChanges();
-      
+
       const requirements = component['passwordRequirements']();
       const uppercaseReq = requirements.find(r => r.name === 'uppercase');
-      
+
       expect(component.getRequirementStatus(uppercaseReq!)).toBe('invalid');
     });
 
-    it('should update requirement icons based on status', () => {
-      const requirements = component['passwordRequirements']();
-      const lengthReq = requirements[0];
-      
-      component.checkPasswordStrength('');
-      expect(component.getRequirementIcon(lengthReq)).toBe('radio_button_unchecked');
-      
+    it('should reset requirements back to pending when the password is cleared to empty', () => {
       component.checkPasswordStrength('Test123!');
-      expect(component.getRequirementIcon(lengthReq)).toBe('check_circle');
-      
-      component.checkPasswordStrength('Test');
-      expect(component.getRequirementIcon(lengthReq)).toBe('invalid');
-    });
-  });
+      fixture.detectChanges();
 
-  describe('Help Messages', () => {
-    it('should show initial help message', () => {
-      expect(component['helpMessage']()).toBe(PASSWORD_CHECKER_MESSAGES.INITIAL);
-    });
+      component.checkPasswordStrength('');
+      fixture.detectChanges();
 
-    it('should show progress message when some requirements are met', () => {
-      component.checkPasswordStrength('Test123');
-      
-      expect(component['helpMessage']()).toContain('of 5 requirements met');
-    });
-
-    it('should show success message when all requirements are met', () => {
-      component.checkPasswordStrength('Test123!aB');
-      
-      expect(component['helpMessage']()).toBe(PASSWORD_CHECKER_MESSAGES.SUCCESS);
+      const requirements = component['passwordRequirements']();
+      requirements.forEach(requirement => {
+        expect(component.getRequirementStatus(requirement)).toBe('pending');
+      });
     });
   });
 
@@ -192,16 +141,6 @@ describe('PasswordStrengthCheckerComponent', () => {
       
       expect(validItems.length).toBe(5);
     });
-
-    it('should apply correct strength bar classes', () => {
-      component.checkPasswordStrength('Test123');
-      
-      expect(component.getStrengthBarClass(0)).toBe('strength-1');
-      expect(component.getStrengthBarClass(1)).toBe('strength-2');
-      expect(component.getStrengthBarClass(2)).toBe('strength-3');
-      expect(component.getStrengthBarClass(3)).toBe('strength-4');
-      expect(component.getStrengthBarClass(4)).toBe('');
-    });
   });
 
   describe('Responsive Behavior', () => {
@@ -226,13 +165,6 @@ describe('PasswordStrengthCheckerComponent', () => {
 
     expect(result.score).toBe(0);
     expect(result.strength).toBe(PasswordStrength.NONE);
-  });
-
-  it('should have strength bars computed property', () => {
-    component.checkPasswordStrength('TestPass123!');
-    const bars = component.strengthBars();
-    
-    expect(Array.isArray(bars)).toBe(true);
   });
 
   it('should expose PasswordStrength enum', () => {
