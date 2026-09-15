@@ -33,7 +33,8 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   pattern: 'Invalid format',
   min: 'Value is too low',
   max: 'Value is too high',
-  noSpaces: 'Cannot contain spaces'
+  noSpaces: 'Cannot contain spaces',
+  passwordMismatch: 'Passwords do not match'
 };
 
 export const PASSWORD_VISIBILITY_ICONS = {

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -43,13 +43,38 @@ describe('PasswordResetComponent', () => {
       checkPasswordStrength: jasmine.createSpy('checkPasswordStrength').and.returnValue({
         score: 4,
         strength: 'STRONG'
-      })
+      }),
+      show: jasmine.createSpy('show'),
+      hide: jasmine.createSpy('hide')
     } as unknown as PasswordStrengthCheckerComponent;
-    
+
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should show the password strength checker tooltip when the password field is focused', () => {
+    // ViewChild resolves to the real PasswordStrengthCheckerComponent after detectChanges,
+    // so spy on its actual show()/hide() rather than the pre-detectChanges mock object.
+    spyOn(component.passwordCheckerComp, 'show');
+    const passwordInput: HTMLInputElement = fixture.nativeElement.querySelector('#password');
+
+    passwordInput.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+
+    expect(component.passwordCheckerComp.show).toHaveBeenCalled();
+  });
+
+  it('should hide the password strength checker tooltip when the password field is blurred', fakeAsync(() => {
+    spyOn(component.passwordCheckerComp, 'hide');
+    const passwordInput: HTMLInputElement = fixture.nativeElement.querySelector('#password');
+
+    passwordInput.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    tick(200);
+
+    expect(component.passwordCheckerComp.hide).toHaveBeenCalled();
+  }));
 });

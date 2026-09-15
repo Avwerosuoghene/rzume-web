@@ -202,6 +202,15 @@ describe('FormInputComponent', () => {
 
       expect(component.errorMessage).toBe('Job role cannot be empty');
     });
+
+    it('should return a real message for a passwordMismatch error, not the generic fallback', () => {
+      const control = new FormControl('', () => ({ passwordMismatch: true }));
+      init(textConfig, control);
+      control.markAsTouched();
+      control.updateValueAndValidity();
+
+      expect(component.errorMessage).toBe('Passwords do not match');
+    });
   });
 
   describe('without a control (unbound usage)', () => {

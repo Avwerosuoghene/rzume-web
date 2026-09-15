@@ -112,6 +112,16 @@ export class PasswordResetComponent {
     }
   }
 
+  onPasswordFocus(): void {
+    this.passwordCheckerComp?.show();
+  }
+
+  onPasswordBlur(): void {
+    setTimeout(() => {
+      this.passwordCheckerComp?.hide();
+    }, 200);
+  }
+
   togglePasswordVisibility(toggledPass: ToggledPassword): void {
     this[toggledPass] = PasswordUtility.toggleVisibility(this[toggledPass]);
   }
