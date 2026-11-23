@@ -46,7 +46,7 @@
         } @else if (col.field === 'applicationDate') {
         {{ item[col.field]  | date:'MM/dd/yyyy' }}
         } @else {
-        {{ (col.field === 'resume' ? item[col.field]?.fileName : item[col.field]) || "Not Provided" | truncate: 15 }}
+        {{ item[col.field] || "Not Provided" | truncate: 15 }}
         }
       </p>
     </div>

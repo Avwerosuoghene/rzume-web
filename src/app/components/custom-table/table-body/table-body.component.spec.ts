@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { TableBodyComponent } from './table-body.component';
 import { ActionMenuComponent } from '../../action-menu/action-menu.component';
 import { JobApplicationItem } from '../../../core/models/interface/job-application.models';
-import { ApplicationStatus, ACTION_TYPES } from '../../../core/models';
+import { ApplicationStatus, ACTION_TYPES, JOB_TABLE_COLUMNS } from '../../../core/models';
 
 describe('TableBodyComponent', () => {
   let component: TableBodyComponent;
@@ -81,6 +81,26 @@ describe('TableBodyComponent', () => {
       component.getRowActions(row).find(a => a.key === ACTION_TYPES.DELETE)?.callback();
 
       expect(component.triggerDelete).toHaveBeenCalledWith(row);
+    });
+  });
+
+  describe('Resume column', () => {
+    const resumeColumn = JOB_TABLE_COLUMNS.find(col => col.header === 'Resume')!;
+
+    const renderResumeCell = (row: JobApplicationItem): string => {
+      component.data = [row];
+      component.columns = [resumeColumn];
+      fixture.detectChanges();
+      const cell = fixture.debugElement.query(By.css('tbody tr td:nth-child(2) p'));
+      return (cell.nativeElement as HTMLElement).textContent?.trim() ?? '';
+    };
+
+    it('should show the flat resumeFileName the API returns when the row has a resume', () => {
+      expect(renderResumeCell({ ...item('1'), resumeId: 'r1', resumeFileName: 'MyCV.pdf' })).toBe('MyCV.pdf');
+    });
+
+    it('should show "Not Provided" when the row has no resume', () => {
+      expect(renderResumeCell(item('1'))).toBe('Not Provided');
     });
   });
 
